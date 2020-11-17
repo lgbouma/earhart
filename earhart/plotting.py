@@ -30,6 +30,7 @@ from cdips.utils.catalogs import (
 from cdips.utils.gaiaqueries import (
     query_neighborhood, given_source_ids_get_gaia_data
 )
+from cdips.utils.tapqueries import given_source_ids_get_tic8_data
 from cdips.utils.plotutils import rainbow_text
 
 from earhart.paths import DATADIR, RESULTSDIR
@@ -116,6 +117,13 @@ def _get_extinction_dataframes():
     if not os.path.exists(extinction_pkl):
 
         nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
+
+        cg18_tic8_df = given_source_ids_get_tic8_data(
+            np.array(cg18_df.source_id)[1],
+            'ngc2516_cg18_earhart_tic8', n_max=len(cg18_df), overwrite=False,
+            enforce_all_sourceids_viable=True
+        )
+        import IPython; IPython.embed()
 
         desiredcols = ['ID', 'GAIA', 'ebv', 'e_ebv', 'eneg_EBV', 'epos_EBV',
                        'EBVflag']
@@ -357,27 +365,24 @@ def plot_full_kinematics(outdir):
     savefig(f, outpath)
 
 
-def plot_hr(outdir, isochrone=None, do_cmd=0, color0='phot_bp_mean_mag',
-            include_extinction=None):
+def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
+            include_extinction=False):
 
     set_style()
 
     if include_extinction:
+        raise NotImplementedError('still need to implement extinction')
         nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
     else:
         nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
 
     if isochrone in ['mist', 'parsec']:
-
         raise NotImplementedError
-
         if isochrone == 'mist':
             from timmy.read_mist_model import ISOCMD
-
             isocmdpath = os.path.join(DATADIR, 'cluster',
                                       'MIST_isochrones_age7pt60206_Av0pt217_FeH0',
                                       'MIST_iso_5f04eb2b54f51.iso.cmd')
-
             # relevant params: star_mass log_g log_L log_Teff Gaia_RP_DR2Rev
             # Gaia_BP_DR2Rev Gaia_G_DR2Rev
             isocmd = ISOCMD(isocmdpath)
@@ -385,10 +390,8 @@ def plot_hr(outdir, isochrone=None, do_cmd=0, color0='phot_bp_mean_mag',
             assert len(isocmd.isocmds) == 4
 
         elif isochrone == 'parsec':
-
             isopath = os.path.join(DATADIR, 'cluster', 'PARSEC_isochrones',
                                    'output799447099984.dat')
-
             iso_df = pd.read_csv(isopath, delim_whitespace=True)
 
 
@@ -398,63 +401,34 @@ def plot_hr(outdir, isochrone=None, do_cmd=0, color0='phot_bp_mean_mag',
 
     f, ax = plt.subplots(figsize=(4,3))
 
-    if not do_cmd:
-        nbhd_yval = np.array(nbhd_df['phot_g_mean_mag'] +
-                             5*np.log10(nbhd_df['parallax']/1e3) + 5)
-    else:
-        nbhd_yval = np.array(nbhd_df['phot_g_mean_mag'])
-
-    ax.scatter(
-        nbhd_df[color0]-nbhd_df['phot_rp_mean_mag'], nbhd_yval,
-        c='gray', alpha=1., zorder=2, s=5, rasterized=True, linewidths=0,
-        label='Neighborhood', marker='.'
+    get_yval = (
+        lambda _df: np.array(
+            _df['phot_g_mean_mag'] + 5*np.log10(_df['parallax']/1e3) + 5
+        )
+    )
+    get_xval = (
+        lambda _df: np.array(
+            _df[color0] - _df['phot_rp_mean_mag']
+        )
     )
 
-    if not do_cmd:
-        yval = group_df_dr2['phot_g_mean_mag'] + 5*np.log10(group_df_dr2['parallax']/1e3) + 5
-        if isochrone == 'mist':
-            mediancorr = (
-                np.nanmedian(5*np.log10(group_df_dr2['parallax']/1e3))
-                + 5 + 5.9
-            )
-        elif isochrone == 'parsec':
-            mediancorr = (
-                np.nanmedian(5*np.log10(group_df_dr2['parallax']/1e3))
-                + 5 + 5.6
-            )
-    else:
-        yval = group_df_dr2['phot_g_mean_mag']
-
     ax.scatter(
-        group_df_dr2[color0]-group_df_dr2['phot_rp_mean_mag'],
-        yval,
-        c='k', alpha=1., zorder=3, s=5, rasterized=True, linewidths=0,
-        label='Members'# 'CG18 P>0.1'
+        get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.8, zorder=2,
+        s=5, rasterized=True, linewidths=0, label='Field', marker='.'
     )
-
-    if not do_cmd:
-        target_yval = np.array(target_df['phot_g_mean_mag'] +
-                                5*np.log10(target_df['parallax']/1e3) + 5)
-    else:
-        target_yval = np.array(target_df['phot_g_mean_mag'])
-
-    if do_cmd:
-        mfc = 'k'
-        m = 'X'
-        ms = 6
-        lw = 0
-        mec = 'white'
-    else:
-        mfc = 'yellow'
-        m = '*'
-        ms = 14
-        lw = 0
-        mec = 'k'
+    ax.scatter(
+        get_xval(kc19_df), get_yval(kc19_df), c='lightskyblue', alpha=1,
+        zorder=3, s=5, rasterized=True, linewidths=0.15, label='Halo',
+        marker='.', edgecolors='k'
+    )
+    ax.scatter(
+        get_xval(cg18_df), get_yval(cg18_df), c='k', alpha=0.9,
+        zorder=4, s=5, rasterized=True, linewidths=0, label='Core', marker='.'
+    )
     ax.plot(
-        target_df[color0]-target_df['phot_rp_mean_mag'],
-        target_yval,
-        alpha=1, mew=0.5, zorder=8, label='TOI 837', markerfacecolor=mfc,
-        markersize=ms, marker=m, color='black', lw=lw, mec=mec
+        get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
+        zorder=8, label='TOI 1937', markerfacecolor='yellow',
+        markersize=10, marker='*', color='black', lw=0
     )
 
     if isochrone:
@@ -575,17 +549,16 @@ def plot_hr(outdir, isochrone=None, do_cmd=0, color0='phot_bp_mean_mag',
                     )
 
 
-    ax.legend(loc='upper right', handletextpad=0.1, fontsize='x-small', framealpha=0.7)
-    #if not do_cmd:
-    #    ax.legend(loc='best', handletextpad=0.1, fontsize='x-small', framealpha=0.7)
-    #else:
-    #    ax.legend(loc='upper right', handletextpad=0.1, fontsize='x-small', framealpha=0.7)
+    leg = ax.legend(loc='upper right', handletextpad=0.1, fontsize='x-small',
+                    framealpha=0.9)
+    # NOTE: hack size of legend markers
+    leg.legendHandles[0]._sizes = [18]
+    leg.legendHandles[1]._sizes = [25]
+    leg.legendHandles[2]._sizes = [25]
+    leg.legendHandles[3]._sizes = [25]
 
-    if not do_cmd:
-        ax.set_ylabel('Absolute G [mag]', fontsize='large')
-    else:
-        ax.set_ylabel('G [mag]', fontsize='large')
 
+    ax.set_ylabel('Absolute G [mag]', fontsize='large')
     if color0 == 'phot_bp_mean_mag':
         ax.set_xlabel('Bp - Rp [mag]', fontsize='large')
     elif color0 == 'phot_g_mean_mag':
@@ -602,11 +575,7 @@ def plot_hr(outdir, isochrone=None, do_cmd=0, color0='phot_bp_mean_mag',
     else:
         s = '_'+isochrone
     c0s = '_Bp_m_Rp' if color0 == 'phot_bp_mean_mag' else '_G_m_Rp'
-    if not do_cmd:
-        outpath = os.path.join(outdir, f'hr{s}{c0s}.png')
-    else:
-        outpath = os.path.join(outdir, f'cmd{s}{c0s}.png')
+    outpath = os.path.join(outdir, f'hr{s}{c0s}.png')
+
     savefig(f, outpath, dpi=400)
-
-
 
