@@ -10,3 +10,4 @@ doc*
 *.bbl
 *.blg
 *.out
+drivers/oneoffs*
