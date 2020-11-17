@@ -3,6 +3,7 @@ Plots:
     plot_full_kinematics
     plot_TIC268_nbhd_small
     plot_hr
+    plot_rotation
 
 Helpers:
     _get_nbhd_dataframes
@@ -32,6 +33,7 @@ from cdips.utils.gaiaqueries import (
 )
 from cdips.utils.tapqueries import given_source_ids_get_tic8_data
 from cdips.utils.plotutils import rainbow_text
+from cdips.utils.mamajek import get_interp_BpmRp_from_Teff
 
 from earhart.paths import DATADIR, RESULTSDIR
 
@@ -39,6 +41,27 @@ def _get_nbhd_dataframes():
     """
     Return: nbhd_df, cg18_df, kc19_df, target_df
     (for NGC 2516)
+
+    The "core" is the match of the CDIPS target catalog (G_Rp<16) with
+    Cantat-Gaudin 2018.
+
+    The "halo" is the match of the CDIPS target catalog (G_Rp<16) with
+    Kounkel & Covey 2019, provided that the source is not in the core. (i.e.,
+    KC19 get no points for getting the "core" targets correct).
+
+    The "neighborhood" was selected via
+
+        bounds = { 'parallax_lower': 1.5, 'parallax_upper': 4.0, 'ra_lower': 108,
+        'ra_upper': 132, 'dec_lower': -76, 'dec_upper': -45 }
+
+        nbhd_df = query_neighborhood(bounds, groupname, n_max=6000,
+                                     overwrite=False, manual_gmag_limit=17)
+
+    This procedure yields:
+        Got 5908 neighbors
+        Got 893 in core (CG18)
+        Got 1345 in corona (KC19, minus any CG18)
+        Got 888 KC19 / CG18 overlaps
     """
 
     df = get_cdips_catalog(ver=0.4)
@@ -55,18 +78,17 @@ def _get_nbhd_dataframes():
     kc19_df = df[kc19_sel]
     cg18_df = df[cg18_sel]
 
+    kc19_cg18_overlap_df = kc19_df[(kc19_df.source_id.isin(cg18_df.source_id))]
+
     kc19_df = kc19_df[~(kc19_df.source_id.isin(cg18_df.source_id))]
+
 
     ##########
 
     # NGC 2516 rough
     bounds = {
-        'parallax_lower': 1.5,
-        'parallax_upper': 4.0,
-        'ra_lower': 108,
-        'ra_upper': 132,
-        'dec_lower': -76,
-        'dec_upper': -45
+        'parallax_lower': 1.5, 'parallax_upper': 4.0, 'ra_lower': 108,
+        'ra_upper': 132, 'dec_lower': -76, 'dec_upper': -45
     }
     groupname = 'customngc2516'
 
@@ -104,6 +126,7 @@ def _get_nbhd_dataframes():
     print(f'Got {len(nbhd_df)} neighbors')
     print(f'Got {len(cg18_df)} in core')
     print(f'Got {len(kc19_df)} in corona')
+    print(f'Got {len(kc19_cg18_overlap_df)} KC19 / CG18 overlaps')
 
     return nbhd_df, cg18_df_0, kc19_df_0, target_df
 
@@ -578,4 +601,80 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
     outpath = os.path.join(outdir, f'hr{s}{c0s}.png')
 
     savefig(f, outpath, dpi=400)
+
+
+def plot_rotation(outdir, BpmRp=0):
+
+    set_style()
+
+    from earhart.paths import DATADIR
+    rotdir = os.path.join(DATADIR, 'rotation')
+
+    # make plot
+    plt.close('all')
+
+    f, ax = plt.subplots(figsize=(4,3))
+
+    classes = ['pleiades', 'praesepe']
+    colors = ['k', 'gray']
+    zorders = [3, 2]
+    markers = ['o', 'x']
+    lws = [0, 0.]
+    mews= [0.5, 0.5]
+    ss = [3.0, 6]
+    labels = ['Pleaides', 'Praesepe']
+
+    # plot vals
+    for _cls, _col, z, m, l, lw, s, mew in zip(
+        classes, colors, zorders, markers, labels, lws, ss, mews
+    ):
+        df = pd.read_csv(os.path.join(rotdir, f'curtis19_{_cls}.csv'))
+
+        xval = df['teff']
+
+        if BpmRp:
+            xval = get_interp_BpmRp_from_Teff(df['teff'])
+            df['BpmRp_interp'] = xval
+            df.to_csv(
+                os.path.join(rotdir, f'curtis19_{_cls}_BpmRpinterp.csv'),
+                index=False
+            )
+
+        ax.plot(
+            xval, df['prot'], c=_col, alpha=1, zorder=z, markersize=s,
+            rasterized=False, lw=lw, label=l, marker=m, mew=mew,
+            mfc=_col
+        )
+
+    from earhart.priors import TEFF, P_ROT, AVG_EBpmRp
+
+    _x = TEFF
+    if BpmRp:
+        print(42*'-')
+        print(f'Applying E(Bp-Rp) = {AVG_EBpmRp:.2f}')
+        print(42*'-')
+        _x = get_interp_BpmRp_from_Teff(TEFF) - AVG_EBpmRp
+    ax.plot(
+        _x, P_ROT,
+        alpha=1, mew=0.5, zorder=8, label='TOI 1937', markerfacecolor='yellow',
+        markersize=18, marker='*', color='black', lw=0
+    )
+
+    ax.legend(loc='best', handletextpad=0.1, fontsize='x-small', framealpha=0.7)
+    ax.set_ylabel('Rotation Period [days]', fontsize='large')
+    if not BpmRp:
+        ax.set_xlabel('Effective Temperature [K]', fontsize='large')
+        ax.set_xlim((4900, 6600))
+    else:
+        ax.set_xlabel('(Bp-Rp)$_0$ [mag]', fontsize='large')
+        ax.set_xlim((0.5, 1.5))
+
+    ax.set_ylim((0,14))
+
+    format_ax(ax)
+    outstr = '_vs_BpmRp' if BpmRp else '_vs_Teff'
+    outpath = os.path.join(outdir, f'rotation{outstr}.png')
+    savefig(f, outpath)
+
+
 
