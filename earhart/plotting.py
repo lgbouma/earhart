@@ -4,6 +4,7 @@ Plots:
     plot_TIC268_nbhd_small
     plot_hr
     plot_rotation
+    plot_skypositions_x_rotn
 
 Helpers:
     _get_nbhd_dataframes
@@ -732,4 +733,67 @@ def plot_rotation(outdir, BpmRp=0, include_ngc2516=0, ngc_core_halo=0):
     savefig(f, outpath)
 
 
+def plot_skypositions_x_rotn(outdir):
 
+    from earhart.paths import DATADIR
+    rotdir = os.path.join(DATADIR, 'rotation')
+    df = pd.read_csv(
+        os.path.join(rotdir, 'ngc2516_rotation_periods.csv')
+    )
+
+    set_style()
+
+    plt.close('all')
+
+    f, ax = plt.subplots(figsize=(4,3))
+
+    xv, yv = 'ra', 'dec'
+
+    sel = (df.subcluster == 'halo')
+    ax.scatter(
+        df[sel][xv], df[sel][yv], c='lightskyblue', alpha=0.9, zorder=4, s=7,
+        rasterized=True, linewidths=0.15, label='Halo', marker='.',
+        edgecolors='white'
+    )
+    sel = (df.subcluster == 'halo') & (df.Tags == 'gold')
+    ax.scatter(
+        df[sel][xv], df[sel][yv], c='lightskyblue', alpha=0.9, zorder=6, s=7,
+        rasterized=True, linewidths=0.15, label='Halo + P$_\mathrm{rot}$', marker='.',
+        edgecolors='black'
+    )
+
+    sel = (df.subcluster == 'core')
+    ax.scatter(
+        df[sel][xv], df[sel][yv], c='k', alpha=0.9, zorder=2, s=5, rasterized=True,
+        linewidths=0, label='Core', marker='.'
+    )
+
+    nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
+    ax.plot(
+        target_df[xv], target_df[yv], alpha=1, mew=0.5,
+        zorder=5, label='TOI 1937', markerfacecolor='yellow',
+        markersize=14, marker='*', color='black', lw=0
+    )
+
+    ax.set_xlabel(r'$\alpha$ [deg]')
+    ax.set_ylabel(r'$\delta$ [deg]')
+    ax.set_xlim([108, 132])
+    ax.set_ylim([-76, -45])
+
+    # words = ['Halo', 'Core'][::-1]
+    # colors = ['lightskyblue', 'k'][::-1]
+    # rainbow_text(0.98, 0.02, words, colors, size='medium', ax=ax)
+
+    # NOTE: hack size of legend markers
+    leg = ax.legend(loc='upper right', handletextpad=0.1, fontsize='small',
+                    framealpha=0.9)
+    # leg.legendHandles[0]._sizes = [18]
+    # leg.legendHandles[1]._sizes = [25]
+    # leg.legendHandles[2]._sizes = [25]
+    # leg.legendHandles[3]._sizes = [25]
+
+
+    f.tight_layout(w_pad=2)
+
+    outpath = os.path.join(outdir, 'skypositions_x_rotn.png')
+    savefig(f, outpath)
