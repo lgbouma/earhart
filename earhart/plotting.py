@@ -736,10 +736,15 @@ def plot_rotation(outdir, BpmRp=0, include_ngc2516=0, ngc_core_halo=0):
 def plot_skypositions_x_rotn(outdir):
 
     from earhart.paths import DATADIR
+    from earhart.priors import AVG_EBpmRp
+
     rotdir = os.path.join(DATADIR, 'rotation')
     df = pd.read_csv(
         os.path.join(rotdir, 'ngc2516_rotation_periods.csv')
     )
+    BpmRp_0 = (df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - AVG_EBpmRp)
+    sel = (BpmRp_0 > 0.5) & (BpmRp_0 < 1.5)
+    df = df[sel]
 
     set_style()
 
@@ -771,7 +776,7 @@ def plot_skypositions_x_rotn(outdir):
     nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
     ax.plot(
         target_df[xv], target_df[yv], alpha=1, mew=0.5,
-        zorder=5, label='TOI 1937', markerfacecolor='yellow',
+        zorder=3, label='TOI 1937', markerfacecolor='yellow',
         markersize=14, marker='*', color='black', lw=0
     )
 
@@ -787,11 +792,12 @@ def plot_skypositions_x_rotn(outdir):
     # NOTE: hack size of legend markers
     leg = ax.legend(loc='upper right', handletextpad=0.1, fontsize='small',
                     framealpha=0.9)
-    # leg.legendHandles[0]._sizes = [18]
-    # leg.legendHandles[1]._sizes = [25]
-    # leg.legendHandles[2]._sizes = [25]
-    # leg.legendHandles[3]._sizes = [25]
+    leg.legendHandles[0]._sizes = [18]
+    leg.legendHandles[1]._sizes = [25]
+    leg.legendHandles[2]._sizes = [25]
+    leg.legendHandles[3]._sizes = [25]
 
+    ax.set_title('$0.5 < (\mathrm{Bp}-\mathrm{Rp})_0 < 1.5$')
 
     f.tight_layout(w_pad=2)
 
