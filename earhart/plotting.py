@@ -603,7 +603,9 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
     savefig(f, outpath, dpi=400)
 
 
-def plot_rotation(outdir, BpmRp=0):
+def plot_rotation(outdir, BpmRp=0, include_ngc2516=0, ngc_core_halo=0):
+
+    from earhart.priors import TEFF, P_ROT, AVG_EBpmRp
 
     set_style()
 
@@ -615,45 +617,94 @@ def plot_rotation(outdir, BpmRp=0):
 
     f, ax = plt.subplots(figsize=(4,3))
 
-    classes = ['pleiades', 'praesepe']
-    colors = ['k', 'gray']
-    zorders = [3, 2]
-    markers = ['o', 'x']
-    lws = [0, 0.]
-    mews= [0.5, 0.5]
-    ss = [3.0, 6]
-    labels = ['Pleaides', 'Praesepe']
+    if not include_ngc2516:
+        classes = ['pleiades', 'praesepe']
+        colors = ['k', 'gray']
+        zorders = [3, 2]
+        markers = ['o', 'x']
+        lws = [0, 0.]
+        mews= [0.5, 0.5]
+        ss = [3.0, 6]
+        labels = ['Pleaides', 'Praesepe']
+    else:
+        classes = ['pleiades', 'praesepe', 'ngc2516']
+        colors = ['k', 'gray', 'C0']
+        zorders = [3, 2, 4]
+        markers = ['o', 'x', 'o']
+        lws = [0, 0., 0]
+        mews= [0.5, 0.5, 0.5]
+        ss = [3.0, 6, 3]
+        labels = ['Pleaides', 'Praesepe', 'NGC2516']
 
     # plot vals
     for _cls, _col, z, m, l, lw, s, mew in zip(
         classes, colors, zorders, markers, labels, lws, ss, mews
     ):
-        df = pd.read_csv(os.path.join(rotdir, f'curtis19_{_cls}.csv'))
 
-        xval = df['teff']
+        if 'ngc2516' not in _cls:
+            df = pd.read_csv(os.path.join(rotdir, f'curtis19_{_cls}.csv'))
+        else:
+            df = pd.read_csv(
+                os.path.join(rotdir, 'ngc2516_rotation_periods.csv')
+            )
+            df = df[df.Tags == 'gold']
 
         if BpmRp:
-            xval = get_interp_BpmRp_from_Teff(df['teff'])
-            df['BpmRp_interp'] = xval
-            df.to_csv(
-                os.path.join(rotdir, f'curtis19_{_cls}_BpmRpinterp.csv'),
-                index=False
+            if 'ngc2516' not in _cls:
+                xval = get_interp_BpmRp_from_Teff(df['teff'])
+                df['BpmRp_interp'] = xval
+                df.to_csv(
+                    os.path.join(rotdir, f'curtis19_{_cls}_BpmRpinterp.csv'),
+                    index=False
+                )
+            else:
+                xval = (
+                    df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] -
+                    AVG_EBpmRp
+                )
+        else:
+            xval = df['teff']
+
+        ykey = 'prot' if 'ngc2516' not in _cls else 'period'
+
+        if 'ngc2516' not in _cls:
+            ax.plot(
+                xval, df[ykey], c=_col, alpha=1, zorder=z, markersize=s,
+                rasterized=False, lw=lw, label=l, marker=m, mew=mew,
+                mfc=_col
             )
+        else:
+            if ngc_core_halo:
+                sel = (df.Tags == 'gold') & (df.subcluster == 'core')
+                ax.plot(
+                    xval[sel],
+                    df[sel][ykey],
+                    c='C0', alpha=1, zorder=z, markersize=s, rasterized=False,
+                    lw=lw, label='NGC2516 core', marker=m, mew=mew, mfc='C0'
+                )
+                sel = (df.Tags == 'gold') & (df.subcluster == 'halo')
+                ax.plot(
+                    xval[sel],
+                    df[sel][ykey],
+                    c='C1', alpha=1, zorder=z, markersize=s, rasterized=False,
+                    lw=lw, label='NGC2516 halo', marker=m, mew=mew, mfc='C1'
+                )
 
-        ax.plot(
-            xval, df['prot'], c=_col, alpha=1, zorder=z, markersize=s,
-            rasterized=False, lw=lw, label=l, marker=m, mew=mew,
-            mfc=_col
-        )
+            else:
+                ax.plot(
+                    xval, df[ykey], c=_col, alpha=1, zorder=z, markersize=s,
+                    rasterized=False, lw=lw, label=l, marker=m, mew=mew,
+                    mfc=_col
+                )
 
-    from earhart.priors import TEFF, P_ROT, AVG_EBpmRp
 
     _x = TEFF
     if BpmRp:
         print(42*'-')
-        print(f'Applying E(Bp-Rp) = {AVG_EBpmRp:.2f}')
+        print(f'Applying E(Bp-Rp) = {AVG_EBpmRp:.4f}')
         print(42*'-')
-        _x = get_interp_BpmRp_from_Teff(TEFF) - AVG_EBpmRp
+        BpmRp_tic268 = 13.4400 - 12.4347
+        _x = BpmRp_tic268 - AVG_EBpmRp
     ax.plot(
         _x, P_ROT,
         alpha=1, mew=0.5, zorder=8, label='TOI 1937', markerfacecolor='yellow',
@@ -673,6 +724,10 @@ def plot_rotation(outdir, BpmRp=0):
 
     format_ax(ax)
     outstr = '_vs_BpmRp' if BpmRp else '_vs_Teff'
+    if include_ngc2516:
+        outstr += '_include_ngc2516'
+    if ngc_core_halo:
+        outstr += '_corehalosplit'
     outpath = os.path.join(outdir, f'rotation{outstr}.png')
     savefig(f, outpath)
 
