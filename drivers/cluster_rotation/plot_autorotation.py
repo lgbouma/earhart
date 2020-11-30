@@ -1,0 +1,23 @@
+import os
+import earhart.plotting as ep
+from earhart.paths import RESULTSDIR
+
+runid = 'VelaOB2'
+
+RUNID_EXTINCTION_DICT = {
+    'IC_2602': 0.0799,  # avg E(B-V) from Randich+18, *1.31 per Stassun+2019
+    'NGC_2516': 0.1343, # 0.25 for KC19
+    'CrA': 0.06389, # KC19 ratio used
+    'kc19group_113': 0.1386, # 0.258 from KC19 -- take ratio
+    'Orion': 0.1074, # again KC19 ratio used
+    'VelaOB2': 0.2686, # KC19 ratio
+    'ScoOB2': 0.161, # KC19 ratio
+}
+E_BpmRp = RUNID_EXTINCTION_DICT[runid]
+
+PLOTDIR = os.path.join(RESULTSDIR, 'rotation', runid)
+if not os.path.exists(PLOTDIR):
+    os.mkdir(PLOTDIR)
+
+ep.plot_auto_rotation(PLOTDIR, runid, E_BpmRp, core_halo=0)
+ep.plot_auto_rotation(PLOTDIR, runid, E_BpmRp, core_halo=1)
