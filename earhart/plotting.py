@@ -5,6 +5,9 @@ Plots:
     plot_hr
     plot_rotation
     plot_skypositions_x_rotn
+    plot_lithium
+    plot_galah_dr3_lithium
+    plot_auto_rotation
 
 Helpers:
     _get_nbhd_dataframes
@@ -13,8 +16,10 @@ import os, corner, pickle
 from glob import glob
 from datetime import datetime
 import numpy as np, matplotlib.pyplot as plt, pandas as pd, pymc3 as pm
+from numpy import array as nparr
 
 from astropy import units as u, constants as const
+from astropy.coordinates import SkyCoord
 from astropy.io import fits
 from astropy.time import Time
 
@@ -610,7 +615,6 @@ def plot_rotation(outdir, BpmRp=0, include_ngc2516=0, ngc_core_halo=0):
 
     set_style()
 
-    from earhart.paths import DATADIR
     rotdir = os.path.join(DATADIR, 'rotation')
 
     # make plot
@@ -735,7 +739,6 @@ def plot_rotation(outdir, BpmRp=0, include_ngc2516=0, ngc_core_halo=0):
 
 def plot_skypositions_x_rotn(outdir):
 
-    from earhart.paths import DATADIR
     from earhart.priors import AVG_EBpmRp
 
     rotdir = os.path.join(DATADIR, 'rotation')
@@ -743,7 +746,7 @@ def plot_skypositions_x_rotn(outdir):
         os.path.join(rotdir, 'ngc2516_rotation_periods.csv')
     )
     BpmRp_0 = (df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - AVG_EBpmRp)
-    sel = (BpmRp_0 > 0.5) & (BpmRp_0 < 1.5)
+    sel = (BpmRp_0 > 0.5) & (BpmRp_0 < 1.2)
     df = df[sel]
 
     set_style()
@@ -797,9 +800,369 @@ def plot_skypositions_x_rotn(outdir):
     leg.legendHandles[2]._sizes = [25]
     leg.legendHandles[3]._sizes = [25]
 
-    ax.set_title('$0.5 < (\mathrm{Bp}-\mathrm{Rp})_0 < 1.5$')
+    ax.set_title('$0.5 < (\mathrm{Bp}-\mathrm{Rp})_0 < 1.2$')
 
     f.tight_layout(w_pad=2)
 
     outpath = os.path.join(outdir, 'skypositions_x_rotn.png')
     savefig(f, outpath)
+
+
+def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0):
+
+    set_style()
+
+    from earhart.paths import DATADIR
+    rotdir = os.path.join(DATADIR, 'rotation')
+
+    # make plot
+    plt.close('all')
+
+    f, ax = plt.subplots(figsize=(4,3))
+
+    classes = ['pleiades', 'praesepe', f'{runid}']
+    colors = ['k', 'gray', 'C0']
+    zorders = [3, 2, 4]
+    markers = ['o', 'x', 'o']
+    lws = [0, 0., 0]
+    mews= [0.5, 0.5, 0.5]
+    ss = [3.0, 6, 3]
+    labels = ['Pleaides', 'Praesepe', f'{runid}']
+
+    # plot vals
+    for _cls, _col, z, m, l, lw, s, mew in zip(
+        classes, colors, zorders, markers, labels, lws, ss, mews
+    ):
+
+        if f'{runid}' not in _cls:
+            df = pd.read_csv(os.path.join(rotdir, f'curtis19_{_cls}.csv'))
+
+        else:
+            df = pd.read_csv(
+                os.path.join(rotdir, f'{runid}_rotation_periods.csv')
+            )
+
+            # automatic selection criteria for viable rotation periods
+            sel = (
+                (df.period < 15)
+                &
+                (df.lspval > 0.08)
+                &
+                (df.nequal <= 1)
+            )
+            df = df[sel]
+
+            print(42*'-')
+            print(f'Applying E(Bp-Rp) = {E_BpmRp:.4f}')
+            print(42*'-')
+
+        if f'{runid}' not in _cls:
+            xval = get_interp_BpmRp_from_Teff(df['teff'])
+            df['BpmRp_interp'] = xval
+            df.to_csv(
+                os.path.join(rotdir, f'curtis19_{_cls}_BpmRpinterp.csv'),
+                index=False
+            )
+        else:
+            xval = (
+                df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - E_BpmRp
+            )
+
+        ykey = 'prot' if f'{runid}' not in _cls else 'period'
+
+        if core_halo and f'{runid}' in _cls:
+            sel = (df.subcluster == 'core')
+            ax.plot(
+                xval[sel],
+                df[sel][ykey],
+                c='C0', alpha=1, zorder=z, markersize=s, rasterized=False,
+                lw=lw, label=f"{runid.replace('_','')} core", marker=m,
+                mew=mew, mfc='C0'
+            )
+
+            sel = (df.subcluster == 'halo')
+            ax.plot(
+                xval[sel],
+                df[sel][ykey],
+                c='C1', alpha=1, zorder=z, markersize=s, rasterized=False,
+                lw=lw, label=f"{runid.replace('_','')} halo", marker=m,
+                mew=mew, mfc='C1'
+            )
+
+        else:
+            ax.plot(
+                xval, df[ykey], c=_col, alpha=1, zorder=z, markersize=s,
+                rasterized=False, lw=lw, label=l, marker=m, mew=mew, mfc=_col
+            )
+
+
+    ax.legend(loc='best', handletextpad=0.1, fontsize='x-small', framealpha=0.7)
+    ax.set_ylabel('Rotation Period [days]', fontsize='large')
+
+    ax.set_xlabel('(Bp-Rp)$_0$ [mag]', fontsize='large')
+    ax.set_xlim((0.5, 1.5))
+
+    ax.set_ylim((0,15))
+
+    format_ax(ax)
+    outstr = '_vs_BpmRp'
+    if core_halo:
+        outstr += '_corehalosplit'
+    outpath = os.path.join(outdir, f'rotation{outstr}.png')
+    savefig(f, outpath)
+
+
+def plot_galah_dr3_lithium(outdir, vs_rotators=1, corehalosplit=0):
+
+    from earhart.lithium import get_GalahDR3_lithium
+
+    g_tab = get_GalahDR3_lithium()
+    scols = ['source_id', 'teff', 'e_teff', 'fe_h', 'e_fe_h', 'flag_fe_h',
+             'Li_fe', 'e_Li_fe', 'nr_Li_fe', 'flag_Li_fe', 'ruwe']
+    g_dict = {k:np.array(g_tab[k]).byteswap().newbyteorder() for k in scols}
+    g_df = pd.DataFrame(g_dict)
+
+    if vs_rotators:
+        rotdir = os.path.join(DATADIR, 'rotation')
+        rot_df = pd.read_csv(
+            os.path.join(rotdir, 'ngc2516_rotation_periods.csv')
+        )
+        comp_df = rot_df[rot_df.Tags == 'gold']
+        print('Comparing vs the "gold" NGC2516 rotators sample (core + halo)...')
+    else:
+        # nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
+        raise NotImplementedError
+
+    mdf = comp_df.merge(g_df, on='source_id', how='left')
+
+    smdf = mdf[~pd.isnull(mdf.Li_fe)]
+
+    print(f'Number of comparison stars: {len(comp_df)}')
+    print(f'Number of comparison stars with finite lithium'
+          f'(detection or limit): {len(smdf)}')
+
+    ##########
+    # make tha plot 
+    ##########
+
+    from earhart.priors import TEFF, P_ROT, AVG_EBpmRp
+
+    set_style()
+
+    plt.close('all')
+
+    f, ax = plt.subplots(figsize=(4,3))
+
+    if not corehalosplit:
+        sel = (smdf.flag_Li_fe == 0)
+        ax.scatter(
+            smdf[sel]['phot_bp_mean_mag'] - smdf[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            smdf[sel]['Li_fe'], c='k', alpha=1, zorder=2, s=10, rasterized=False,
+            linewidths=0, label='Li detection'
+        )
+        sel = (smdf.flag_Li_fe == 1)
+        ax.plot(
+            smdf[sel]['phot_bp_mean_mag'] - smdf[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            smdf[sel]['Li_fe'], c='k', alpha=1,
+            zorder=3, label='Li limit', ms=10, mfc='white', marker='v', lw=0
+        )
+    else:
+        sel = (smdf.flag_Li_fe == 0) & (smdf.subcluster == 'core')
+        ax.scatter(
+            smdf[sel]['phot_bp_mean_mag'] - smdf[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            smdf[sel]['Li_fe'], c='C0', alpha=1, zorder=2, s=10, rasterized=False,
+            linewidths=0, label='Li detection (core)'
+        )
+        sel = (smdf.flag_Li_fe == 0) & (smdf.subcluster == 'halo')
+        ax.scatter(
+            smdf[sel]['phot_bp_mean_mag'] - smdf[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            smdf[sel]['Li_fe'], c='C1', alpha=1, zorder=2, s=10, rasterized=False,
+            linewidths=0, label='Li detection (halo)'
+        )
+
+        sel = (smdf.flag_Li_fe == 1) & (smdf.subcluster == 'core')
+        ax.plot(
+            smdf[sel]['phot_bp_mean_mag'] - smdf[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            smdf[sel]['Li_fe'], c='C0', alpha=1,
+            zorder=3, label='Li limit (core)', ms=10, mfc='white', marker='v', lw=0
+        )
+        sel = (smdf.flag_Li_fe == 1) & (smdf.subcluster == 'halo')
+        ax.plot(
+            smdf[sel]['phot_bp_mean_mag'] - smdf[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            smdf[sel]['Li_fe'], c='C1', alpha=1,
+            zorder=3, label='Li limit (halo)', ms=10, mfc='white', marker='v', lw=0
+        )
+
+
+    # from timmy.priors import TEFF, LI_EW
+    # ax.plot(
+    #     TEFF,
+    #     LI_EW,
+    #     alpha=1, mew=0.5, zorder=8, label='TOI 837', markerfacecolor='yellow',
+    #     markersize=18, marker='*', color='black', lw=0
+    # )
+
+    ax.legend(loc='best', handletextpad=0.1, fontsize='x-small', framealpha=0.7)
+    ax.set_ylabel('[Li/Fe]', fontsize='large')
+    ax.set_xlabel('(Bp-Rp)$_0$ [mag]', fontsize='large')
+
+    ax.set_title('Gold rotators, core+halo, x GALAH DR3')
+
+    # ax.set_xlim((4900, 6600))
+
+    format_ax(ax)
+    outname = 'galah_dr3_lithium'
+    if corehalosplit:
+        outname += '_corehalosplit'
+    outpath = os.path.join(outdir, f'{outname}.png')
+    savefig(f, outpath)
+
+
+
+def plot_randich_lithium(outdir, vs_rotators=1):
+
+    set_style()
+
+    from earhart.lithium import get_Randich18_NGC2516
+
+    rdf = get_Randich18_NGC2516()
+
+    if vs_rotators:
+        rotdir = os.path.join(DATADIR, 'rotation')
+        rot_df = pd.read_csv(
+            os.path.join(rotdir, 'ngc2516_rotation_periods.csv')
+        )
+        comp_df = rot_df[rot_df.Tags == 'gold']
+        print('Comparing vs the "gold" NGC2516 rotators sample (core + halo)...')
+    else:
+        # nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
+        raise NotImplementedError
+
+    #FIXME FIXME FIXME TODO TODO 
+    #FIXME FIXME FIXME TODO TODO 
+    #FIXME FIXME FIXME TODO TODO 
+
+    # crossmatch tables based on positions. looks for nearest matches.
+    # FIXME TODO : errr.... is this the right approach??? What you really want
+    # here is a MERGE. Maybe the best approach would be to use the rdf._RA and
+    # rdf._DE columns to do a GAIA QUERY. Based on J2000 I think that would
+    # work!!!!!! Then you can get merge on the source_ids, like you want to...
+
+    #FIXME FIXME FIXME TODO TODO 
+    #FIXME FIXME FIXME TODO TODO 
+    #FIXME FIXME FIXME TODO TODO 
+    #FIXME FIXME FIXME TODO TODO 
+
+    c1 = SkyCoord(ra=nparr(comp_df.ra)*u.deg, dec=nparr(comp_df.dec)*u.deg)
+    c2 = SkyCoord(ra=nparr(rdf._RA)*u.deg, dec=nparr(rdf._DE)*u.deg)
+
+    idx_c1, d2d_1, _ = c1.match_to_catalog_sky(c2)
+    idx_c2, d2d_2, _ = c2.match_to_catalog_sky(c1)
+
+    sel_c1 = (d2d_1 < 5*u.arcsec)
+    sel_c2 = (d2d_2 < 5*u.arcsec)
+
+    #
+    # check crossmatch quality
+    #
+    plt.close('all')
+    f, ax = plt.subplots(figsize=(4,3))
+
+    ax.hist(d2d_1[sel_c1].to(u.arcsec).value, bins=np.arange(0,5.5,0.1),
+            color='black', fill=False, linewidth=0.5)
+
+    ax.set_xlabel('Distance [arcsec]', fontsize='x-large')
+    ax.set_ylabel('Number per bin', fontsize='x-large')
+    ax.set_yscale('log')
+
+    format_ax(ax)
+    outpath = os.path.join(outdir,
+                           'randich_lithium_goldrot_vs_Randich18_xmatch_quality.png')
+    savefig(f, outpath)
+
+    #
+    # FIXME: 
+    #
+    rdf[sel_c2]
+    import IPython; IPython.embed()
+    assert 0
+
+    srdf_lim = srdf[srdf.f_EWLi==3]
+    srdf_val = srdf[srdf.f_EWLi==0]
+
+
+
+
+    # young dictionary
+    yd = {
+        'val_teff_young': nparr(srdf_val.Teff),
+        'val_teff_err_young': nparr(srdf_val.e_Teff),
+        'val_li_ew_young': nparr(srdf_val.EWLi),
+        'val_li_ew_err_young': nparr(srdf_val.e_EWLi),
+        'lim_teff_young': nparr(srdf_lim.Teff),
+        'lim_teff_err_young': nparr(srdf_lim.e_Teff),
+        'lim_li_ew_young': nparr(srdf_lim.EWLi),
+        'lim_li_ew_err_young': nparr(srdf_lim.e_EWLi),
+    }
+
+    # field dictionary
+    # SNR > 3
+    field_det = ( (bdf.EW_Li_ / bdf.e_EW_Li_) > 3 )
+    bdf_val = bdf[field_det]
+    bdf_lim = bdf[~field_det]
+
+    fd = {
+        'val_teff_field': nparr(bdf_val.Teff),
+        'val_li_ew_field': nparr(bdf_val.EW_Li_),
+        'val_li_ew_err_field': nparr(bdf_val.e_EW_Li_),
+        'lim_teff_field': nparr(bdf_lim.Teff),
+        'lim_li_ew_field': nparr(bdf_lim.EW_Li_),
+        'lim_li_ew_err_field': nparr(bdf_lim.e_EW_Li_),
+    }
+
+    d = {**yd, **fd}
+
+    ##########
+    # make tha plot 
+    ##########
+
+    plt.close('all')
+
+    f, ax = plt.subplots(figsize=(4,3))
+
+    classes = ['young', 'field']
+    colors = ['k', 'gray']
+    zorders = [2, 1]
+    markers = ['o', '.']
+    ss = [13, 5]
+    labels = ['NGC$\,$2547 & IC$\,$2602', 'Kepler Field']
+
+    # plot vals
+    for _cls, _col, z, m, l, s in zip(classes, colors, zorders, markers,
+                                      labels, ss):
+        ax.scatter(
+            d[f'val_teff_{_cls}'], d[f'val_li_ew_{_cls}'], c=_col, alpha=1,
+            zorder=z, s=s, rasterized=False, linewidths=0, label=l, marker=m
+        )
+
+
+    from timmy.priors import TEFF, LI_EW
+    ax.plot(
+        TEFF,
+        LI_EW,
+        alpha=1, mew=0.5, zorder=8, label='TOI 837', markerfacecolor='yellow',
+        markersize=18, marker='*', color='black', lw=0
+    )
+
+    ax.legend(loc='best', handletextpad=0.1, fontsize='x-small', framealpha=0.7)
+    ax.set_ylabel('Li$_{6708}$ EW [m$\mathrm{\AA}$]', fontsize='large')
+    ax.set_xlabel('Effective Temperature [K]', fontsize='large')
+
+    ax.set_xlim((4900, 6600))
+
+    format_ax(ax)
+    outpath = os.path.join(outdir, 'lithium.png')
+    savefig(f, outpath)
+
+
+
