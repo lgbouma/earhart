@@ -17,8 +17,10 @@ except ModuleNotFoundError as e:
     print(f'WRN! {e}')
     pass
 
+from earhart.helpers import get_toi1937_lightcurve
+
 from betty.helpers import (
-    get_wasp4_lightcurve, _subset_cut, retrieve_tess_lcdata
+    _subset_cut, retrieve_tess_lcdata
 )
 from betty.posterior_table import make_posterior_table
 from betty.modelfitter import ModelFitter
@@ -39,18 +41,14 @@ def fit_simpletransit(starid='TOI_1937', N_samples=1000):
 
     datasets = OrderedDict()
     if starid == 'TOI_1937':
-        time, flux, flux_err, tess_texp = get_wasp4_lightcurve()
+        time, flux, flux_err, tess_texp = get_toi1937_lightcurve()
     else:
-        ticid = simbad_to_tic(starid)
-        lcfiles = (
-            get_two_minute_spoc_lightcurves(ticid, download_dir=TESTDATADIR)
-        )
-        d = retrieve_tess_lcdata(
-            lcfiles, provenance='spoc', merge_sectors=1, simple_clean=1
-        )
-        time, flux, flux_err, _, tess_texp = (
-            d['time'], d['flux'], d['flux_err'], d['qual'], d['texp']
-        )
+        raise NotImplementedError
+
+    import IPython; IPython.embed()
+    assert 0
+
+    #FIXME then detrend, i guess? if we're being simple.
 
     time, flux, flux_err = _subset_cut(
         time, flux, flux_err, n=2.0, t0=EPHEMDICT[starid]['t0'],
