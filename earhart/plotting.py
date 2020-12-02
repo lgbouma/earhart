@@ -1165,4 +1165,17 @@ def plot_randich_lithium(outdir, vs_rotators=1):
     savefig(f, outpath)
 
 
+def _plot_detrending_check(time, flux, trend_flux, flat_flux, outpath):
 
+    plt.close('all')
+    set_style()
+    fig, axs = plt.subplots(nrows=2, figsize=(4,3), sharex=True)
+    t0 = np.nanmin(time)
+    axs[0].scatter(time-t0, flux, c='k', zorder=1, s=2)
+    axs[0].plot(time-t0, trend_flux, c='C0', zorder=2, lw=1.5)
+    axs[1].scatter(time-t0, flat_flux, c='k', s=2)
+    axs[1].set_xlabel('Days from start')
+    fig.text(-0.01,0.5, 'Relative flux', va='center',
+             rotation=90)
+    fig.tight_layout(w_pad=0.2)
+    savefig(fig, outpath, writepdf=0, dpi=300)

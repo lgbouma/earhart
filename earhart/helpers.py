@@ -118,8 +118,8 @@ def get_toi1937_lightcurve():
         lcdict = pickle.load(f)
 
     return (
-        lcdict['STIME'],
-        lcdict['SPCA2'],
-        lcdict['SPCAE2'],
+        lcdict['STIME'].astype(np.float64) - 2457000,
+        lcdict['SPCA2'].astype(np.float64),
+        lcdict['SPCAE2'].astype(np.float64),
         lcdict['tess_texp']
     )
