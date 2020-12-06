@@ -127,7 +127,7 @@ def fit_simpletransit(starid='TOI_1937', N_samples=1000):
     if phaseplot:
         outpath = join(PLOTDIR, f'{starid}_{modelid}_phaseplot.png')
         bp.plot_phasefold(m, summdf, outpath, modelid=modelid, inppt=1,
-                          xlim=(-2.1,2.1), binsize_minutes=5)
+                          xlim=(-2.1,2.1), binsize_minutes=5, savepdf=1)
 
     if fitindiv:
         outpath = join(PLOTDIR, f'{starid}_{modelid}_fitindiv.png')
