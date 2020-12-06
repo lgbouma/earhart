@@ -5,7 +5,7 @@ Plots:
     plot_hr
     plot_rotation
     plot_skypositions_x_rotn
-    plot_lithium
+    plot_randich_lithium
     plot_galah_dr3_lithium
     plot_auto_rotation
 
@@ -17,6 +17,8 @@ from glob import glob
 from datetime import datetime
 import numpy as np, matplotlib.pyplot as plt, pandas as pd, pymc3 as pm
 from numpy import array as nparr
+
+import matplotlib as mpl
 
 from astropy import units as u, constants as const
 from astropy.coordinates import SkyCoord
@@ -1019,9 +1021,12 @@ def plot_galah_dr3_lithium(outdir, vs_rotators=1, corehalosplit=0):
 
 
 
-def plot_randich_lithium(outdir, vs_rotators=1):
-
-    set_style()
+def _make_Randich18_goldrot_xmatch(datapath, vs_rotators=1):
+    """
+    For every Randich+18 Gaia-ESO star with a spectrum, look for a gold rotator
+    match within 1 arcsecond.  If you find it, pull its data. If there are
+    multiple, take the closest.
+    """
 
     from earhart.lithium import get_Randich18_NGC2516
 
@@ -1038,29 +1043,101 @@ def plot_randich_lithium(outdir, vs_rotators=1):
         # nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
         raise NotImplementedError
 
-    #FIXME FIXME FIXME TODO TODO 
-    #FIXME FIXME FIXME TODO TODO 
-    #FIXME FIXME FIXME TODO TODO 
+    c_rot = SkyCoord(ra=nparr(comp_df.ra)*u.deg, dec=nparr(comp_df.dec)*u.deg)
+    c_r18 = SkyCoord(ra=nparr(rdf._RA)*u.deg, dec=nparr(rdf._DE)*u.deg)
 
-    # crossmatch tables based on positions. looks for nearest matches.
-    # FIXME TODO : errr.... is this the right approach??? What you really want
-    # here is a MERGE. Maybe the best approach would be to use the rdf._RA and
-    # rdf._DE columns to do a GAIA QUERY. Based on J2000 I think that would
-    # work!!!!!! Then you can get merge on the source_ids, like you want to...
+    cutoff_radius = 1*u.arcsec
+    has_matchs, match_idxs, match_rows = [], [], []
+    for ix, _c in enumerate(c_r18):
+        if ix % 100 == 0:
+            print(f'{ix}/{len(c_r18)}')
+        seps = _c.separation(c_rot)
+        if min(seps.to(u.arcsec)) < cutoff_radius:
+            has_matchs.append(True)
+            match_idx = np.argmin(seps)
+            match_idxs.append(match_idx)
+            match_rows.append(comp_df.iloc[match_idx])
+        else:
+            has_matchs.append(False)
 
-    #FIXME FIXME FIXME TODO TODO 
-    #FIXME FIXME FIXME TODO TODO 
-    #FIXME FIXME FIXME TODO TODO 
-    #FIXME FIXME FIXME TODO TODO 
+    has_matchs = nparr(has_matchs)
 
-    c1 = SkyCoord(ra=nparr(comp_df.ra)*u.deg, dec=nparr(comp_df.dec)*u.deg)
-    c2 = SkyCoord(ra=nparr(rdf._RA)*u.deg, dec=nparr(rdf._DE)*u.deg)
+    left_df = rdf[has_matchs]
 
-    idx_c1, d2d_1, _ = c1.match_to_catalog_sky(c2)
-    idx_c2, d2d_2, _ = c2.match_to_catalog_sky(c1)
+    right_df = pd.DataFrame(match_rows)
 
-    sel_c1 = (d2d_1 < 5*u.arcsec)
-    sel_c2 = (d2d_2 < 5*u.arcsec)
+    mdf = pd.concat((left_df.reset_index(), right_df.reset_index()), axis=1)
+
+    print(f'Got {len(mdf)} gold rot matches from {len(rdf)} Randich+18 shots.')
+
+    mdf.to_csv(datapath, index=False)
+
+
+
+def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
+    """
+    Plot Li EW vs color for Randich+18's Gaia ESO lithium stars, crossmatched
+    against the gold rotator sample.
+
+    Somewhat surprisingly, the hit rate is rather poor:
+    Got 203 gold rot matches from 796 Randich+18 shots.
+
+    R+18 columns (cf.
+    http://vizier.u-strasbg.fr/viz-bin/VizieR-3?-source=J/A%2bA/612/A99&-out.max=50&-out.form=HTML%20Table&-out.add=_r&-out.add=_RAJ,_DEJ&-sort=_r&-oc.form=sexa):
+        'CName', 'Cluster', 'Inst', 'Teff', 'e_Teff', 'logg', 'e_logg',
+        '__Fe_H_', 'e__Fe_H_', 'l_EWLi', 'EWLi', 'e_EWLi', 'f_EWLi', 'Gamma',
+        'e_Gamma', 'RV', 'e_RV', 'MembPA', 'MembPB', 'ID', 'Simbad', '_RA',
+        '_DE', 'recno'
+
+    Gold rot columns:
+        ['Name', 'Tags', 'source_id', 'period', 'solution_id', 'designation',
+        'source_id_2', 'random_index', 'ref_epoch', 'ra', 'ra_error', 'dec',
+        'dec_error', 'parallax', 'parallax_error', 'parallax_over_error',
+        'pmra', 'pmra_error', 'pmdec', 'pmdec_error', 'ra_dec_corr',
+        'ra_parallax_corr', 'ra_pmra_corr', 'ra_pmdec_corr',
+        'dec_parallax_corr', 'dec_pmra_corr', 'dec_pmdec_corr',
+        'parallax_pmra_corr', 'parallax_pmdec_corr', 'pmra_pmdec_corr',
+        'astrometric_n_obs_al', 'astrometric_n_obs_ac',
+        'astrometric_n_good_obs_al', 'astrometric_n_bad_obs_al',
+        'astrometric_gof_al', 'astrometric_chi2_al',
+        'astrometric_excess_noise', 'astrometric_excess_noise_sig',
+        'astrometric_params_solved', 'astrometric_primary_flag',
+        'astrometric_weight_al', 'astrometric_pseudo_colour',
+        'astrometric_pseudo_colour_error', 'mean_varpi_factor_al',
+        'astrometric_matched_observations', 'visibility_periods_used',
+        'astrometric_sigma5d_max', 'frame_rotator_object_type',
+        'matched_observations', 'duplicated_source', 'phot_g_n_obs',
+        'phot_g_mean_flux', 'phot_g_mean_flux_error',
+        'phot_g_mean_flux_over_error', 'phot_g_mean_mag', 'phot_bp_n_obs',
+        'phot_bp_mean_flux', 'phot_bp_mean_flux_error',
+        'phot_bp_mean_flux_over_error', 'phot_bp_mean_mag', 'phot_rp_n_obs',
+        'phot_rp_mean_flux', 'phot_rp_mean_flux_error',
+        'phot_rp_mean_flux_over_error', 'phot_rp_mean_mag',
+        'phot_bp_rp_excess_factor', 'phot_proc_mode', 'bp_rp', 'bp_g', 'g_rp',
+        'radial_velocity', 'radial_velocity_error', 'rv_nb_transits',
+        'rv_template_teff', 'rv_template_logg', 'rv_template_fe_h',
+        'phot_variable_flag', 'l', 'b', 'ecl_lon', 'ecl_lat', 'priam_flags',
+        'teff_val', 'teff_percentile_lower', 'teff_percentile_upper',
+        'a_g_val', 'a_g_percentile_lower', 'a_g_percentile_upper',
+        'e_bp_min_rp_val', 'e_bp_min_rp_percentile_lower',
+        'e_bp_min_rp_percentile_upper', 'flame_flags', 'radius_val',
+        'radius_percentile_lower', 'radius_percentile_upper', 'lum_val',
+        'lum_percentile_lower', 'lum_percentile_upper', 'datalink_url',
+        'epoch_photometry_url', 'subcluster']
+    """
+
+    from earhart.priors import AVG_EBpmRp
+    assert abs(AVG_EBpmRp - 0.1343) < 1e-4 # used by KC19
+
+    set_style()
+
+    datapath = os.path.join(DATADIR, 'lithium',
+                            'randich_goldrot_xmatch_20201205.csv')
+
+    if not os.path.exists(datapath):
+        _make_Randich18_goldrot_xmatch(datapath, vs_rotators=vs_rotators)
+
+    mdf = pd.read_csv(datapath)
 
     #
     # check crossmatch quality
@@ -1068,101 +1145,127 @@ def plot_randich_lithium(outdir, vs_rotators=1):
     plt.close('all')
     f, ax = plt.subplots(figsize=(4,3))
 
-    ax.hist(d2d_1[sel_c1].to(u.arcsec).value, bins=np.arange(0,5.5,0.1),
-            color='black', fill=False, linewidth=0.5)
+    detections = (mdf.f_EWLi == 0)
+    upper_limits = (mdf.f_EWLi == 3)
 
-    ax.set_xlabel('Distance [arcsec]', fontsize='x-large')
-    ax.set_ylabel('Number per bin', fontsize='x-large')
-    ax.set_yscale('log')
+    print(f'Got {len(mdf[detections])} kinematic X rotation X lithium detections')
+    print(f'Got {len(mdf[upper_limits])} kinematic X rotation X lithium upper limits')
 
-    format_ax(ax)
-    outpath = os.path.join(outdir,
-                           'randich_lithium_goldrot_vs_Randich18_xmatch_quality.png')
-    savefig(f, outpath)
+    if not corehalosplit:
+        ax.plot(
+            mdf[detections]['phot_bp_mean_mag'] - mdf[detections]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf[detections]['EWLi'],
+            c='k', alpha=1, zorder=2, ms=3, mfc='k', marker='o', lw=0, label='Detection'
+        )
+        ax.plot(
+            mdf[upper_limits]['phot_bp_mean_mag'] - mdf[upper_limits]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf[upper_limits]['EWLi'],
+            c='k', alpha=1, zorder=3, ms=3, mfc='white', marker='v', lw=0, label="Limit"
+        )
+    else:
+        iscore = mdf.subcluster == 'core'
+        ishalo = mdf.subcluster == 'halo'
 
-    #
-    # FIXME: 
-    #
-    rdf[sel_c2]
-    import IPython; IPython.embed()
-    assert 0
-
-    srdf_lim = srdf[srdf.f_EWLi==3]
-    srdf_val = srdf[srdf.f_EWLi==0]
-
-
-
-
-    # young dictionary
-    yd = {
-        'val_teff_young': nparr(srdf_val.Teff),
-        'val_teff_err_young': nparr(srdf_val.e_Teff),
-        'val_li_ew_young': nparr(srdf_val.EWLi),
-        'val_li_ew_err_young': nparr(srdf_val.e_EWLi),
-        'lim_teff_young': nparr(srdf_lim.Teff),
-        'lim_teff_err_young': nparr(srdf_lim.e_Teff),
-        'lim_li_ew_young': nparr(srdf_lim.EWLi),
-        'lim_li_ew_err_young': nparr(srdf_lim.e_EWLi),
-    }
-
-    # field dictionary
-    # SNR > 3
-    field_det = ( (bdf.EW_Li_ / bdf.e_EW_Li_) > 3 )
-    bdf_val = bdf[field_det]
-    bdf_lim = bdf[~field_det]
-
-    fd = {
-        'val_teff_field': nparr(bdf_val.Teff),
-        'val_li_ew_field': nparr(bdf_val.EW_Li_),
-        'val_li_ew_err_field': nparr(bdf_val.e_EW_Li_),
-        'lim_teff_field': nparr(bdf_lim.Teff),
-        'lim_li_ew_field': nparr(bdf_lim.EW_Li_),
-        'lim_li_ew_err_field': nparr(bdf_lim.e_EW_Li_),
-    }
-
-    d = {**yd, **fd}
-
-    ##########
-    # make tha plot 
-    ##########
-
-    plt.close('all')
-
-    f, ax = plt.subplots(figsize=(4,3))
-
-    classes = ['young', 'field']
-    colors = ['k', 'gray']
-    zorders = [2, 1]
-    markers = ['o', '.']
-    ss = [13, 5]
-    labels = ['NGC$\,$2547 & IC$\,$2602', 'Kepler Field']
-
-    # plot vals
-    for _cls, _col, z, m, l, s in zip(classes, colors, zorders, markers,
-                                      labels, ss):
-        ax.scatter(
-            d[f'val_teff_{_cls}'], d[f'val_li_ew_{_cls}'], c=_col, alpha=1,
-            zorder=z, s=s, rasterized=False, linewidths=0, label=l, marker=m
+        ax.plot(
+            mdf[detections & iscore]['phot_bp_mean_mag'] - mdf[detections & iscore]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf[detections & iscore]['EWLi'],
+            c='k', alpha=1, zorder=2, ms=3, mfc='C0', marker='o', lw=0, label='Detection + core', mew=0
+        )
+        ax.plot(
+            mdf[upper_limits & iscore]['phot_bp_mean_mag'] - mdf[upper_limits & iscore]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf[upper_limits & iscore]['EWLi'],
+            c='k', alpha=1, zorder=3, ms=3, mfc='C0', marker='v', lw=0, label="Limit + core", mew=0
+        )
+        ax.plot(
+            mdf[detections & ishalo]['phot_bp_mean_mag'] - mdf[detections & ishalo]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf[detections & ishalo]['EWLi'],
+            c='k', alpha=1, zorder=2, ms=3, mfc='C1', marker='o', lw=0, label='Detection + halo', mew=0
+        )
+        ax.plot(
+            mdf[upper_limits & ishalo]['phot_bp_mean_mag'] - mdf[upper_limits & ishalo]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf[upper_limits & ishalo]['EWLi'],
+            c='k', alpha=1, zorder=3, ms=3, mfc='C1', marker='v', lw=0, label="Limit + halo", mew=0
         )
 
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), handletextpad=0.1)
 
-    from timmy.priors import TEFF, LI_EW
-    ax.plot(
-        TEFF,
-        LI_EW,
-        alpha=1, mew=0.5, zorder=8, label='TOI 837', markerfacecolor='yellow',
-        markersize=18, marker='*', color='black', lw=0
-    )
+    ax.set_title('Kinematic $\otimes$ Rotation $\otimes$ Lithium')
 
-    ax.legend(loc='best', handletextpad=0.1, fontsize='x-small', framealpha=0.7)
-    ax.set_ylabel('Li$_{6708}$ EW [m$\mathrm{\AA}$]', fontsize='large')
-    ax.set_xlabel('Effective Temperature [K]', fontsize='large')
-
-    ax.set_xlim((4900, 6600))
+    ax.set_ylabel('Li$_{6708}$ EW [m$\mathrm{\AA}$]')
+    ax.set_xlabel('(Bp-Rp)$_0$ [mag]')
 
     format_ax(ax)
-    outpath = os.path.join(outdir, 'lithium.png')
+    outstr = '_corehalosplit' if corehalosplit else ''
+    outpath = os.path.join(outdir,
+                           f'randich_lithium_vs_BpmRp_xmatch_goldrot{outstr}.png')
     savefig(f, outpath)
+
+
+def plot_rotation_X_lithium(outdir, cmapname):
+    """
+    Plot Prot vs (Bp-Rp)_0, color points by Li EW.
+
+    This is for Randich+18's Gaia ESO lithium stars, crossmatched against the
+    gold rotator sample.
+    """
+
+    from earhart.priors import AVG_EBpmRp
+    assert abs(AVG_EBpmRp - 0.1343) < 1e-4 # used by KC19
+
+    set_style()
+
+    datapath = os.path.join(DATADIR, 'lithium',
+                            'randich_goldrot_xmatch_20201205.csv')
+
+    if not os.path.exists(datapath):
+        raise NotImplementedError('assumed plot_randich_lithium already run')
+
+    mdf = pd.read_csv(datapath)
+
+    #
+    # check crossmatch quality
+    #
+    plt.close('all')
+    f, ax = plt.subplots(figsize=(4.5,3))
+
+    detections = (mdf.f_EWLi == 0)
+    upper_limits = (mdf.f_EWLi == 3)
+
+    print(f'Got {len(mdf[detections])} kinematic X rotation X lithium detections')
+    print(f'Got {len(mdf[upper_limits])} kinematic X rotation X lithium upper limits')
+
+    # not plotting upper limits b/c there arent any
+    assert len(mdf[upper_limits]) == 0
+
+    # color scheme
+    if cmapname == 'nipy_spectral':
+        cmap = mpl.cm.nipy_spectral
+    elif cmapname == 'viridis':
+        cmap = mpl.cm.viridis
+    bounds = np.arange(0,260,20)
+    norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend='max')
+    cax = ax.scatter(
+        mdf[detections]['phot_bp_mean_mag'] - mdf[detections]['phot_rp_mean_mag'] - AVG_EBpmRp,
+        mdf[detections]['period'],
+        c=nparr(mdf[detections]['EWLi']), alpha=1, zorder=2, s=10, edgecolors='k',
+        marker='o', cmap=cmap, norm=norm, linewidths=0.3
+    )
+
+    cb = f.colorbar(cax, extend='max')
+    cb.set_label("Li$_{6708}$ EW [m$\mathrm{\AA}$]")
+
+    ax.set_title('Kinematic $\otimes$ Rotation $\otimes$ Lithium')
+
+    ax.set_ylabel('Rotation Period [days]')
+    ax.set_xlabel('(Bp-Rp)$_0$ [mag]')
+    ax.set_xlim((0.5, 1.5))
+
+    format_ax(ax)
+    outstr = '_' + cmapname
+    outpath = os.path.join(outdir,
+                           f'rotation_vs_BpmRp_X_randich18_lithium{outstr}.png')
+    savefig(f, outpath)
+
 
 
 def _plot_detrending_check(time, flux, trend_flux, flat_flux, outpath):
