@@ -810,7 +810,18 @@ def plot_skypositions_x_rotn(outdir):
     savefig(f, outpath)
 
 
-def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0):
+def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear'):
+    """
+    Plot rotation periods that satisfy:
+
+        (df.period < 15)
+        &
+        (df.lspval > 0.08)
+        &
+        (df.nequal <= 1)
+
+    (At most one equal-brightness star in the aperture that was used)
+    """
 
     set_style()
 
@@ -828,7 +839,8 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0):
     markers = ['o', 'x', 'o']
     lws = [0, 0., 0]
     mews= [0.5, 0.5, 0.5]
-    ss = [3.0, 6, 3]
+    _s = 3 if runid != 'VelaOB2' else 1.2
+    ss = [3.0, 6, _s]
     labels = ['Pleaides', 'Praesepe', f'{runid}']
 
     # plot vals
@@ -898,19 +910,27 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0):
             )
 
 
-    ax.legend(loc='best', handletextpad=0.1, fontsize='x-small', framealpha=0.7)
+    loc = 'best' if yscale == 'linear' else 'lower right'
+    ax.legend(loc=loc, handletextpad=0.1, fontsize='x-small', framealpha=0.7)
     ax.set_ylabel('Rotation Period [days]', fontsize='large')
 
     ax.set_xlabel('(Bp-Rp)$_0$ [mag]', fontsize='large')
-    ax.set_xlim((0.5, 1.5))
+    ax.set_xlim((0.25, 2.0))
 
-    ax.set_ylim((0,15))
+    if yscale == 'linear':
+        ax.set_ylim((0,15))
+    elif yscale == 'log':
+        ax.set_ylim((0.05,15))
+    else:
+        raise NotImplementedError
+    ax.set_yscale(yscale)
 
     format_ax(ax)
     outstr = '_vs_BpmRp'
     if core_halo:
         outstr += '_corehalosplit'
-    outpath = os.path.join(outdir, f'rotation{outstr}.png')
+    outstr += f'_{yscale}'
+    outpath = os.path.join(outdir, f'{runid}_rotation{outstr}.png')
     savefig(f, outpath)
 
 

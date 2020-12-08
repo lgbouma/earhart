@@ -24,7 +24,7 @@ def ls_to_df(classfile):
     return df
 
 def get_auto_rotation_periods(
-    runid='VelaOB2'
+    runid='ScoOB2'
 ):
     """
     valid runid: IC_2602, CrA, kc19group_113, Orion
