@@ -8,9 +8,6 @@ Plots:
     plot_randich_lithium
     plot_galah_dr3_lithium
     plot_auto_rotation
-
-Helpers:
-    _get_nbhd_dataframes
 """
 import os, corner, pickle
 from glob import glob
@@ -25,8 +22,6 @@ from astropy.coordinates import SkyCoord
 from astropy.io import fits
 from astropy.time import Time
 
-from copy import deepcopy
-
 import matplotlib.patheffects as path_effects
 
 from aesthetic.plot import savefig, format_ax
@@ -37,153 +32,16 @@ from cdips.utils.catalogs import (
     get_cdips_catalog, get_tic_star_information
 )
 from cdips.utils.gaiaqueries import (
-    query_neighborhood, given_source_ids_get_gaia_data
+    given_source_ids_get_gaia_data
 )
 from cdips.utils.tapqueries import given_source_ids_get_tic8_data
 from cdips.utils.plotutils import rainbow_text
 from cdips.utils.mamajek import get_interp_BpmRp_from_Teff
 
 from earhart.paths import DATADIR, RESULTSDIR
-
-def _get_nbhd_dataframes():
-    """
-    Return: nbhd_df, cg18_df, kc19_df, target_df
-    (for NGC 2516)
-
-    The "core" is the match of the CDIPS target catalog (G_Rp<16) with
-    Cantat-Gaudin 2018.
-
-    The "halo" is the match of the CDIPS target catalog (G_Rp<16) with
-    Kounkel & Covey 2019, provided that the source is not in the core. (i.e.,
-    KC19 get no points for getting the "core" targets correct).
-
-    The "neighborhood" was selected via
-
-        bounds = { 'parallax_lower': 1.5, 'parallax_upper': 4.0, 'ra_lower': 108,
-        'ra_upper': 132, 'dec_lower': -76, 'dec_upper': -45 }
-
-        nbhd_df = query_neighborhood(bounds, groupname, n_max=6000,
-                                     overwrite=False, manual_gmag_limit=17)
-
-    This procedure yields:
-        Got 5908 neighbors
-        Got 893 in core (CG18)
-        Got 1345 in corona (KC19, minus any CG18)
-        Got 888 KC19 / CG18 overlaps
-    """
-
-    df = get_cdips_catalog(ver=0.4)
-
-    kc19_sel = (
-        (df.cluster.str.contains('NGC_2516')) &
-        (df.reference.str.contains('Kounkel_2019'))
-    )
-    cg18_sel = (
-        (df.cluster.str.contains('NGC_2516')) &
-        (df.reference.str.contains('CantatGaudin_2018'))
-    )
-
-    kc19_df = df[kc19_sel]
-    cg18_df = df[cg18_sel]
-
-    kc19_cg18_overlap_df = kc19_df[(kc19_df.source_id.isin(cg18_df.source_id))]
-
-    kc19_df = kc19_df[~(kc19_df.source_id.isin(cg18_df.source_id))]
-
-
-    ##########
-
-    # NGC 2516 rough
-    bounds = {
-        'parallax_lower': 1.5, 'parallax_upper': 4.0, 'ra_lower': 108,
-        'ra_upper': 132, 'dec_lower': -76, 'dec_upper': -45
-    }
-    groupname = 'customngc2516'
-
-    nbhd_df = query_neighborhood(bounds, groupname, n_max=6000,
-                                 overwrite=False, manual_gmag_limit=17)
-
-    # NOTE: kind of silly: need to requery gaia DR2 because the CDIPS target
-    # catalog, where the source_ids are from, doesn't have the radial
-    # velocities.
-
-    kc19_df_0 = given_source_ids_get_gaia_data(
-        np.array(kc19_df.source_id),
-        'ngc2516_kc19_earhart', n_max=10000, overwrite=False,
-        enforce_all_sourceids_viable=True
-    )
-    cg18_df_0 = given_source_ids_get_gaia_data(
-        np.array(cg18_df.source_id),
-        'ngc2516_cg18_earhart', n_max=10000, overwrite=False,
-        enforce_all_sourceids_viable=True
-    )
-
-    assert len(cg18_df) == len(cg18_df_0)
-    assert len(kc19_df) == len(kc19_df_0)
-
-    target_df = kc19_df_0[kc19_df_0.source_id == 5489726768531119616] # TIC 2683...
-
-    sel_nbhd = (
-        (~nbhd_df.source_id.isin(kc19_df.source_id))
-        &
-        (~nbhd_df.source_id.isin(cg18_df.source_id))
-    )
-    orig_nbhd_df = deepcopy(nbhd_df)
-    nbhd_df = nbhd_df[sel_nbhd]
-
-    print(f'Got {len(nbhd_df)} neighbors')
-    print(f'Got {len(cg18_df)} in core')
-    print(f'Got {len(kc19_df)} in corona')
-    print(f'Got {len(kc19_cg18_overlap_df)} KC19 / CG18 overlaps')
-
-    return nbhd_df, cg18_df_0, kc19_df_0, target_df
-
-
-def _get_extinction_dataframes():
-    # supplement _get_nbhd_dataframes raw Gaia results with extinctions from
-    # TIC8 (Stassun et al 2019).
-
-    extinction_pkl = os.path.join(DATADIR, 'extinction_nbhd.pkl')
-
-    if not os.path.exists(extinction_pkl):
-
-        nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
-
-        cg18_tic8_df = given_source_ids_get_tic8_data(
-            np.array(cg18_df.source_id)[1],
-            'ngc2516_cg18_earhart_tic8', n_max=len(cg18_df), overwrite=False,
-            enforce_all_sourceids_viable=True
-        )
-        import IPython; IPython.embed()
-
-        desiredcols = ['ID', 'GAIA', 'ebv', 'e_ebv', 'eneg_EBV', 'epos_EBV',
-                       'EBVflag']
-
-        thesecols = []
-        for ix, s in enumerate(nbhd_df[:10].source_id):
-            if ix % 10 == 0:
-                print(f'{datetime.utcnow().isoformat()}: {ix}/{len(nbhd_df)}')
-
-            t = gaiadr2_to_tic(str(s))
-            tdf = get_tic_star_information(t, desiredcols=desiredcols,
-                                           raise_error_on_multiple_match=True)
-            thesecols.append(tdf)
-
-        import IPython; IPython.embed()
-        assert 0
-        #FIXME get TICv8 matches through vizier's TAP service!
-
-    else:
-
-        with open(pklpath, 'rb') as f:
-            d = pickle.load()
-
-    nbhd_df, cg18_df, kc19_df, target_df = (
-        d['nbhd_df'], d['cg18_df'], d['kc19_df'], d['target_df']
-    )
-
-    return nbhd_df, cg18_df, kc19_df, target_df
-
+from earhart.helpers import (
+    _get_nbhd_dataframes, _get_extinction_dataframes, _get_fullfaint_dataframes
+)
 
 def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
 
@@ -397,15 +255,34 @@ def plot_full_kinematics(outdir):
 
 
 def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
-            include_extinction=False):
+            basedata='fullfaint', highlight_companion=0):
+    """
+    basedata (str): any of ['bright', 'extinctioncorrected', 'fullfaint'],
+    where each defines a different set of neighborhood / core / halo. The
+    default is the "fullfaint" sample, which extends down to whatever cutoffs
+    CG18 and KC19 used for members, and to even fainter for neighbors.  The
+    "bright" sample uses the cutoffs from Bouma+19 (CDIPS-I), i.e., G_Rp<16, to
+    require that a TESS light curve exists.
+    """
 
     set_style()
 
-    if include_extinction:
+    if basedata == 'extinctioncorrected':
         raise NotImplementedError('still need to implement extinction')
         nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
-    else:
+    elif basedata == 'bright':
         nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
+    elif basedata == 'fullfaint':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
+    else:
+        raise NotImplementedError
+
+    comp_arr = np.array([5489726768531118848]).astype(np.int64)
+    comp_df = given_source_ids_get_gaia_data(
+        comp_arr,
+        'toi1937_companion', n_max=2, overwrite=False,
+        enforce_all_sourceids_viable=True
+    )
 
     if isochrone in ['mist', 'parsec']:
         raise NotImplementedError
@@ -444,7 +321,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
     )
 
     ax.scatter(
-        get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.8, zorder=2,
+        get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.2, zorder=2,
         s=5, rasterized=True, linewidths=0, label='Field', marker='.'
     )
     ax.scatter(
@@ -456,11 +333,26 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         get_xval(cg18_df), get_yval(cg18_df), c='k', alpha=0.9,
         zorder=4, s=5, rasterized=True, linewidths=0, label='Core', marker='.'
     )
+    _l = 'TOI 1937' if not highlight_companion else 'TOI 1937A'
     ax.plot(
         get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
-        zorder=8, label='TOI 1937', markerfacecolor='yellow',
+        zorder=8, label=_l, markerfacecolor='yellow',
         markersize=10, marker='*', color='black', lw=0
     )
+    if highlight_companion:
+        # NOTE: NOTE: use the parallax from TOI 1937A, because it has higher
+        # S/N
+        _yval = np.array(
+            comp_df['phot_g_mean_mag'] +
+            5*np.log10(target_df['parallax']/1e3)
+            + 5
+        )
+
+        ax.plot(
+            get_xval(comp_df), get_yval(comp_df), alpha=1, mew=0.5,
+            zorder=8, label='TOI 1937B', markerfacecolor='yellow',
+            markersize=10, marker='*', color='black', lw=0
+        )
 
     if isochrone:
 
@@ -606,6 +498,9 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
     else:
         s = '_'+isochrone
     c0s = '_Bp_m_Rp' if color0 == 'phot_bp_mean_mag' else '_G_m_Rp'
+    if highlight_companion:
+        c0s += '_highlight_companion'
+    c0s += f'_{basedata}'
     outpath = os.path.join(outdir, f'hr{s}{c0s}.png')
 
     savefig(f, outpath, dpi=400)
