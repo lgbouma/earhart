@@ -8,6 +8,7 @@ Plots:
     plot_randich_lithium
     plot_galah_dr3_lithium
     plot_auto_rotation
+    plot_gaia_rv_scatter_vs_brightness
 """
 import os, corner, pickle
 from glob import glob
@@ -252,6 +253,80 @@ def plot_full_kinematics(outdir):
 
     outpath = os.path.join(outdir, 'full_kinematics.png')
     savefig(f, outpath)
+
+
+def plot_gaia_rv_scatter_vs_brightness(outdir, basedata='fullfaint'):
+
+    """
+    basedata (str): any of ['bright', 'extinctioncorrected', 'fullfaint'],
+    """
+
+    set_style()
+
+    if basedata == 'extinctioncorrected':
+        raise NotImplementedError('still need to implement extinction')
+        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
+    elif basedata == 'bright':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
+    elif basedata == 'fullfaint':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
+    else:
+        raise NotImplementedError
+
+    plt.close('all')
+
+    f, ax = plt.subplots(figsize=(4,3))
+
+    get_yval = (
+        lambda _df: np.array(
+            _df['radial_velocity_error']
+        )
+    )
+    get_xval = (
+        lambda _df: np.array(
+            _df['phot_g_mean_mag']
+        )
+    )
+
+    ax.scatter(
+        get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.8, zorder=2,
+        s=5, rasterized=True, linewidths=0, label='Field', marker='.'
+    )
+    ax.scatter(
+        get_xval(kc19_df), get_yval(kc19_df), c='lightskyblue', alpha=1,
+        zorder=3, s=5, rasterized=True, linewidths=0.15, label='Halo',
+        marker='.', edgecolors='k'
+    )
+    ax.scatter(
+        get_xval(cg18_df), get_yval(cg18_df), c='k', alpha=0.9,
+        zorder=4, s=5, rasterized=True, linewidths=0, label='Core', marker='.'
+    )
+    ax.plot(
+        get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
+        zorder=8, label='TOI 1937', markerfacecolor='yellow',
+        markersize=10, marker='*', color='black', lw=0
+    )
+
+    leg = ax.legend(loc='upper left', handletextpad=0.1, fontsize='x-small',
+                    framealpha=0.9)
+    # NOTE: hack size of legend markers
+    leg.legendHandles[0]._sizes = [18]
+    leg.legendHandles[1]._sizes = [25]
+    leg.legendHandles[2]._sizes = [25]
+    leg.legendHandles[3]._sizes = [25]
+
+    ax.set_xlabel('G [mag]', fontsize='large')
+    ax.set_ylabel('GDR2 RV error [km$\,$s$^{-1}$]', fontsize='large')
+    ax.set_yscale('log')
+    ax.set_xlim([7,14.5])
+
+    s = ''
+    s += f'_{basedata}'
+    outpath = os.path.join(outdir, f'gaia_rv_scatter_vs_brightness{s}.png')
+
+    savefig(f, outpath, dpi=400)
+
+
 
 
 def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
