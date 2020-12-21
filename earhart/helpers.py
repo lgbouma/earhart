@@ -20,6 +20,10 @@ from astropy.table import Table
 import cdips.utils.lcutils as lcu
 import cdips.lcproc.detrend as dtr
 import cdips.lcproc.mask_orbit_edges as moe
+
+from cdips.utils.catalogs import (
+    get_cdips_catalog, get_tic_star_information
+)
 from cdips.utils.gaiaqueries import (
     query_neighborhood, given_source_ids_get_gaia_data,
     given_dr2_sourceids_get_edr3_xmatch

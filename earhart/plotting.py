@@ -129,22 +129,35 @@ def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
     savefig(f, outpath)
 
 
-def plot_full_kinematics(outdir):
+def plot_full_kinematics(outdir, basedata='bright'):
 
-    nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
+    if basedata == 'extinctioncorrected':
+        raise NotImplementedError('still need to implement extinction')
+        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
+    elif basedata == 'bright':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
+    elif basedata == 'fullfaint':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
+    elif basedata == 'fullfaint_edr3':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
+    else:
+        raise NotImplementedError
 
     plt.close('all')
 
-    params = ['ra', 'dec', 'parallax', 'pmra', 'pmdec', 'radial_velocity']
+    rvkey = (
+        'radial_velocity' if 'edr3' not in basedata else 'dr2_radial_velocity'
+    )
+    params = ['ra', 'dec', 'parallax', 'pmra', 'pmdec', rvkey]
     nparams = len(params)
 
     qlimd = {
         'ra': 0, 'dec': 0, 'parallax': 0, 'pmra': 1, 'pmdec': 1,
-        'radial_velocity': 1
+        rvkey: 1
     } # whether to limit axis by 16/84th percetile
     nnlimd = {
         'ra': 1, 'dec': 1, 'parallax': 1, 'pmra': 0, 'pmdec': 0,
-        'radial_velocity': 0
+        rvkey: 0
     } # whether to limit axis by 99th percentile
 
     ldict = {
@@ -153,7 +166,7 @@ def plot_full_kinematics(outdir):
         'parallax': r'$\pi$ [mas]',
         'pmra': r"$\mu_{{\alpha'}}$ [mas/yr]",
         'pmdec':  r'$\mu_{{\delta}}$ [mas/yr]',
-        'radial_velocity': 'RV [km/s]'
+         rvkey: 'RV [km/s]'
     }
 
     f, axs = plt.subplots(figsize=(6,6), nrows=nparams-1, ncols=nparams-1)
@@ -252,7 +265,9 @@ def plot_full_kinematics(outdir):
 
     f.tight_layout(h_pad=0.05, w_pad=0.05)
 
-    outpath = os.path.join(outdir, 'full_kinematics.png')
+    s = ''
+    s += f'_{basedata}'
+    outpath = os.path.join(outdir, f'full_kinematics{s}.png')
     savefig(f, outpath)
 
 
