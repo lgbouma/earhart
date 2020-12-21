@@ -334,15 +334,94 @@ def plot_gaia_rv_scatter_vs_brightness(outdir, basedata='fullfaint'):
 
 
 
+def plot_ruwe_vs_apparentmag(outdir, basedata='fullfaint', smallylim=False):
+
+    """
+    basedata (str): any of ['extinctioncorrected', 'fullfaint_edr3'],
+    """
+
+    set_style()
+
+    if basedata == 'extinctioncorrected':
+        raise NotImplementedError('still need to implement extinction')
+        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
+    elif basedata == 'fullfaint_edr3':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
+    else:
+        raise NotImplementedError('only EDR3 has ruwe built in')
+
+    plt.close('all')
+
+    f, ax = plt.subplots(figsize=(4,3))
+
+    ykey = 'ruwe'
+    get_yval = (
+        lambda _df: np.array(
+            _df[ykey]
+        )
+    )
+    get_xval = (
+        lambda _df: np.array(
+            _df['phot_g_mean_mag']
+        )
+    )
+
+    ax.scatter(
+        get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.8, zorder=2,
+        s=5, rasterized=True, linewidths=0, label='Field', marker='.'
+    )
+    ax.scatter(
+        get_xval(kc19_df), get_yval(kc19_df), c='lightskyblue', alpha=1,
+        zorder=3, s=5, rasterized=True, linewidths=0.15, label='Halo',
+        marker='.', edgecolors='k'
+    )
+    ax.scatter(
+        get_xval(cg18_df), get_yval(cg18_df), c='k', alpha=0.9,
+        zorder=4, s=5, rasterized=True, linewidths=0, label='Core', marker='.'
+    )
+    ax.plot(
+        get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
+        zorder=8, label='TOI 1937', markerfacecolor='yellow',
+        markersize=10, marker='*', color='black', lw=0
+    )
+
+    leg = ax.legend(loc='upper left', handletextpad=0.1, fontsize='x-small',
+                    framealpha=0.9)
+    # NOTE: hack size of legend markers
+    leg.legendHandles[0]._sizes = [18]
+    leg.legendHandles[1]._sizes = [25]
+    leg.legendHandles[2]._sizes = [25]
+    leg.legendHandles[3]._sizes = [25]
+
+    ax.set_xlabel('G [mag]', fontsize='large')
+    ax.set_ylabel('EDR3 RUWE', fontsize='large')
+    ax.set_yscale('log')
+    ax.set_xlim([7,14.5])
+
+    if smallylim:
+        ax.set_yscale('linear')
+        ax.set_ylim([0.5, 2])
+
+    s = ''
+    s += f'_{basedata}'
+    if smallylim:
+        s += f'_smallylim'
+    outpath = os.path.join(outdir, f'ruwe_vs_apparentmag{s}.png')
+
+    savefig(f, outpath, dpi=400)
+
+
+
+
 def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
             basedata='fullfaint', highlight_companion=0):
     """
-    basedata (str): any of ['bright', 'extinctioncorrected', 'fullfaint'],
-    where each defines a different set of neighborhood / core / halo. The
-    default is the "fullfaint" sample, which extends down to whatever cutoffs
-    CG18 and KC19 used for members, and to even fainter for neighbors.  The
-    "bright" sample uses the cutoffs from Bouma+19 (CDIPS-I), i.e., G_Rp<16, to
-    require that a TESS light curve exists.
+    basedata (str): any of ['bright', 'extinctioncorrected', 'fullfaint',
+    'fullfaint_edr3'], where each defines a different set of neighborhood /
+    core / halo. The default is the "fullfaint" sample, which extends down to
+    whatever cutoffs CG18 and KC19 used for members, and to even fainter for
+    neighbors.  The "bright" sample uses the cutoffs from Bouma+19 (CDIPS-I),
+    i.e., G_Rp<16, to require that a TESS light curve exists.
     """
 
     set_style()
@@ -354,14 +433,20 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
     elif basedata == 'fullfaint':
         nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
+    elif basedata == 'fullfaint_edr3':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
     else:
         raise NotImplementedError
 
     comp_arr = np.array([5489726768531118848]).astype(np.int64)
+    runid = (
+        'toi1937_companion' if 'edr3' not in basedata
+        else 'toi1937_companion_edr3'
+    )
+    gaia_datarelease = 'gaiadr2' if 'edr3' not in basedata else 'gaiaedr3'
     comp_df = given_source_ids_get_gaia_data(
-        comp_arr,
-        'toi1937_companion', n_max=2, overwrite=False,
-        enforce_all_sourceids_viable=True
+        comp_arr, runid, n_max=2, overwrite=False,
+        enforce_all_sourceids_viable=True, gaia_datarelease=gaia_datarelease
     )
 
     if isochrone in ['mist', 'parsec']:

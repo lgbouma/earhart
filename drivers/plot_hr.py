@@ -3,7 +3,8 @@ import earhart.plotting as ep
 from earhart.paths import RESULTSDIR
 
 # basedata = 'bright' # NOTE: deprecated
-basedata = 'fullfaint'
+# basedata = 'fullfaint' # NOTE: good; DR2 baseline
+basedata = 'fullfaint_edr3'
 # basedata = 'extinctioncorrected' # NOTE TODO
 
 PLOTDIR = os.path.join(RESULTSDIR, 'hr')
