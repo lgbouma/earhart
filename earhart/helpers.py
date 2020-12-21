@@ -3,12 +3,15 @@ get_toi1937_lightcurve
 get_groundphot
 _get_nbhd_dataframes
 _get_fullfaint_dataframes
+_get_fullfaint_edr3_dataframes
 _get_extinction_dataframes
 """
 import os, collections, pickle
 import numpy as np, pandas as pd
 from glob import glob
 from copy import deepcopy
+
+from numpy import array as nparr
 
 from astropy.io import fits
 from astropy import units as u
@@ -18,7 +21,8 @@ import cdips.utils.lcutils as lcu
 import cdips.lcproc.detrend as dtr
 import cdips.lcproc.mask_orbit_edges as moe
 from cdips.utils.gaiaqueries import (
-    query_neighborhood, given_source_ids_get_gaia_data
+    query_neighborhood, given_source_ids_get_gaia_data,
+    given_dr2_sourceids_get_edr3_xmatch
 )
 
 from earhart.paths import PHOTDIR, RESULTSDIR, DATADIR
@@ -376,6 +380,163 @@ def _get_fullfaint_dataframes():
     print(f'Got {len(kc19_cg18_overlap_df)} KC19 / CG18 overlaps')
 
     return nbhd_df, cg18_df_0, kc19_df_0, target_df
+
+
+def _get_fullfaint_edr3_dataframes():
+    """
+    Return: nbhd_df, cg18_df, kc19_df, target_df
+    (for NGC 2516, "full faint" sample -- i.e., as faint as possible, but
+    ***after crossmatching the GAIA DR2 targets with GAIA EDR3***. This
+    crossmatch is run using the dr2_neighbourhood table from the Gaia archive,
+    and then taking the closest angular separation match for cases with
+    multiple matches.)
+
+    Further notes are in "_get_fullfaint_dataframes" docstring.
+
+    This procedure yields:
+
+        FOR DR2:
+            Got 1106 in fullfaint CG18
+            Got 3003 in fullfaint KC19
+            Got 1912 in fullfaint KC19 after removing matches
+            Got 13843 neighbors
+            Got 1106 in core
+            Got 1912 in corona
+            Got 1091 KC19 / CG18 overlaps
+        FOR EDR3:
+
+            CG18/core: got 1143 matches vs 1106 source id queries.
+            KC19/halo: got 2005 matches vs 1912 source id queries
+            Nbhd:      got 15123 matches vs 13843 source id queries.
+
+            Got 1106 EDR3 matches in core.
+            99th pct [arcsec] 1577.8 -> 0.3
+            Got 1912 EDR3 matches in halo.
+            99th pct [arcsec] 1702.8 -> 0.5
+            Got 13843 EDR3 matches in nbhd.
+            99th pct [arcsec] 1833.9 -> 3.7
+
+    """
+
+    # get the full CG18 NGC 2516 memberships, downloaded from Vizier
+    cg18path = os.path.join(DATADIR, 'gaia',
+                            'CantatGaudin2018_vizier_only_NGC2516.fits')
+    hdul = fits.open(cg18path)
+    cg18_tab = Table(hdul[1].data)
+    cg18_df = cg18_tab.to_pandas()
+    cg18_df['source_id'] = cg18_df['Source']
+
+    # get the full KC19 NGC 2516 memberships, from Marina's file
+    # NGC 2516 == "Theia 613" in Kounkel's approach.
+    kc19path = os.path.join(DATADIR, 'gaia', 'string_table1.csv')
+    kc19_df = pd.read_csv(kc19path)
+    kc19_df = kc19_df[kc19_df.group_id == 613]
+
+    print(42*'='+'\nFOR DR2:')
+    print(f'Got {len(cg18_df)} in fullfaint CG18')
+    print(f'Got {len(kc19_df)} in fullfaint KC19')
+
+    kc19_cg18_overlap_df = kc19_df[(kc19_df.source_id.isin(cg18_df.source_id))]
+    kc19_df = kc19_df[~(kc19_df.source_id.isin(cg18_df.source_id))]
+
+    print(f'Got {len(kc19_df)} in fullfaint KC19 after removing matches')
+
+    ##########
+
+    # NGC 2516 rough
+    bounds = {
+        'parallax_lower': 1.5, 'parallax_upper': 4.0, 'ra_lower': 108,
+        'ra_upper': 132, 'dec_lower': -76, 'dec_upper': -45
+    }
+    groupname = 'customngc2516_fullfaint'
+
+    nbhd_df = query_neighborhood(bounds, groupname, n_max=14000,
+                                 overwrite=False, manual_gmag_limit=19)
+
+    sel_nbhd = (
+        (~nbhd_df.source_id.isin(kc19_df.source_id))
+        &
+        (~nbhd_df.source_id.isin(cg18_df.source_id))
+    )
+    orig_nbhd_df = deepcopy(nbhd_df)
+    nbhd_df = nbhd_df[sel_nbhd]
+
+    print(f'Got {len(nbhd_df)} neighbors')
+    print(f'Got {len(cg18_df)} in core')
+    print(f'Got {len(kc19_df)} in corona')
+    print(f'Got {len(kc19_cg18_overlap_df)} KC19 / CG18 overlaps')
+
+    cg18_df_edr3 = (
+        given_dr2_sourceids_get_edr3_xmatch(
+            nparr(cg18_df.Source).astype(np.int64), 'fullfaint_ngc2516_cg18_df',
+            overwrite=False)
+    )
+    kc19_df_edr3 = (
+        given_dr2_sourceids_get_edr3_xmatch(
+            nparr(kc19_df.source_id).astype(np.int64), 'fullfaint_ngc2516_kc19_df',
+            overwrite=False)
+    )
+    nbhd_df_edr3 = (
+        given_dr2_sourceids_get_edr3_xmatch(
+            nparr(nbhd_df.source_id).astype(np.int64), 'fullfaint_ngc2516_nbhd_df',
+            overwrite=False)
+    )
+
+    print(42*'='+'\nFOR EDR3:')
+
+    # Take the closest (proper motion and epoch-corrected) angular distance as
+    # THE single match.
+    get_edr3_xm = lambda _df: (
+        _df.sort_values(by='angular_distance').
+        drop_duplicates(subset='dr2_source_id', keep='first')
+    )
+
+    s_cg18_df_edr3 = get_edr3_xm(cg18_df_edr3)
+    s_kc19_df_edr3 = get_edr3_xm(kc19_df_edr3)
+    s_nbhd_df_edr3 = get_edr3_xm(nbhd_df_edr3)
+
+    print(f'Got {len(s_cg18_df_edr3)} EDR3 matches in core.\n'+
+          f'99th pct [arcsec] {np.nanpercentile(cg18_df_edr3.angular_distance, 99):.1f} -> {np.nanpercentile(s_cg18_df_edr3.angular_distance, 99):.1f}')
+
+    print(f'Got {len(s_kc19_df_edr3)} EDR3 matches in halo.\n'+
+          f'99th pct [arcsec] {np.nanpercentile(kc19_df_edr3.angular_distance, 99):.1f} -> {np.nanpercentile(s_kc19_df_edr3.angular_distance, 99):.1f}')
+
+    print(f'Got {len(s_nbhd_df_edr3)} EDR3 matches in nbhd.\n'+
+          f'99th pct [arcsec] {np.nanpercentile(nbhd_df_edr3.angular_distance, 99):.1f} -> {np.nanpercentile(s_nbhd_df_edr3.angular_distance, 99):.1f}')
+
+    # Finally, query Gaia EDR3 to get the latest and greatest fullfaint
+    # photometry
+    kc19_df_0 = given_source_ids_get_gaia_data(
+        np.array(s_kc19_df_edr3.dr3_source_id),
+        'fullfaint_ngc2516_kc19_df_edr3', n_max=10000, overwrite=False,
+        enforce_all_sourceids_viable=True, gaia_datarelease='gaiaedr3'
+    )
+    cg18_df_0 = given_source_ids_get_gaia_data(
+        np.array(s_cg18_df_edr3.dr3_source_id),
+        'fullfaint_ngc2516_cg18_df_edr3', n_max=10000, overwrite=False,
+        enforce_all_sourceids_viable=True, gaia_datarelease='gaiaedr3'
+    )
+    nbhd_df_0 = given_source_ids_get_gaia_data(
+        np.array(s_nbhd_df_edr3.dr3_source_id),
+        'fullfaint_ngc2516_nbhd_df_edr3', n_max=15000, overwrite=False,
+        enforce_all_sourceids_viable=True, gaia_datarelease='gaiaedr3'
+    )
+
+    assert len(cg18_df) == len(cg18_df_0)
+    assert len(kc19_df) == len(kc19_df_0)
+    assert len(nbhd_df) == len(nbhd_df_0)
+
+    # nb. these source_ids are now EDR3 source_ids.
+    np.testing.assert_array_equal(np.array(kc19_df_0.source_id),
+                                  np.array(kc19_df_0.source_id_2))
+    np.testing.assert_array_equal(np.array(cg18_df_0.source_id),
+                                  np.array(cg18_df_0.source_id_2))
+    np.testing.assert_array_equal(np.array(nbhd_df_0.source_id),
+                                  np.array(nbhd_df_0.source_id_2))
+
+    target_df = kc19_df_0[kc19_df_0.source_id == 5489726768531119616] # TIC 2683...
+
+    return nbhd_df_0, cg18_df_0, kc19_df_0, target_df
 
 
 def _get_extinction_dataframes():

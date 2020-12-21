@@ -41,7 +41,8 @@ from cdips.utils.mamajek import get_interp_BpmRp_from_Teff
 
 from earhart.paths import DATADIR, RESULTSDIR
 from earhart.helpers import (
-    _get_nbhd_dataframes, _get_extinction_dataframes, _get_fullfaint_dataframes
+    _get_nbhd_dataframes, _get_extinction_dataframes,
+    _get_fullfaint_dataframes, _get_fullfaint_edr3_dataframes
 )
 
 def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
@@ -258,7 +259,8 @@ def plot_full_kinematics(outdir):
 def plot_gaia_rv_scatter_vs_brightness(outdir, basedata='fullfaint'):
 
     """
-    basedata (str): any of ['bright', 'extinctioncorrected', 'fullfaint'],
+    basedata (str): any of ['bright', 'extinctioncorrected', 'fullfaint',
+    'fullfaint_edr3'],
     """
 
     set_style()
@@ -270,6 +272,8 @@ def plot_gaia_rv_scatter_vs_brightness(outdir, basedata='fullfaint'):
         nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
     elif basedata == 'fullfaint':
         nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
+    elif basedata == 'fullfaint_edr3':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
     else:
         raise NotImplementedError
 
@@ -277,9 +281,10 @@ def plot_gaia_rv_scatter_vs_brightness(outdir, basedata='fullfaint'):
 
     f, ax = plt.subplots(figsize=(4,3))
 
+    ykey = 'radial_velocity_error' if 'edr3' not in basedata else 'dr2_radial_velocity_error'
     get_yval = (
         lambda _df: np.array(
-            _df['radial_velocity_error']
+            _df[ykey]
         )
     )
     get_xval = (
