@@ -9,6 +9,7 @@ Plots:
     plot_galah_dr3_lithium
     plot_auto_rotation
     plot_gaia_rv_scatter_vs_brightness
+    plot_edr3_blending_vs_apparentmag
 """
 import os, corner, pickle
 from glob import glob
@@ -29,9 +30,6 @@ from aesthetic.plot import savefig, format_ax
 from aesthetic.plot import set_style
 
 from astrobase.services.identifiers import gaiadr2_to_tic
-from cdips.utils.catalogs import (
-    get_cdips_catalog, get_tic_star_information
-)
 from cdips.utils.gaiaqueries import (
     given_source_ids_get_gaia_data
 )
@@ -347,8 +345,6 @@ def plot_gaia_rv_scatter_vs_brightness(outdir, basedata='fullfaint'):
     savefig(f, outpath, dpi=400)
 
 
-
-
 def plot_ruwe_vs_apparentmag(outdir, basedata='fullfaint', smallylim=False):
 
     """
@@ -426,6 +422,98 @@ def plot_ruwe_vs_apparentmag(outdir, basedata='fullfaint', smallylim=False):
     savefig(f, outpath, dpi=400)
 
 
+def plot_edr3_blending_vs_apparentmag(outdir, basedata='fullfaint', num=None):
+
+    """
+    Look at how the blending changes vs apparent mag, to get context for the
+    blending experienced by TOI 1937B.
+
+    basedata (str): any of ['extinctioncorrected', 'fullfaint_edr3'],
+
+    num = 'phot_bp_n_blended_transits', phot_bp_n_contaminated_transits', also
+    rp ok.
+    """
+
+    set_style()
+
+    if basedata == 'extinctioncorrected':
+        raise NotImplementedError('still need to implement extinction')
+        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
+    elif basedata == 'fullfaint_edr3':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
+    else:
+        raise NotImplementedError('only EDR3 has n_blended_transits built in')
+
+    comp_arr = np.array([5489726768531118848]).astype(np.int64)
+    runid = 'toi1937_companion_edr3'
+    gaia_datarelease = 'gaiaedr3'
+    comp_df = given_source_ids_get_gaia_data(
+        comp_arr, runid, n_max=2, overwrite=False,
+        enforce_all_sourceids_viable=True, gaia_datarelease=gaia_datarelease
+    )
+
+    ##########################################
+
+    plt.close('all')
+
+    f, ax = plt.subplots(figsize=(4,3))
+
+    denom = 'phot_bp_n_obs' if '_bp_' in num else 'phot_rp_n_obs'
+    get_yval = (
+        lambda _df: np.array(
+            _df[num] / _df[denom]
+        )
+    )
+    get_xval = (
+        lambda _df: np.array(
+            _df['phot_g_mean_mag']
+        )
+    )
+
+    ax.scatter(
+        get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.8, zorder=2,
+        s=5, rasterized=True, linewidths=0, label='Field', marker='.'
+    )
+    ax.scatter(
+        get_xval(kc19_df), get_yval(kc19_df), c='lightskyblue', alpha=1,
+        zorder=3, s=5, rasterized=True, linewidths=0.15, label='Halo',
+        marker='.', edgecolors='k'
+    )
+    ax.scatter(
+        get_xval(cg18_df), get_yval(cg18_df), c='k', alpha=0.9,
+        zorder=4, s=5, rasterized=True, linewidths=0, label='Core', marker='.'
+    )
+    ax.plot(
+        get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
+        zorder=8, label='TOI 1937A', markerfacecolor='yellow',
+        markersize=10, marker='*', color='black', lw=0
+    )
+    ax.plot(
+        get_xval(comp_df), get_yval(comp_df), alpha=1, mew=0.5,
+        zorder=8, label='TOI 1937B', markerfacecolor='yellow',
+        markersize=10, marker='*', color='black', lw=0
+    )
+
+    leg = ax.legend(loc='upper left', handletextpad=0.1, fontsize='x-small',
+                    framealpha=0.9)
+    # NOTE: hack size of legend markers
+    leg.legendHandles[0]._sizes = [18]
+    leg.legendHandles[1]._sizes = [25]
+    leg.legendHandles[2]._sizes = [25]
+    leg.legendHandles[3]._sizes = [25]
+
+    ax.set_xlabel('G [mag]')
+    _c = 'Bp' if '_bp_' in num else 'Rp'
+    _t = 'blended' if 'blended' in num else 'contaminated'
+    ystr = 'N$_{\mathrm{'+_t+'}}^{\mathrm{'+_c+'}}$' + '/' + 'N$_{\mathrm{obs}}^{\mathrm{'+_c+'}}$'
+    ax.set_ylabel(ystr)
+    ax.set_xlim([7,19])
+
+    s = ''
+    s += f'_{basedata}'
+    outpath = os.path.join(outdir, f'{num}_by_{denom}_vs_apparentmag{s}.png')
+
+    savefig(f, outpath, dpi=400)
 
 
 def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
