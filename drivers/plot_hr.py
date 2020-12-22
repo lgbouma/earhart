@@ -9,8 +9,15 @@ basedata = 'fullfaint_edr3'
 
 PLOTDIR = os.path.join(RESULTSDIR, 'hr')
 
-for highlight_companion in [1,0]:
-    ep.plot_hr(PLOTDIR, color0='phot_bp_mean_mag',
-               highlight_companion=highlight_companion, basedata=basedata)
-    ep.plot_hr(PLOTDIR, color0='phot_g_mean_mag',
-               highlight_companion=highlight_companion, basedata=basedata)
+for c in ['phot_bp_mean_mag', 'phot_g_mean_mag']:
+
+    # check for differential extinction
+    ep.plot_hr(PLOTDIR, color0=c,
+               highlight_companion=0, basedata=basedata, colorhalobyglat=1)
+
+    # base HR diagrams
+    for highlight_companion in [1,0]:
+        ep.plot_hr(PLOTDIR, color0=c,
+                   highlight_companion=highlight_companion, basedata=basedata)
+
+

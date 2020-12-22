@@ -10,6 +10,7 @@ Plots:
     plot_auto_rotation
     plot_gaia_rv_scatter_vs_brightness
     plot_edr3_blending_vs_apparentmag
+    plot_bisector_span_vs_RV
 """
 import os, corner, pickle
 from glob import glob
@@ -517,7 +518,7 @@ def plot_edr3_blending_vs_apparentmag(outdir, basedata='fullfaint', num=None):
 
 
 def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
-            basedata='fullfaint', highlight_companion=0):
+            basedata='fullfaint', highlight_companion=0, colorhalobyglat=0):
     """
     basedata (str): any of ['bright', 'extinctioncorrected', 'fullfaint',
     'fullfaint_edr3'], where each defines a different set of neighborhood /
@@ -588,25 +589,48 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         )
     )
 
-    ax.scatter(
-        get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.2, zorder=2,
-        s=5, rasterized=True, linewidths=0, label='Field', marker='.'
-    )
-    ax.scatter(
-        get_xval(kc19_df), get_yval(kc19_df), c='lightskyblue', alpha=1,
-        zorder=3, s=5, rasterized=True, linewidths=0.15, label='Halo',
-        marker='.', edgecolors='k'
-    )
-    ax.scatter(
-        get_xval(cg18_df), get_yval(cg18_df), c='k', alpha=0.9,
-        zorder=4, s=5, rasterized=True, linewidths=0, label='Core', marker='.'
-    )
-    _l = 'TOI 1937' if not highlight_companion else 'TOI 1937A'
-    ax.plot(
-        get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
-        zorder=8, label=_l, markerfacecolor='yellow',
-        markersize=10, marker='*', color='black', lw=0
-    )
+    if not colorhalobyglat:
+        ax.scatter(
+            get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.2, zorder=2,
+            s=5, rasterized=True, linewidths=0, label='Field', marker='.'
+        )
+        ax.scatter(
+            get_xval(kc19_df), get_yval(kc19_df), c='lightskyblue', alpha=1,
+            zorder=3, s=5, rasterized=True, linewidths=0.15, label='Halo',
+            marker='.', edgecolors='k'
+        )
+
+    else:
+        glatkey = 'b'
+        cmap = mpl.cm.viridis
+
+        #bounds = np.arange(-25,-7.5,2.5)
+        #bounds = np.arange(-20,-8, 1)
+        bounds = np.arange(-20,-11, 1)
+        norm = mpl.colors.BoundaryNorm(bounds, cmap.N)#, extend='max')
+
+        cax = ax.scatter(
+            get_xval(kc19_df), get_yval(kc19_df), c=nparr(kc19_df[glatkey]),
+            alpha=1, zorder=3, s=2, rasterized=True, linewidths=0.1,
+            label='Halo', marker='o', edgecolors='none', cmap=cmap, norm=norm,
+        )
+
+        cb = f.colorbar(cax, extend='max')
+        cb.set_label("Galactic lat [deg]")
+
+
+    if not colorhalobyglat:
+        ax.scatter(
+            get_xval(cg18_df), get_yval(cg18_df), c='k', alpha=0.9,
+            zorder=4, s=5, rasterized=True, linewidths=0, label='Core', marker='.'
+        )
+        _l = 'TOI 1937' if not highlight_companion else 'TOI 1937A'
+        ax.plot(
+            get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
+            zorder=8, label=_l, markerfacecolor='yellow',
+            markersize=10, marker='*', color='black', lw=0
+        )
+
     if highlight_companion:
         # NOTE: NOTE: use the parallax from TOI 1937A, because it has higher
         # S/N
@@ -740,13 +764,14 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
                     )
 
 
-    leg = ax.legend(loc='upper right', handletextpad=0.1, fontsize='x-small',
-                    framealpha=0.9)
-    # NOTE: hack size of legend markers
-    leg.legendHandles[0]._sizes = [18]
-    leg.legendHandles[1]._sizes = [25]
-    leg.legendHandles[2]._sizes = [25]
-    leg.legendHandles[3]._sizes = [25]
+    if not colorhalobyglat:
+        leg = ax.legend(loc='upper right', handletextpad=0.1, fontsize='x-small',
+                        framealpha=0.9)
+        # # NOTE: hack size of legend markers
+        leg.legendHandles[0]._sizes = [18]
+        leg.legendHandles[1]._sizes = [25]
+        leg.legendHandles[2]._sizes = [25]
+        leg.legendHandles[3]._sizes = [25]
 
 
     ax.set_ylabel('Absolute G [mag]', fontsize='large')
@@ -765,6 +790,8 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         s = ''
     else:
         s = '_'+isochrone
+    if colorhalobyglat:
+        s = '_colorhalobyglat'
     c0s = '_Bp_m_Rp' if color0 == 'phot_bp_mean_mag' else '_G_m_Rp'
     if highlight_companion:
         c0s += '_highlight_companion'
@@ -1465,3 +1492,40 @@ def _plot_detrending_check(time, flux, trend_flux, flat_flux, outpath):
              rotation=90)
     fig.tight_layout(w_pad=0.2)
     savefig(fig, outpath, writepdf=0, dpi=300)
+
+
+def plot_bisector_span_vs_RV(outdir):
+
+    # get data
+    bisectorpath = os.path.join(
+        DATADIR, 'spectra', 'PFS_bisector_spans_Hartman_20201211',
+        'TOI1937.PFS_bs.txt'
+    )
+    bdf = pd.read_csv(bisectorpath, delim_whitespace=True)
+
+    rvpath = os.path.join(
+        RESULTSDIR, '20201110_butler_PFS_results', 'HD268301217_PFSBIN.vels'
+    )
+    rvdf = pd.read_csv(rvpath, delim_whitespace=True)
+
+    mdf = rvdf.merge(bdf, how='left', on='Spectrum')
+
+    # make plot
+
+    set_style()
+
+    plt.close('all')
+
+    f, ax = plt.subplots(figsize=(4,3))
+
+    ax.errorbar(
+        mdf['BS[m/s]'], mdf['rv'], yerr=mdf['rv_err'], xerr=mdf['eBS[m/s]'],
+        ls='none', color='k', elinewidth=1, capsize=1
+    )
+
+    ax.set_xlabel('BS [m$\,$s$^{-1}$]', fontsize='large')
+    ax.set_ylabel('RV [m$\,$s$^{-1}$]', fontsize='large')
+
+    outpath = os.path.join(outdir, f'bisector_span_vs_RV.png')
+
+    savefig(f, outpath, dpi=400)
