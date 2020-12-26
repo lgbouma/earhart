@@ -25,7 +25,7 @@ from astropy.coordinates import SkyCoord
 from astropy.io import fits
 from astropy.time import Time
 
-import matplotlib.patheffects as path_effects
+import matplotlib.patheffects as pe
 
 from aesthetic.plot import savefig, format_ax
 from aesthetic.plot import set_style
@@ -41,7 +41,8 @@ from cdips.utils.mamajek import get_interp_BpmRp_from_Teff
 from earhart.paths import DATADIR, RESULTSDIR
 from earhart.helpers import (
     _get_nbhd_dataframes, _get_extinction_dataframes,
-    _get_fullfaint_dataframes, _get_fullfaint_edr3_dataframes
+    _get_fullfaint_dataframes, _get_fullfaint_edr3_dataframes,
+    _given_gaia_df_get_icrs_arr, calc_dist
 )
 
 def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
@@ -1529,3 +1530,192 @@ def plot_bisector_span_vs_RV(outdir):
     outpath = os.path.join(outdir, f'bisector_span_vs_RV.png')
 
     savefig(f, outpath, dpi=400)
+
+
+def plot_backintegration_ngc2516(basedata, fix_rvs=0):
+
+    from earhart.backintegrate import backintegrate
+
+    if basedata == 'extinctioncorrected':
+        raise NotImplementedError('need to implement extinction')
+        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
+    elif basedata == 'bright':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
+    elif basedata == 'fullfaint':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
+    elif basedata == 'fullfaint_edr3':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
+    else:
+        raise NotImplementedError
+
+    rvkey = 'dr2_radial_velocity' if 'edr3' in basedata else 'radial_velocity'
+    getcols = ['ra', 'dec', 'parallax', 'pmra', 'pmdec', rvkey]
+
+    #
+    # First, calculate separation between toi1937 and ngc2516 core median.
+    # Then, do the same for the entire cluster, and the ngc2516 core median.
+    n_steps = int(2e3)
+    dt = -0.05*u.Myr
+
+    # require 6d positions + kinematics (no NaN RVs allowed)
+    # for neighborhood/field, also require S/N on parallax measurement
+    s_cg18_df = cg18_df[getcols].dropna(axis=0)
+    s_kc19_df = kc19_df[getcols].dropna(axis=0)
+    sel_nbhd = (nbhd_df.parallax / nbhd_df.parallax_error) > 10
+    nbhd_df = nbhd_df[sel_nbhd]
+    s_nbhd_df = nbhd_df[getcols].dropna(axis=0)
+
+    icrs_median_ngc2516_df = pd.DataFrame(s_cg18_df.median()).T
+    icrs_toi1937_df = target_df[getcols]
+    mdf = pd.concat((icrs_median_ngc2516_df, icrs_toi1937_df))
+
+    s = '' # formatting string for output
+    if fix_rvs:
+        med_rv = float(icrs_median_ngc2516_df[rvkey])
+        # mdf[rvkey] = med_rv
+        s_cg18_df[rvkey] = med_rv
+        s_kc19_df[rvkey] = med_rv
+        s_nbhd_df[rvkey] = med_rv
+        s += '_fix_rvs'
+
+    icrs_arr = _given_gaia_df_get_icrs_arr(mdf)
+    orbits = backintegrate(icrs_arr, dt=dt, n_steps=n_steps)
+    d = calc_dist(orbits.x[:,0], orbits.y[:,0], orbits.z[:,0],
+                  orbits.x[:,1], orbits.y[:,1], orbits.z[:,1])
+
+    icrs_arr_cg18 = _given_gaia_df_get_icrs_arr(s_cg18_df)
+    icrs_arr_kc19 = _given_gaia_df_get_icrs_arr(s_kc19_df)
+    icrs_arr_nbhd = _given_gaia_df_get_icrs_arr(s_nbhd_df)
+
+    orbits_cg18 = backintegrate(icrs_arr_cg18, dt=dt, n_steps=n_steps)
+    orbits_kc19 = backintegrate(icrs_arr_kc19, dt=dt, n_steps=n_steps)
+    orbits_nbhd = backintegrate(icrs_arr_nbhd, dt=dt, n_steps=n_steps)
+
+    # cg18 (core) positions to ngc2516 median position
+    d_cg18_full = calc_dist(
+        orbits.x[:,0][:,None], orbits.y[:,0][:,None], orbits.z[:,0][:,None],
+        orbits_cg18.x, orbits_cg18.y, orbits_cg18.z
+    )
+    d_cg18_med = np.nanmedian(d_cg18_full, axis=1)
+    d_cg18_upper = np.nanpercentile(d_cg18_full, 68, axis=1)
+    d_cg18_lower = np.nanpercentile(d_cg18_full, 32, axis=1)
+
+    # ditto halo
+    d_kc19_full = calc_dist(
+        orbits.x[:,0][:,None], orbits.y[:,0][:,None], orbits.z[:,0][:,None],
+        orbits_kc19.x, orbits_kc19.y, orbits_kc19.z
+    )
+    d_kc19_med = np.nanmedian(d_kc19_full, axis=1)
+    d_kc19_upper = np.nanpercentile(d_kc19_full, 68, axis=1)
+    d_kc19_lower = np.nanpercentile(d_kc19_full, 32, axis=1)
+
+    # ditto nbhd
+    d_nbhd_full = calc_dist(
+        orbits.x[:,0][:,None], orbits.y[:,0][:,None], orbits.z[:,0][:,None],
+        orbits_nbhd.x, orbits_nbhd.y, orbits_nbhd.z
+    )
+    d_nbhd_med = np.nanmedian(d_nbhd_full, axis=1)
+
+    # first check
+    outpath = f'../results/calc_backintegration_ngc2516/check_backintegrate{s}.png'
+    set_style()
+    fig = orbits.plot()
+    savefig(fig, outpath)
+
+    # second check: the distance between ngc2516 median positions and TOI 1937
+    # positions
+    plt.close('all')
+    f, ax = plt.subplots(figsize=(4,3))
+    set_style()
+    ax.plot(-1*orbits.t.to(u.Myr).value, d.to(u.pc))
+    ax.set_xlabel('Look-back time [Myr]')
+    ax.set_ylabel('Separation [pc]')
+    ax.set_title('TOI 1937 to NGC 2516 separation')
+    outpath = f'../results/calc_backintegration_ngc2516/toi1937_to_ngc2516_mean_distance{s}.png'
+    savefig(f, outpath)
+    plt.close('all')
+
+    # finally look at the Core and Halo median separations, and compare against
+    # TOI 1937
+    plt.close('all')
+    fig, axs = plt.subplots(figsize=(4,7), sharex=True, nrows=3)
+    set_style()
+
+    # the core
+    ax = axs[0]
+    ax.plot(-1*orbits.t.to(u.Myr).value, d.to(u.pc), label='TOI 1937',
+            zorder=4, c='yellow', lw=1,
+            path_effects=[pe.Stroke(linewidth=2, foreground='k'), pe.Normal()])
+    ax.plot(-1*orbits_cg18.t.to(u.Myr).value, d_cg18_med.to(u.pc),
+            label=f'Core median (N={len(s_cg18_df)})', c='k', zorder=3, lw=1)
+    ax.fill_between(
+        -1*orbits_cg18.t.to(u.Myr).value,
+        (d_cg18_lower).to(u.pc),
+        (d_cg18_upper).to(u.pc),
+        label='Core $\pm 1\sigma$', color='gray', alpha=0.7, zorder=2
+    )
+    leg = ax.legend(loc='upper left', handletextpad=0.2, fontsize='x-small',
+                    framealpha=1)
+
+    # the halo
+    ax = axs[1]
+    ax.plot(-1*orbits.t.to(u.Myr).value, d.to(u.pc), label='TOI 1937',
+            zorder=4, c='yellow', lw=1,
+            path_effects=[pe.Stroke(linewidth=2, foreground='k'), pe.Normal()])
+    ax.plot(-1*orbits_kc19.t.to(u.Myr).value, d_kc19_med.to(u.pc),
+            label=f'Halo median (N={len(s_kc19_df)})', c='C0', zorder=3, lw=1)
+    ax.fill_between(
+        -1*orbits_kc19.t.to(u.Myr).value,
+        (d_kc19_lower).to(u.pc),
+        (d_kc19_upper).to(u.pc),
+        label='Halo $\pm 1\sigma$', color='lightskyblue', alpha=0.4, zorder=2
+    )
+    leg = ax.legend(loc='upper left', handletextpad=0.2, fontsize='x-small',
+                    framealpha=1)
+
+    # the nbhd
+    ax = axs[2]
+    ax.plot(-1*orbits.t.to(u.Myr).value, d.to(u.pc), label='TOI 1937',
+            zorder=4, c='yellow', lw=1,
+            path_effects=[pe.Stroke(linewidth=2, foreground='k'), pe.Normal()])
+    ax.plot(-1*orbits_nbhd.t.to(u.Myr).value, d_nbhd_med.to(u.pc),
+            label=f'Field median (N={len(s_nbhd_df)})', c='k', zorder=3, lw=1)
+
+    ax.fill_between(
+        -1*orbits_nbhd.t.to(u.Myr).value,
+        (np.nanpercentile(d_nbhd_full, 32, axis=1)).to(u.pc),
+        (np.nanpercentile(d_nbhd_full, 68, axis=1)).to(u.pc),
+        label='Field $\pm 1\sigma$', color='gray', alpha=0.75, zorder=2
+    )
+    ax.fill_between(
+        -1*orbits_nbhd.t.to(u.Myr).value,
+        (np.nanpercentile(d_nbhd_full, 5, axis=1)).to(u.pc),
+        (np.nanpercentile(d_nbhd_full, 95, axis=1)).to(u.pc),
+        label='Field $\pm 2\sigma$', color='gray', alpha=0.5, zorder=2
+    )
+    ax.fill_between(
+        -1*orbits_nbhd.t.to(u.Myr).value,
+        (np.nanpercentile(d_nbhd_full, 0.3, axis=1)).to(u.pc),
+        (np.nanpercentile(d_nbhd_full, 99.7, axis=1)).to(u.pc),
+        label='Field $\pm 3\sigma$', color='gray', alpha=0.25, zorder=2
+    )
+
+    leg = ax.legend(loc='best', handletextpad=0.2, fontsize='x-small',
+                    framealpha=1)
+
+    # cleanup
+    fig.text(-0.01,0.5, 'Distance from NGC 2516 trajectory [pc]', va='center',
+             rotation=90, fontsize='large')
+
+    ax.set_xlabel('Look-back time [Myr]', fontsize='large')
+
+    for a in axs:
+        a.set_xlim([0,100])
+        a.set_ylim([0,700])
+        # if fix_rvs:
+        #     a.set_ylim([0,350])
+
+    fig.tight_layout()
+
+    outpath = f'../results/calc_backintegration_ngc2516/core_halo_to_ngc2516_separation{s}.png'
+    savefig(fig, outpath)

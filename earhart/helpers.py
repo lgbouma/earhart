@@ -589,4 +589,24 @@ def _get_extinction_dataframes():
     return nbhd_df, cg18_df, kc19_df, target_df
 
 
+def _given_gaia_df_get_icrs_arr(df):
 
+    import astropy.coordinates as coord
+    coord.galactocentric_frame_defaults.set('v4.0')
+
+    return coord.SkyCoord(
+        ra=nparr(df.ra)*u.deg,
+        dec=nparr(df.dec)*u.deg,
+        distance=nparr(1/(df.parallax*1e-3))*u.pc,
+        pm_ra_cosdec=nparr(df.pmra)*u.mas/u.yr,
+        pm_dec=nparr(df.pmdec)*u.mas/u.yr,
+        radial_velocity=nparr(df.dr2_radial_velocity)*u.km/u.s
+    )
+
+def calc_dist(x0, y0, z0, x1, y1, z1):
+
+    d = np.sqrt(
+        (x0-x1)**2 + (y0-y1)**2 + (z0-z1)**2
+    )
+
+    return d
