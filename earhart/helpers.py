@@ -4,6 +4,7 @@ get_groundphot
 _get_nbhd_dataframes
 _get_fullfaint_dataframes
 _get_fullfaint_edr3_dataframes
+_get_denis_fullfaint_edr3_dataframes
 _get_extinction_dataframes
 get_denis_xmatch
 """
@@ -544,6 +545,21 @@ def _get_fullfaint_edr3_dataframes():
     target_df = kc19_df_0[kc19_df_0.source_id == 5489726768531119616] # TIC 2683...
 
     return nbhd_df_0, cg18_df_0, kc19_df_0, target_df
+
+
+def _get_denis_fullfaint_edr3_dataframes():
+
+    targetpath = '../data/denis/target_gaia_denis_xm.csv'
+    cg18path = '../data/denis/cg18_gaia_denis_xm.csv'
+    kc19path = '../data/denis/kc19_gaia_denis_xm.csv'
+    nbhdpath = '../data/denis/nbhd_gaia_denis_xm.csv'
+
+    return (
+        pd.read_csv(nbhdpath),
+        pd.read_csv(cg18path),
+        pd.read_csv(kc19path),
+        pd.read_csv(targetpath)
+    )
 
 
 def _get_extinction_dataframes():

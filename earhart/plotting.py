@@ -43,7 +43,8 @@ from earhart.paths import DATADIR, RESULTSDIR
 from earhart.helpers import (
     _get_nbhd_dataframes, _get_extinction_dataframes,
     _get_fullfaint_dataframes, _get_fullfaint_edr3_dataframes,
-    _given_gaia_df_get_icrs_arr, calc_dist
+    _given_gaia_df_get_icrs_arr, calc_dist,
+    _get_denis_fullfaint_edr3_dataframes
 )
 
 def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
@@ -541,6 +542,8 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
     elif basedata == 'fullfaint_edr3':
         nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
+    elif basedata == 'denis_fullfaint_edr3':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_denis_fullfaint_edr3_dataframes()
     else:
         raise NotImplementedError
 
@@ -585,11 +588,28 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
             _df['phot_g_mean_mag'] + 5*np.log10(_df['parallax']/1e3) + 5
         )
     )
-    get_xval = (
-        lambda _df: np.array(
-            _df[color0] - _df['phot_rp_mean_mag']
+    if 'denis' not in basedata:
+        get_xval = (
+            lambda _df: np.array(
+                _df[color0] - _df['phot_rp_mean_mag']
+            )
         )
-    )
+        get_comp_xval = get_xval
+    else:
+        get_xval = (
+            lambda _df: np.array(
+                _df['phot_g_mean_mag'] - _df['Imag']
+            )
+        )
+        # see /doc/20201118_STAR_INFO.txt. this is the DENIS Imag for primary,
+        # plus the SOAR deltaI measured.
+        comp_Imag = 12.26 + 4.3 # TODO: what's the uncertainty on this dMag?
+        get_comp_xval = (
+            lambda _df: np.array(
+                _df['phot_g_mean_mag'] - comp_Imag
+            )
+        )
+
 
     if not colorhalobyglat:
         ax.scatter(
@@ -643,7 +663,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         )
 
         ax.plot(
-            get_xval(comp_df), get_yval(comp_df), alpha=1, mew=0.5,
+            get_comp_xval(comp_df), get_yval(comp_df), alpha=1, mew=0.5,
             zorder=8, label='TOI 1937B', markerfacecolor='yellow',
             markersize=10, marker='*', color='black', lw=0
         )
@@ -779,13 +799,21 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
     ax.set_ylabel('Absolute G [mag]', fontsize='large')
     if color0 == 'phot_bp_mean_mag':
         ax.set_xlabel('Bp - Rp [mag]', fontsize='large')
+        c0s = '_Bp_m_Rp'
     elif color0 == 'phot_g_mean_mag':
         ax.set_xlabel('G - Rp [mag]', fontsize='large')
+        c0s = '_G_m_Rp'
+    elif color0 is None:
+        ax.set_xlabel('G$_{\mathrm{EDR3}}$ - I$_\mathrm{DENIS}$ [mag]', fontsize='large')
+        c0s = '_G_m_Idenis'
+        ax.set_xlim([-0.7, 2.3])
     else:
         raise NotImplementedError
 
     ylim = ax.get_ylim()
     ax.set_ylim((max(ylim),min(ylim)))
+    if basedata == 'denis_fullfaint_edr3':
+        ax.set_ylim([12.8, -1.0])
 
     format_ax(ax)
     if not isochrone:
@@ -794,7 +822,6 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         s = '_'+isochrone
     if colorhalobyglat:
         s = '_colorhalobyglat'
-    c0s = '_Bp_m_Rp' if color0 == 'phot_bp_mean_mag' else '_G_m_Rp'
     if highlight_companion:
         c0s += '_highlight_companion'
     c0s += f'_{basedata}'
