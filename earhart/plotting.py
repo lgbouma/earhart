@@ -11,6 +11,7 @@ Plots:
     plot_gaia_rv_scatter_vs_brightness
     plot_edr3_blending_vs_apparentmag
     plot_bisector_span_vs_RV
+    plot_backintegration_ngc2516
 """
 import os, corner, pickle
 from glob import glob
@@ -1533,6 +1534,33 @@ def plot_bisector_span_vs_RV(outdir):
 
 
 def plot_backintegration_ngc2516(basedata, fix_rvs=0):
+    """
+    Back-integrate the orbits of TOI 1937, the NGC 2516 cluster itself, and the
+    CG18 and KC19 members, to see what happens. I back-integrate to 100 Myr,
+    over 2e3 steps.
+
+    We require 6d positions + kinematics (no NaN RVs allowed) for the core,
+    halo, and field comparison samples. This implies a strong cut on the
+    brightness of stars, and it also implies more precise parallax, position,
+    and proper motion measurements.
+
+    For the neighborhood/field samples, we also require S/N>10 on the parallax
+    measurement --- otherwise we get stars with negative parallaxes, which lead
+    to erroneous distance measurements when defining the orbits and doing the
+    back-integration.
+
+    `fix_rvs` is an option that sets all the RVs (except that of TOI1937) to
+    the mean cluster RV.
+
+    If this plot gets included in the paper, key citations will include a)
+    Price-Whelan's `gala` code; b) Bovy 2015, who worked out the model for the
+    galactic potential that is used in thisc calculation.
+
+    This function makes three plots:
+        check_backintegrate
+        toi1937_to_ngc2516_mean_distance
+        core_halo_to_ngc2516_separation
+    """
 
     from earhart.backintegrate import backintegrate
 
