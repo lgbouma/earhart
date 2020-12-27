@@ -5,6 +5,7 @@ _get_nbhd_dataframes
 _get_fullfaint_dataframes
 _get_fullfaint_edr3_dataframes
 _get_extinction_dataframes
+get_denis_xmatch
 """
 import os, collections, pickle
 import numpy as np, pandas as pd
@@ -16,6 +17,8 @@ from numpy import array as nparr
 from astropy.io import fits
 from astropy import units as u
 from astropy.table import Table
+from astroquery.vizier import Vizier
+from astroquery.xmatch import XMatch
 
 import cdips.utils.lcutils as lcu
 import cdips.lcproc.detrend as dtr
@@ -610,3 +613,68 @@ def calc_dist(x0, y0, z0, x1, y1, z1):
     )
 
     return d
+
+
+def get_denis_xmatch(c, _id=None, mag=None, drop_duplicates=1):
+    """
+    Given J2000 coordinate(s), search for the DENIS crossmatch(es).
+    Does this via the CDS XMatch service, which goes through the Vizier tables
+    and does a spatial crossmatch.
+
+    args:
+
+        c: astropy SkyCoord. Can contain many.
+
+        _id: identifier string for the star(s).
+
+        mag: optional magnitude(s) to compute a difference against.
+
+        drop_duplicates: whether to use angular distance to do a true
+        "left-join".
+
+    returns:
+
+        denis_xm (pandas DataFrame): containing searched coordinates,
+        identifier, magnitudes, the default DENIS columns, and crucially
+        `angDist` and `mag_diff`.
+    """
+
+    t = Table()
+    t['RAJ2000'] = c.ra
+    t['DEJ2000'] = c.dec
+    if mag is not None:
+        t['mag'] = mag
+    if _id is not None:
+        t['_id'] = _id
+
+    # # NOTE: simplest crossmatching approach fails, b/c no easy merging.
+    # # however, astroquery.XMatch, which queries the CDS XMatch service 
+    # # <http://cdsxmatch.u-strasbg.fr/xmatch>
+    # Vizier.ROW_LIMIT = -1
+    # v = Vizier(columns=["*", "+_r"], catalog="B/denis")
+    # denis_xm = v.query_region(t, radius="3s")[0]
+
+    denis_xm = XMatch.query(
+        cat1=t,
+        cat2='vizier:B/denis/denis',
+        max_distance=3*u.arcsec,
+        colRA1='RAJ2000',
+        colDec1='DEJ2000',
+        colRA2='RAJ2000',
+        colDec2='DEJ2000'
+    )
+
+    if mag is not None:
+        denis_xm['mag_diff'] = denis_xm['mag'] - denis_xm['Imag']
+
+    # Take the closest (proper motion and epoch-corrected) angular distance as
+    # THE single match.
+    get_leftjoin_xm = lambda _t: (
+        _t.to_pandas().sort_values(by='angDist').
+        drop_duplicates(subset='_id', keep='first')
+    )
+
+    if drop_duplicates:
+        return get_leftjoin_xm(denis_xm)
+    else:
+        return denis_xm.to_pandas()
