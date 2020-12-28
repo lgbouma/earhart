@@ -1523,14 +1523,31 @@ def _plot_detrending_check(time, flux, trend_flux, flat_flux, outpath):
     savefig(fig, outpath, writepdf=0, dpi=300)
 
 
-def plot_bisector_span_vs_RV(outdir):
+def plot_bisector_span_vs_RV(outdir, which='Gummi'):
+    """
+    'Gummi' or 'Hartman'
+    """
 
     # get data
-    bisectorpath = os.path.join(
-        DATADIR, 'spectra', 'PFS_bisector_spans_Hartman_20201211',
-        'TOI1937.PFS_bs.txt'
-    )
-    bdf = pd.read_csv(bisectorpath, delim_whitespace=True)
+    if which == 'Hartman':
+        bisectorpath = os.path.join(
+            DATADIR, 'spectra', 'PFS_bisector_spans_Hartman_20201211',
+            'TOI1937.PFS_bs.txt'
+        )
+        bdf = pd.read_csv(bisectorpath, delim_whitespace=True)
+        bis_key = 'BS[m/s]'
+        ebis_key = 'eBS[m/s]'
+        factor = 1
+    elif which == 'Gummi':
+        bisectorpath = os.path.join(
+            DATADIR, 'spectra', 'PFS_bisector_spans_Gummi_20201223',
+            '20201223_toi_1937_ccfs_bis.csv'
+        )
+        bdf = pd.read_csv(bisectorpath)
+        bdf = bdf.rename({'ob_name':'Spectrum', 'rv':'rv_gummi'}, axis=1)
+        bis_key = 'bis'
+        ebis_key = 'e_bis'
+        factor = 1000
 
     rvpath = os.path.join(
         RESULTSDIR, '20201110_butler_PFS_results', 'HD268301217_PFSBIN.vels'
@@ -1548,14 +1565,15 @@ def plot_bisector_span_vs_RV(outdir):
     f, ax = plt.subplots(figsize=(4,3))
 
     ax.errorbar(
-        mdf['BS[m/s]'], mdf['rv'], yerr=mdf['rv_err'], xerr=mdf['eBS[m/s]'],
+        factor*mdf[bis_key], mdf['rv'], yerr=mdf['rv_err'], xerr=factor*mdf[ebis_key],
         ls='none', color='k', elinewidth=1, capsize=1
     )
 
     ax.set_xlabel('BS [m$\,$s$^{-1}$]', fontsize='large')
     ax.set_ylabel('RV [m$\,$s$^{-1}$]', fontsize='large')
 
-    outpath = os.path.join(outdir, f'bisector_span_vs_RV.png')
+    s = '_'+which
+    outpath = os.path.join(outdir, f'bisector_span_vs_RV{s}.png')
 
     savefig(f, outpath, dpi=400)
 
