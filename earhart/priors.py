@@ -12,7 +12,7 @@ TEFF = 5880
 TEFF_STDEV = 100 # systematic unc based on comparison to SPECMATCH
 
 LI_EW = 30 # TODO: this is a guess at upper limit
-P_ROT = 6.5 # early guesstimate from LS
+P_ROT = 6.5 # TODO: improve guesstimate. allvariability_report gives 7.08 from s9 only... earlier guess was 6.5d given s7+s9.  still should run it w/ masked
 ROT_AMP = 0.01 # TODO: guess of 10 parts per thousand, peak-to-peak, by eye
 
 VSINI = 9.01 # km/s, from ZASPE+PFS

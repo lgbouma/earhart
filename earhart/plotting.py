@@ -7,6 +7,8 @@ Plots:
     plot_skypositions_x_rotn
     plot_randich_lithium
     plot_galah_dr3_lithium
+    plot_rotation_X_lithium
+    plot_rotation_X_RUWE
     plot_auto_rotation
     plot_gaia_rv_scatter_vs_brightness
     plot_edr3_blending_vs_apparentmag
@@ -1503,6 +1505,111 @@ def plot_rotation_X_lithium(outdir, cmapname):
     outstr = '_' + cmapname
     outpath = os.path.join(outdir,
                            f'rotation_vs_BpmRp_X_randich18_lithium{outstr}.png')
+    savefig(f, outpath)
+
+
+
+def plot_rotation_X_RUWE(outdir, cmapname, vs_rotators=1,
+                         basedata='fullfaint_edr3', emph_1937=0):
+    """
+    Plot Prot vs (Bp-Rp)_0, color points by RUWE (i.e., Gaia EDR3 matched).
+
+    This is for the "fullfaint_edr3" dataset, crossmatched against the
+    gold rotator sample.
+    """
+
+    from earhart.priors import AVG_EBpmRp, P_ROT
+    assert abs(AVG_EBpmRp - 0.1343) < 1e-4 # used by KC19
+
+    set_style()
+
+    if basedata == 'fullfaint_edr3':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
+    else:
+        raise NotImplementedError
+
+    if vs_rotators:
+        rotdir = os.path.join(DATADIR, 'rotation')
+        rot_df = pd.read_csv(
+            os.path.join(rotdir, 'ngc2516_rotation_periods.csv')
+        )
+        comp_df = rot_df[rot_df.Tags == 'gold']
+        print('Comparing vs the "gold" NGC2516 rotators sample (core + halo)...')
+
+        selcols = ['Name', 'period', 'Tags', 'source_id', 'subcluster']
+        s_comp_df = comp_df[selcols]
+
+    # merge, noting that the "ngc2516_rotation_periods.csv" measurements were
+    # done based on the DR2 source_id list, and in this plot the basedata are
+    # from EDR3 (so we use the DR2<->EDR3 crossmatch from
+    # _get_fullfaint_edr3_dataframes)
+    full_df = pd.concat((cg18_df,kc19_df))
+    assert len(full_df) == len(cg18_df) + len(kc19_df)
+    mdf = s_comp_df.merge(full_df, left_on='source_id',
+                          right_on='dr2_source_id', how='left')
+    assert len(mdf) == len(comp_df)
+
+    #
+    # check crossmatch quality
+    #
+    plt.close('all')
+    f, ax = plt.subplots(figsize=(4.5,3))
+
+    # color scheme
+    if cmapname == 'nipy_spectral':
+        cmap = mpl.cm.nipy_spectral
+    elif cmapname == 'viridis':
+        cmap = mpl.cm.viridis
+    bounds = np.arange(0.9,1.2+0.1, 0.1)
+    norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend='both')
+    if not emph_1937:
+        cax = ax.scatter(
+            mdf['phot_bp_mean_mag'] - mdf['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf['period'],
+            c=nparr(mdf['ruwe']), alpha=1, zorder=2, s=10, edgecolors='k',
+            marker='o', cmap=cmap, norm=norm, linewidths=0.3
+        )
+    else:
+        _s = 5489726768531119616
+        sel = (mdf.dr2_source_id == _s)
+        cax = ax.scatter(
+            mdf[~sel]['phot_bp_mean_mag'] - mdf[~sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf[~sel]['period'],
+            c=nparr(mdf[~sel]['ruwe']), alpha=1, zorder=2, s=10, edgecolors='k',
+            marker='o', cmap=cmap, norm=norm, linewidths=0.3
+        )
+
+
+    cb = f.colorbar(cax, extend='both')
+    cb.set_label("RUWE")
+
+    if emph_1937:
+        print(42*'-')
+        print(f'Applying E(Bp-Rp) = {AVG_EBpmRp:.4f}')
+        print(42*'-')
+
+        ax.scatter(
+                mdf[sel]['phot_bp_mean_mag'] - mdf[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+                P_ROT,
+                c=nparr(mdf[sel]['ruwe']), alpha=1, zorder=2, s=40, edgecolors='k',
+                marker='*', cmap=cmap, norm=norm, linewidths=0.3,
+                label='TOI 1937'
+            )
+
+        ax.legend(loc='upper left', handletextpad=0.05, fontsize='x-small', framealpha=0.)
+
+    ax.set_title('Kinematic $\otimes$ Rotation')
+
+    ax.set_ylabel('Rotation Period [days]')
+    ax.set_xlabel('(Bp-Rp)$_0$ [mag]')
+    ax.set_xlim((0.5, 1.5))
+
+    format_ax(ax)
+    outstr = '_' + cmapname
+    if emph_1937:
+        outstr += '_emph1937'
+    outpath = os.path.join(outdir,
+                           f'rotation_vs_BpmRp_X_RUWE{outstr}.png')
     savefig(f, outpath)
 
 

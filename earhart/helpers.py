@@ -542,6 +542,10 @@ def _get_fullfaint_edr3_dataframes():
     np.testing.assert_array_equal(np.array(nbhd_df_0.source_id),
                                   np.array(nbhd_df_0.source_id_2))
 
+    kc19_df_0['dr2_source_id'] = nparr(s_kc19_df_edr3['dr2_source_id']).astype(np.int64)
+    cg18_df_0['dr2_source_id'] = nparr(s_cg18_df_edr3['dr2_source_id']).astype(np.int64)
+    nbhd_df_0['dr2_source_id'] = nparr(s_nbhd_df_edr3['dr2_source_id']).astype(np.int64)
+
     target_df = kc19_df_0[kc19_df_0.source_id == 5489726768531119616] # TIC 2683...
 
     return nbhd_df_0, cg18_df_0, kc19_df_0, target_df
