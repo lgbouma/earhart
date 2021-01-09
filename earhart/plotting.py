@@ -14,6 +14,7 @@ Plots:
     plot_edr3_blending_vs_apparentmag
     plot_bisector_span_vs_RV
     plot_backintegration_ngc2516
+    plot_ngc2516_corehalo_3panel
 """
 import os, corner, pickle
 from glob import glob
@@ -1901,7 +1902,18 @@ def plot_backintegration_ngc2516(basedata, fix_rvs=0):
     savefig(fig, outpath)
 
 
-def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None):
+def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
+                                 corealpha=0.9):
+    """
+    # automatic selection criteria for viable rotation periods
+    sel = (
+        (df.period < 15)
+        &
+        (df.lspval > 0.08)
+        &
+        (df.nequal <= 1)
+    )
+    """
 
     if basedata == 'extinctioncorrected':
         raise NotImplementedError('need to implement extinction')
@@ -1933,7 +1945,7 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None):
         edgecolors='k'
     )
     axs[0].scatter(
-        cg18_df[xv], cg18_df[yv], c='k', alpha=0.9, zorder=4, s=9,
+        cg18_df[xv], cg18_df[yv], c='k', alpha=corealpha, zorder=4, s=6,
         rasterized=True, label='Core', marker='.'
     )
     if emph_1937:
@@ -1962,7 +1974,7 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None):
     )
 
     axs[1].scatter(
-        get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.8, zorder=2,
+        get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.5, zorder=2,
         s=9, rasterized=True, linewidths=0, label='Field', marker='.'
     )
     axs[1].scatter(
@@ -1971,8 +1983,8 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None):
         marker='.', edgecolors='k'
     )
     axs[1].scatter(
-        get_xval(cg18_df), get_yval(cg18_df), c='k', alpha=0.9,
-        zorder=4, s=9, rasterized=True, linewidths=0, label='Core', marker='.'
+        get_xval(cg18_df), get_yval(cg18_df), c='k', alpha=corealpha,
+        zorder=4, s=6, rasterized=True, linewidths=0, label='Core', marker='.'
     )
     if emph_1937:
         axs[1].plot(
@@ -2023,18 +2035,14 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None):
     prefactor = 2
     sel = (df.subcluster == 'core')
     axs[2].scatter(
-        xval[sel],
-        df[sel][ykey],
-        c='k', alpha=0.9,
-        zorder=4, s=prefactor*9, rasterized=True, linewidths=0, label='Core', marker='.'
+        xval[sel], df[sel][ykey], c='k', alpha=corealpha, zorder=4,
+        s=prefactor*6, rasterized=True, linewidths=0, label='Core', marker='.'
     )
 
     sel = (df.subcluster == 'halo')
     axs[2].scatter(
-        xval[sel],
-        df[sel][ykey],
-        c='lightskyblue', alpha=1,
-        zorder=3, s=prefactor*9, rasterized=True, linewidths=0.15, label='Halo',
+        xval[sel], df[sel][ykey], c='lightskyblue', alpha=1, zorder=3,
+        s=prefactor*9, rasterized=True, linewidths=0.15, label='Halo',
         marker='.', edgecolors='k'
     )
 
@@ -2042,8 +2050,8 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None):
 
     axs[2].set_ylabel('Rotation Period [days]')
     axs[2].set_xlabel('Bp-Rp [mag]')
-    axs[2].set_xlim((0.25, 2.0))
-    axs[2].set_ylim((0,15)) # linear
+    axs[2].set_xlim((0.21, 2.04))
+    axs[2].set_ylim((0,14.2)) # linear
 
     ##########
 
