@@ -158,7 +158,7 @@ def plot_full_kinematics(outdir, basedata='bright'):
     qlimd = {
         'ra': 0, 'dec': 0, 'parallax': 0, 'pmra': 1, 'pmdec': 1,
         rvkey: 1
-    } # whether to limit axis by 16/84th percetile
+    } # whether to limit axis by 5/95th percetile
     nnlimd = {
         'ra': 1, 'dec': 1, 'parallax': 1, 'pmra': 0, 'pmdec': 0,
         rvkey: 0
@@ -209,12 +209,12 @@ def plot_full_kinematics(outdir, basedata='bright'):
 
             # set the axis limits as needed
             if qlimd[xv]:
-                xlim = (np.nanpercentile(nbhd_df[xv], 16),
-                        np.nanpercentile(nbhd_df[xv], 84))
+                xlim = (np.nanpercentile(nbhd_df[xv], 5),
+                        np.nanpercentile(nbhd_df[xv], 95))
                 axs[i,j].set_xlim(xlim)
             if qlimd[yv]:
-                ylim = (np.nanpercentile(nbhd_df[yv], 16),
-                        np.nanpercentile(nbhd_df[yv], 84))
+                ylim = (np.nanpercentile(nbhd_df[yv], 5),
+                        np.nanpercentile(nbhd_df[yv], 95))
                 axs[i,j].set_ylim(ylim)
             if nnlimd[xv]:
                 xlim = (np.nanpercentile(nbhd_df[xv], 1),
@@ -1899,3 +1899,165 @@ def plot_backintegration_ngc2516(basedata, fix_rvs=0):
 
     outpath = f'../results/calc_backintegration_ngc2516/core_halo_to_ngc2516_separation{s}.png'
     savefig(fig, outpath)
+
+
+def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None):
+
+    if basedata == 'extinctioncorrected':
+        raise NotImplementedError('need to implement extinction')
+        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
+    elif basedata == 'bright':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
+    elif basedata == 'fullfaint':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
+    elif basedata == 'fullfaint_edr3':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
+    else:
+        raise NotImplementedError
+
+
+    set_style()
+
+    plt.close('all')
+
+    f, axs = plt.subplots(figsize=(6,3), ncols=3)
+
+    xv, yv = 'ra', 'dec'
+    axs[0].scatter(
+        nbhd_df[xv], nbhd_df[yv], c='gray', alpha=0.5, zorder=2, s=9,
+        rasterized=True, linewidths=0, label='Field', marker='.'
+    )
+    axs[0].scatter(
+        kc19_df[xv], kc19_df[yv], c='lightskyblue', alpha=0.9, zorder=3, s=9,
+        rasterized=True, linewidths=0.15, label='Halo', marker='.',
+        edgecolors='k'
+    )
+    axs[0].scatter(
+        cg18_df[xv], cg18_df[yv], c='k', alpha=0.9, zorder=4, s=9,
+        rasterized=True, label='Core', marker='.'
+    )
+    if emph_1937:
+        axs[0].plot(
+            target_df[xv], target_df[yv], alpha=1, mew=0.5,
+            zorder=8, label='TOI 1937', markerfacecolor='yellow',
+            markersize=14, marker='*', color='black', lw=0
+        )
+
+    axs[0].set_xlabel(r'$\alpha$ [deg]')
+    axs[0].set_ylabel(r'$\delta$ [deg]')
+    axs[0].set_xlim([108, 132])
+    axs[0].set_ylim([-76, -45])
+
+    ##########
+
+    get_yval = (
+        lambda _df: np.array(
+            _df['phot_g_mean_mag'] + 5*np.log10(_df['parallax']/1e3) + 5
+        )
+    )
+    get_xval = (
+        lambda _df: np.array(
+            _df['phot_bp_mean_mag'] - _df['phot_rp_mean_mag']
+        )
+    )
+
+    axs[1].scatter(
+        get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.8, zorder=2,
+        s=9, rasterized=True, linewidths=0, label='Field', marker='.'
+    )
+    axs[1].scatter(
+        get_xval(kc19_df), get_yval(kc19_df), c='lightskyblue', alpha=1,
+        zorder=3, s=9, rasterized=True, linewidths=0.15, label='Halo',
+        marker='.', edgecolors='k'
+    )
+    axs[1].scatter(
+        get_xval(cg18_df), get_yval(cg18_df), c='k', alpha=0.9,
+        zorder=4, s=9, rasterized=True, linewidths=0, label='Core', marker='.'
+    )
+    if emph_1937:
+        axs[1].plot(
+            get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
+            zorder=8, label='TOI 1937', markerfacecolor='yellow',
+            markersize=14, marker='*', color='black', lw=0
+        )
+
+    axs[1].set_ylim(axs[1].get_ylim()[::-1])
+
+    axs[1].set_xlabel('Bp - Rp [mag]')
+    axs[1].set_ylabel('Absolute G [mag]')
+
+    ##########
+
+    from earhart.paths import DATADIR
+    rotdir = os.path.join(DATADIR, 'rotation')
+    runid = 'NGC_2516'
+
+    df = pd.read_csv(
+        os.path.join(rotdir, f'{runid}_rotation_periods.csv')
+    )
+
+    # automatic selection criteria for viable rotation periods
+    sel = (
+        (df.period < 15)
+        &
+        (df.lspval > 0.08)
+        &
+        (df.nequal <= 1)
+    )
+    df = df[sel]
+
+    xval = (
+        df['phot_bp_mean_mag'] - df['phot_rp_mean_mag']
+    )
+    ykey = 'period'
+    if emph_1937:
+        from earhart.priors import AVG_EBpmRp, P_ROT
+        BpmRp_tic268 = 13.4400 - 12.4347
+        axs[2].plot(
+            BpmRp_tic268, P_ROT,
+            alpha=1, mew=0.5,
+            zorder=8, label='TOI 1937', markerfacecolor='yellow',
+            markersize=14, marker='*', color='black', lw=0
+        )
+
+    prefactor = 2
+    sel = (df.subcluster == 'core')
+    axs[2].scatter(
+        xval[sel],
+        df[sel][ykey],
+        c='k', alpha=0.9,
+        zorder=4, s=prefactor*9, rasterized=True, linewidths=0, label='Core', marker='.'
+    )
+
+    sel = (df.subcluster == 'halo')
+    axs[2].scatter(
+        xval[sel],
+        df[sel][ykey],
+        c='lightskyblue', alpha=1,
+        zorder=3, s=prefactor*9, rasterized=True, linewidths=0.15, label='Halo',
+        marker='.', edgecolors='k'
+    )
+
+    from earhart.priors import TEFF, P_ROT, AVG_EBpmRp
+
+    axs[2].set_ylabel('Rotation Period [days]')
+    axs[2].set_xlabel('Bp-Rp [mag]')
+    axs[2].set_xlim((0.25, 2.0))
+    axs[2].set_ylim((0,15)) # linear
+
+    ##########
+
+    for ax in axs:
+        format_ax(ax)
+
+    f.tight_layout(w_pad=0.5)
+
+    words = ['Field', 'Halo', 'Core'][::-1]
+    colors = ['gray', 'lightskyblue', 'k'][::-1]
+    rainbow_text(0.82, 0.08, words, colors, prefactor=4.6, size='medium', ax=axs[0])
+
+    outstr = f'_{basedata}'
+    if emph_1937:
+        outstr += '_emph1937'
+    outpath = os.path.join(outdir, f'ngc2516_corehalo_3panel{outstr}.png')
+    savefig(f, outpath)
