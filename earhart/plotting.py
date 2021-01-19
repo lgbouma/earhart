@@ -30,6 +30,7 @@ from astropy.io import fits
 from astropy.time import Time
 
 import matplotlib.patheffects as pe
+from matplotlib.ticker import MaxNLocator
 
 from aesthetic.plot import savefig, format_ax
 from aesthetic.plot import set_style
@@ -1932,7 +1933,7 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
 
     plt.close('all')
 
-    f, axs = plt.subplots(figsize=(6,3), ncols=3)
+    f, axs = plt.subplots(figsize=(0.9*7,0.9*3), ncols=3)
 
     xv, yv = 'ra', 'dec'
     axs[0].scatter(
@@ -2046,6 +2047,8 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
         marker='.', edgecolors='k'
     )
 
+    axs[2].yaxis.set_major_locator(MaxNLocator(integer=True))
+
     from earhart.priors import TEFF, P_ROT, AVG_EBpmRp
 
     axs[2].set_ylabel('Rotation Period [days]')
@@ -2062,7 +2065,8 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
 
     words = ['Field', 'Halo', 'Core'][::-1]
     colors = ['gray', 'lightskyblue', 'k'][::-1]
-    rainbow_text(0.82, 0.08, words, colors, prefactor=4.6, size='medium', ax=axs[0])
+    # prefactor=4.6,  required for png
+    rainbow_text(0.82, 0.08, words, colors, size='medium', ax=axs[0])
 
     outstr = f'_{basedata}'
     if emph_1937:
