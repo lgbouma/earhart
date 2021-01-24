@@ -11,3 +11,4 @@ doc*
 *.blg
 *.out
 drivers/oneoffs*
+*secret*
