@@ -1,0 +1,417 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt,twocolumn,tighten]{aastex63}
+%\documentclass[12pt,twocolumn,tighten,trackchanges]{aastex63}
+\usepackage{amsmath,amstext,amssymb}
+\usepackage[T1]{fontenc}
+\usepackage{apjfonts}
+\usepackage[figure,figure*]{hypcap}
+\usepackage{graphics,graphicx}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage[caption=false]{subfig} % for subfloat
+\usepackage{enumitem} % for specific spacing of enumerate
+\usepackage{epigraph}
+
+\renewcommand*{\sectionautorefname}{Section} %for \autoref
+\renewcommand*{\subsectionautorefname}{Section} %for \autoref
+
+\newcommand{\tn}{TOI~1937} % target star name
+\newcommand{\pn}{TOI~1937b} % planet name
+\newcommand{\cn}{NGC~2516} % cluster name
+
+\newcommand{\kms}{\,km\,s$^{-1}$}
+
+\newcommand{\stscilink}{\textsc{\url{archive.stsci.edu/hlsp/cdips}}}
+\newcommand{\datasetlink}{\textsc{\dataset[doi.org/10.17909/t9-ayd0-k727]{https://doi.org/10.17909/t9-ayd0-k727}}}
+
+%% Reintroduced the \received and \accepted commands from AASTeX v5.2.
+%% Add "Submitted to " argument.
+\received{---}
+\revised{---}
+\accepted{---}
+\submitjournal{TBD.}%AAS journals.}
+\shorttitle{TDB.}
+
+\begin{document}
+
+\defcitealias{bouma_wasp4b_2019}{B19}
+
+\title{
+  Cluster Difference Imaging Photometric Survey. III.
+  Subtitle.
+}
+
+%\suppressAffiliations
+%\NewPageAfterKeywords
+\input{authors.tex}
+
+\begin{abstract}
+  foo,bar.
+\end{abstract}
+
+\keywords{
+	Exoplanets (498),
+  Transits (1711),
+	Exoplanet evolution (491),
+	Stellar ages (1581),
+	Young star clusters (1833)
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Introduction}
+
+Lorem ipsum.
+
+Section~\ref{sec:observations} describes the identification of the
+candidate, and the follow-up observations that led to its confirmation.
+
+The planet can only be understood with respect to its (putative)
+host cluster, so in turn we analyze the
+available six-dimensional positions and kinematics (Section~\ref{sec:gaia6d}),
+the rotation periods of stars in \cn\ 
+(Section~\ref{sec:rotation}), and the available lithium measurements
+(Section~\ref{sec:lithium}).
+We synthesize this data in
+Section~\ref{sec:system} to present our best interpretation of the
+system itself, in turn presenting our interpretation of the
+cluster
+(Section~\ref{subsec:cluster}), the star (Section~\ref{subsec:star})
+and the planet (Section~\ref{subsec:planet}).  We conclude in
+Section~\ref{sec:discussion} by discussing which questions we have
+been able to answer, and which remain open.
+
+
+
+\section{Identification and Follow-up Observations}
+\label{sec:observations}
+
+
+  \subsection{TESS Photometry}
+  \label{subsec:tess}
+  TESS: S7 + S9
+
+  \subsection{Gaia Astrometry and Imaging}
+  \label{subsec:gaia}
+  Gaia:
+    Within 20 arcsec, there are three sources. 
+
+  % 5489726768531119616 (target, G=13.02, plx=2.38 +/- 0.017 mas, so Bp-Rp=1.00).
+  %   Note RV = 27.77km/s, +/- 9.99 km/s. Quotes E(Bp-Rp) = 0.1925
+
+  % 5489726768531118848 (G=17.59, Bp=17.7, Rp=16.2, Bp-Rp=1.502,...
+  %   but has plx=2.32 +/- 0.118 mas, and VERY SIMILAR proper motions. So, it's a
+  %   binary. Presumably this is the companion that Ziegler found.)
+
+  % There's also 5489726768531122560, a G=19.5 companion at further sep.
+
+  % ...
+
+  % Within 30 arcsec, there are... 8 sources. The others don't have parallaxes or
+  % proper motions of significant interest.
+
+  \subsection{High-Resolution Imaging}
+  \label{subsec:speckle}
+  Howell et al took some, for me, and had a non-detection.
+
+  Also, Ziegler et al took some.
+    They get the 2.1 arcsec separation, faint companion.
+
+  \subsection{Ground-based Time-Series Photometric Follow-up}
+  \label{subsec:groundphot}
+  LCOGT
+    5 light curves. 3 i band, 1 g band, 1 z band
+  El Sauce
+    1 r band.
+
+  \subsection{Spectroscopic Follow-up}
+  \label{subsec:spectra}
+
+  \subsubsection{SMARTS 1.5$\,$m / CHIRON}
+  \label{subsec:chiron}
+  CHIRON x1 recon 2020-02-04, another circa 2021.
+
+  \subsubsection{PFS}
+  PFS template + RVs
+
+  %\input{TOI837_rv_table.tex}
+
+\section{Kinematics}
+
+  \subsection{NGC 2516 broadly}
+  \subsection{TOI 1937 specifically}
+
+\section{Rotation}
+
+  \subsection{NGC 2516 broadly}
+  \subsection{TOI 1937 specifically}
+
+\section{Lithium}
+
+  \subsection{NGC 2516 broadly}
+  \subsection{TOI 1937 specifically}
+
+\section{System Modeling}
+\label{sec:system}
+
+
+\subsection{The Cluster}
+\label{subsec:cluster}
+
+\subsubsection{Physical Characteristics}
+\label{subsec:clusterchar}
+
+\subsubsection{HR Diagram}
+\label{subsec:hr}
+
+\subsection{The Star}
+\label{subsec:star}
+
+\subsubsection{Membership of \tn\ in \cn}
+\label{subsec:member}
+
+\subsubsection{Rotation}
+
+\subsubsection{Lithium}
+
+\subsubsection{Stellar Parameters}
+\label{subsec:starparams}
+
+\subsection{The Planet}
+\label{subsec:planet}
+
+
+\section{Discussion}
+\label{sec:discussion}
+
+The future:
+- Detailed multi-abundance modelling.
+  i.e,. Get spectra of other cluster stars using PFS, and compare the metallicities.
+- 2$\farc$5 separate, multiband imager. (With LCOGT, 2m in Australia,
+  z-band)->Do PSF fitting.
+- K-band image. MagAO? Multicolor imager.
+- Maybe GROND -- has K-band. At La Silla. On 2.2m.  griz+K.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\clearpage
+\acknowledgements
+\raggedbottom
+
+The authors thank X and Y for fruitful discussions.
+%
+L.G.B. and J.H. acknowledge support by the TESS GI Program, program
+NUMBER, through NASA grant NUMBER.
+%
+This study was based in part on observations at Cerro Tololo
+Inter-American Observatory at NSF's NOIRLab (NOIRLab Prop. ID
+2020A-0146; 2020B-NUMBER PI: L{.}~Bouma), which is managed by the
+Association of Universities for Research in Astronomy (AURA) under a
+cooperative agreement with the National Science Foundation.
+%
+ACKNOWLEDGE PFS / CAMPANAS.
+%
+This paper includes data collected by the TESS mission, which are
+publicly available from the Mikulski Archive for Space Telescopes
+(MAST).
+%
+Funding for the TESS mission is provided by NASA's Science Mission
+directorate.
+%
+
+% The ASTEP project acknowledges support from the French and Italian
+% Polar Agencies, IPEV and PNRA, and from Universit\'e C\^ote d'Azur
+% under Idex UCAJEDI (ANR-15-IDEX-01). We thank the dedicated staff at
+% Concordia for their continuous presence and support throughout the
+% Austral winter.
+% %
+% This research received funding from the European Research Council
+% (ERC) under the European Union's Horizon 2020 research and innovation
+% programme (grant n$^\circ$ 803193/BEBOP), and from the
+% Science and Technology Facilities Council (STFC; grant n$^\circ$
+% ST/S00193X/1).
+%
+% The Digitized Sky Survey was produced at the Space Telescope Science
+% Institute under U.S. Government grant NAG W-2166.
+% Figure~\ref{fig:scene} is based on photographic data obtained using
+% the Oschin Schmidt Telescope on Palomar Mountain.
+%
+
+This research was based in part on observations obtained at the
+Southern Astrophysical Research (SOAR) telescope, which is a joint
+project of the Minist\'{e}rio da Ci\^{e}ncia, Tecnologia e
+Inova\c{c}\~{o}es (MCTI/LNA) do Brasil, the US National Science
+Foundation's NOIRLab, the University of North Carolina at Chapel Hill
+(UNC), and Michigan State University (MSU).
+
+This research made use of the Exoplanet Follow-up Observation
+Program website, which is operated by the California Institute of
+Technology, under contract with the National Aeronautics and Space
+Administration under the Exoplanet Exploration Program.
+% %
+% This research made use of the NASA Exoplanet Archive, which is
+% operated by the California Institute of Technology, under contract
+% with the National Aeronautics and Space Administration under the
+% Exoplanet Exploration Program.
+% %
+
+This research made use of the SVO Filter Profile Service
+(\url{http://svo2.cab.inta-csic.es/theory/fps/}) supported from the Spanish
+MINECO through grant AYA2017-84089.
+
+Resources supporting this work were provided by the NASA High-End
+Computing (HEC) Program through the NASA Advanced Supercomputing (NAS)
+Division at Ames Research Center for the production of the SPOC data
+products.
+%
+
+% A.J.\ and R.B.\ acknowledge support from project IC120009 ``Millennium
+% Institute of Astrophysics (MAS)'' of the Millenium Science Initiative,
+% Chilean Ministry of Economy. A.J.\ acknowledges additional support
+% from FONDECYT project 1171208.  J.I.V\ acknowledges support from
+% CONICYT-PFCHA/Doctorado Nacional-21191829.  R.B.\ acknowledges support
+% from FONDECYT Post-doctoral Fellowship Project 3180246.
+% %
+% C.T.\ and C.B\ acknowledge support from Australian Research Council
+% grants LE150100087, LE160100014, LE180100165, DP170103491 and
+% DP190103688.
+% %
+% C.Z.\ is supported by a Dunlap Fellowship at the Dunlap Institute for
+% Astronomy \& Astrophysics, funded through an endowment established by
+% the Dunlap family and the University of Toronto.
+% %
+% D.D.\ acknowledges support through the TESS Guest Investigator Program
+% Grant 80NSSC19K1727.
+%
+%
+%
+% %
+% Based on observations obtained at the Gemini Observatory, which is
+% operated by the Association of Universities for Research in Astronomy,
+% Inc., under a cooperative agreement with the NSF on behalf of the
+% Gemini partnership: the National Science Foundation (United States),
+% National Research Council (Canada), CONICYT (Chile), Ministerio de
+% Ciencia, Tecnolog\'{i}a e Innovaci\'{o}n Productiva (Argentina),
+% Minist\'{e}rio da Ci\^{e}ncia, Tecnologia e Inova\c{c}\~{a}o (Brazil),
+% and Korea Astronomy and Space Science Institute (Republic of Korea).
+% %
+% Observations in the paper made use of the High-Resolution Imaging
+% instrument Zorro at Gemini-South. Zorro was funded by the NASA
+% Exoplanet Exploration Program and built at the NASA Ames Research
+% Center by Steve B. Howell, Nic Scott, Elliott P. Horch, and Emmett
+% Quigley.
+% %
+% This research has made use of the VizieR catalogue access tool, CDS,
+% Strasbourg, France. The original description of the VizieR service was
+% published in A\&AS 143, 23.
+% %
+% This work has made use of data from the European Space Agency (ESA)
+% mission {\it Gaia} (\url{https://www.cosmos.esa.int/gaia}), processed
+% by the {\it Gaia} Data Processing and Analysis Consortium (DPAC,
+% \url{https://www.cosmos.esa.int/web/gaia/dpac/consortium}). Funding
+% for the DPAC has been provided by national institutions, in particular
+% the institutions participating in the {\it Gaia} Multilateral
+% Agreement.
+%
+% (Some of) The data presented herein were obtained at the W. M. Keck
+% Observatory, which is operated as a scientific partnership among the
+% California Institute of Technology, the University of California and
+% the National Aeronautics and Space Administration. The Observatory was
+% made possible by the generous financial support of the W. M. Keck
+% Foundation.
+% The authors wish to recognize and acknowledge the very significant
+% cultural role and reverence that the summit of Maunakea has always had
+% within the indigenous Hawaiian community.  We are most fortunate to
+% have the opportunity to conduct observations from this mountain.
+%
+% \newline
+%
+
+\software{
+  \texttt{arviz} \citep{arviz_2019},
+  \texttt{astrobase} \citep{bhatti_astrobase_2018},
+  %\texttt{astroplan} \citep{astroplan2018},
+	\texttt{AstroImageJ} \citep{collins_astroimagej_2017},
+  \texttt{astropy} \citep{astropy_2018},
+  \texttt{astroquery} \citep{astroquery_2018},
+  %\texttt{BATMAN} \citep{kreidberg_batman_2015},
+  \texttt{ceres} \citep{brahm_2017_ceres},
+  \texttt{cdips-pipeline} \citep{bhatti_cdips-pipeline_2019},
+  \texttt{corner} \citep{corner_2016},
+  %\texttt{emcee} \citep{foreman-mackey_emcee_2013},
+  \texttt{exoplanet} \citep{exoplanet:exoplanet}, and its
+  dependencies \citep{exoplanet:agol20, exoplanet:kipping13, exoplanet:luger18,
+  	exoplanet:theano},
+	%\texttt{IDL Astronomy User's Library} \citep{landsman_1995},
+  \texttt{IPython} \citep{perez_2007},
+	%\texttt{isochrones} \citep{morton_2015_isochrones},
+	%\texttt{lightkurve} \citep{lightkurve_2018},
+  \texttt{matplotlib} \citep{hunter_matplotlib_2007}, 
+  %\texttt{MESA} \citep{paxton_modules_2011,paxton_modules_2013,paxton_modules_2015}
+  \texttt{numpy} \citep{walt_numpy_2011}, 
+  \texttt{pandas} \citep{mckinney-proc-scipy-2010},
+  \texttt{pyGAM} \citep{serven_pygam_2018_1476122},
+  \texttt{PyMC3} \citep{salvatier_2016_PyMC3},
+  \texttt{radvel} \citep{fulton_radvel_2018},
+  %\texttt{scikit-learn} \citep{scikit-learn},
+  \texttt{scipy} \citep{jones_scipy_2001},
+  \texttt{tesscut} \citep{brasseur_astrocut_2019},
+	%\texttt{VESPA} \citep{morton_efficient_2012,vespa_2015},
+  %\texttt{webplotdigitzer} \citep{rohatgi_2019},
+  \texttt{wotan} \citep{hippke_wotan_2019}.
+}
+\ 
+
+\facilities{
+ 	{\it Astrometry}:
+ 	Gaia \citep{gaia_collaboration_gaia_2016,gaia_collaboration_gaia_2018}.
+ 	{\it Imaging}:
+    Second Generation Digitized Sky Survey,
+    SOAR~(HRCam; \citealt{tokovinin_ten_2018}).
+ 	%Keck:II~(NIRC2; \url{www2.keck.hawaii.edu/inst/nirc2}).
+ 	%Gemini:South~(Zorro; \citealt{scott_nessi_2018}.
+ 	{\it Spectroscopy}:
+	CTIO1.5$\,$m~(CHIRON; \citealt{tokovinin_chironfiber_2013}),
+  PFS ({\bf CITE}),
+  %  MPG2.2$\,$m~(FEROS; \citealt{kaufer_commissioning_1999}),
+	AAT~(Veloce; \citealt{gilbert_veloce_2018}).
+ 	%Keck:I~(HIRES; \citealt{vogt_hires_1994}).
+ 	%{\bf VLT (number), UVES and GIRAFFE} (CITE: Pasquini et al 2002)
+% 	Euler1.2m~(CORALIE),
+% 	ESO:3.6m~(HARPS; \citealt{mayor_setting_2003}).
+ 	{\it Photometry}:
+%	  ASTEP:0.40$\,$m (ASTEP400),
+% 	CTIO:1.0m (Y4KCam),
+% 	Danish 1.54m Telescope,
+	  El Sauce:0.356$\,$m,
+% 	Elizabeth 1.0m at SAAO,
+% 	Euler1.2m (EulerCam),
+% 	Magellan:Baade (MagIC),
+% 	Max Planck:2.2m	(GROND; \citealt{greiner_grond7-channel_2008})
+% 	NTT,
+% 	SOAR (SOI),
+ 	TESS \citep{ricker_transiting_2015}.
+% 	TRAPPIST \citep{jehin_trappist_2011},
+% 	VLT:Antu (FORS2).
+}
+
+% \input{TOI837_phot_table.tex}
+% \input{TOI837_rv_table.tex}
+% \input{ic2602_ages.tex}
+\input{starparams.tex}
+\input{compparams.tex}
+% \input{model_posterior_table.tex}
+
+\clearpage
+\bibliographystyle{yahapj}                            
+\bibliography{bibliography} 
+
+
+\listofchanges
+
+%\allauthors
+\end{document}

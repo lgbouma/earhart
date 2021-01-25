@@ -1,0 +1,112 @@
+------------------------------------------
+ABSTRACT 
+
+We present a new transiting hot Jupiter, TOI 1937Ab, with a peculiar
+set of properties.
+
+The host star, TOI 1937A (G=13.0), is roughly solar mass. However its
+spin period is shorter than 99% of other stars that host hot Jupiters
+(6.5 days).
+
+The planet's size and mass are typical for hot Jupiters
+(Rp=1.25+/-0.10Rj, Mp=1.XX+/-0.XXMj).  However its orbital period is
+shorter than 99% of other hot Jupiters.
+
+We found the planet because it had been reported as a candidate member
+of the diffuse, gravitationally unbound ``halo'' of the open cluster
+NGC 2516 (~100 Myr).
+
+We present the evidence for and against the host star being truly this
+young.
+
+First, from isochrones and gyrochronology we show that the halo of
+NGC2516 is to within measurement precision coeval with the core.
+Available lithium measurements support this interpretation. They also
+confirm that at fixed stellar mass, lithium abundance is strongly
+correlated with stellar rotation period (as has been observed in the
+Pleaides).
+
+Stellar positions and velocities from Gaia EDR3, crossmatched with
+TESS rotation periods, suggest a membership probability for TOI 1937
+of at least 50% (given the fraction of gyrochronologically confirmed
+young stars in similar regions of phase space as TOI 1937). [at least
+b/c some young stars might show rotation, but the LCs could be bad]
+
+The rotation of the star is consistent with it being roughly the age
+of the cluster, but might have been tidally influenced by the hot
+Jupiter.
+
+Lithium does not support the star's youth, and is the strongest
+argument against it being a cluster member. There are a few caveats
+with the lithium: it is probably affected by the star's rotation
+period, and it may be affected by the presence of the hot Jupiter.
+Nonetheless, its absence is worrisome.
+
+The metallicity is X, which supports / is in tension with the cluster
+membership.
+
+The companion, TOI 1937B, with an apparent separation of ~1000AU,
+appears to be an MX dwarf.  Despite our best attempts, we cannot yet
+photometrically verify whether the companion is still on its
+pre-main-sequence contraction track.  This could perhaps be resolved
+with NIR AO imaging.
+
+------------------------------------------
+TAKEAWAYS
+
+* Open cluster halos are a good planet hunting ground. They solve the
+  twin problems of a) number of young stars to search, and b)
+  crowding.
+
+* The contamination fraction of field stars in these environments is
+  best assessed empircally, through a combination of isochronal,
+gyrochronal, and spectroscopic age indicators.
+
+* Despite the hundreds of known hot Jupiters, the youngest confirmed
+  hot Jupiter is quite old: KELT-9b (300 Myr).
+
+* The presence of a hot Jupiter likely alters multiple age indicators.
+  If the hot Jupiter arrives on its close-in orbit during the disk
+  phase, it could break the magnetic lock between the star's
+  magnetosphere and the inner disk rim, and thereby affect the stellar
+  spin evolution.  Tidal interactions between the star and planet after
+  arrival could also lead to stellar spin-up (or spin-down, depending on
+  the planet's orbital and star's spin frequencies).  If the stellar
+  rotation period changes sufficiently, the lithium abundance in the
+  photosphere is expected on empirical grounds to change. This could be
+  explained by enhanced mixing processes.
+
+* TOI 1937 is a system that brings all of these considerations
+  together.  It is potentially a 100 Myr hot Jupiter, which would make
+  it the youngest confirmed hot Jupiter by a factor of 3.  (Plenty of
+  younger candidates have been published[1,2], and have either been
+  retracted [3,4], or have not been confirmed).  Given the available
+  evidence, it seems likely/unlikely that TOI1937 is truly a cluster
+  member.
+
+* Some aspects of the system's interpretation require more data.
+
+  * Characterization of the secondary could be improved.  NIR AO
+    imaging could give a more precise bolometric luminosity, which
+    could clarify its status as a pre-MS M dwarf, and therefore the
+    system's youth.  NIR high-resolution spectra on big telescopes
+    might(?) give a more precise Teff for the companion, might lead to a
+    lithium detection, and might also yield H-alpha measurements
+    consistent or in contradiction with the youth.
+
+  * More PFS RVs could pin down the planet mass better, and also the
+    eccentricity.
+
+  * Li measurements for "slow rotators" that are kinematically cluster
+    members would continue to clarify the Li-Prot-Mstar relationship.
+
+  * The a priori chances of a field star having both 6d-kinematic
+    (1e-3) overlap and rotational (1 in 20) overlap with the halo of
+    NGC2516 are of order 5e-5, or say 1e-4.  If one is willing to accept
+    strange stellar spin and planet orbital periods as youth indicators,
+    you get another 1e-2 * 1e-2, and an a priori probability of this
+    object being a field star of order 1e-8.  Selection effects imply that
+    we should be suspicious of this argument, particularly in light of the
+    lack of lithium in the host star.  The metallicity, being
+    CONSISTENT/INCONSISTENT with the cluster membership, is in our eyes
+    the straw that breaks the camel's back.

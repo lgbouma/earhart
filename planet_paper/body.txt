@@ -1,0 +1,99 @@
+\subsection{Description of the system, and available broadband photometry}
+
+The TOI 1937 system consists of at least two stars. The primary, A, has an
+effective temperature slightly greater than the Sun ($T_{\rm eff} \approx 5800
+\, {\rm K}$). In terms of its brightness, $G = 13.02 \pm 0.XX$.
+
+The detected secondary, B, is significantly fainter. Its apparent separation
+from the primary is 2.1$''$, and it is reported both in the Gaia source catalog
+(Gaia DR2 5489726768531118848), and was recovered in SOAR speckle imaging
+(Figure~\ref{fig:speckle}).
+In terms of its brightness, $G = 17.59$, and its parallax agrees with the
+primary within the $1$$\sigma$ uncertainties.  Its proper motions agree within
+$\approx 3 \sigma$ uncertainties.
+Its apparent separation translates to a physical separation of at least
+$\approx 1000\,{\rm AU}$ (2.1$''$ at $\sim$400$\,$pc).
+
+The Gaia colors of the primary are consistent with the spectroscopic results, {\it
+i.e.}, that it has a spectral type of G2V, and is consistent with being on or
+near the zero-age main sequence (ZAMS).
+
+The Gaia colors of the secondary are more ambiguous. While the Gaia processing
+pipeline calculates the G-band fluxes from Gaia's high-resolution images, the
+Rp and Bp fluxes are calculated from low dispersion spectra passed through a
+prism, which means they include the light over a $3.5'' \times 2.1''$ area of
+the sky, with no attempt made at de-blending.
+Therefore, contamination from the primary is a concern for the Gaia Bp and Rp
+fluxes.
+The \texttt{phot\_bp\_rp\_excess\_factor} of 2.06 for the companion supports this
+concern\footnote{\url{https://gea.esac.esa.int/archive/documentation/GDR2/Data_processing/chap_cu5pho/sec_cu5pho_qa/ssec_cu5pho_excessflux.html}};
+in other words the summed Bp and Rp band fluxes for the companion are
+significantly larger than expected based on the G band flux.
+The Bp flux measurement in particular is concerning, as it is reported at a S/N
+ratio of 5.4, in comparison to 89.5 for the Rp-band flux, and 244.3 for the
+G-band flux.
+One possible explanation for stars in this region of the HR diagrams that has
+been proposed is that they are binaries consisting of white-dwarf plus M-dwarf
+pairs (e.g., CITE: BELUKUROV 2020).
+While the explanation is hard to rule out, the blending explanation seems more
+plausible, since we know that it should be a concern for this system.
+
+So, perhaps it should not come as a surprise that Figure~\ref{fig:MG_vs_BpmRp},
+an HR diagram of $M_{\rm G}$ against $(Bp-Rp)$ shows the companion being bluer
+than expected given its absolute $G$-band magnitude.
+An HR diagram of $M_{\rm G}$ against $(G-Rp)$ (Figure~\ref{fig:MG_vs_GmRp})
+seems to not show such a discrepancy, however as discussed above blending
+remains a potential source of concern for the Rp-band flux due to the Gaia
+DPAC's reduction procedure.
+
+\paragraph{SOAR Photometry}
+An important additional point of information regarding the color of the
+companion therefore comes from the only other high-resolution image we
+currently have of it apart from Gaia, obtained using the SOAR HRCam.  SOAR
+showed the companion being 4.3 Cousins-I band magnitudes fainter than the
+primary. 
+
+\subsection{Broadband photometry SED fitting}
+
+For the primary, we have APASS BVgri, DENIS Ic (included specifically to use
+with the SOAR delta-Ic measurement), 2MASS JHKs, and WISE1-3 in addition to the
+three Gaia bands. 
+This gives
+
+Primary 
+reduced chi2 = 1.1 
+Teff = 6100 +/- 150 K 
+Fe/H = -0.5 +/- 0.25 
+Av = 0.83 +/- 0.04 
+Rstar = 1.095 +/- 0.055 Rsun 
+Mstar = 1.07 +/- 0.06 Msun (Torres relations) 
+
+For the secondary, we have only Gaia-G and SOAR Cousins-I. These give:
+
+Secondary (assumed same Av and Fe/H as above) 
+Teff = 3700 +/- 100 K 
+Rstar = 0.444 +/- 0.066 Rsun 
+
+if we fix the metallicity and reddening to be the same as for the primary.
+
+
+\subsection{Resulting Stellar Properties}
+
+The primary is easy, and is discussed elsewhere.
+
+Implications for the secondary from available data are as follows.
+If we believe Rp, then (G-Rp)\_0 ~= 1.22, which according to Mamajek's tables
+would imply SpType M3.5V-M4V (0.22-0.26 Msun), not K3-K4V. The possible "K
+dwarf interpretation" is wrong, because it is based off the (Bp-Rp) color, and
+as noted above Bp seems off.  The (dereddened) Absolute G magnitude of 9.4 is
+consistent with a ~M2V dwarf, which perhaps is the most reliable given the lack
+of deblending, even in the Rp magnitude.
+
+According to Mamajek, M2V would imply Rstar 0.434 Rsun, Mstar 0.44 Msun. It
+would also imply Teff = 3550 K.
+
+Teff of 3700K, which we got from Stassun's SED fitting, is more like M1V (0.496Rsun, 0.49Msun).
+
+However given the uncertainties, it seems unlikely that broadband SED fitting
+will be a path toward better characterization of the secondary, unless we can
+get NIR speckle imaging to fill out the secondary SED..

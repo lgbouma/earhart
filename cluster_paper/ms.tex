@@ -1,0 +1,577 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt,twocolumn,tighten]{aastex63}
+%\documentclass[12pt,twocolumn,tighten,trackchanges]{aastex63}
+\usepackage{amsmath,amstext,amssymb}
+\usepackage[T1]{fontenc}
+\usepackage{apjfonts}
+\usepackage[figure,figure*]{hypcap}
+\usepackage{graphics,graphicx}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage[caption=false]{subfig} % for subfloat
+\usepackage{enumitem} % for specific spacing of enumerate
+\usepackage{epigraph}
+
+\renewcommand*{\sectionautorefname}{Section} %for \autoref
+\renewcommand*{\subsectionautorefname}{Section} %for \autoref
+
+\newcommand{\cn}{NGC\,2516} % cluster name
+
+\newcommand{\numcdipslcs}{671{,}901\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
+\newcommand{\numsouthernuniqlcs}{483{,}407\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
+
+\newcommand{\kms}{\,km\,s$^{-1}$}
+
+%% Reintroduced the \received and \accepted commands from AASTeX v5.2.
+%% Add "Submitted to " argument.
+\received{---}
+\revised{---}
+\accepted{---}
+\submitjournal{AAS journals.}
+\shorttitle{Core \& Halo of NGC\,2516}
+
+\begin{document}
+
+\defcitealias{bouma_wasp4b_2019}{B19}
+
+\title{
+  Cluster Difference Imaging Photometric Survey. III.
+  The Coeval Halo and Core of NGC\,2516
+}
+
+%\suppressAffiliations
+%\NewPageAfterKeywords
+\input{authors.tex}
+
+\begin{abstract}
+  foo,bar.
+\end{abstract}
+
+\keywords{
+	stellar ages (1581),
+	young star clusters (1833),
+  open clusters (1160),
+  stellar rotation (1629)
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Introduction}
+
+In the traditional picture of star formation molecular clouds go
+gravitationally unstable, and collapse into little knots.  The knots
+produce many stars close to each other.  The resulting ``open star
+clusters'' are, as with any first-order guess, spherical.
+
+How does the cluster evolve?  The answer depends
+on the total stellar mass.
+% What exactly does this mean?
+The smallest 90\% of star clusters disperse during the ``embedded
+phase'' (CITE).  This is driven mostly by {\it process A} (CITE).  The
+more massive clusters make it to maybe 100 Myr. Maybe a bit longer.
+Their evaporation is thought to be driven by collisions with molecular
+clouds (CITE, Spitzer 1958), and the galactic tide (CITE), and {\it
+process A}, and {\it process B}.  Of course, the expected evaporation
+time should depend on factors including the mass of the cluster
+itself, how many high-mass (O and B) stars form, since their winds
+[and maybe supernovae] clear out most of the cloud, and the initial
+density of the gas cloud to begin with.
+
+Assuming that the cluster achieves virial equilibrium, stellar fly-bys
+then conspire to segregate the stellar mass distribution within the
+cluster, evaporating the lowest mass stars soonest (2T+U=0, U=-GM/r,
+assuming equipartition of the specific ``thermal energy'' per star,
+then kT = 0.5$mv^2$ at lower masses requires higher velocities).  
+
+Identification of the stars that disperse into the galactic field is
+an important task for understanding the conditions under which stars
+and star clusters form, and for understanding how they subsequently
+evolve.  For instance, how does the process of radial migration across
+the galactic disk affect cluster dispersal?  Did the Sun form in an
+open cluster? If so, how massive was its cluster, and is there any
+hope at identifying the stars that formed near the Sun?
+Qualitatively, the dispersal of open clusters also provides perhaps
+the best ``test case'' for the concept of ``chemical tagging'', also
+referred to as ``galactic archaeology'' (CITE).
+
+Outside of the issue of star formation, identifying the remnant halos
+of open clusters is important for a separate project: that of
+discovering young transiting planets.  Young transiting planets are
+hard to find because young stars are rare (CITE), and often reside in
+crowded regions of the sky (CITE).  If the halos of nearby star
+clusters can be reliably identified, this could expand the census of
+nearby sub-Gyr stars by a factor of 2 or even 3 (CITE Meingast).  A
+fortuitous benefit of searching for planets in cluster environments is
+that issues with stellar crowding are also alleviated.
+
+Recent clustering studies using Gaia have begun to report the
+identification of structures that could correspond to low-density
+halos of stars that may have evaporated from open clusters (e.g.,
+Kounkel+19, Kounkel+20, Meingast+21).  However, different clustering
+methods on the Gaia data tend to give different results (CITE: Hunt \&
+Reffert 2020).  Employing say Gaussian Mixture Modelling, or any
+analogous method that requires ``clusters'' to be ellipses in
+spatial/velocity phase-space unsurpsingly yields open clusters that
+are roughly elliptical (CITE: Cantat-Gaudin+18). Unsupervised
+clustering methods such as HDBScan (e.g., Kounkel+19) have been found
+to yield additional structures, particularly in lower density regions
+such as the Psc-Eri stream (CITE: Meingast+18, Curtis+19, Newton+21),
+but also more generally around many open clusters (Kounkel+19).
+Unsupervised approaches that incorporate physical constraints (e.g.,
+imposing a maximum velocity dispersion on putative members) yield
+similar results, potentially with higher purity (Meingast+21).
+
+We've recently been making TESS light curves of age-dated stars across
+the sky, as part of a Cluster Difference Imaging Photometry Survey
+(CDIPS, CITE Bouma+19).  Our analysis of Cycle 1 (Sectors 1-13)
+yielded light curves of \numsouthernuniqlcs candidate cluster members
+in the Southern Ecliptic hemisphere, available on MAST
+[\href{https://archive.stsci.edu/hlsp/cdips}{1},\href{https://ui.adsabs.harvard.edu/abs/2019ApJS..245...13B/abstract}{2}].
+% TODO: make this number actually quantitative...
+Based on rotation periods, $\approx$25\% appear to be bonafide cluster
+members. 
+
+As part of a broader project of identifying a large and clean sample
+of young stars for a transit search, we take the opportunity of this
+paper to answer a rather modest question: in just a single rich
+southern open cluster, is the cluster halo coeval with the core?  The
+cluster we chose for this analysis was NGC\,2516, since it was young
+($\sim$110\,Myr) and close ($d=400$\,pc) enough to facilitate rotation
+measurements using TESS, and some degree of spectroscopic analysis.
+We want to know: is the halo real? To what extent can we use Gaia
+alone to reliably identify age-dated needles in the haystack of boring
+field stars?  And more generally, what are the implications for the
+evolution of open clusters if they do have halos?
+
+Section~\ref{sec:gaia} presents the astrometric and photometric data
+from Gaia, and clarifies our usage of the terms ``core'' and ``halo''.
+Section~\ref{sec:agedate} age-dates the halo of NGC\,2516, using TESS
+gyrochronology (Section~\ref{sec:rotation}), and lithium depletion
+(Section~\ref{sec:lithium}).  In Section~\ref{sec:discussion} we
+discuss the implications of this analysis for NGC\,2516 specifically
+and stellar spin-down and open cluster evolution generally.
+Section~\ref{sec:conclusion} presents our conclusions.
+
+
+\section{A 250\,pc Halo around a Core?}
+\label{sec:gaia}
+%
+% What is the core? What is the halo?
+%
+
+\subsection{Gaia Astrometry}
+\label{subsec:astrometry}
+
+\begin{figure*}[t]
+	\begin{center}
+		\leavevmode
+		\includegraphics[width=0.95\textwidth]{f1.pdf}
+	\end{center}
+	\vspace{-0.7cm}
+	\caption{ {\bf Reported components of NGC\,2516 in position and
+    velocity space.}
+    The ``core'', identified by \citet{cantatgaudin_gaia_2018} using
+    Gaia DR2, is visually coincident
+    with where you would think the cluster is if you looked at it through a pair
+    of binoculars.
+    The ``halo'' was identified by \citet{kounkel_untangling_2019}
+    using a less restrictive membership assignment algorithm (discussed
+    in the appendices).
+    The ``field'' is a set of randomly drawn and non-overlapping stars
+    within a
+    $(\alpha, \delta, \pi)$ cone centered on the cluster.
+		\label{fig:gaia6d}
+	}
+\end{figure*}
+
+Figure~\ref{fig:gaia6d} shows the problem we would like to address.
+In this figure, the ``core'' comprises \cn members that
+\citet{cantatgaudin_gaia_2018} reported to have ``membership
+probability'' exceeding 10\%, based on the Gaia DR2 astrometric data.
+The exact meaning of this probability, and details concerning their
+clustering algorithm, are discussed in Appendix~\ref{app:clustering}.
+The ``halo'' comprises \cn members that
+\citet{kounkel_untangling_2019} reported as members, also based on the
+Gaia DR2 data.  That study did not report continuous membership
+probabilities, instead opting for the binary ``member'' or ``not''.
+These two different clustering methods yielded wildly different
+results.  What is the true structure of \cn?
+Are the core and halo truly coeval?
+
+
+\section{Age-Dating the Halo of NGC\,2516}
+\label{sec:agedate}
+
+\subsection{HR Diagram from Gaia}
+\label{subsec:hr}
+
+\begin{figure*}[t]
+	\begin{center}
+		\leavevmode
+		\subfloat{
+			\includegraphics[width=0.8\textwidth]{f2a.pdf}
+		}
+	
+		\subfloat{
+			\includegraphics[width=0.8\textwidth]{f2b.pdf}
+		}
+	\end{center}
+	\vspace{-0.7cm}
+  \caption{ {\bf HR diagrams of NGC\,2516, using Gaia EDR3 photometry.}
+    {\it Top:} The core (black) shows a clean sequence consistent with
+    stars with a fixed age and metallicity, and varying mass.  The
+    halo (blue) is similar, but somewhat noisier.  The faintest M
+    dwarfs in the core and halo are brighter than in the field star
+    comparison sample (gray), consistent with these stars having not
+    yet reached the ZAMS.
+    {\it Bottom:} Reported members of the halo, as a function of
+    galactic latitude. Can the additional scatter in the halo be
+    understood through differential reddening?
+    {\bf Maybe}.
+    \label{fig:hr}
+  }
+\end{figure*}
+
+The first check on whether this membership assignment is plausible was
+already performed by \citet{kounkel_untangling_2019} and more recently
+by \citet{meingast_2021}.  That check is to see whether the HR
+diagrams of these cluster components that were selected based on
+positions and velocities photometrically support the claim that they
+are coeval.
+
+Figure~\ref{fig:hr} presents similar results to what these
+investigators have already found.  The core members of the cluster
+show a clean sequence consistent with stars with a fixed age and
+metallicity, and varying mass.
+The halo members are roughly consistent with this, but they do show
+greater scatter.  One possible explanation for this scatter is that
+the halo is more contaminated by field stars.
+Another, explored in the other panel of the figure, is differential
+reddening.
+The halo is reported to span 20$^\circ$ on-sky, and varies in position from
+about $b=-12^\circ$ to $b=-20^\circ$, with the stars closest to the
+galactic plane also being further from the Sun
+by up to 200\,pc (Figure~\ref{fig:gaia6d}).
+
+%TODO 
+Comparing these HR diagrams to the PARSEC isochrone models, we find
+that X, Y, and Z.
+In particular, ``the faintest M dwarfs in the core and halo are
+brighter than in the field star comparison sample, consistent with
+these stars having not yet reached the ZAMS.''
+This is consistent with the 
+main-sequence turn-off being at $Bp-Rp\approx0.05$, which implies an
+age of XXX.
+The resulting photometric age we adopt for the core is XXX.
+For the halo, the claimed age from photometry is YYY.
+Applying the same procedure to the field star comparison sample,
+we get an age of ZZZ.
+
+
+\subsection{Rotation from TESS}
+\label{subsec:tess}
+
+\begin{figure*}[t]
+	\begin{center}
+		\leavevmode
+		\subfloat{
+			\includegraphics[width=0.8\textwidth]{f3a.pdf}
+		}
+	
+		\subfloat{
+			\includegraphics[width=0.8\textwidth]{f3b.pdf}
+		}
+	\end{center}
+	\vspace{-0.7cm}
+	\caption{ {\bf The core and halo of \cn in the space of rotation
+    period and Gaia color.}
+    The {\it top} plot shows periods against a linear scale, while the
+    {\it bottom}  shows them against a logarithmic scale.
+		\label{fig:rot}
+	}
+\end{figure*}
+
+%TODO: what are these numbers?
+Duly motivated, we collected light curves from TESS photometry
+for YYYY of the ZZZZ cluster members.
+%TODO write the words to describe the procedure, the detrending, the
+%selection function you used for these janky periods, etc.
+
+\subsection{Lithium from Gaia-ESO and GALAH}
+\label{subsec:spectra}
+
+\section{Discussion}
+\label{sec:discussion}
+
+  \subsection{How did it form?}
+  \subsection{Mass differences between center and outer reaches?}
+  \subsection{Fast rotators: are we going faster than other clusters?}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\clearpage
+\acknowledgements
+\raggedbottom
+
+The authors thank X and Y for fruitful discussions.
+%
+L.G.B. and J.H. acknowledge support by the TESS GI Program, program
+NUMBER, through NASA grant NUMBER.
+%
+This study was based in part on observations at Cerro Tololo
+Inter-American Observatory at NSF's NOIRLab (NOIRLab Prop. ID
+2020A-0146; 2020B-NUMBER PI: L{.}~Bouma), which is managed by the
+Association of Universities for Research in Astronomy (AURA) under a
+cooperative agreement with the National Science Foundation.
+%
+ACKNOWLEDGE PFS / CAMPANAS.
+%
+This paper includes data collected by the TESS mission, which are
+publicly available from the Mikulski Archive for Space Telescopes
+(MAST).
+%
+Funding for the TESS mission is provided by NASA's Science Mission
+directorate.
+%
+We thank the TESS Architects (George Ricker, Roland Vanderspek, Dave
+Latham, Sara Seager, Josh Winn, Jon Jenkins) and the many TESS team
+members for their efforts to make the mission a continued success.
+%
+
+%
+% The Digitized Sky Survey was produced at the Space Telescope Science
+% Institute under U.S. Government grant NAG W-2166.
+% Figure~\ref{fig:scene} is based on photographic data obtained using
+% the Oschin Schmidt Telescope on Palomar Mountain.
+%
+
+% %
+% This research made use of the NASA Exoplanet Archive, which is
+% operated by the California Institute of Technology, under contract
+% with the National Aeronautics and Space Administration under the
+% Exoplanet Exploration Program.
+% %
+
+% Resources supporting this work were provided by the NASA High-End
+% Computing (HEC) Program through the NASA Advanced Supercomputing (NAS)
+% Division at Ames Research Center for the production of the SPOC data
+% products.
+%
+
+% A.J.\ and R.B.\ acknowledge support from project IC120009 ``Millennium
+% Institute of Astrophysics (MAS)'' of the Millenium Science Initiative,
+% Chilean Ministry of Economy. A.J.\ acknowledges additional support
+% from FONDECYT project 1171208.  J.I.V\ acknowledges support from
+% CONICYT-PFCHA/Doctorado Nacional-21191829.  R.B.\ acknowledges support
+% from FONDECYT Post-doctoral Fellowship Project 3180246.
+% %
+% C.T.\ and C.B\ acknowledge support from Australian Research Council
+% grants LE150100087, LE160100014, LE180100165, DP170103491 and
+% DP190103688.
+% %
+% C.Z.\ is supported by a Dunlap Fellowship at the Dunlap Institute for
+% Astronomy \& Astrophysics, funded through an endowment established by
+% the Dunlap family and the University of Toronto.
+% %
+% D.D.\ acknowledges support through the TESS Guest Investigator Program
+% Grant 80NSSC19K1727.
+%
+%
+%
+% %
+% Based on observations obtained at the Gemini Observatory, which is
+% operated by the Association of Universities for Research in Astronomy,
+% Inc., under a cooperative agreement with the NSF on behalf of the
+% Gemini partnership: the National Science Foundation (United States),
+% National Research Council (Canada), CONICYT (Chile), Ministerio de
+% Ciencia, Tecnolog\'{i}a e Innovaci\'{o}n Productiva (Argentina),
+% Minist\'{e}rio da Ci\^{e}ncia, Tecnologia e Inova\c{c}\~{a}o (Brazil),
+% and Korea Astronomy and Space Science Institute (Republic of Korea).
+% %
+% Observations in the paper made use of the High-Resolution Imaging
+% instrument Zorro at Gemini-South. Zorro was funded by the NASA
+% Exoplanet Exploration Program and built at the NASA Ames Research
+% Center by Steve B. Howell, Nic Scott, Elliott P. Horch, and Emmett
+% Quigley.
+% %
+% This research has made use of the VizieR catalogue access tool, CDS,
+% Strasbourg, France. The original description of the VizieR service was
+% published in A\&AS 143, 23.
+% %
+% This work has made use of data from the European Space Agency (ESA)
+% mission {\it Gaia} (\url{https://www.cosmos.esa.int/gaia}), processed
+% by the {\it Gaia} Data Processing and Analysis Consortium (DPAC,
+% \url{https://www.cosmos.esa.int/web/gaia/dpac/consortium}). Funding
+% for the DPAC has been provided by national institutions, in particular
+% the institutions participating in the {\it Gaia} Multilateral
+% Agreement.
+%
+% (Some of) The data presented herein were obtained at the W. M. Keck
+% Observatory, which is operated as a scientific partnership among the
+% California Institute of Technology, the University of California and
+% the National Aeronautics and Space Administration. The Observatory was
+% made possible by the generous financial support of the W. M. Keck
+% Foundation.
+% The authors wish to recognize and acknowledge the very significant
+% cultural role and reverence that the summit of Maunakea has always had
+% within the indigenous Hawaiian community.  We are most fortunate to
+% have the opportunity to conduct observations from this mountain.
+%
+% \newline
+%
+
+\software{
+  %\texttt{arviz} \citep{arviz_2019},
+  \texttt{astrobase} \citep{bhatti_astrobase_2018},
+  %\texttt{astroplan} \citep{astroplan2018},
+	%\texttt{AstroImageJ} \citep{collins_astroimagej_2017},
+  \texttt{astropy} \citep{astropy_2018},
+  \texttt{astroquery} \citep{astroquery_2018},
+  %\texttt{BATMAN} \citep{kreidberg_batman_2015},
+  %\texttt{ceres} \citep{brahm_2017_ceres},
+  \texttt{cdips-pipeline} \citep{bhatti_cdips-pipeline_2019},
+  \texttt{corner} \citep{corner_2016},
+  %\texttt{emcee} \citep{foreman-mackey_emcee_2013},
+  %\texttt{exoplanet} \citep{exoplanet:exoplanet}, and its
+  %dependencies \citep{exoplanet:agol20, exoplanet:kipping13, exoplanet:luger18,
+  % 	exoplanet:theano},
+	%\texttt{IDL Astronomy User's Library} \citep{landsman_1995},
+  \texttt{IPython} \citep{perez_2007},
+	%\texttt{isochrones} \citep{morton_2015_isochrones},
+	%\texttt{lightkurve} \citep{lightkurve_2018},
+  \texttt{matplotlib} \citep{hunter_matplotlib_2007}, 
+  %\texttt{MESA} \citep{paxton_modules_2011,paxton_modules_2013,paxton_modules_2015}
+  \texttt{numpy} \citep{walt_numpy_2011}, 
+  \texttt{pandas} \citep{mckinney-proc-scipy-2010},
+  %\texttt{pyGAM} \citep{serven_pygam_2018_1476122},
+  %\texttt{PyMC3} \citep{salvatier_2016_PyMC3},
+  %\texttt{radvel} \citep{fulton_radvel_2018},
+  %\texttt{scikit-learn} \citep{scikit-learn},
+  \texttt{scipy} \citep{jones_scipy_2001},
+  %\texttt{tesscut} \citep{brasseur_astrocut_2019},
+	%\texttt{VESPA} \citep{morton_efficient_2012,vespa_2015},
+  %\texttt{webplotdigitzer} \citep{rohatgi_2019},
+  \texttt{wotan} \citep{hippke_wotan_2019}.
+}
+\ 
+
+\facilities{
+ 	{\it Astrometry}:
+ 	Gaia \citep{gaia_collaboration_gaia_2016,gaia_collaboration_gaia_2018}.
+ 	{\it Imaging}:
+    Second Generation Digitized Sky Survey,
+    SOAR~(HRCam; \citealt{tokovinin_ten_2018}).
+ 	%Keck:II~(NIRC2; \url{www2.keck.hawaii.edu/inst/nirc2}).
+ 	%Gemini:South~(Zorro; \citealt{scott_nessi_2018}.
+ 	{\it Spectroscopy}:
+	CTIO1.5$\,$m~(CHIRON; \citealt{tokovinin_chironfiber_2013}),
+  %PFS ({\bf CITE}),
+  %  MPG2.2$\,$m~(FEROS; \citealt{kaufer_commissioning_1999}),
+	%AAT~(Veloce; \citealt{gilbert_veloce_2018}).
+ 	%Keck:I~(HIRES; \citealt{vogt_hires_1994}).
+ 	%{\bf VLT (number), UVES and GIRAFFE} (CITE: Pasquini et al 2002)
+% 	Euler1.2m~(CORALIE),
+% 	ESO:3.6m~(HARPS; \citealt{mayor_setting_2003}).
+ 	{\it Photometry}:
+%	  ASTEP:0.40$\,$m (ASTEP400),
+% 	CTIO:1.0m (Y4KCam),
+% 	Danish 1.54m Telescope,
+%	  El Sauce:0.356$\,$m,
+% 	Elizabeth 1.0m at SAAO,
+% 	Euler1.2m (EulerCam),
+% 	Magellan:Baade (MagIC),
+% 	Max Planck:2.2m	(GROND; \citealt{greiner_grond7-channel_2008})
+% 	NTT,
+% 	SOAR (SOI),
+ 	TESS \citep{ricker_transiting_2015}.
+% 	TRAPPIST \citep{jehin_trappist_2011},
+% 	VLT:Antu (FORS2).
+}
+
+% \input{TOI837_phot_table.tex}
+% \input{TOI837_rv_table.tex}
+% \input{ic2602_ages.tex}
+% \input{starparams.tex}
+% \input{compparams.tex}
+% \input{model_posterior_table.tex}
+
+\clearpage
+\bibliographystyle{yahapj}                            
+\bibliography{bibliography} 
+
+\appendix
+\section{Clustering method details}
+\label{app:clustering}
+
+%
+% TODO: the following two paragraphs, when quoted, are ENTIRELY FROM
+% the relevant papers. they should probably be nixed in favor of
+% concision.
+%
+\citet{cantatgaudin_gaia_2018} applied a procedure that ultimately
+yielded what we call ``the core''.  Their procedure was to first query
+a Gaia DR2 cone around the previously reported RA and dec of the
+cluster, and within $\pm 0.5$\,mas of its previously reported
+distance. 
+% TODO: which was it?
+The outer radius of their cone was either r2 from MWSC (CITE
+Kharchenko 2013), or twice the ``cluster radius'' listed by Dias.  No
+proper motion cut was applied.  They then applied an unsupervised
+classification scheme called UPMASK to $G<18$\,mag stars within this
+cone (CITE).  The steps of UPMASK are first to perform a k-means
+clustering in the ``astrometric space'' ($\mu_{\alpha'}, \mu_\delta,
+\pi$).  Then, a ``veto'' step is applied to assess whether the groups
+of stars output from the k-means clustering are or are not more
+concentrated than a random distribution.  This is implemented by
+``comparing the total branch length of the minimum spanning tree
+connecting the stars with the expected branch length for a random
+uniform distribution covering the investigated field of view''.  ``To
+turn this yes/no flag to a membership probability,
+\citet{cantatgaudin_gaia_2018} then redraw new values of
+($\mu_{\alpha'}, \mu_\delta, \pi$) for each source based on the listed
+value, uncertainty, and covariance.  After a certain number of
+redrawings, the final probability is the frequency with which a given
+star passes the veto".  In the case of \cn, this yielded a reported
+``\texttt{r50}'' within which half of the cluster members were found
+to be within 0.496$^\circ$.
+
+\citet{kounkel_untangling_2019} applied a different unsupervised
+clustering method to the 5-dimensional Gaia DR2 data (omitting radial
+velocities, due to their sparsity).  Their selection function (see
+their Section~2) yielded $\approx 2\times 10^7$ stars, mostly within
+$\approx 1$\,kpc and typically with $G<18$\,mag.  Their clustering
+algorithm was the ``hierarchical density-based spatial clustering of
+applications with noise'' (HDBSCAN, CITE McInnes17).  The classical
+DBSCAN algorithm ``identifies clusters as overdensities in a
+multi-dimensional space in which the number of sources exceeds the
+required minimum number of points within a neighborhood of a
+particular linking length $\epsilon$.  HDBSCAN does not depend on
+$\epsilon$; instead it condenses the minimum spanning tree by pruning
+off the nodes that do not meet the minimum number of sources in a
+cluster and reanalyzing the nodes that do. Depending on the chosen
+algorithm, it would then either find the most persistent structure
+(through the excess of mass method), or return clusters as the leaves
+of the tree (which results in somewhat more homogeneous clusters). In
+both cases it is more effective at finding structures of varying
+densities in a given data set than DBSCAN.''
+`` The two main parameters that control HDBSCAN are the number of
+sources in a cluster and the number of samples. The former is the
+parameter that rejects groupings that are too small; the latter sets
+the threshold of how conservative the algorithm is in its
+considerations of the background noise (even if the resulting noisy
+groupings do meet the minimum cluster size).  By default, the sample
+size is set to the same value as the cluster size, but it is possible
+to adjust them separately.''
+
+
+\listofchanges
+
+%\allauthors
+\end{document}
