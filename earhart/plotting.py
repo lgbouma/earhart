@@ -135,7 +135,8 @@ def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
     savefig(f, outpath)
 
 
-def plot_full_kinematics(outdir, basedata='bright'):
+def plot_full_kinematics(outdir, basedata='bright', show1937=1,
+                         galacticframe=0):
 
     if basedata == 'extinctioncorrected':
         raise NotImplementedError('still need to implement extinction')
@@ -149,32 +150,41 @@ def plot_full_kinematics(outdir, basedata='bright'):
     else:
         raise NotImplementedError
 
+    if galacticframe:
+        c_nbhd = SkyCoord(ra=nparr(nbhd_df.ra)*u.deg, dec=nparr(nbhd_df.dec)*u.deg)
+        nbhd_df['l'] = c_nbhd.galactic.l.value
+        nbhd_df['b'] = c_nbhd.galactic.b.value
+
     plt.close('all')
 
     rvkey = (
         'radial_velocity' if 'edr3' not in basedata else 'dr2_radial_velocity'
     )
-    params = ['ra', 'dec', 'parallax', 'pmra', 'pmdec', rvkey]
-    nparams = len(params)
 
+    if galacticframe:
+        xkey, ykey = 'l', 'b'
+        xl, yl = r'$l$ [deg]', r'$b$ [deg]'
+    else:
+        xkey, ykey = 'ra', 'dec'
+        xl, yl = r'$\alpha$ [deg]', r'$\delta$ [deg]'
+
+    params = [xkey, ykey, 'parallax', 'pmra', 'pmdec', rvkey]
+    # whether to limit axis by 5/95th percetile
     qlimd = {
-        'ra': 0, 'dec': 0, 'parallax': 0, 'pmra': 1, 'pmdec': 1,
-        rvkey: 1
-    } # whether to limit axis by 5/95th percetile
+        xkey: 0, ykey: 0, 'parallax': 0, 'pmra': 1, 'pmdec': 1, rvkey: 1
+    }
+    # whether to limit axis by 99th percentile
     nnlimd = {
-        'ra': 1, 'dec': 1, 'parallax': 1, 'pmra': 0, 'pmdec': 0,
-        rvkey: 0
-    } # whether to limit axis by 99th percentile
-
+        xkey: 1, ykey: 1, 'parallax': 1, 'pmra': 0, 'pmdec': 0, rvkey: 0
+    }
     ldict = {
-        'ra': r'$\alpha$ [deg]',
-        'dec': r'$\delta$ [deg]',
-        'parallax': r'$\pi$ [mas]',
-        'pmra': r"$\mu_{{\alpha'}}$ [mas/yr]",
-        'pmdec':  r'$\mu_{{\delta}}$ [mas/yr]',
-         rvkey: 'RV [km/s]'
+        xkey: xl, ykey: yl,
+        'parallax': r'$\pi$ [mas]', 'pmra': r"$\mu_{{\alpha'}}$ [mas/yr]",
+        'pmdec':  r'$\mu_{{\delta}}$ [mas/yr]', rvkey: 'RV [km/s]'
     }
 
+
+    nparams = len(params)
     f, axs = plt.subplots(figsize=(6,6), nrows=nparams-1, ncols=nparams-1)
 
     for i in range(nparams):
@@ -203,11 +213,12 @@ def plot_full_kinematics(outdir, basedata='bright'):
                 cg18_df[xv], cg18_df[yv], c='k', alpha=0.9, zorder=4, s=5,
                 rasterized=True, label='Core', marker='.'
             )
-            axs[i,j].plot(
-                target_df[xv], target_df[yv], alpha=1, mew=0.5,
-                zorder=8, label='TOI 1937', markerfacecolor='yellow',
-                markersize=14, marker='*', color='black', lw=0
-            )
+            if show1937:
+                axs[i,j].plot(
+                    target_df[xv], target_df[yv], alpha=1, mew=0.5,
+                    zorder=8, label='TOI 1937', markerfacecolor='yellow',
+                    markersize=14, marker='*', color='black', lw=0
+                )
 
             # set the axis limits as needed
             if qlimd[xv]:
@@ -264,7 +275,8 @@ def plot_full_kinematics(outdir, basedata='bright'):
     leg.legendHandles[0]._sizes = [20]
     leg.legendHandles[1]._sizes = [25]
     leg.legendHandles[2]._sizes = [25]
-    leg.legendHandles[3]._sizes = [20]
+    if show1937:
+        leg.legendHandles[3]._sizes = [20]
 
     for ax in axs.flatten():
         format_ax(ax)
@@ -273,6 +285,12 @@ def plot_full_kinematics(outdir, basedata='bright'):
 
     s = ''
     s += f'_{basedata}'
+    if show1937:
+        s += f'_show1937'
+    if galacticframe:
+        s += f'_galactic'
+    else:
+        s += f'_icrs'
     outpath = os.path.join(outdir, f'full_kinematics{s}.png')
     savefig(f, outpath)
 
@@ -525,7 +543,8 @@ def plot_edr3_blending_vs_apparentmag(outdir, basedata='fullfaint', num=None):
 
 
 def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
-            basedata='fullfaint', highlight_companion=0, colorhalobyglat=0):
+            basedata='fullfaint', highlight_companion=0, colorhalobyglat=0,
+            show1937=1):
     """
     basedata (str): any of ['bright', 'extinctioncorrected', 'fullfaint',
     'fullfaint_edr3'], where each defines a different set of neighborhood /
@@ -651,13 +670,14 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
             zorder=4, s=5, rasterized=True, linewidths=0, label='Core', marker='.'
         )
         _l = 'TOI 1937' if not highlight_companion else 'TOI 1937A'
-        ax.plot(
-            get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
-            zorder=8, label=_l, markerfacecolor='yellow',
-            markersize=10, marker='*', color='black', lw=0
-        )
+        if show1937:
+            ax.plot(
+                get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
+                zorder=8, label=_l, markerfacecolor='yellow',
+                markersize=10, marker='*', color='black', lw=0
+            )
 
-    if highlight_companion:
+    if highlight_companion and show1937:
         # NOTE: NOTE: use the parallax from TOI 1937A, because it has higher
         # S/N
         _yval = np.array(
@@ -794,10 +814,15 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         leg = ax.legend(loc='upper right', handletextpad=0.1, fontsize='x-small',
                         framealpha=0.9)
         # # NOTE: hack size of legend markers
-        leg.legendHandles[0]._sizes = [18]
-        leg.legendHandles[1]._sizes = [25]
-        leg.legendHandles[2]._sizes = [25]
-        leg.legendHandles[3]._sizes = [25]
+        if show1937:
+            leg.legendHandles[0]._sizes = [18]
+            leg.legendHandles[1]._sizes = [25]
+            leg.legendHandles[2]._sizes = [25]
+            leg.legendHandles[3]._sizes = [25]
+        else:
+            leg.legendHandles[0]._sizes = [25]
+            leg.legendHandles[1]._sizes = [25]
+            leg.legendHandles[2]._sizes = [25]
 
 
     ax.set_ylabel('Absolute G [mag]', fontsize='large')
@@ -819,6 +844,9 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
     if basedata == 'denis_fullfaint_edr3':
         ax.set_ylim([12.8, -1.0])
 
+    if basedata == 'fullfaint_edr3' and color0 == 'phot_bp_mean_mag':
+        ax.set_xlim([-0.46, 3.54])
+
     format_ax(ax)
     if not isochrone:
         s = ''
@@ -828,6 +856,8 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         s = '_colorhalobyglat'
     if highlight_companion:
         c0s += '_highlight_companion'
+    if show1937:
+        c0s += '_show1937'
     c0s += f'_{basedata}'
     outpath = os.path.join(outdir, f'hr{s}{c0s}.png')
 
