@@ -18,8 +18,15 @@
 
 \newcommand{\cn}{NGC\,2516} % cluster name
 
+%TODO:
+%
+% n rotation period logs: 2238 % ~/proj/cdips/results/allvariability_reports/NGC_2516/logs
+% n all variability reports: 2201 % ~/proj/cdips/results/allvariability_reports/NGC_2516/reports
+
 \newcommand{\numcdipslcs}{671{,}901\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
 \newcommand{\numsouthernuniqlcs}{483{,}407\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
+
+
 
 \newcommand{\kms}{\,km\,s$^{-1}$}
 
@@ -28,7 +35,7 @@
 \received{---}
 \revised{---}
 \accepted{---}
-\submitjournal{AAS journals.}
+\submitjournal{ApJL.}
 \shorttitle{Core \& Halo of NGC\,2516}
 
 \begin{document}
@@ -44,8 +51,29 @@
 %\NewPageAfterKeywords
 \input{authors.tex}
 
+% Context, aims, methods, results, conclusions.
 \begin{abstract}
-  foo,bar.
+  Recent analyses of the Gaia data have reported the existence of
+  diffuse stellar populations (``halos'') surrounding nearby open clusters.  The stars in these
+  halos could have escaped from the cores of the cluster, or they
+  could be remnants of a larger and lower-density star formation
+  complex that has since dispersed.  They could also be field
+  stars---false positives given by overly aggressive clustering algorithms.
+  In this study, we focus on a single reported 250\,pc-long halo
+  around the $\approx$120\,Myr open cluster NGC\,2516.  The classical tidal radius of
+  this cluster is $\sim$XX\,pc.  Combining photometry from Gaia,
+  rotation periods from TESS, and lithium measurements from
+  the Gaia-ESO and GALAH surveys, we find that: i) the halo of
+  NGC\,2516 is real and coeval with the core; ii) at fixed stellar
+  mass and age, rapidly rotating stars have greater lithium abundances
+  than slowly rotating stars; and iii) given Gaia-selected halo
+  members, the contamination rate of field stars in the halo (XX\%) is
+  larger than that in the core (YY\%).  This work expands the set of
+  confirmed NGC\,2516 members by a factor of $\approx$2, and
+  quantifies the degree to which Gaia-based analyses can currently
+  identify dispersed stellar populations against a background of field
+  star contaminants.  Implications for spectroscopic survey targeting, open cluster dispersal, and planet searches around young
+  stars are discussed.
 \end{abstract}
 
 \keywords{
@@ -62,7 +90,7 @@
 
 In the traditional picture of star formation molecular clouds go
 gravitationally unstable, and collapse into little knots.  The knots
-produce many stars close to each other.  The resulting ``open star
+produce groups of stars close to each other.  The resulting ``open star
 clusters'' are, as with any first-order guess, spherical.
 
 How does the cluster evolve?  The answer depends
@@ -70,12 +98,12 @@ on the total stellar mass.
 % What exactly does this mean?
 The smallest 90\% of star clusters disperse during the ``embedded
 phase'' (CITE).  This is driven mostly by {\it process A} (CITE).  The
-more massive clusters make it to maybe 100 Myr. Maybe a bit longer.
+more massive clusters make it maybe 100 Myr. Maybe a bit longer.
 Their evaporation is thought to be driven by collisions with molecular
 clouds (CITE, Spitzer 1958), and the galactic tide (CITE), and {\it
 process A}, and {\it process B}.  Of course, the expected evaporation
 time should depend on factors including the mass of the cluster
-itself, how many high-mass (O and B) stars form, since their winds
+itself, and how many high-mass (O and B) stars form, since their winds
 [and maybe supernovae] clear out most of the cloud, and the initial
 density of the gas cloud to begin with.
 
@@ -127,18 +155,17 @@ We've recently been making TESS light curves of age-dated stars across
 the sky, as part of a Cluster Difference Imaging Photometry Survey
 (CDIPS, CITE Bouma+19).  Our analysis of Cycle 1 (Sectors 1-13)
 yielded light curves of \numsouthernuniqlcs candidate cluster members
-in the Southern Ecliptic hemisphere, available on MAST
-[\href{https://archive.stsci.edu/hlsp/cdips}{1},\href{https://ui.adsabs.harvard.edu/abs/2019ApJS..245...13B/abstract}{2}].
+in the Southern Ecliptic hemisphere, available on MAST\footnote{\url{https://archive.stsci.edu/hlsp/cdips}}.
 % TODO: make this number actually quantitative...
 Based on rotation periods, $\approx$25\% appear to be bonafide cluster
 members. 
 
 As part of a broader project of identifying a large and clean sample
-of young stars for a transit search, we take the opportunity of this
-paper to answer a rather modest question: in just a single rich
+of young stars for a transit search, we focus in his
+paper on a rather modest question: in just a single rich
 southern open cluster, is the cluster halo coeval with the core?  The
 cluster we chose for this analysis was NGC\,2516, since it was young
-($\sim$110\,Myr) and close ($d=400$\,pc) enough to facilitate rotation
+($\sim$112\,Myr) and close ($d=400$\,pc) enough to facilitate rotation
 measurements using TESS, and some degree of spectroscopic analysis.
 We want to know: is the halo real? To what extent can we use Gaia
 alone to reliably identify age-dated needles in the haystack of boring
@@ -147,9 +174,10 @@ evolution of open clusters if they do have halos?
 
 Section~\ref{sec:gaia} presents the astrometric and photometric data
 from Gaia, and clarifies our usage of the terms ``core'' and ``halo''.
-Section~\ref{sec:agedate} age-dates the halo of NGC\,2516, using TESS
-gyrochronology (Section~\ref{sec:rotation}), and lithium depletion
-(Section~\ref{sec:lithium}).  In Section~\ref{sec:discussion} we
+Section~\ref{sec:agedate} age-dates the halo of NGC\,2516,
+based on Gaia photometry (Section~\ref{subsec:hr}),
+TESS gyrochronology (Section~\ref{subsec:tess}), and lithium depletion
+(Section~\ref{subsec:lithium}).  In Section~\ref{sec:discussion} we
 discuss the implications of this analysis for NGC\,2516 specifically
 and stellar spin-down and open cluster evolution generally.
 Section~\ref{sec:conclusion} presents our conclusions.
@@ -211,11 +239,11 @@ Are the core and halo truly coeval?
 	\begin{center}
 		\leavevmode
 		\subfloat{
-			\includegraphics[width=0.8\textwidth]{f2a.pdf}
+			\includegraphics[width=0.75\textwidth]{f2a.pdf}
 		}
 	
 		\subfloat{
-			\includegraphics[width=0.8\textwidth]{f2b.pdf}
+			\includegraphics[width=0.75\textwidth]{f2b.pdf}
 		}
 	\end{center}
 	\vspace{-0.7cm}
@@ -264,7 +292,7 @@ these stars having not yet reached the ZAMS.''
 This is consistent with the 
 main-sequence turn-off being at $Bp-Rp\approx0.05$, which implies an
 age of XXX.
-The resulting photometric age we adopt for the core is XXX.
+The resulting photometric age we calculate for the core is XXX.
 For the halo, the claimed age from photometry is YYY.
 Applying the same procedure to the field star comparison sample,
 we get an age of ZZZ.
@@ -277,11 +305,11 @@ we get an age of ZZZ.
 	\begin{center}
 		\leavevmode
 		\subfloat{
-			\includegraphics[width=0.8\textwidth]{f3a.pdf}
+			\includegraphics[width=0.75\textwidth]{f3a.pdf}
 		}
 	
 		\subfloat{
-			\includegraphics[width=0.8\textwidth]{f3b.pdf}
+			\includegraphics[width=0.75\textwidth]{f3b.pdf}
 		}
 	\end{center}
 	\vspace{-0.7cm}
@@ -293,19 +321,136 @@ we get an age of ZZZ.
 	}
 \end{figure*}
 
+
+
 %TODO: what are these numbers?
 Duly motivated, we collected light curves from TESS photometry
 for YYYY of the ZZZZ cluster members.
 %TODO write the words to describe the procedure, the detrending, the
 %selection function you used for these janky periods, etc.
 
+First, we collected the XXXX Gaia DR2 source\_ids corresponding to the
+core and halo members.  For each source, we first retrieved all
+available CDIPS light curves, on a per-sector basis.  Then, we
+detrended the systematics in each sector individually, and stitched
+together the resulting light curves before searching for the
+periodicity.  Some details regarding our detrending approach are
+discussed in Appendix~\ref{app:detrending}.  After applying a
+detrending step aimed at removing systematic trends, we proceeding
+with a few small cleaning steps aimed at improving the purity of the
+rotation period measurements: we masked 0.7 days at the beginning and
+end of each spacecraft orbit, and ran a sliding standard-deviation
+rejection window over the light curve, which removed any outlying
+points within $\pm3\times$MAD of the median in each window.
+
+We then measured the rotation period of the resulting light curve.  We
+used the the aperture radius that, based on theoretical expectations,
+was expected to give the optimal balance between light from the target
+and background-light (CITE Sullivan15).  This typically resulted in an
+aperture radius of either 1 or 1.5 pixels.  To measure the periods, we
+used the periodogram implementations in \texttt{astrobase}, in
+particular the Stellingwerf PDM periodogram (CITE), along with the
+more traditional Lomb-Scargle (CITE).  We recorded the top five
+periodogram peaks from each method, and their corresponding powers.
+Finally, as a check on crowding, we also recorded the number of stars
+within the aperture of equal brightness, and of brightness with 1.25
+and 2.5 TESS magnitudes of the target star.
+
+Figure~\ref{fig:rot} shows the resulting rotation periods.  The points
+on this plot are light curves for which the peak Lomb Scargle
+periodogram period was below 15 days, had power exceeding 0.08, and
+had at most one equal-brightness companion within the aperture.  These
+selection criteria are entirely heuristic.  
+But splitting the sample into the ``core'' and the ``halo'', they
+suggest that the halo is real.
+
+The resulting gyrochronology age we find for the core is XXX.
+For the halo, the claimed age from gyrochronology is YYY.
+Applying the same procedure to the field star comparison sample,
+we get an age of ZZZ.
+
+\subsubsection{Kinematics $\otimes$ Rotation}
+
+\begin{figure*}[t]
+	\begin{center}
+		\leavevmode
+		\includegraphics[width=0.95\textwidth]{f4.pdf}
+	\end{center}
+	\vspace{-0.7cm}
+	\caption{ {\bf Gaia-based components of NGC\,2516 in position and
+    velocity space, cross-matched against the rotators.}
+		\label{fig:gaia6d_x_rotn}
+	}
+\end{figure*}
+
+How far away from the core, in position and velocity space, does the
+halo actually extend?  We can explore this by crossmatching the
+rotator sample against the Gaia data.  Figure~\ref{fig:gaia6d_x_rotn}
+shows the result. 
+
+
+
 \subsection{Lithium from Gaia-ESO and GALAH}
-\label{subsec:spectra}
+\label{subsec:lithium}
+
+\begin{figure*}[t]
+	\begin{center}
+		\leavevmode
+		\subfloat{
+			\includegraphics[width=0.75\textwidth]{f5a.pdf}
+		}
+	
+		\subfloat{
+			\includegraphics[width=0.75\textwidth]{f5b.pdf}
+		}
+	\end{center}
+	\vspace{-0.7cm}
+  \caption{ {\bf Lithium equivalent widths in NGC\,2516,}
+  plotted against extinction-corrected color ({\it top}), and the
+  combination of rotation period and extinction-corrected color ({\it
+  bottom}).
+  \label{fig:lithium}
+  }
+\end{figure*}
+
+Figure~\ref{fig:lithium} shows the results.  At fixed stellar mass
+(and age), it seems that the rapid rotators tend to show elevated
+lithium equivalent widths.  Similar trends have been previously noted
+in the Pleiades by \citet{soderblom_evolution_1993} and
+\citet{bouvier_pleiades_lirot_2018}, in the Psc-Eri stream by
+\citet{arancibia_2020}, and in M\,35 by \citet{jeffries_m35_li_2020}.
+
+% TODO: this paragraph more or less parrots the processes described by
+% Bouvier+20. are there others? is there a better way to describe
+% these?
+The trend contradicts what might be the naive expectation that rapidly
+rotating stars should show more vigorous convection, leading to
+earlier destruction of photospheric Li.  Possible physical
+explanations include processes both internal and external to the star
+(CITE see the recent review by Bouvier+20).  Internal processes would
+be tied to the interplay between surface rotation, differential
+rotation in the interior, and the convective mixing efficiency (e.g.,
+CITE Siess + Livio 1997, Baraffe+2017).  Internal processes could also
+include the possibility that stronger magnetic fields in the stellar
+interior inhibit convection (READ e.g., Ventura+98, Chabrier+07,
+Somers + Pinsonneault 2014).  An external process that could also be
+important is the effect of star-disk magnetic braking during the PMS
+phase (CITE: magnetic braking).  Longer disk lifetimes would lead to
+the star's outer convective zone being ``locked'' for longer while the
+radiative core continues contracting.  The resulting differential
+rotation and rotational mixing could drive the lithium depletion
+(CITE: Bouvier 08, Eggenberger+12).
+
+
 
 \section{Discussion}
 \label{sec:discussion}
 
-  \subsection{How did it form?}
+  \subsection{What is the contamination fraction in the halo? Does it change vs. location?}
+  \subsection{Are the ``very slow rotators'' bonafide members?}
+  Probably not. They are not isotropically distributed around the
+  cluster.
+  \subsection{How did the halo form?}
   \subsection{Mass differences between center and outer reaches?}
   \subsection{Fast rotators: are we going faster than other clusters?}
 
@@ -569,6 +714,121 @@ considerations of the background noise (even if the resulting noisy
 groupings do meet the minimum cluster size).  By default, the sample
 size is set to the same value as the cluster size, but it is possible
 to adjust them separately.''
+
+\section{Detrending details}
+\label{app:detrending}
+
+In ``detrending'' for our general variability search, our goal was to
+preserve astrophysical variability, while removing systematic
+variability.  One particular concern for the TESS light curves is
+systematic variability at the timescale of the 14-day satellite orbit,
+mostly induced by scattered light from the Earth and Moon.
+
+We therefore turned to the principal components (i.e., the
+eigenvectors) calculated following the procedure described by
+\citet{bouma_cdipsI_2019}. In brief, these vectors are computed using
+a set of ``trend stars'' selected from across each CCD according to
+ad-hoc heuristics that (hopefully) lead them to be dominated by {\it
+systematic} variability (Sec~3.7.2).
+
+The principal component vectors, also referred to as the eigenvectors,
+are rank-ordered by the degree of variance that they predict in the
+training set (of ``trend stars'').
+
+We then posit that any given target star's light curve is described as
+a linear combination of the eigenvectors.  Optionally, we also
+considered the inclusion of additional systematic vectors that could
+affect the light curve, such as the CCD temperature, the flux level
+measured in the background annulus, and the centroid positions of the
+stars on the CCDs.  These can be treated as additional ``features'' in
+the linear model.
+
+There are many methods for determining the coefficients of the linear
+model, after the full set of eigenvectors (plus optionally
+``sytematic'' vectors) has been asssembled.  We explored two: ordinary
+least squares, and ridge regression. Ridge regression is the same as
+ordinary least squares, except it includes an L2 norm with a regularization
+coefficient. The regularization coefficient that best applied for any
+given target light curve was solved for using a cross-validation grid
+search, using \texttt{sklearn.linear\_modelRidgeCV} (CITE). 
+
+Each target light curve was mean-subtracted and normalized by its
+standard deviation, as were the eigenvectors. The linear problem was
+then solved, and the light curve was reconstructed by re-adding the
+original mean, and re-multiplying by the standard deviation to ensure
+that the variance of the light curve did not change.
+
+We found, somewhat to our surprise, that the choice of using ordinary
+least squares versus ridge regression did not seem to significantly
+affect the resulting light curves. In other words, the inclusion (or
+lack thereof) of a regularization did not strongly alter the
+best-fitting coefficients.
+
+A few other choices seemed to be more important:
+
+\begin{itemize}
+
+  \item {\it To smooth, or to not smooth the eigenvectors}.
+  Ideally, the eigenvectors should be smooth (and not contain
+    residuals from {\it e.g.}, eclipsing binaries that snuck their way
+    into the template set). However this does not always apply.
+    Sometimes, the eigenvectors are also noisy, which leads them to
+    induce extra variability into the PCA ``detrended'' light curves.
+    To address this problem, we opted to smooth the eigenvectors using
+    a windowed filter (with a "biweight" weight scheme, implemented in
+    \texttt{wotan} by \citet{hippke_wotan_2019}; window length 1 day, cval 6).
+  One issue with this is that systematic sharp features (captured e.g., in
+  "spike vectors") no longer are captured, so they end up in the "PCA
+  detrended" light curves. They can be filtered out relatively easily though
+  (using rolling outlier rejection), and we prefer this approach to having
+  systematic features {\it injected by} the PCA detrending.
+
+  \item {\it How many eigenvectors to use}.
+    A larger number always leads to greater whitening.  In
+    \citet{bouma_cdipsI_2019}, we performed a Factor Analysis
+    cross-validation to determine the number of eigenvectors to use.
+    The typical number adopted based on this analysis was 10--15.
+    Even though this approach was chosen to prevent over-fitting, in
+    our experience, for stellar rotation it still often lead to
+    overfitting, especially for rotation signals with periodicities of
+    $\gtrsim 3$ days.  (Shorter signals typically are not distorted,
+    since the eigenvectors generally do not contain the high-frequency
+    content that leads to the distortions).  For this analysis, we
+    therefore impose the maximum number of eigenvectors to be 5.
+
+  \item {\it Which supplementary systematics vectors to use}.
+    We considered using the \texttt{BGV}, \texttt{CCDTEMP},
+    \texttt{XIC}, \texttt{YIC}, and \texttt{BGV} vectors, packaged
+    with the CDIPS light curves. we found that the background value
+    measured in an annulus centered on the aperture, \texttt{BGV},
+    tended to produce the best independent information from the PCA
+    eigenvectors, and so we adopted it as our only ``supplementary''
+    trend vector.  We opted to not smooth it (in hopes that it would
+    provide direct complement to the smoothed PCA vectors; 1 sharp
+    vector containing literally the background information, plus 5
+    smooth vectors).
+\end{itemize}
+
+For every ``target star'', we then decorrelated the raw
+(image-subtracted and background-subtracted) light curve
+using a linear model with ordinary least squares.
+
+
+\section{Rotation $\otimes$ RUWE}
+
+\begin{figure*}[t]
+	\begin{center}
+		\leavevmode
+		\includegraphics[width=0.95\textwidth]{f6.pdf}
+	\end{center}
+	\vspace{-0.7cm}
+	\caption{ {\bf Rotation versus color, colored by RUWE.}
+		Looks like on the slow sequence, there's more yellow at the bottom?
+		\label{fig:rotn_X_RUWE}
+	}
+\end{figure*}
+
+
 
 
 \listofchanges
