@@ -41,6 +41,8 @@
 \begin{document}
 
 \defcitealias{bouma_wasp4b_2019}{B19}
+\defcitealias{cantatgaudin_gaia_2018}{CG18}
+\defcitealias{kounkel_untangling_2019}{KC19}
 
 \title{
   Cluster Difference Imaging Photometric Survey. III.
@@ -78,8 +80,9 @@
 
 \keywords{
 	stellar ages (1581),
-	young star clusters (1833),
+  stellar associations (1582),
   open clusters (1160),
+  %stellar dynamics (1596),
   stellar rotation (1629)
 }
 
@@ -93,94 +96,99 @@ gravitationally unstable, and collapse into little knots.  The knots
 produce groups of stars close to each other.  The resulting ``open star
 clusters'' are, as with any first-order guess, spherical.
 
-How does the cluster evolve?  The answer depends
-on the total stellar mass.
-% What exactly does this mean?
-The smallest 90\% of star clusters disperse during the ``embedded
-phase'' (CITE).  This is driven mostly by {\it process A} (CITE).  The
-more massive clusters make it maybe 100 Myr. Maybe a bit longer.
-Their evaporation is thought to be driven by collisions with molecular
-clouds (CITE, Spitzer 1958), and the galactic tide (CITE), and {\it
-process A}, and {\it process B}.  Of course, the expected evaporation
-time should depend on factors including the mass of the cluster
-itself, and how many high-mass (O and B) stars form, since their winds
-[and maybe supernovae] clear out most of the cloud, and the initial
-density of the gas cloud to begin with.
+How does the cluster evolve?  The answer depends on the total stellar
+mass.  The smallest 90\% of star clusters disperse during the ``embedded
+phase'' (CITE Lada \& Lada 03, Krumholz 19 ARAA).  This is driven mostly
+by {\it process A} (CITE).  The more massive clusters make it maybe 100
+Myr. Maybe a bit longer.  Their evaporation is thought to be driven by
+collisions with molecular clouds (CITE, Spitzer 1958, maybe Sec 7.2 of
+Ryden), and the galactic tide (CITE), and {\it process A}, and {\it
+process B}.  Of course, the expected evaporation time should depend on
+factors including the mass of the cluster itself, and how many high-mass
+(O and B) stars form, since their winds [and maybe supernovae] clear out
+most of the cloud, and the initial density of the gas cloud to begin
+with.
 
 Assuming that the cluster achieves virial equilibrium, stellar fly-bys
 then conspire to segregate the stellar mass distribution within the
 cluster, evaporating the lowest mass stars soonest (2T+U=0, U=-GM/r,
-assuming equipartition of the specific ``thermal energy'' per star,
-then kT = 0.5$mv^2$ at lower masses requires higher velocities).  
+assuming equipartition of the specific ``thermal energy'' per star, then
+kT = 0.5$mv^2$ at lower masses requires higher velocities).  
 
-Identification of the stars that disperse into the galactic field is
-an important task for understanding the conditions under which stars
-and star clusters form, and for understanding how they subsequently
-evolve.  For instance, how does the process of radial migration across
-the galactic disk affect cluster dispersal?  Did the Sun form in an
-open cluster? If so, how massive was its cluster, and is there any
-hope at identifying the stars that formed near the Sun?
-Qualitatively, the dispersal of open clusters also provides perhaps
-the best ``test case'' for the concept of ``chemical tagging'', also
-referred to as ``galactic archaeology'' (CITE).
+Identification of the stars that disperse into the galactic field is an
+important task for understanding the conditions under which stars and
+star clusters form, and for understanding how they subsequently evolve.
+For instance, how does the process of radial migration across the
+galactic disk affect cluster dispersal?  Did the Sun form in an open
+cluster? If so, how massive was its cluster, and is there any hope at
+identifying the stars that formed near the Sun?  Qualitatively, the
+dispersal of open clusters also provides perhaps the best test case for
+the concept of ``chemical tagging'', aka.\ ``galactic archaeology''
+(CITE).  If you can't chemically tag stars that are kinematically
+associated, why would you be able to do so once they've dispersed
+throughout the galactic disk?
 
-Outside of the issue of star formation, identifying the remnant halos
-of open clusters is important for a separate project: that of
-discovering young transiting planets.  Young transiting planets are
-hard to find because young stars are rare (CITE), and often reside in
-crowded regions of the sky (CITE).  If the halos of nearby star
-clusters can be reliably identified, this could expand the census of
-nearby sub-Gyr stars by a factor of 2 or even 3 (CITE Meingast).  A
-fortuitous benefit of searching for planets in cluster environments is
-that issues with stellar crowding are also alleviated.
+Outside of the issue of star formation, identifying the remnant halos of
+open clusters is important for a separate project: that of discovering
+young transiting planets.  Young transiting planets are hard to find
+because young stars are rare (CITE), and often reside in crowded regions
+of the sky (CITE).  If the halos of nearby star clusters can be reliably
+identified, this could expand the census of nearby sub-Gyr stars by a
+factor of 2 or 3 (CITE).  A fortuitous benefit of searching for planets
+in cluster environments is that issues with stellar crowding are also
+alleviated.
 
 Recent clustering studies using Gaia have begun to report the
-identification of structures that could correspond to low-density
-halos of stars that may have evaporated from open clusters (e.g.,
-Kounkel+19, Kounkel+20, Meingast+21).  However, different clustering
-methods on the Gaia data tend to give different results (CITE: Hunt \&
-Reffert 2020).  Employing say Gaussian Mixture Modelling, or any
-analogous method that requires ``clusters'' to be ellipses in
-spatial/velocity phase-space unsurpsingly yields open clusters that
-are roughly elliptical (CITE: Cantat-Gaudin+18). Unsupervised
-clustering methods such as HDBScan (e.g., Kounkel+19) have been found
-to yield additional structures, particularly in lower density regions
-such as the Psc-Eri stream (CITE: Meingast+18, Curtis+19, Newton+21),
-but also more generally around many open clusters (Kounkel+19).
-Unsupervised approaches that incorporate physical constraints (e.g.,
-imposing a maximum velocity dispersion on putative members) yield
-similar results, potentially with higher purity (Meingast+21).
+identification of structures that could correspond to low-density halos
+of stars that may have evaporated from open clusters (e.g., Kounkel+19,
+Kounkel+20, Meingast+21).  However, different clustering methods on the
+Gaia data tend to give different results (CITE: Hunt \& Reffert 2020).
+Employing say Gaussian Mixture Modelling, or any analogous method that
+requires ``clusters'' to be ellipses in phase-space (position or
+velocity) unsurpsingly yields open clusters that are roughly elliptical.
+Some unsupervised clustering methods lead to comparable ``roughly
+elliptical'' results \citep[][hereafter
+\citetalias{cantatgaudin_gaia_2018}]{cantatgaudin_gaia_2018}.  Other
+unsupervised methods such as HDBScan (e.g., \citep[][hereafter
+\citetalias{kounkel_untangling_2019}]{kounkel_untangling_2019}) have
+been found to yield additional structures, particularly in lower density
+regions such as the Psc-Eri stream (CITE: Meingast+18, Curtis+19,
+Newton+21), but also more generally around many open clusters
+\citep{kounkel_untangling_2019}.  Unsupervised approaches that
+incorporate physical constraints like imposing a maximum velocity
+dispersion on putative members yield similar results, potentially with
+higher purity (Meingast+21).
 
+% TODO: make the bonafide number below quantitative
 We've recently been making TESS light curves of age-dated stars across
 the sky, as part of a Cluster Difference Imaging Photometry Survey
-(CDIPS, CITE Bouma+19).  Our analysis of Cycle 1 (Sectors 1-13)
-yielded light curves of \numsouthernuniqlcs candidate cluster members
-in the Southern Ecliptic hemisphere, available on MAST\footnote{\url{https://archive.stsci.edu/hlsp/cdips}}.
-% TODO: make this number actually quantitative...
-Based on rotation periods, $\approx$25\% appear to be bonafide cluster
-members. 
+(CDIPS, CITE Bouma+19).  Our analysis of Cycle 1 (Sectors 1-13) yielded
+light curves of \numsouthernuniqlcs candidate cluster members in the
+Southern Ecliptic hemisphere, available on
+MAST\footnote{\url{https://archive.stsci.edu/hlsp/cdips}}.  Based on
+rotation periods, $\approx$25\% appear to be bonafide cluster members. 
 
-As part of a broader project of identifying a large and clean sample
-of young stars for a transit search, we focus in his
-paper on a rather modest question: in just a single rich
-southern open cluster, is the cluster halo coeval with the core?  The
-cluster we chose for this analysis was NGC\,2516, since it was young
-($\sim$112\,Myr) and close ($d=400$\,pc) enough to facilitate rotation
-measurements using TESS, and some degree of spectroscopic analysis.
-We want to know: is the halo real? To what extent can we use Gaia
-alone to reliably identify age-dated needles in the haystack of boring
-field stars?  And more generally, what are the implications for the
-evolution of open clusters if they do have halos?
+As part of a broader project of identifying a large and clean sample of
+young stars for a transit search, we focus in his paper on a rather
+modest question: in just a single rich southern open cluster, is the
+cluster halo coeval with the core?  The cluster we chose for this
+analysis was NGC\,2516, since it was young ($\sim$120\,Myr) and close
+($d\approx400$\,pc) enough to facilitate rotation measurements using
+TESS, and some degree of spectroscopic analysis.  We want to know: is
+the halo real? To what extent can we use Gaia alone to reliably identify
+age-dated needles in the haystack of boring field stars?  And more
+generally, what are the implications for the evolution of open clusters
+if they do have halos?
 
-Section~\ref{sec:gaia} presents the astrometric and photometric data
-from Gaia, and clarifies our usage of the terms ``core'' and ``halo''.
-Section~\ref{sec:agedate} age-dates the halo of NGC\,2516,
-based on Gaia photometry (Section~\ref{subsec:hr}),
-TESS gyrochronology (Section~\ref{subsec:tess}), and lithium depletion
+Section~\ref{sec:gaia} presents the astrometric data from Gaia, and
+clarifies our usage of the terms ``core'' and ``halo''.
+Section~\ref{sec:agedate} age-dates the halo of NGC\,2516, based on Gaia
+photometry (Section~\ref{subsec:hr}), TESS gyrochronology
+(Section~\ref{subsec:tess}), and lithium depletion
 (Section~\ref{subsec:lithium}).  In Section~\ref{sec:discussion} we
-discuss the implications of this analysis for NGC\,2516 specifically
-and stellar spin-down and open cluster evolution generally.
-Section~\ref{sec:conclusion} presents our conclusions.
+discuss the implications of this analysis for NGC\,2516 specifically and
+stellar spin-down and open cluster evolution generally.
+Section~\ref{sec:conclusion} gives our conclusions.
 
 
 \section{A 250\,pc Halo around a Core?}
@@ -214,19 +222,79 @@ Section~\ref{sec:conclusion} presents our conclusions.
 	}
 \end{figure*}
 
-Figure~\ref{fig:gaia6d} shows the problem we would like to address.
-In this figure, the ``core'' comprises \cn members that
-\citet{cantatgaudin_gaia_2018} reported to have ``membership
-probability'' exceeding 10\%, based on the Gaia DR2 astrometric data.
-The exact meaning of this probability, and details concerning their
-clustering algorithm, are discussed in Appendix~\ref{app:clustering}.
-The ``halo'' comprises \cn members that
-\citet{kounkel_untangling_2019} reported as members, also based on the
-Gaia DR2 data.  That study did not report continuous membership
-probabilities, instead opting for the binary ``member'' or ``not''.
-These two different clustering methods yielded wildly different
-results.  What is the true structure of \cn?
-Are the core and halo truly coeval?
+We chose the stars to focus on based on previously reported
+memberships of NGC\,2516, available in the literature.  While a number
+of pre-Gaia catalogs were available, the purity and accuracy of the
+Gaia-derived results are expected to be the current state of the art.
+We therefore adopted what we viewed as the most interesting clustering
+samples to compare: those of \citet{cantatgaudin_gaia_2018}
+(\citetalias{cantatgaudin_gaia_2018}) and
+\citet{kounkel_untangling_2019}
+(\citetalias{kounkel_untangling_2019})\footnote{A third sample was
+also recently reported by \citet{meingast_2021}. Although the results
+of this study were made publicly available too late to be included in
+our analysis,  1577 of the 1860 \citet{meingast_2021} sources (85\%)
+were included in the \citet{kounkel_untangling_2019} sample.  A
+complete set of \cn members could very well include some of the newly
+reported candidate members from \citet{meingast_2021}.}. While we
+could have performed our own clustering analysis based on the Gaia
+data, such an effort would be replicating the work of these
+investigators. And why would our clustering methods be better than
+theirs? We opt instead to use their studies as starting points.
+
+% Theia 613
+\citetalias{cantatgaudin_gaia_2018} reported 1106 candidate members of
+\cn, brighter than $G=18$\,mag.  \citet{kounkel_untangling_2019}
+reported 3003 candidate members, and included stars up to
+$\approx$1\,mag fainter.  Each study used unsupervised clustering
+based on the second Gaia Data Release, detailed in
+Appendix~\ref{app:clustering}.
+
+%TODO calculate these physical sizes carefully
+Figure~\ref{fig:gaia6d} shows the cluster members reported by each
+study.  The \citetalias{cantatgaudin_gaia_2018} members are all within
+a few degrees of the cluster center, while the
+\citetalias{kounkel_untangling_2019} members span tens of degrees.  In
+physical units, this corresponds to a size difference of XX\,pc versus
+YY\,pc.  This difference is somewhat tautological, because
+\citetalias{cantatgaudin_gaia_2018} did not extend their search for
+members out to tens of degrees from the cluster center, since their
+clustering algorithm relied on the contrast between cluster and field
+stars in the astrometric space of ($\mu_{\alpha'}, \mu_\delta, \pi$).
+Nonetheless, the membership catalog of \citetalias{cantatgaudin_gaia_2018}
+echoes that of many previous investigators (CITE, CITE, CITE), and is
+consistent with the general {\it visual} impression that one has when
+looking at \cn visually: it seems to be at most {\bf X$^\circ$}, and
+not a big stream.
+This discrepancy begs the question.  What is the true structure of
+\cn?  Are the core and halo truly coeval?
+
+To answer these questions, we adopt the
+\citetalias{cantatgaudin_gaia_2018} stars as candidate ``core''
+members and the \citetalias{kounkel_untangling_2019} stars as
+candidate ``halo'' members.  If a star is in both lists, it is a
+``core'' member.  1091 of the 1106 core members are in both lists.
+This leaves 1912 candidate members in the halo.
+Concatenating the two lists yields 3018 candidate members.
+
+In this work, we also define a set of nearby field stars in the
+``neighborhood'' of \cn.  Based on the observed distribution of halo
+members, we draw these stars randomly from the following ``cube'' in
+right ascension, declination, and parallax:
+\begin{align}
+  $\alpha$\,[{\rm deg}] &\in [108, 132], \\
+  $\delta$\,[{\rm deg}] &\in [-76, -45], \\
+  $\pi$\,[{\rm mas}] &\in [1.5, 4.0].
+\end{align}
+We imposed a magnitude limit of $G=19$\,mag, and ran the queries
+using the \texttt{astroquery.gaia} module (CITE).
+% TODO: why?
+We allowed the number of stars in the comparison sample to exceed that
+in the cluster sample by a factor of a few, to ensure broad sampling
+of stellar masses and evolutionary states.
+We also required the comparison sample to not overlap with the cluster
+sample, which led to the omission of 1.1\% of the stars drawn over the
+volume noted above.
 
 
 \section{Age-Dating the Halo of NGC\,2516}
@@ -263,11 +331,10 @@ Are the core and halo truly coeval?
 \end{figure*}
 
 The first check on whether this membership assignment is plausible was
-already performed by \citet{kounkel_untangling_2019} and more recently
-by \citet{meingast_2021}.  That check is to see whether the HR
-diagrams of these cluster components that were selected based on
-positions and velocities photometrically support the claim that they
-are coeval.
+already performed by \citetalias{cantatgaudin_gaia_2018},
+\citetalias{kounkel_untangling_2019}, and more recently by
+\citet{meingast_2021}.  That check is to see whether the HR diagrams
+of the cluster members support the claim that they are coeval.
 
 Figure~\ref{fig:hr} presents similar results to what these
 investigators have already found.  The core members of the cluster
@@ -660,7 +727,7 @@ members for their efforts to make the mission a continued success.
 % the relevant papers. they should probably be nixed in favor of
 % concision.
 %
-\citet{cantatgaudin_gaia_2018} applied a procedure that ultimately
+\citetalias{cantatgaudin_gaia_2018} applied a procedure that ultimately
 yielded what we call ``the core''.  Their procedure was to first query
 a Gaia DR2 cone around the previously reported RA and dec of the
 cluster, and within $\pm 0.5$\,mas of its previously reported
@@ -686,8 +753,17 @@ redrawings, the final probability is the frequency with which a given
 star passes the veto".  In the case of \cn, this yielded a reported
 ``\texttt{r50}'' within which half of the cluster members were found
 to be within 0.496$^\circ$.
+When we selected candidate \cn members from the results of
+\citetalias{cantatgaudin_gaia_2018}, we opted to include all candidate members
+with reported membership probability exceeding 10\%.
+While this seems {\it a priori} low, our results ({\bf SECTION XXX})
+show that this ``membership probabilty'' severely underestimates the
+purity of the \citetalias{cantatgaudin_gaia_2018} sample for \cn. 
+%TODO: quantify
+Their false positive rate across the sample is more like 1-5\%.
 
-\citet{kounkel_untangling_2019} applied a different unsupervised
+\citetalias{kounkel_untangling_2019}
+applied a different unsupervised
 clustering method to the 5-dimensional Gaia DR2 data (omitting radial
 velocities, due to their sparsity).  Their selection function (see
 their Section~2) yielded $\approx 2\times 10^7$ stars, mostly within
@@ -714,6 +790,11 @@ considerations of the background noise (even if the resulting noisy
 groupings do meet the minimum cluster size).  By default, the sample
 size is set to the same value as the cluster size, but it is possible
 to adjust them separately.''
+Regarding membership proabilities,
+\citetalias{kounkel_untangling_2019} did not report continuous membership
+probabilities, instead opting for the binary ``member'' or ``not''.
+
+
 
 \section{Detrending details}
 \label{app:detrending}
