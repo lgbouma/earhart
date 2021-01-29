@@ -15,6 +15,7 @@ Plots:
     plot_bisector_span_vs_RV
     plot_backintegration_ngc2516
     plot_ngc2516_corehalo_3panel
+    plot_full_kinematics_X_rotation
 """
 import os, corner, pickle
 from glob import glob
@@ -48,7 +49,7 @@ from earhart.helpers import (
     _get_nbhd_dataframes, _get_extinction_dataframes,
     _get_fullfaint_dataframes, _get_fullfaint_edr3_dataframes,
     _given_gaia_df_get_icrs_arr, calc_dist,
-    _get_denis_fullfaint_edr3_dataframes
+    _get_denis_fullfaint_edr3_dataframes, _get_autorotation_dataframe
 )
 
 def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
@@ -1105,19 +1106,7 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear'):
             df = pd.read_csv(os.path.join(rotdir, f'curtis19_{_cls}.csv'))
 
         else:
-            df = pd.read_csv(
-                os.path.join(rotdir, f'{runid}_rotation_periods.csv')
-            )
-
-            # automatic selection criteria for viable rotation periods
-            sel = (
-                (df.period < 15)
-                &
-                (df.lspval > 0.08)
-                &
-                (df.nequal <= 1)
-            )
-            df = df[sel]
+            df = _get_autorotation_dataframe(runid)
 
             print(42*'-')
             print(f'Applying E(Bp-Rp) = {E_BpmRp:.4f}')
@@ -2103,3 +2092,198 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
         outstr += '_emph1937'
     outpath = os.path.join(outdir, f'ngc2516_corehalo_3panel{outstr}.png')
     savefig(f, outpath)
+
+
+def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
+                                    galacticframe=0):
+    """
+    Match the kinematic members against the AUTOrotation sample.
+    """
+
+    if basedata == 'extinctioncorrected':
+        raise NotImplementedError('still need to implement extinction')
+        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
+    elif basedata == 'bright':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
+    elif basedata == 'fullfaint':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
+    elif basedata == 'fullfaint_edr3':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
+    else:
+        raise NotImplementedError
+
+    rot_df, lc_df = _get_autorotation_dataframe(runid='NGC_2516', returnbase=True)
+
+    dfs = [nbhd_df, cg18_df, kc19_df, target_df, rot_df]
+    nbhd_df.source_id = nbhd_df.source_id.astype(np.int64)
+    for _df in dfs:
+        assert type(_df.source_id.iloc[0]) == np.int64
+
+    if galacticframe:
+        c_nbhd = SkyCoord(ra=nparr(nbhd_df.ra)*u.deg, dec=nparr(nbhd_df.dec)*u.deg)
+        nbhd_df['l'] = c_nbhd.galactic.l.value
+        nbhd_df['b'] = c_nbhd.galactic.b.value
+
+    plt.close('all')
+
+    rvkey = (
+        'radial_velocity' if 'edr3' not in basedata else 'dr2_radial_velocity'
+    )
+
+    if galacticframe:
+        xkey, ykey = 'l', 'b'
+        xl, yl = r'$l$ [deg]', r'$b$ [deg]'
+    else:
+        xkey, ykey = 'ra', 'dec'
+        xl, yl = r'$\alpha$ [deg]', r'$\delta$ [deg]'
+
+    params = [xkey, ykey, 'parallax', 'pmra', 'pmdec', rvkey]
+    # whether to limit axis by 5/95th percetile
+    qlimd = {
+        xkey: 0, ykey: 0, 'parallax': 0, 'pmra': 1, 'pmdec': 1, rvkey: 1
+    }
+    # whether to limit axis by 99th percentile
+    nnlimd = {
+        xkey: 1, ykey: 1, 'parallax': 1, 'pmra': 0, 'pmdec': 0, rvkey: 0
+    }
+    ldict = {
+        xkey: xl, ykey: yl,
+        'parallax': r'$\pi$ [mas]', 'pmra': r"$\mu_{{\alpha'}}$ [mas/yr]",
+        'pmdec':  r'$\mu_{{\delta}}$ [mas/yr]', rvkey: 'RV [km/s]'
+    }
+
+
+    nparams = len(params)
+    f, axs = plt.subplots(figsize=(6,6), nrows=nparams-1, ncols=nparams-1)
+
+    from earhart.priors import AVG_EBpmRp
+    get_BpmRp0 = lambda df: (df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - AVG_EBpmRp)
+    # this plot is for (Bp-Rp)_0 from 0.5-1.2, and will highlight which
+    # kinematic members (for which we made light curves) are and are not rotators.
+    sel_color = lambda df: (get_BpmRp0(df) > 0.5) & (get_BpmRp0(df) < 1.2)
+    sel_autorot = lambda df: df.source_id.isin(rot_df.source_id)
+    sel_haslc = lambda df: df.source_id.isin(lc_df.source_id)
+
+    sel_comp = lambda df: (sel_color(df)) & (sel_haslc(df))
+    sel_rotn =  lambda df: (sel_color(df)) & (sel_autorot(df))
+
+    for i in range(nparams):
+        for j in range(nparams):
+            print(i,j)
+            if j == nparams-1 or i == nparams-1:
+                continue
+            if j>i:
+                axs[i,j].set_axis_off()
+                continue
+
+            xv = params[j]
+            yv = params[i+1]
+            print(i,j,xv,yv)
+
+            axs[i,j].scatter(
+                nbhd_df[sel_color(nbhd_df)][xv], nbhd_df[sel_color(nbhd_df)][yv], c='gray', alpha=0.9, zorder=2, s=5,
+                rasterized=True, linewidths=0, label='Field', marker='.'
+            )
+
+            axs[i,j].scatter(
+                kc19_df[sel_comp(kc19_df)][xv], kc19_df[sel_comp(kc19_df)][yv],
+                c='orange', alpha=1, zorder=3, s=12, rasterized=True,
+                label='Halo', linewidths=0.1, marker='.', edgecolors='k'
+            )
+            axs[i,j].scatter(
+                kc19_df[sel_rotn(kc19_df)][xv], kc19_df[sel_rotn(kc19_df)][yv],
+                c='lightskyblue', alpha=1, zorder=6, s=12, rasterized=True,
+                label='Halo + P$_\mathrm{rot}$', linewidths=0.1, marker='.',
+                edgecolors='k'
+            )
+
+            axs[i,j].scatter(
+                cg18_df[sel_comp(cg18_df)][xv], cg18_df[sel_comp(cg18_df)][yv],
+                c='k', alpha=0.9, zorder=7, s=2,
+                rasterized=True, label='Core', marker='.'
+            )
+
+            if show1937:
+                axs[i,j].plot(
+                    target_df[xv], target_df[yv], alpha=1, mew=0.5,
+                    zorder=8, label='TOI 1937', markerfacecolor='yellow',
+                    markersize=7, marker='*', color='black', lw=0
+                )
+
+            # set the axis limits as needed
+            if qlimd[xv]:
+                xlim = (np.nanpercentile(nbhd_df[xv], 5),
+                        np.nanpercentile(nbhd_df[xv], 95))
+                axs[i,j].set_xlim(xlim)
+            if qlimd[yv]:
+                ylim = (np.nanpercentile(nbhd_df[yv], 5),
+                        np.nanpercentile(nbhd_df[yv], 95))
+                axs[i,j].set_ylim(ylim)
+            if nnlimd[xv]:
+                xlim = (np.nanpercentile(nbhd_df[xv], 1),
+                        np.nanpercentile(nbhd_df[xv], 99))
+                axs[i,j].set_xlim(xlim)
+            if nnlimd[yv]:
+                ylim = (np.nanpercentile(nbhd_df[yv], 1),
+                        np.nanpercentile(nbhd_df[yv], 99))
+                axs[i,j].set_ylim(ylim)
+
+
+            # fix labels
+            if j == 0 :
+                axs[i,j].set_ylabel(ldict[yv], fontsize='small')
+                if not i == nparams - 2:
+                    # hide xtick labels
+                    labels = [item.get_text() for item in axs[i,j].get_xticklabels()]
+                    empty_string_labels = ['']*len(labels)
+                    axs[i,j].set_xticklabels(empty_string_labels)
+
+            if i == nparams - 2:
+                axs[i,j].set_xlabel(ldict[xv], fontsize='small')
+                if not j == 0:
+                    # hide ytick labels
+                    labels = [item.get_text() for item in axs[i,j].get_yticklabels()]
+                    empty_string_labels = ['']*len(labels)
+                    axs[i,j].set_yticklabels(empty_string_labels)
+
+            if (not (j == 0)) and (not (i == nparams - 2)):
+                # hide ytick labels
+                labels = [item.get_text() for item in axs[i,j].get_yticklabels()]
+                empty_string_labels = ['']*len(labels)
+                axs[i,j].set_yticklabels(empty_string_labels)
+                # hide xtick labels
+                labels = [item.get_text() for item in axs[i,j].get_xticklabels()]
+                empty_string_labels = ['']*len(labels)
+                axs[i,j].set_xticklabels(empty_string_labels)
+
+    axs[2,2].legend(loc='best', handletextpad=0.1, fontsize='medium', framealpha=0.7)
+    leg = axs[2,2].legend(bbox_to_anchor=(0.8,0.8), loc="upper right",
+                          handletextpad=0.1, fontsize='medium',
+                          bbox_transform=f.transFigure)
+
+    # NOTE: hack size of legend markers
+    leg.legendHandles[0]._sizes = [20]
+    leg.legendHandles[1]._sizes = [25]
+    leg.legendHandles[2]._sizes = [25]
+    leg.legendHandles[3]._sizes = [20]
+    if show1937:
+        leg.legendHandles[4]._sizes = [20]
+
+    for ax in axs.flatten():
+        format_ax(ax)
+
+    f.tight_layout(h_pad=0.01, w_pad=0.01)
+
+    s = ''
+    s += f'_{basedata}'
+    if show1937:
+        s += f'_show1937'
+    if galacticframe:
+        s += f'_galactic'
+    else:
+        s += f'_icrs'
+    outpath = os.path.join(outdir, f'full_kinematics_X_rotation{s}.png')
+    savefig(f, outpath)
+
+
+
