@@ -1,21 +1,26 @@
 """
-Plots:
+Contents:
+Kinematics / Gaia / HR:
     plot_full_kinematics
     plot_TIC268_nbhd_small
+    plot_ngc2516_corehalo_3panel
     plot_hr
+Rotation / TESS:
     plot_rotation
+    plot_auto_rotation
     plot_skypositions_x_rotn
+    plot_full_kinematics_X_rotation
+    plot_rotation_X_RUWE
+Lithium:
     plot_randich_lithium
     plot_galah_dr3_lithium
     plot_rotation_X_lithium
-    plot_rotation_X_RUWE
-    plot_auto_rotation
+Other:
     plot_gaia_rv_scatter_vs_brightness
+    plot_ruwe_vs_apparentmag
     plot_edr3_blending_vs_apparentmag
     plot_bisector_span_vs_RV
     plot_backintegration_ngc2516
-    plot_ngc2516_corehalo_3panel
-    plot_full_kinematics_X_rotation
 """
 import os, corner, pickle
 from glob import glob
@@ -33,8 +38,7 @@ from astropy.time import Time
 import matplotlib.patheffects as pe
 from matplotlib.ticker import MaxNLocator
 
-from aesthetic.plot import savefig, format_ax
-from aesthetic.plot import set_style
+from aesthetic.plot import savefig, format_ax, set_style
 
 from astrobase.services.identifiers import gaiadr2_to_tic
 from cdips.utils.gaiaqueries import (
@@ -1266,82 +1270,6 @@ def plot_galah_dr3_lithium(outdir, vs_rotators=1, corehalosplit=0):
     savefig(f, outpath)
 
 
-
-def _make_Randich18_xmatch(datapath, vs_rotators=1):
-    """
-    For every Randich+18 Gaia-ESO star with a spectrum, look for a gold rotator
-    match within 1 arcsecond.  If you find it, pull its data. If there are
-    multiple, take the closest.
-    """
-
-    from earhart.lithium import get_Randich18_NGC2516
-
-    rdf = get_Randich18_NGC2516()
-
-    if vs_rotators:
-        rotdir = os.path.join(DATADIR, 'rotation')
-        rot_df = pd.read_csv(
-            os.path.join(rotdir, 'ngc2516_rotation_periods.csv')
-        )
-        comp_df = rot_df[rot_df.Tags == 'gold']
-        print('Comparing vs the "gold" NGC2516 rotators sample (core + halo)...')
-    else:
-
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
-        cg18_df['subcluster'] = 'core'
-        kc19_df['subcluster'] = 'halo'
-        comp_df = pd.concat((cg18_df, kc19_df))
-        print('Comparing vs the "fullfaint" kinematic NGC2516 rotators sample (core + halo)...')
-
-    c_comp = SkyCoord(ra=nparr(comp_df.ra)*u.deg, dec=nparr(comp_df.dec)*u.deg)
-    c_r18 = SkyCoord(ra=nparr(rdf._RA)*u.deg, dec=nparr(rdf._DE)*u.deg)
-
-    cutoff_radius = 0.5*u.arcsec
-    has_matchs, match_idxs, match_rows = [], [], []
-    for ix, _c in enumerate(c_r18):
-        if ix % 100 == 0:
-            print(f'{ix}/{len(c_r18)}')
-        seps = _c.separation(c_comp)
-        if min(seps.to(u.arcsec)) < cutoff_radius:
-            has_matchs.append(True)
-            match_idx = np.argmin(seps)
-            match_idxs.append(match_idx)
-            match_rows.append(comp_df.iloc[match_idx])
-        else:
-            has_matchs.append(False)
-
-    has_matchs = nparr(has_matchs)
-
-    left_df = rdf[has_matchs]
-
-    right_df = pd.DataFrame(match_rows)
-
-    mdf = pd.concat((left_df.reset_index(), right_df.reset_index()), axis=1)
-
-    if vs_rotators:
-        print(f'Got {len(mdf)} gold rot matches from {len(rdf)} Randich+18 shots.')
-    else:
-        print(f'Got {len(mdf)} fullfaint kinematic matches from {len(rdf)} Randich+18 shots.')
-
-    # "Comparing the Gaia color and GES Teff, 15 of these (all with
-    # Bp-Rp0 $>$ 2.0) are spurious matches, which we remove."
-    if not vs_rotators:
-
-        from earhart.priors import AVG_EBpmRp
-        assert abs(AVG_EBpmRp - 0.1343) < 1e-4 # used by KC19
-
-        badmatch = (
-            ((mdf['phot_bp_mean_mag'] - mdf['phot_rp_mean_mag'] - AVG_EBpmRp)>2.0)
-            &
-            (mdf['Teff'] > 4300)
-        )
-        mdf = mdf[~badmatch]
-        print(f'Got {len(mdf)} fullfaint kinematic matches from {len(rdf)} Randich+18 shots after cleaning "BADMATCHES".')
-
-    mdf.to_csv(datapath, index=False)
-
-
-
 def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
     """
     Plot Li EW vs color for Randich+18's Gaia ESO lithium stars, crossmatched
@@ -1408,6 +1336,7 @@ def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
                                 'randich_fullfaintkinematic_xmatch_20210128.csv')
 
     if not os.path.exists(datapath):
+        from earhart.lithium import _make_Randich18_xmatch
         _make_Randich18_xmatch(datapath, vs_rotators=vs_rotators)
 
     mdf = pd.read_csv(datapath)
@@ -1495,7 +1424,6 @@ def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
         outpath = os.path.join(outdir,
                                f'randich_lithium_vs_BpmRp_xmatch_{xmstr}{outstr}.png')
         savefig(f, outpath)
-
 
 
 def plot_rotation_X_lithium(outdir, cmapname):
@@ -2183,8 +2111,9 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
             print(i,j,xv,yv)
 
             axs[i,j].scatter(
-                nbhd_df[sel_color(nbhd_df)][xv], nbhd_df[sel_color(nbhd_df)][yv], c='gray', alpha=0.9, zorder=2, s=5,
-                rasterized=True, linewidths=0, label='Field', marker='.'
+                nbhd_df[sel_color(nbhd_df)][xv], nbhd_df[sel_color(nbhd_df)][yv],
+                c='gray', alpha=0.9, zorder=2, s=5, rasterized=True,
+                linewidths=0, label='Field', marker='.'
             )
 
             axs[i,j].scatter(

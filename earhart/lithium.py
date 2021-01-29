@@ -7,6 +7,8 @@ import os
 import numpy as np, pandas as pd
 from astropy.io import fits
 from astropy.table import Table
+from astropy import units as u, constants as const
+from astropy.coordinates import SkyCoord
 
 from earhart.paths import DATADIR, RESULTSDIR
 
@@ -74,6 +76,7 @@ def get_GalahDR3_lithium(verbose=1, defaultflags=0):
 
     return dr3_tab[sel]
 
+
 def get_Randich18_NGC2516():
 
     hl = fits.open(
@@ -84,3 +87,76 @@ def get_Randich18_NGC2516():
     t_df = Table(hl[1].data).to_pandas()
 
     return t_df
+
+
+def _make_Randich18_xmatch(datapath, vs_rotators=1, RADIUS=0.5):
+    """
+    For every Randich+18 Gaia-ESO star with a spectrum, look for a rotator
+    match (either the "gold" or "autorot" samples) within RADIUS arcseconds.
+    If you find it, pull its data. If there are multiple, take the closest.
+    """
+
+    rdf = get_Randich18_NGC2516()
+
+    if vs_rotators:
+        rotdir = os.path.join(DATADIR, 'rotation')
+        rot_df = pd.read_csv(
+            os.path.join(rotdir, 'ngc2516_rotation_periods.csv')
+        )
+        comp_df = rot_df[rot_df.Tags == 'gold']
+        print('Comparing vs the "gold" NGC2516 rotators sample (core + halo)...')
+    else:
+
+        from earhart.helpers import _get_fullfaint_dataframes
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
+        cg18_df['subcluster'] = 'core'
+        kc19_df['subcluster'] = 'halo'
+        comp_df = pd.concat((cg18_df, kc19_df))
+        print('Comparing vs the "fullfaint" kinematic NGC2516 rotators sample (core + halo)...')
+
+    c_comp = SkyCoord(ra=nparr(comp_df.ra)*u.deg, dec=nparr(comp_df.dec)*u.deg)
+    c_r18 = SkyCoord(ra=nparr(rdf._RA)*u.deg, dec=nparr(rdf._DE)*u.deg)
+
+    cutoff_radius = RADIUS*u.arcsec
+    has_matchs, match_idxs, match_rows = [], [], []
+    for ix, _c in enumerate(c_r18):
+        if ix % 100 == 0:
+            print(f'{ix}/{len(c_r18)}')
+        seps = _c.separation(c_comp)
+        if min(seps.to(u.arcsec)) < cutoff_radius:
+            has_matchs.append(True)
+            match_idx = np.argmin(seps)
+            match_idxs.append(match_idx)
+            match_rows.append(comp_df.iloc[match_idx])
+        else:
+            has_matchs.append(False)
+
+    has_matchs = nparr(has_matchs)
+
+    left_df = rdf[has_matchs]
+
+    right_df = pd.DataFrame(match_rows)
+
+    mdf = pd.concat((left_df.reset_index(), right_df.reset_index()), axis=1)
+
+    if vs_rotators:
+        print(f'Got {len(mdf)} gold rot matches from {len(rdf)} Randich+18 shots.')
+    else:
+        print(f'Got {len(mdf)} fullfaint kinematic matches from {len(rdf)} Randich+18 shots.')
+
+    # "Comparing the Gaia color and GES Teff, 15 of these (all with
+    # Bp-Rp0 $>$ 2.0) are spurious matches, which we remove."
+    if not vs_rotators:
+
+        from earhart.priors import AVG_EBpmRp
+        assert abs(AVG_EBpmRp - 0.1343) < 1e-4 # used by KC19
+
+        badmatch = (
+            ((mdf['phot_bp_mean_mag'] - mdf['phot_rp_mean_mag'] - AVG_EBpmRp)>2.0)
+            &
+            (mdf['Teff'] > 4300)
+        )
+        mdf = mdf[~badmatch]
+        print(f'Got {len(mdf)} fullfaint kinematic matches from {len(rdf)} Randich+18 shots after cleaning "BADMATCHES".')
+
+    mdf.to_csv(datapath, index=False)
