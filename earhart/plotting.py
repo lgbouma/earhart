@@ -1180,7 +1180,7 @@ def plot_galah_dr3_lithium(outdir, vs_rotators=1, corehalosplit=0):
 
     from earhart.lithium import get_GalahDR3_lithium
 
-    g_tab = get_GalahDR3_lithium()
+    g_tab = get_GalahDR3_lithium(defaultflags=1)
     scols = ['source_id', 'teff', 'e_teff', 'fe_h', 'e_fe_h', 'flag_fe_h',
              'Li_fe', 'e_Li_fe', 'nr_Li_fe', 'flag_Li_fe', 'ruwe']
     g_dict = {k:np.array(g_tab[k]).byteswap().newbyteorder() for k in scols}
@@ -1193,16 +1193,36 @@ def plot_galah_dr3_lithium(outdir, vs_rotators=1, corehalosplit=0):
         )
         comp_df = rot_df[rot_df.Tags == 'gold']
         print('Comparing vs the "gold" NGC2516 rotators sample (core + halo)...')
+
     else:
-        # nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
-        raise NotImplementedError
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
+        cg18_df['subcluster'] = 'core'
+        kc19_df['subcluster'] = 'halo'
+        comp_df = pd.concat((cg18_df, kc19_df))
+        print('Comparing vs the "fullfaint" kinematic NGC2516 rotators sample (core + halo)...')
+        assert type(comp_df.source_id.iloc[0]) == np.int64
 
-    mdf = comp_df.merge(g_df, on='source_id', how='left')
+    mdf = comp_df.merge(g_df, on='source_id', how='inner')
 
+    if not vs_rotators:
+        outname = 'kinematic_X_galah_dr3'
+        outpath = os.path.join(outdir, f'{outname}.csv')
+        if not os.path.exists(outpath):
+            mdf.to_csv(outpath, index=False)
+            print(f'Made {outpath} with {len(mdf)} entries.')
+
+    smdf = mdf
     smdf = mdf[~pd.isnull(mdf.Li_fe)]
 
     print(f'Number of comparison stars: {len(comp_df)}')
-    print(f'Number of comparison stars with finite lithium'
+    print(f'Number of comparison stars w/ Galah DR3 matches '
+          f'{len(mdf)}')
+    print(f'Number of comparison stars w/ Galah DR3 matches in core '
+          f'{len(mdf[mdf.subcluster == "core"])}')
+    print(f'Number of comparison stars w/ Galah DR3 matches in halo '
+          f'{len(mdf[mdf.subcluster == "halo"])}')
+
+    print(f'Number of comparison stars w/ Galah DR3 matches and finite lithium '
           f'(detection or limit): {len(smdf)}')
 
     ##########
@@ -1283,7 +1303,7 @@ def plot_galah_dr3_lithium(outdir, vs_rotators=1, corehalosplit=0):
 
 
 
-def _make_Randich18_goldrot_xmatch(datapath, vs_rotators=1):
+def _make_Randich18_xmatch(datapath, vs_rotators=1):
     """
     For every Randich+18 Gaia-ESO star with a spectrum, look for a gold rotator
     match within 1 arcsecond.  If you find it, pull its data. If there are
@@ -1302,18 +1322,22 @@ def _make_Randich18_goldrot_xmatch(datapath, vs_rotators=1):
         comp_df = rot_df[rot_df.Tags == 'gold']
         print('Comparing vs the "gold" NGC2516 rotators sample (core + halo)...')
     else:
-        # nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
-        raise NotImplementedError
 
-    c_rot = SkyCoord(ra=nparr(comp_df.ra)*u.deg, dec=nparr(comp_df.dec)*u.deg)
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
+        cg18_df['subcluster'] = 'core'
+        kc19_df['subcluster'] = 'halo'
+        comp_df = pd.concat((cg18_df, kc19_df))
+        print('Comparing vs the "fullfaint" kinematic NGC2516 rotators sample (core + halo)...')
+
+    c_comp = SkyCoord(ra=nparr(comp_df.ra)*u.deg, dec=nparr(comp_df.dec)*u.deg)
     c_r18 = SkyCoord(ra=nparr(rdf._RA)*u.deg, dec=nparr(rdf._DE)*u.deg)
 
-    cutoff_radius = 1*u.arcsec
+    cutoff_radius = 0.5*u.arcsec
     has_matchs, match_idxs, match_rows = [], [], []
     for ix, _c in enumerate(c_r18):
         if ix % 100 == 0:
             print(f'{ix}/{len(c_r18)}')
-        seps = _c.separation(c_rot)
+        seps = _c.separation(c_comp)
         if min(seps.to(u.arcsec)) < cutoff_radius:
             has_matchs.append(True)
             match_idx = np.argmin(seps)
@@ -1330,7 +1354,25 @@ def _make_Randich18_goldrot_xmatch(datapath, vs_rotators=1):
 
     mdf = pd.concat((left_df.reset_index(), right_df.reset_index()), axis=1)
 
-    print(f'Got {len(mdf)} gold rot matches from {len(rdf)} Randich+18 shots.')
+    if vs_rotators:
+        print(f'Got {len(mdf)} gold rot matches from {len(rdf)} Randich+18 shots.')
+    else:
+        print(f'Got {len(mdf)} fullfaint kinematic matches from {len(rdf)} Randich+18 shots.')
+
+    # "Comparing the Gaia color and GES Teff, 15 of these (all with
+    # Bp-Rp0 $>$ 2.0) are spurious matches, which we remove."
+    if not vs_rotators:
+
+        from earhart.priors import AVG_EBpmRp
+        assert abs(AVG_EBpmRp - 0.1343) < 1e-4 # used by KC19
+
+        badmatch = (
+            ((mdf['phot_bp_mean_mag'] - mdf['phot_rp_mean_mag'] - AVG_EBpmRp)>2.0)
+            &
+            (mdf['Teff'] > 4300)
+        )
+        mdf = mdf[~badmatch]
+        print(f'Got {len(mdf)} fullfaint kinematic matches from {len(rdf)} Randich+18 shots after cleaning "BADMATCHES".')
 
     mdf.to_csv(datapath, index=False)
 
@@ -1339,10 +1381,11 @@ def _make_Randich18_goldrot_xmatch(datapath, vs_rotators=1):
 def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
     """
     Plot Li EW vs color for Randich+18's Gaia ESO lithium stars, crossmatched
-    against the gold rotator sample.
+    against either the gold rotator sample, or just the "fullfaint kinematic"
+    sample.
 
-    Somewhat surprisingly, the hit rate is rather poor:
-    Got 203 gold rot matches from 796 Randich+18 shots.
+    For gold rotator, the hit rate is rather poor:
+        Got 203 gold rot matches from 796 Randich+18 shots.
 
     R+18 columns (cf.
     http://vizier.u-strasbg.fr/viz-bin/VizieR-3?-source=J/A%2bA/612/A99&-out.max=50&-out.form=HTML%20Table&-out.add=_r&-out.add=_RAJ,_DEJ&-sort=_r&-oc.form=sexa):
@@ -1393,11 +1436,15 @@ def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
 
     set_style()
 
-    datapath = os.path.join(DATADIR, 'lithium',
-                            'randich_goldrot_xmatch_20201205.csv')
+    if vs_rotators:
+        datapath = os.path.join(DATADIR, 'lithium',
+                                'randich_goldrot_xmatch_20201205.csv')
+    else:
+        datapath = os.path.join(DATADIR, 'lithium',
+                                'randich_fullfaintkinematic_xmatch_20210128.csv')
 
     if not os.path.exists(datapath):
-        _make_Randich18_goldrot_xmatch(datapath, vs_rotators=vs_rotators)
+        _make_Randich18_xmatch(datapath, vs_rotators=vs_rotators)
 
     mdf = pd.read_csv(datapath)
 
@@ -1410,8 +1457,14 @@ def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
     detections = (mdf.f_EWLi == 0)
     upper_limits = (mdf.f_EWLi == 3)
 
-    print(f'Got {len(mdf[detections])} kinematic X rotation X lithium detections')
-    print(f'Got {len(mdf[upper_limits])} kinematic X rotation X lithium upper limits')
+    if vs_rotators:
+        print(f'Got {len(mdf[detections])} kinematic X rotation X lithium detections')
+        print(f'Got {len(mdf[upper_limits])} kinematic X rotation X lithium upper limits')
+    else:
+        print(f'Got {len(mdf[mdf.subcluster == "core"])} kinematic X lithium entries in core')
+        print(f'Got {len(mdf[mdf.subcluster == "halo"])} kinematic X lithium entries in halo')
+        print(f'Got {len(mdf[detections])} kinematic X lithium detections')
+        print(f'Got {len(mdf[upper_limits])} kinematic X lithium upper limits')
 
     if not corehalosplit:
         ax.plot(
@@ -1451,16 +1504,34 @@ def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
 
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), handletextpad=0.1)
 
-    ax.set_title('Kinematic $\otimes$ Rotation $\otimes$ Lithium')
+    if vs_rotators:
+        ax.set_title('Kinematic $\otimes$ Rotation $\otimes$ Lithium')
+    else:
+        ax.set_title('Kinematic $\otimes$ R+18 Lithium')
 
     ax.set_ylabel('Li$_{6708}$ EW [m$\mathrm{\AA}$]')
     ax.set_xlabel('(Bp-Rp)$_0$ [mag]')
 
     format_ax(ax)
     outstr = '_corehalosplit' if corehalosplit else ''
+    xmstr = 'goldrot' if vs_rotators else 'fullfaintkinematic'
     outpath = os.path.join(outdir,
-                           f'randich_lithium_vs_BpmRp_xmatch_goldrot{outstr}.png')
+                           f'randich_lithium_vs_BpmRp_xmatch_{xmstr}{outstr}.png')
     savefig(f, outpath)
+
+    if not vs_rotators:
+        plt.close('all')
+        f,ax = plt.subplots(figsize=(4,3))
+        ax.plot(
+            mdf[detections]['phot_bp_mean_mag'] - mdf[detections]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf[detections]['Teff'],
+            c='k', alpha=1, zorder=2, ms=3, mfc='k', marker='o', lw=0
+        )
+        outstr += 'colorvsteff_sanitycheck'
+        outpath = os.path.join(outdir,
+                               f'randich_lithium_vs_BpmRp_xmatch_{xmstr}{outstr}.png')
+        savefig(f, outpath)
+
 
 
 def plot_rotation_X_lithium(outdir, cmapname):
