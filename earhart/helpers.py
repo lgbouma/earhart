@@ -1,6 +1,7 @@
 """
 get_toi1937_lightcurve
 get_groundphot
+get_gaia_basedata
 _get_nbhd_dataframes
 _get_fullfaint_dataframes
 _get_fullfaint_edr3_dataframes
@@ -197,6 +198,24 @@ def get_groundphot(datestr=None):
         raise NotImplementedError
 
     return x_obs, y_obs, y_err, t_exp
+
+
+def get_gaia_basedata(basedata):
+
+    if basedata == 'extinctioncorrected':
+        raise NotImplementedError('need to implement extinction')
+        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
+    elif basedata == 'bright':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
+    elif basedata == 'fullfaint':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
+    elif basedata == 'fullfaint_edr3':
+        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
+    else:
+        raise NotImplementedError
+
+    return nbhd_df, cg18_df, kc19_df, target_df
+
 
 
 def _get_nbhd_dataframes():
@@ -731,3 +750,4 @@ def _get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0):
         return df[sel]
     else:
         return df[sel], df
+

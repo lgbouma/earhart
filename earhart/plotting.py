@@ -139,17 +139,7 @@ def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
 def plot_full_kinematics(outdir, basedata='bright', show1937=1,
                          galacticframe=0):
 
-    if basedata == 'extinctioncorrected':
-        raise NotImplementedError('still need to implement extinction')
-        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
-    elif basedata == 'bright':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
-    elif basedata == 'fullfaint':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
-    elif basedata == 'fullfaint_edr3':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
-    else:
-        raise NotImplementedError
+    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
 
     if galacticframe:
         c_nbhd = SkyCoord(ra=nparr(nbhd_df.ra)*u.deg, dec=nparr(nbhd_df.dec)*u.deg)
@@ -305,17 +295,7 @@ def plot_gaia_rv_scatter_vs_brightness(outdir, basedata='fullfaint'):
 
     set_style()
 
-    if basedata == 'extinctioncorrected':
-        raise NotImplementedError('still need to implement extinction')
-        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
-    elif basedata == 'bright':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
-    elif basedata == 'fullfaint':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
-    elif basedata == 'fullfaint_edr3':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
-    else:
-        raise NotImplementedError
+    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
 
     plt.close('all')
 
@@ -463,13 +443,9 @@ def plot_edr3_blending_vs_apparentmag(outdir, basedata='fullfaint', num=None):
 
     set_style()
 
-    if basedata == 'extinctioncorrected':
-        raise NotImplementedError('still need to implement extinction')
-        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
-    elif basedata == 'fullfaint_edr3':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
-    else:
+    if not basedata in ['fullfaint_edr3']:
         raise NotImplementedError('only EDR3 has n_blended_transits built in')
+    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
 
     comp_arr = np.array([5489726768531118848]).astype(np.int64)
     runid = 'toi1937_companion_edr3'
@@ -557,19 +533,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
     set_style()
 
-    if basedata == 'extinctioncorrected':
-        raise NotImplementedError('still need to implement extinction')
-        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
-    elif basedata == 'bright':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
-    elif basedata == 'fullfaint':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
-    elif basedata == 'fullfaint_edr3':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
-    elif basedata == 'denis_fullfaint_edr3':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_denis_fullfaint_edr3_dataframes()
-    else:
-        raise NotImplementedError
+    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
 
     comp_arr = np.array([5489726768531118848]).astype(np.int64)
     runid = (
@@ -1615,10 +1579,8 @@ def plot_rotation_X_RUWE(outdir, cmapname, vs_rotators=1,
 
     set_style()
 
-    if basedata == 'fullfaint_edr3':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
-    else:
-        raise NotImplementedError
+    assert basedata == 'fullfaint_edr3'
+    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
 
     if vs_rotators:
         rotdir = os.path.join(DATADIR, 'rotation')
@@ -1808,17 +1770,7 @@ def plot_backintegration_ngc2516(basedata, fix_rvs=0):
 
     from earhart.backintegrate import backintegrate
 
-    if basedata == 'extinctioncorrected':
-        raise NotImplementedError('need to implement extinction')
-        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
-    elif basedata == 'bright':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
-    elif basedata == 'fullfaint':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
-    elif basedata == 'fullfaint_edr3':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
-    else:
-        raise NotImplementedError
+    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
 
     rvkey = 'dr2_radial_velocity' if 'edr3' in basedata else 'radial_velocity'
     getcols = ['ra', 'dec', 'parallax', 'pmra', 'pmdec', rvkey]
@@ -2006,18 +1958,7 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
     )
     """
 
-    if basedata == 'extinctioncorrected':
-        raise NotImplementedError('need to implement extinction')
-        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
-    elif basedata == 'bright':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
-    elif basedata == 'fullfaint':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
-    elif basedata == 'fullfaint_edr3':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
-    else:
-        raise NotImplementedError
-
+    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
 
     set_style()
 
@@ -2171,17 +2112,7 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
     Match the kinematic members against the AUTOrotation sample.
     """
 
-    if basedata == 'extinctioncorrected':
-        raise NotImplementedError('still need to implement extinction')
-        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
-    elif basedata == 'bright':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
-    elif basedata == 'fullfaint':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
-    elif basedata == 'fullfaint_edr3':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
-    else:
-        raise NotImplementedError
+    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
 
     rot_df, lc_df = _get_autorotation_dataframe(runid='NGC_2516', returnbase=True)
 
@@ -2355,6 +2286,3 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
         s += f'_icrs'
     outpath = os.path.join(outdir, f'full_kinematics_X_rotation{s}.png')
     savefig(f, outpath)
-
-
-
