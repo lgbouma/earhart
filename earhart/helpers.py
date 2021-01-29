@@ -6,6 +6,7 @@ _get_fullfaint_dataframes
 _get_fullfaint_edr3_dataframes
 _get_denis_fullfaint_edr3_dataframes
 _get_extinction_dataframes
+_get_autorotation_dataframe
 get_denis_xmatch
 """
 import os, collections, pickle
@@ -698,3 +699,35 @@ def get_denis_xmatch(c, _id=None, mag=None, drop_duplicates=1):
         return get_leftjoin_xm(denis_xm)
     else:
         return denis_xm.to_pandas()
+
+
+def _get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0):
+    """
+    runid = 'NGC_2516', for example
+    """
+
+    from earhart.paths import DATADIR
+    rotdir = os.path.join(DATADIR, 'rotation')
+
+    df = pd.read_csv(
+        os.path.join(rotdir, f'{runid}_rotation_periods.csv')
+    )
+
+    # automatic selection criteria for viable rotation periods
+    sel = (
+        (df.period < 15)
+        &
+        (df.lspval > 0.08)
+        &
+        (df.nequal <= 1)
+    )
+
+    if verbose:
+        print(f'Getting autorotation dataframe for {runid}...')
+        print(f'Starting with {len(df)} entries...')
+        print(f'Got {len(df[sel])} entries with P<15d, LSP>0.08, nequal<=1')
+
+    if not returnbase:
+        return df[sel]
+    else:
+        return df[sel], df
