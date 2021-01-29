@@ -26,7 +26,8 @@
 \newcommand{\numcdipslcs}{671{,}901\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
 \newcommand{\numsouthernuniqlcs}{483{,}407\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
 
-
+\newcommand{\nkinematic}{3{,}018\ } % "fullfaint" kinematic sample, core+halo. from any call of earhat.helpers._get_fullfaint_dataframes
+\newcommand{\nautorot}{1{,}276\ } % drivers.plot_full_kinematics_X_rotation; 2021.01.29
 
 \newcommand{\kms}{\,km\,s$^{-1}$}
 
@@ -46,7 +47,10 @@
 
 \title{
   Cluster Difference Imaging Photometric Survey. III.
-  The Coeval Halo and Core of NGC\,2516
+  %The Coeval Core \& Halo of NGC\,2516
+  %The Halo of NGC\,2516 Extends To At Least 250\,pc
+  An Open Cluster With a 250\,pc Halo
+  %NGC\,2516  250\,pc
 }
 
 %\suppressAffiliations
@@ -58,24 +62,25 @@
   Recent analyses of the Gaia data have reported the existence of
   diffuse stellar populations (``halos'') surrounding nearby open clusters.  The stars in these
   halos could have escaped from the cores of the cluster, or they
-  could be remnants of a larger and lower-density star formation
+  could be remnants of a star formation
   complex that has since dispersed.  They could also be field
-  stars---false positives given by overly aggressive clustering algorithms.
+  stars---false positives originating from overly aggressive clustering algorithms.
   In this study, we focus on a single reported 250\,pc-long halo
   around the $\approx$120\,Myr open cluster NGC\,2516.  The classical tidal radius of
   this cluster is $\sim$XX\,pc.  Combining photometry from Gaia,
   rotation periods from TESS, and lithium measurements from
-  the Gaia-ESO and GALAH surveys, we find that: i) the halo of
-  NGC\,2516 is real and coeval with the core; ii) at fixed stellar
-  mass and age, rapidly rotating stars have greater lithium abundances
-  than slowly rotating stars; and iii) given Gaia-selected halo
+  the Gaia-ESO and GALAH surveys, we find that the halo of
+  NGC\,2516 is real and coeval with the core. At fixed stellar
+  mass, the rotation rate and
+  lithium abundance are strongly anti-correlated. And finally, given Gaia-selected halo
   members, the contamination rate of field stars in the halo (XX\%) is
   larger than that in the core (YY\%).  This work expands the set of
   confirmed NGC\,2516 members by a factor of $\approx$2, and
-  quantifies the degree to which Gaia-based analyses can currently
+  quantifies the degree to which Gaia-based analyses can 
   identify dispersed stellar populations against a background of field
-  star contaminants.  Implications for spectroscopic survey targeting, open cluster dispersal, and planet searches around young
-  stars are discussed.
+  star contaminants.  We highlight the implications for spectroscopic
+  survey targeting, open cluster dispersal, and planet searches around
+  young stars.
 \end{abstract}
 
 \keywords{
@@ -145,7 +150,7 @@ Kounkel+20, Meingast+21).  However, different clustering methods on the
 Gaia data tend to give different results (CITE: Hunt \& Reffert 2020).
 Employing say Gaussian Mixture Modelling, or any analogous method that
 requires ``clusters'' to be ellipses in phase-space (position or
-velocity) unsurpsingly yields open clusters that are roughly elliptical.
+velocity) unsurprisingly yields open clusters that are roughly elliptical.
 Some unsupervised clustering methods lead to comparable ``roughly
 elliptical'' results \citep[][hereafter
 \citetalias{cantatgaudin_gaia_2018}]{cantatgaudin_gaia_2018}.  Other
@@ -153,11 +158,11 @@ unsupervised methods such as HDBScan (e.g., \citep[][hereafter
 \citetalias{kounkel_untangling_2019}]{kounkel_untangling_2019}) have
 been found to yield additional structures, particularly in lower density
 regions such as the Psc-Eri stream (CITE: Meingast+18, Curtis+19,
-Newton+21), but also more generally around many open clusters
-\citep{kounkel_untangling_2019}.  Unsupervised approaches that
-incorporate physical constraints like imposing a maximum velocity
-dispersion on putative members yield similar results, potentially with
-higher purity (Meingast+21).
+Newton+21, but reword bc discovery didn't use HDBScan), but also more
+generally around many open clusters \citep{kounkel_untangling_2019}.
+Unsupervised approaches that incorporate physical constraints like
+imposing a maximum velocity dispersion on putative members yield similar
+results, potentially with higher purity (Meingast+21).
 
 % TODO: make the bonafide number below quantitative
 We've recently been making TESS light curves of age-dated stars across
@@ -169,10 +174,10 @@ MAST\footnote{\url{https://archive.stsci.edu/hlsp/cdips}}.  Based on
 rotation periods, $\approx$25\% appear to be bonafide cluster members. 
 
 As part of a broader project of identifying a large and clean sample of
-young stars for a transit search, we focus in his paper on a rather
+young stars for a transit search, we focus in this paper on a 
 modest question: in just a single rich southern open cluster, is the
 cluster halo coeval with the core?  The cluster we chose for this
-analysis was NGC\,2516, since it was young ($\sim$120\,Myr) and close
+analysis was NGC\,2516, since it is young ($\sim$120\,Myr) and close
 ($d\approx400$\,pc) enough to facilitate rotation measurements using
 TESS, and some degree of spectroscopic analysis.  We want to know: is
 the halo real? To what extent can we use Gaia alone to reliably identify
@@ -235,7 +240,7 @@ also recently reported by \citet{meingast_2021}. Although the results
 of this study were made publicly available too late to be included in
 our analysis,  1577 of the 1860 \citet{meingast_2021} sources (85\%)
 were included in the \citet{kounkel_untangling_2019} sample.  A
-complete set of \cn members could very well include some of the newly
+complete set of \cn\ members could very well include some of the newly
 reported candidate members from \citet{meingast_2021}.}. While we
 could have performed our own clustering analysis based on the Gaia
 data, such an effort would be replicating the work of these
@@ -264,7 +269,7 @@ stars in the astrometric space of ($\mu_{\alpha'}, \mu_\delta, \pi$).
 Nonetheless, the membership catalog of \citetalias{cantatgaudin_gaia_2018}
 echoes that of many previous investigators (CITE, CITE, CITE), and is
 consistent with the general {\it visual} impression that one has when
-looking at \cn visually: it seems to be at most {\bf X$^\circ$}, and
+looking at \cn\ visually: it seems to be at most {\bf X$^\circ$}, and
 not a big stream.
 This discrepancy begs the question.  What is the true structure of
 \cn?  Are the core and halo truly coeval?
@@ -275,16 +280,16 @@ members and the \citetalias{kounkel_untangling_2019} stars as
 candidate ``halo'' members.  If a star is in both lists, it is a
 ``core'' member.  1091 of the 1106 core members are in both lists.
 This leaves 1912 candidate members in the halo.
-Concatenating the two lists yields 3018 candidate members.
+Concatenating the two lists yields \nkinematic candidate members.
 
 In this work, we also define a set of nearby field stars in the
 ``neighborhood'' of \cn.  Based on the observed distribution of halo
 members, we draw these stars randomly from the following ``cube'' in
 right ascension, declination, and parallax:
 \begin{align}
-  $\alpha$\,[{\rm deg}] &\in [108, 132], \\
-  $\delta$\,[{\rm deg}] &\in [-76, -45], \\
-  $\pi$\,[{\rm mas}] &\in [1.5, 4.0].
+  \alpha\,[\mathrm{deg}] &\in [108, 132], \\
+  \delta\,[\mathrm{deg}] &\in [-76, -45], \\
+  \pi\,[\mathrm{mas}] &\in [1.5, 4.0].
 \end{align}
 We imposed a magnitude limit of $G=19$\,mag, and ran the queries
 using the \texttt{astroquery.gaia} module (CITE).
@@ -380,7 +385,7 @@ we get an age of ZZZ.
 		}
 	\end{center}
 	\vspace{-0.7cm}
-	\caption{ {\bf The core and halo of \cn in the space of rotation
+	\caption{ {\bf The core and halo of \cn\ in the space of rotation
     period and Gaia color.}
     The {\it top} plot shows periods against a linear scale, while the
     {\it bottom}  shows them against a logarithmic scale.
@@ -420,13 +425,13 @@ particular the Stellingwerf PDM periodogram (CITE), along with the
 more traditional Lomb-Scargle (CITE).  We recorded the top five
 periodogram peaks from each method, and their corresponding powers.
 Finally, as a check on crowding, we also recorded the number of stars
-within the aperture of equal brightness, and of brightness with 1.25
-and 2.5 TESS magnitudes of the target star.
+within the aperture of equal brightness to the target stars, and of
+brightness with 1.25 and 2.5 TESS magnitudes of the target star.
 
 Figure~\ref{fig:rot} shows the resulting rotation periods.  The points
-on this plot are light curves for which the peak Lomb Scargle
-periodogram period was below 15 days, had power exceeding 0.08, and
-had at most one equal-brightness companion within the aperture.  These
+on this plot are the \nautorot light curves for which the peak Lomb Scargle
+periodogram period was below 15 days, the LS power exceeded 0.08, and
+at most one equal-brightness companion was within the aperture.  These
 selection criteria are entirely heuristic.  
 But splitting the sample into the ``core'' and the ``halo'', they
 suggest that the halo is real.
@@ -452,10 +457,26 @@ we get an age of ZZZ.
 
 How far away from the core, in position and velocity space, does the
 halo actually extend?  We can explore this by crossmatching the
-rotator sample against the Gaia data.  Figure~\ref{fig:gaia6d_x_rotn}
-shows the result. 
+rotator sample against \nkinematic Gaia DR2 kinematic candidate members.  
 
+Figure~\ref{fig:gaia6d_x_rotn} shows the result.  An important nuance
+in interpreting this plot is that we show only stars with
+$0.5<(Bp-Rp)_0<1.2$ for which our TESS pipeline successfully made
+detrended light curves.  In other words---the base ``core'' and
+``halo'' samples are the stars for which we could have plausibly
+detected a rotation period, if the star were really a cluster member.
+Faint stars with $Rp>16$ were beyond our light curve selection
+limit, and crowded stars ({\it e.g.,} near saturated stars
+in the cluster center) do not appear.
+We selected the color limit above based on Figure~\ref{fig:rot},
+since the density of period detections seems to decrease once 
+$(Bp-Rp)_0 \gtrsim 1.25$, {\it i.e.}, for spectral types later
+than $\approx$K4V.
 
+Qualitatively, the fraction of kinematic members with TESS-detection rotation 
+periods with increasing distance from the halo core---both in
+position and in velocity space.
+To quantify this, we computed the distances.
 
 \subsection{Lithium from Gaia-ESO and GALAH}
 \label{subsec:lithium}
@@ -480,49 +501,137 @@ shows the result.
   }
 \end{figure*}
 
+The third and final approach we took for age-dating the stellar
+population was using the lithium deplition technique (CITE, CITE,
+CITE).
+
+Reviewing the literature, two spectroscopic datasets for \cn\ seemed
+particularly important: Gaia-ESO 
+\citep{randich_gaiaeso_2018} and GALAH DR3 \citep{buder_galah_2020}.
+The target selection and results from each survey were as follows.
+
+Gaia-ESO selected {\it cluster candidates} to be observed with the
+GIRAFFE and UVES spectrographs based on previously reported literature
+members and publicly available optical and NIR photometry.  This
+target selection approach included many stars in the spatial proximity
+of previously known members.  Since the possible existence of the \cn
+halo was not known at the time of targetting, very few ``halo'' stars
+are in their ultimate sample.  For \cn, \citet{randich_gaiaeso_2018}
+ultimately reported stellar parameters (including lithium equivalent
+widths and metallicities) for 796 candidate members.  Cross-matching
+against our kinematic list of \nkinematic candidate members by position and
+imposing a 0$\farcs$5 maximum separation limit yields 492 kinematic
+members for which a Gaia-ESO spectrum was acquired and stellar
+parameters were reported.  15 of these (all with $(Bp-Rp)_0 > 2.0$)
+are spurious matches based on the Gaia color and GES effective
+temperature, and we remove them.  This yields 477 stars, of which 436
+are in the core, and 41 are in the halo.  This ratio is primarily
+caused by the Gaia-ESO targetting selection function.
+
+% GALAH DR3 selected XXX/YYY.  GALAH-DR3 = GALAH-main + GALAH-faint +
+% K2-HERMES + TESS-HERMES + HERMES other.  Data taken both with the 2dF
+% fiber positioner, and the HERMES spectrograph at the 3.9 AAT
+% (Lewis+02, Sheinis+15).  GALAH-main is 12<V<14, $\delta<+10^\circ$,
+% $|b|>10^\circ$, in regions of sky with at least 400 targets in $\pi$
+% square degrees (the 2dF FoV).  Fields with more than 400 targets were
+% targetted multiple times, with different fiber arrangements.
+% TESS-HERMES: 10.0 < V < 13.1. TESS Southern CVZ, within $12^\circ$ of
+% the southern ecliptic pole.  54354 in the ``HERMES other'' program are
+% from targeted observations of stars in open clusters, the GALAH Pilot
+% Survey (Martell et al. 2017),
+
+The GALAH DR3 target selection process is discussed in detail by
+\citet{buder_galah_2020}.  The most relevant aspects for our projects
+are that the ``main'' survey targeted $12.0<V<14.0$ stars at
+$\delta<+10^\circ$, provided they were at least ten degrees from the
+galactic plane.  The survey is spatially inhomogeneous\footnote{See
+the footprint at
+\url{https://www.galah-survey.org/news/announcing-galah-dr3}}. Special
+targetting for stars in the TESS southern continuous viewing zone, and
+for known open cluster members was also performed.  We identified the
+candidate \cn\ members
+for which spectra had been obtained by searching
+the \texttt{GALAH\_DR3\_main\_allstar\_v1} catalog, after excluding
+stars with the stellar parameter bit flags 1, 2, 3.  This excludes
+spectra with unreliable broadening, low S/N, and unreliable wavelength
+solutions (see Table~6 of \citealt{buder_galah_2020}).  Since our main
+focus is measuring equivalent widths for the Li\,6708\ \AA line, these
+were the most relevant bit flags for our purpose.  Of our \nkinematic
+candidate \cn\ members, 106 had spectra in GALAH DR3.  51 were in the
+``core''; 55 were in the ``halo''.
+
+%/Users/luke/Dropbox/proj/earhart/results/lithium/kinematic_X_galah_dr3.csv
+% https://docs.datacentral.org.au/galah/dr3/catalogue-data-access/
+We downloaded the GALAH DR3 spectra for all 106 entries by doing PROCESS X.
+We then measured the lithium equivalent widths using PROCESS Y.
+We then concatenated the GALAH DR3 and Gaia-ESO results together.
+
+% TODO: fix the fact that the figure currently only shows Randich+18
 Figure~\ref{fig:lithium} shows the results.  At fixed stellar mass
-(and age), it seems that the rapid rotators tend to show elevated
-lithium equivalent widths.  Similar trends have been previously noted
-in the Pleiades by \citet{soderblom_evolution_1993} and
-\citet{bouvier_pleiades_lirot_2018}, in the Psc-Eri stream by
-\citet{arancibia_2020}, and in M\,35 by \citet{jeffries_m35_li_2020}.
+(and age), the rapid rotators tend to show elevated lithium equivalent
+widths. This effect is mostly apparent in the K dwarfs.  Similar
+trends in the Pleiades were noted nearly three decades ago by
+\citet{soderblom_evolution_1993}.  More recent studies have found
+comparable results in the Pleiades, the Psc-Eri stream, and M\,35
+\citep{bouvier_pleiades_lirot_2018,arancibia_2020,jeffries_m35_li_2020}.
+The fact that we see the same trend across the core and halo of \cn
+{\it a)} supports the conclusion that the halo is coeval with the
+core, and {\it b)} suggests that the lithium-rotation correlation is
+not explained by environmental effects such as the density of the cluster
+during its embedded phase, but is instead tied to physical processes
+acting on all low-mass pre-main sequence stars.
 
 % TODO: this paragraph more or less parrots the processes described by
 % Bouvier+20. are there others? is there a better way to describe
 % these?
-The trend contradicts what might be the naive expectation that rapidly
-rotating stars should show more vigorous convection, leading to
-earlier destruction of photospheric Li.  Possible physical
-explanations include processes both internal and external to the star
-(CITE see the recent review by Bouvier+20).  Internal processes would
-be tied to the interplay between surface rotation, differential
-rotation in the interior, and the convective mixing efficiency (e.g.,
-CITE Siess + Livio 1997, Baraffe+2017).  Internal processes could also
-include the possibility that stronger magnetic fields in the stellar
+Both internal and external processes have been suggested to explain
+the lithium-rotation trend (CITE see the recent review by Bouvier+20).
+One explanation based in the stellar interior could be that the
+convective mixing efficiency is anticorrelated with the surface
+rotation (e.g., CITE Siess + Livio 1997, Baraffe+2017).  Another
+possibility could be that stronger magnetic fields in the star's
 interior inhibit convection (READ e.g., Ventura+98, Chabrier+07,
-Somers + Pinsonneault 2014).  An external process that could also be
-important is the effect of star-disk magnetic braking during the PMS
+Somers + Pinsonneault 2014).  An external process that might also be
+important is the effect of star-disk magnetic locking during the PMS
 phase (CITE: magnetic braking).  Longer disk lifetimes would lead to
-the star's outer convective zone being ``locked'' for longer while the
-radiative core continues contracting.  The resulting differential
-rotation and rotational mixing could drive the lithium depletion
-(CITE: Bouvier 08, Eggenberger+12).
+the star's outer convective zone being locked for longer while the
+radiative core contracts.  The resulting differential rotation and
+rotational mixing could drive the lithium depletion (CITE: Bouvier 08,
+Eggenberger+12).
+We have no preference between these possibilities---we simply note
+that the \cn\ sample could be another helpful data point in
+distinguishing them.
 
 
 
 \section{Discussion}
 \label{sec:discussion}
 
-  \subsection{What is the contamination fraction in the halo? Does it change vs. location?}
-  \subsection{Are the ``very slow rotators'' bonafide members?}
-  Probably not. They are not isotropically distributed around the
-  cluster.
-  \subsection{How did the halo form?}
-  \subsection{Mass differences between center and outer reaches?}
-  \subsection{Fast rotators: are we going faster than other clusters?}
+\subsection{How did the halo form?}
+``The stars in these halos could have escaped from the cores of the
+cluster, or they could be remnants of a larger and lower-density star
+formation complex that has since dispersed.''
+Another possibility is {\it triggered star formation}.
+
+\subsection{Are the ``very slow rotators'' bonafide members?}
+Unsure. They are not isotropically distributed around the
+cluster... so either triggered star formation (CITE, CITE), or they're
+actually field stars.
+
+\subsection{What is the contamination fraction in the halo? Does it change vs. location?}
+
+\subsection{Mass differences between center and outer reaches?}
+
+\subsection{Fast and blue rotators: are we going faster than other clusters?}
 
 \section{Conclusion}
 \label{sec:conclusion}
+
+We analyzed X, Y, Z.
+Our main results are as follows.
+\begin{itemize}
+	\item 
+\end{itemize}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -727,14 +836,14 @@ members for their efforts to make the mission a continued success.
 % the relevant papers. they should probably be nixed in favor of
 % concision.
 %
-\citetalias{cantatgaudin_gaia_2018} applied a procedure that ultimately
+\citetalias{cantatgaudin_gaia_2018} applied a procedure that 
 yielded what we call ``the core''.  Their procedure was to first query
 a Gaia DR2 cone around the previously reported RA and dec of the
 cluster, and within $\pm 0.5$\,mas of its previously reported
 distance. 
 % TODO: which was it?
 The outer radius of their cone was either r2 from MWSC (CITE
-Kharchenko 2013), or twice the ``cluster radius'' listed by Dias.  No
+Kharchenko 2013), or twice the ``cluster radius'' listed by DAML/Dias (CITE).  No
 proper motion cut was applied.  They then applied an unsupervised
 classification scheme called UPMASK to $G<18$\,mag stars within this
 cone (CITE).  The steps of UPMASK are first to perform a k-means
@@ -753,7 +862,7 @@ redrawings, the final probability is the frequency with which a given
 star passes the veto".  In the case of \cn, this yielded a reported
 ``\texttt{r50}'' within which half of the cluster members were found
 to be within 0.496$^\circ$.
-When we selected candidate \cn members from the results of
+When we selected candidate \cn\ members from the results of
 \citetalias{cantatgaudin_gaia_2018}, we opted to include all candidate members
 with reported membership probability exceeding 10\%.
 While this seems {\it a priori} low, our results ({\bf SECTION XXX})
@@ -768,7 +877,8 @@ clustering method to the 5-dimensional Gaia DR2 data (omitting radial
 velocities, due to their sparsity).  Their selection function (see
 their Section~2) yielded $\approx 2\times 10^7$ stars, mostly within
 $\approx 1$\,kpc and typically with $G<18$\,mag.  Their clustering
-algorithm was the ``hierarchical density-based spatial clustering of
+algorithm, which was run on this entire  stellar sample,
+ was the ``hierarchical density-based spatial clustering of
 applications with noise'' (HDBSCAN, CITE McInnes17).  The classical
 DBSCAN algorithm ``identifies clusters as overdensities in a
 multi-dimensional space in which the number of sources exceeds the
@@ -824,9 +934,10 @@ measured in the background annulus, and the centroid positions of the
 stars on the CCDs.  These can be treated as additional ``features'' in
 the linear model.
 
-There are many methods for determining the coefficients of the linear
-model, after the full set of eigenvectors (plus optionally
-``sytematic'' vectors) has been asssembled.  We explored two: ordinary
+To determine the coefficients of the linear
+model after the full set of eigenvectors (plus optionally
+``sytematic'' vectors) had been asssembled,  we explored two possible
+methods: ordinary
 least squares, and ridge regression. Ridge regression is the same as
 ordinary least squares, except it includes an L2 norm with a regularization
 coefficient. The regularization coefficient that best applied for any
@@ -835,52 +946,55 @@ search, using \texttt{sklearn.linear\_modelRidgeCV} (CITE).
 
 Each target light curve was mean-subtracted and normalized by its
 standard deviation, as were the eigenvectors. The linear problem was
-then solved, and the light curve was reconstructed by re-adding the
+then solved numerically, and the light curve was reconstructed by re-adding the
 original mean, and re-multiplying by the standard deviation to ensure
 that the variance of the light curve did not change.
 
-We found, somewhat to our surprise, that the choice of using ordinary
+We found that the choice of using ordinary
 least squares versus ridge regression did not seem to significantly
 affect the resulting light curves. In other words, the inclusion (or
-lack thereof) of a regularization did not strongly alter the
+lack thereof) of a regularization term did not strongly alter the
 best-fitting coefficients.
+In the spirit of ``KISS'', we opted to use ordinary least squares.
 
 A few other choices seemed to be more important:
 
 \begin{itemize}
 
   \item {\it To smooth, or to not smooth the eigenvectors}.
-  Ideally, the eigenvectors should be smooth (and not contain
+  Ideally, the eigenvectors should be smooth in time. They should not contain
     residuals from {\it e.g.}, eclipsing binaries that snuck their way
-    into the template set). However this does not always apply.
-    Sometimes, the eigenvectors are also noisy, which leads them to
+    into the template set, and they should also not be intrinsically noisier
+    than the target star. If either of these is the case (and we found that
+    it sometimes was), it can
     induce extra variability into the PCA ``detrended'' light curves.
     To address this problem, we opted to smooth the eigenvectors using
-    a windowed filter (with a "biweight" weight scheme, implemented in
+    a time-windowed filter (with a "biweight" weight scheme, implemented in
     \texttt{wotan} by \citet{hippke_wotan_2019}; window length 1 day, cval 6).
   One issue with this is that systematic sharp features (captured e.g., in
   "spike vectors") no longer are captured, so they end up in the "PCA
-  detrended" light curves. They can be filtered out relatively easily though
-  (using rolling outlier rejection), and we prefer this approach to having
-  systematic features {\it injected by} the PCA detrending.
+  detrended" light curves. They can then be filtered out
+  ({\it e.g.}, using rolling outlier rejection), and we prefer this approach to having
+  systematic features being {\it injected by} the PCA detrending.
 
   \item {\it How many eigenvectors to use}.
     A larger number always leads to greater whitening.  In
     \citet{bouma_cdipsI_2019}, we performed a Factor Analysis
     cross-validation to determine the number of eigenvectors to use.
     The typical number adopted based on this analysis was 10--15.
-    Even though this approach was chosen to prevent over-fitting, in
+    While this approach should in theory prevent over-fitting, in
     our experience, for stellar rotation it still often lead to
-    overfitting, especially for rotation signals with periodicities of
+    distorts the signals, especially for rotation signals with small amplitudes
+    and periodicities of
     $\gtrsim 3$ days.  (Shorter signals typically are not distorted,
-    since the eigenvectors generally do not contain the high-frequency
-    content that leads to the distortions).  For this analysis, we
+    since the eigenvectors do not contain the high-frequency
+    content that leads to the distortions).  For the present analysis, we
     therefore impose the maximum number of eigenvectors to be 5.
 
   \item {\it Which supplementary systematics vectors to use}.
     We considered using the \texttt{BGV}, \texttt{CCDTEMP},
     \texttt{XIC}, \texttt{YIC}, and \texttt{BGV} vectors, packaged
-    with the CDIPS light curves. we found that the background value
+    with the CDIPS light curves. We found that the background value
     measured in an annulus centered on the aperture, \texttt{BGV},
     tended to produce the best independent information from the PCA
     eigenvectors, and so we adopted it as our only ``supplementary''
@@ -908,6 +1022,30 @@ using a linear model with ordinary least squares.
 		\label{fig:rotn_X_RUWE}
 	}
 \end{figure*}
+
+Figure~\ref{fig:rotn_X_RUWE}.
+
+
+\section{Kinematics $\otimes$ Rotation in EDR3}
+
+\begin{figure*}[t]
+	\begin{center}
+		\leavevmode
+		\includegraphics[width=0.95\textwidth]{f7.pdf}
+	\end{center}
+	\vspace{-0.7cm}
+	\caption{ {\bf Gaia-based components of NGC\,2516 in position and
+    velocity space, cross-matched against the rotators. Analog of
+    Figure~\ref{fig:gaia6d_x_rotn}, but showing EDR3 kinematics.}
+		\label{fig:gaia6d_x_rotn_EDR3}
+	}
+\end{figure*}
+
+How did we do?
+Figure~\ref{fig:gaia6d_x_rotn_EDR3} lets us check with a more precise
+astrometric solution.
+
+
 
 
 

@@ -6,13 +6,16 @@ cp ../results/hr/hr_colorhalobyglat_Bp_m_Rp_show1937_fullfaint_edr3.pdf f2b.pdf
 cp ../results/rotation/NGC_2516/NGC_2516_rotation_vs_BpmRp_corehalosplit_linear.pdf f3a.pdf
 cp ../results/rotation/NGC_2516/NGC_2516_rotation_vs_BpmRp_corehalosplit_log.pdf f3b.pdf
 
-cp ../results/skypositions/skypositions_x_rotn.pdf f4.pdf
+#cp ../results/skypositions/skypositions_x_rotn.pdf f4.pdf
+cp ../results/full_kinematics_X_rotation/full_kinematics_X_rotation_fullfaint_galactic.pdf f4.pdf
 
 cp ../results/lithium/randich_lithium_vs_BpmRp_xmatch_goldrot_corehalosplit.pdf f5a.pdf
 cp ../results/rotation_X_lithium/rotation_vs_BpmRp_X_randich18_lithium_viridis.pdf f5b.pdf
 
 # supplementary
 cp ../results/rotation_X_RUWE/rotation_vs_BpmRp_X_RUWE_viridis.pdf f6.pdf
+
+cp ../results/full_kinematics_X_rotation/full_kinematics_X_rotation_fullfaint_edr3_galactic.pdf f7.pdf
 
 # cp ../results/calc_backintegration_ngc2516/core_halo_to_ngc2516_separation.pdf f7a.pdf
 # cp ../results/calc_backintegration_ngc2516/core_halo_to_ngc2516_separation_fix_rvs.pdf f7b.pdf
