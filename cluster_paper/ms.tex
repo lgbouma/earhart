@@ -64,7 +64,7 @@
   halos could have escaped from the cores of the cluster, or they
   could be remnants of a star formation
   complex that has since dispersed.  They could also be field
-  stars---false positives originating from overly aggressive clustering algorithms.
+  stars---the false positives of overly aggressive clustering algorithms.
   In this study, we focus on a single reported 250\,pc-long halo
   around the $\approx$120\,Myr open cluster NGC\,2516.  The classical tidal radius of
   this cluster is $\sim$XX\,pc.  Combining photometry from Gaia,
@@ -455,6 +455,28 @@ we get an age of ZZZ.
 	}
 \end{figure*}
 
+\begin{figure*}[t]
+	\begin{center}
+		\leavevmode
+		\subfloat{
+			\includegraphics[width=0.75\textwidth]{f8a.pdf}
+		}
+	
+		\subfloat{
+			\includegraphics[width=0.75\textwidth]{f8b.pdf}
+		}
+	\end{center}
+	\vspace{-0.7cm}
+	\caption{ {\bf Gaia-based components of NGC\,2516 in position and
+    velocity space, cross-matched against the rotators, but now in
+    physical units.}
+    Top: relevant projections. Bottom: binned versus 3d position and
+    2d velocity difference.
+		\label{fig:physical_x_rotn}
+	}
+\end{figure*}
+
+
 How far away from the core, in position and velocity space, does the
 halo actually extend?  We can explore this by crossmatching the
 rotator sample against \nkinematic Gaia DR2 kinematic candidate members.  
@@ -464,7 +486,7 @@ in interpreting this plot is that we show only stars with
 $0.5<(Bp-Rp)_0<1.2$ for which our TESS pipeline successfully made
 detrended light curves.  In other words---the base ``core'' and
 ``halo'' samples are the stars for which we could have plausibly
-detected a rotation period, if the star were really a cluster member.
+detected a rotation period.
 Faint stars with $Rp>16$ were beyond our light curve selection
 limit, and crowded stars ({\it e.g.,} near saturated stars
 in the cluster center) do not appear.
@@ -473,10 +495,35 @@ since the density of period detections seems to decrease once
 $(Bp-Rp)_0 \gtrsim 1.25$, {\it i.e.}, for spectral types later
 than $\approx$K4V.
 
-Qualitatively, the fraction of kinematic members with TESS-detection rotation 
-periods with increasing distance from the halo core---both in
+Qualitatively, the fraction of kinematic members with TESS-detected rotation 
+periods seems like it may increase with increasing distance from the halo core---both in
 position and in velocity space.
-To quantify this, we computed the distances.
+To quantify this, we computed the relelvant distances in physical coordinates.
+This entailed first transforming from $(\alpha, \delta, \pi)$ to galactocentric ($X,Y,Z$) which we did 
+assuming the AstroPy v4.0 coordinate standard (CITE).
+We then converted the on-sky proper motions to physical units by dividing by the distance of each star.
+We then computed the SEPARATIONS of all of these positions and
+2d-velocities from the ``median core member'', which was selected by
+taking \citetalias{cantatgaudin_gaia_2018} members with membership
+probability exceeding 70\%.
+Again, we only considered stars for which we could have plausibly
+detected a rotation period --- the same color and observability limits
+discussed above were also applied.
+
+The results are shown in Figure~\ref{fig:physical_x_rotn}.
+The halo extends to about 250\,pc in physical space, and out to at
+least 10 of km/s in tangential velocity space.
+\citet{meingast_2021} by comparison required a physically motivated cut
+in tangential velocity space of 1.5 km per sec.
+This probably improves purity, but clearly doesn't get everthing for
+completeness.
+
+% [361  82  43  30  16  18  14   8   6   2   4   0   0   0   0   0]
+% [495 116  65  46  28  20  22  12  11   8   5   1   0   1   0   2]
+% [384 109  45  27  15   4   0   0   0   0   0   0   0   0   0   0   0   0
+%    0   0]
+% [533 153  67  40  23  10   3   1   2   0   0   0   0   0   0   0   0   0
+%    0   0]
 
 \subsection{Lithium from Gaia-ESO and GALAH}
 \label{subsec:lithium}
