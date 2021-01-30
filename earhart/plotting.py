@@ -1,26 +1,27 @@
 """
 Contents:
-Kinematics / Gaia / HR:
-    plot_full_kinematics
-    plot_TIC268_nbhd_small
-    plot_ngc2516_corehalo_3panel
-    plot_hr
-Rotation / TESS:
-    plot_rotation
-    plot_auto_rotation
-    plot_skypositions_x_rotn
-    plot_full_kinematics_X_rotation
-    plot_rotation_X_RUWE
-Lithium:
-    plot_randich_lithium
-    plot_galah_dr3_lithium
-    plot_rotation_X_lithium
-Other:
-    plot_gaia_rv_scatter_vs_brightness
-    plot_ruwe_vs_apparentmag
-    plot_edr3_blending_vs_apparentmag
-    plot_bisector_span_vs_RV
-    plot_backintegration_ngc2516
+    Kinematics / Gaia / HR:
+        plot_full_kinematics
+        plot_TIC268_nbhd_small
+        plot_ngc2516_corehalo_3panel
+        plot_hr
+    Rotation / TESS:
+        plot_rotation
+        plot_auto_rotation
+        plot_skypositions_x_rotn
+        plot_rotation_X_RUWE
+        plot_full_kinematics_X_rotation
+        plot_physical_X_rotation
+    Lithium:
+        plot_randich_lithium
+        plot_galah_dr3_lithium
+        plot_rotation_X_lithium
+    Other:
+        plot_gaia_rv_scatter_vs_brightness
+        plot_ruwe_vs_apparentmag
+        plot_edr3_blending_vs_apparentmag
+        plot_bisector_span_vs_RV
+        plot_backintegration_ngc2516
 """
 import os, corner, pickle
 from glob import glob
@@ -34,6 +35,7 @@ from astropy import units as u, constants as const
 from astropy.coordinates import SkyCoord
 from astropy.io import fits
 from astropy.time import Time
+from astropy.table import Table
 
 import matplotlib.patheffects as pe
 from matplotlib.ticker import MaxNLocator
@@ -50,15 +52,16 @@ from cdips.utils.mamajek import get_interp_BpmRp_from_Teff
 
 from earhart.paths import DATADIR, RESULTSDIR
 from earhart.helpers import (
-    _get_nbhd_dataframes, _get_extinction_dataframes,
-    _get_fullfaint_dataframes, _get_fullfaint_edr3_dataframes,
-    _given_gaia_df_get_icrs_arr, calc_dist,
-    _get_denis_fullfaint_edr3_dataframes, _get_autorotation_dataframe
+    get_gaia_basedata, get_autorotation_dataframe
+)
+from earhart.physicalpositions import (
+    given_gaia_df_get_icrs_arr, calc_dist
 )
 
 def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
 
-    nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
+    basedata = 'bright'
+    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
 
     set_style()
 
@@ -81,7 +84,7 @@ def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
         rasterized=True, label='Core', marker='.'
     )
     axs[0].plot(
-        target_df[xv], target_df[yv], alpha=1, mew=0.5,
+        trgt_df[xv], trgt_df[yv], alpha=1, mew=0.5,
         zorder=8, label='TOI 1937', markerfacecolor='yellow',
         markersize=14, marker='*', color='black', lw=0
     )
@@ -118,7 +121,7 @@ def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
         zorder=4, s=7, rasterized=True, linewidths=0, label='Core', marker='.'
     )
     axs[1].plot(
-        get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
+        get_xval(trgt_df), get_yval(trgt_df), alpha=1, mew=0.5,
         zorder=8, label='TOI 1937', markerfacecolor='yellow',
         markersize=14, marker='*', color='black', lw=0
     )
@@ -143,7 +146,7 @@ def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
 def plot_full_kinematics(outdir, basedata='bright', show1937=1,
                          galacticframe=0):
 
-    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
+    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
 
     if galacticframe:
         c_nbhd = SkyCoord(ra=nparr(nbhd_df.ra)*u.deg, dec=nparr(nbhd_df.dec)*u.deg)
@@ -210,7 +213,7 @@ def plot_full_kinematics(outdir, basedata='bright', show1937=1,
             )
             if show1937:
                 axs[i,j].plot(
-                    target_df[xv], target_df[yv], alpha=1, mew=0.5,
+                    trgt_df[xv], trgt_df[yv], alpha=1, mew=0.5,
                     zorder=8, label='TOI 1937', markerfacecolor='yellow',
                     markersize=14, marker='*', color='black', lw=0
                 )
@@ -299,7 +302,7 @@ def plot_gaia_rv_scatter_vs_brightness(outdir, basedata='fullfaint'):
 
     set_style()
 
-    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
+    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
 
     plt.close('all')
 
@@ -331,7 +334,7 @@ def plot_gaia_rv_scatter_vs_brightness(outdir, basedata='fullfaint'):
         zorder=4, s=5, rasterized=True, linewidths=0, label='Core', marker='.'
     )
     ax.plot(
-        get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
+        get_xval(trgt_df), get_yval(trgt_df), alpha=1, mew=0.5,
         zorder=8, label='TOI 1937', markerfacecolor='yellow',
         markersize=10, marker='*', color='black', lw=0
     )
@@ -364,13 +367,9 @@ def plot_ruwe_vs_apparentmag(outdir, basedata='fullfaint', smallylim=False):
 
     set_style()
 
-    if basedata == 'extinctioncorrected':
-        raise NotImplementedError('still need to implement extinction')
-        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
-    elif basedata == 'fullfaint_edr3':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
-    else:
+    if not basedata == 'fullfaint_edr3':
         raise NotImplementedError('only EDR3 has ruwe built in')
+    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
 
     plt.close('all')
 
@@ -402,7 +401,7 @@ def plot_ruwe_vs_apparentmag(outdir, basedata='fullfaint', smallylim=False):
         zorder=4, s=5, rasterized=True, linewidths=0, label='Core', marker='.'
     )
     ax.plot(
-        get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
+        get_xval(trgt_df), get_yval(trgt_df), alpha=1, mew=0.5,
         zorder=8, label='TOI 1937', markerfacecolor='yellow',
         markersize=10, marker='*', color='black', lw=0
     )
@@ -449,7 +448,7 @@ def plot_edr3_blending_vs_apparentmag(outdir, basedata='fullfaint', num=None):
 
     if not basedata in ['fullfaint_edr3']:
         raise NotImplementedError('only EDR3 has n_blended_transits built in')
-    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
+    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
 
     comp_arr = np.array([5489726768531118848]).astype(np.int64)
     runid = 'toi1937_companion_edr3'
@@ -491,7 +490,7 @@ def plot_edr3_blending_vs_apparentmag(outdir, basedata='fullfaint', num=None):
         zorder=4, s=5, rasterized=True, linewidths=0, label='Core', marker='.'
     )
     ax.plot(
-        get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
+        get_xval(trgt_df), get_yval(trgt_df), alpha=1, mew=0.5,
         zorder=8, label='TOI 1937A', markerfacecolor='yellow',
         markersize=10, marker='*', color='black', lw=0
     )
@@ -537,7 +536,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
     set_style()
 
-    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
+    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
 
     comp_arr = np.array([5489726768531118848]).astype(np.int64)
     runid = (
@@ -641,7 +640,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         _l = 'TOI 1937' if not highlight_companion else 'TOI 1937A'
         if show1937:
             ax.plot(
-                get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
+                get_xval(trgt_df), get_yval(trgt_df), alpha=1, mew=0.5,
                 zorder=8, label=_l, markerfacecolor='yellow',
                 markersize=10, marker='*', color='black', lw=0
             )
@@ -651,7 +650,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         # S/N
         _yval = np.array(
             comp_df['phot_g_mean_mag'] +
-            5*np.log10(target_df['parallax']/1e3)
+            5*np.log10(trgt_df['parallax']/1e3)
             + 5
         )
 
@@ -1000,9 +999,11 @@ def plot_skypositions_x_rotn(outdir):
         linewidths=0, label='Core', marker='.'
     )
 
-    nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
+    basedata = 'bright'
+    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
+
     ax.plot(
-        target_df[xv], target_df[yv], alpha=1, mew=0.5,
+        trgt_df[xv], trgt_df[yv], alpha=1, mew=0.5,
         zorder=3, label='TOI 1937', markerfacecolor='yellow',
         markersize=14, marker='*', color='black', lw=0
     )
@@ -1074,7 +1075,7 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear'):
             df = pd.read_csv(os.path.join(rotdir, f'curtis19_{_cls}.csv'))
 
         else:
-            df = _get_autorotation_dataframe(runid)
+            df = get_autorotation_dataframe(runid)
 
             print(42*'-')
             print(f'Applying E(Bp-Rp) = {E_BpmRp:.4f}')
@@ -1163,7 +1164,8 @@ def plot_galah_dr3_lithium(outdir, vs_rotators=1, corehalosplit=0):
         print('Comparing vs the "gold" NGC2516 rotators sample (core + halo)...')
 
     else:
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
+        basedata = 'fullfaint'
+        nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
         cg18_df['subcluster'] = 'core'
         kc19_df['subcluster'] = 'halo'
         comp_df = pd.concat((cg18_df, kc19_df))
@@ -1508,7 +1510,7 @@ def plot_rotation_X_RUWE(outdir, cmapname, vs_rotators=1,
     set_style()
 
     assert basedata == 'fullfaint_edr3'
-    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
+    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
 
     if vs_rotators:
         rotdir = os.path.join(DATADIR, 'rotation')
@@ -1698,7 +1700,7 @@ def plot_backintegration_ngc2516(basedata, fix_rvs=0):
 
     from earhart.backintegrate import backintegrate
 
-    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
+    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
 
     rvkey = 'dr2_radial_velocity' if 'edr3' in basedata else 'radial_velocity'
     getcols = ['ra', 'dec', 'parallax', 'pmra', 'pmdec', rvkey]
@@ -1718,7 +1720,7 @@ def plot_backintegration_ngc2516(basedata, fix_rvs=0):
     s_nbhd_df = nbhd_df[getcols].dropna(axis=0)
 
     icrs_median_ngc2516_df = pd.DataFrame(s_cg18_df.median()).T
-    icrs_toi1937_df = target_df[getcols]
+    icrs_toi1937_df = trgt_df[getcols]
     mdf = pd.concat((icrs_median_ngc2516_df, icrs_toi1937_df))
 
     s = '' # formatting string for output
@@ -1730,14 +1732,14 @@ def plot_backintegration_ngc2516(basedata, fix_rvs=0):
         s_nbhd_df[rvkey] = med_rv
         s += '_fix_rvs'
 
-    icrs_arr = _given_gaia_df_get_icrs_arr(mdf)
+    icrs_arr = given_gaia_df_get_icrs_arr(mdf, zero_rv=0)
     orbits = backintegrate(icrs_arr, dt=dt, n_steps=n_steps)
     d = calc_dist(orbits.x[:,0], orbits.y[:,0], orbits.z[:,0],
                   orbits.x[:,1], orbits.y[:,1], orbits.z[:,1])
 
-    icrs_arr_cg18 = _given_gaia_df_get_icrs_arr(s_cg18_df)
-    icrs_arr_kc19 = _given_gaia_df_get_icrs_arr(s_kc19_df)
-    icrs_arr_nbhd = _given_gaia_df_get_icrs_arr(s_nbhd_df)
+    icrs_arr_cg18 = given_gaia_df_get_icrs_arr(s_cg18_df, zero_rv=0)
+    icrs_arr_kc19 = given_gaia_df_get_icrs_arr(s_kc19_df, zero_rv=0)
+    icrs_arr_nbhd = given_gaia_df_get_icrs_arr(s_nbhd_df, zero_rv=0)
 
     orbits_cg18 = backintegrate(icrs_arr_cg18, dt=dt, n_steps=n_steps)
     orbits_kc19 = backintegrate(icrs_arr_kc19, dt=dt, n_steps=n_steps)
@@ -1886,7 +1888,7 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
     )
     """
 
-    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
+    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
 
     set_style()
 
@@ -1910,7 +1912,7 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
     )
     if emph_1937:
         axs[0].plot(
-            target_df[xv], target_df[yv], alpha=1, mew=0.5,
+            trgt_df[xv], trgt_df[yv], alpha=1, mew=0.5,
             zorder=8, label='TOI 1937', markerfacecolor='yellow',
             markersize=14, marker='*', color='black', lw=0
         )
@@ -1948,7 +1950,7 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
     )
     if emph_1937:
         axs[1].plot(
-            get_xval(target_df), get_yval(target_df), alpha=1, mew=0.5,
+            get_xval(trgt_df), get_yval(trgt_df), alpha=1, mew=0.5,
             zorder=8, label='TOI 1937', markerfacecolor='yellow',
             markersize=14, marker='*', color='black', lw=0
         )
@@ -2040,11 +2042,11 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
     Match the kinematic members against the AUTOrotation sample.
     """
 
-    nbhd_df, cg18_df, kc19_df, target_df = get_gaia_basedata(basedata)
+    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
 
-    rot_df, lc_df = _get_autorotation_dataframe(runid='NGC_2516', returnbase=True)
+    rot_df, lc_df = get_autorotation_dataframe(runid='NGC_2516', returnbase=True)
 
-    dfs = [nbhd_df, cg18_df, kc19_df, target_df, rot_df]
+    dfs = [nbhd_df, cg18_df, kc19_df, trgt_df, rot_df]
     nbhd_df.source_id = nbhd_df.source_id.astype(np.int64)
     for _df in dfs:
         assert type(_df.source_id.iloc[0]) == np.int64
@@ -2131,12 +2133,12 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
             axs[i,j].scatter(
                 cg18_df[sel_comp(cg18_df)][xv], cg18_df[sel_comp(cg18_df)][yv],
                 c='k', alpha=0.9, zorder=7, s=2,
-                rasterized=True, label='Core', marker='.'
+                rasterized=True, label='Core', marker='.', edgecolors='none'
             )
 
             if show1937:
                 axs[i,j].plot(
-                    target_df[xv], target_df[yv], alpha=1, mew=0.5,
+                    trgt_df[xv], trgt_df[yv], alpha=1, mew=0.5,
                     zorder=8, label='TOI 1937', markerfacecolor='yellow',
                     markersize=7, marker='*', color='black', lw=0
                 )
@@ -2215,3 +2217,215 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
         s += f'_icrs'
     outpath = os.path.join(outdir, f'full_kinematics_X_rotation{s}.png')
     savefig(f, outpath)
+
+
+def plot_physical_X_rotation(outdir, basedata='bright', show1937=0,
+                             do_histogram=1):
+    """
+    Same data as "full_kinematics_X_rotation", but in XYZ coordinates, and with
+    physical (on-sky) velocity differences from the cluster mean.
+    """
+
+    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
+    rot_df, lc_df = get_autorotation_dataframe(runid='NGC_2516', returnbase=True)
+
+    # select the high probability CG18 members to get median parameters
+    cg18_path = os.path.join(DATADIR, 'gaia', 'CantatGaudin2018_vizier_only_NGC2516.fits')
+    t_df = Table(fits.open(cg18_path)[1].data).to_pandas()
+    if basedata == 'fullfaint':
+        assert len(t_df) == len(cg18_df)
+
+    CUTOFF_PROB = 0.7
+    sel = (t_df.PMemb > CUTOFF_PROB)
+
+    s_t_df = t_df[sel]
+
+    assert np.all(s_t_df.Source.isin(cg18_df.source_id))
+
+    sel = cg18_df.source_id.isin(s_t_df.Source)
+
+    s_cg18_df = cg18_df[sel]
+
+    rvkey = (
+        'radial_velocity' if 'edr3' not in basedata else 'dr2_radial_velocity'
+    )
+    getcols = ['ra', 'dec', 'parallax', 'pmra', 'pmdec', rvkey]
+
+    med_df = pd.DataFrame(s_cg18_df[getcols].median()).T
+    std_df = pd.DataFrame(s_cg18_df[getcols].std()).T
+
+    from earhart.physicalpositions import append_physicalpositions
+    cg18_df = append_physicalpositions(cg18_df, med_df)
+    kc19_df = append_physicalpositions(kc19_df, med_df)
+    nbhd_df = append_physicalpositions(nbhd_df, med_df)
+    trgt_df = append_physicalpositions(trgt_df, med_df)
+
+    # this plot is for (Bp-Rp)_0 from 0.5-1.2, and will highlight which
+    # kinematic members (for which we made light curves) are and are not rotators.
+    from earhart.priors import AVG_EBpmRp
+    get_BpmRp0 = lambda df: (df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - AVG_EBpmRp)
+    sel_color = lambda df: (get_BpmRp0(df) > 0.5) & (get_BpmRp0(df) < 1.2)
+    sel_autorot = lambda df: df.source_id.isin(rot_df.source_id)
+    sel_haslc = lambda df: df.source_id.isin(lc_df.source_id)
+
+    sel_comp = lambda df: (sel_color(df)) & (sel_haslc(df))
+    sel_rotn =  lambda df: (sel_color(df)) & (sel_autorot(df))
+
+    # make it!
+    plt.close('all')
+    f, axs = plt.subplots(figsize=(4,3), nrows=2, ncols=2)
+    axs = axs.flatten()
+
+    xytuples = [
+        ('delta_x_pc', 'delta_y_pc'),
+        ('delta_x_pc', 'delta_z_pc'),
+        ('delta_y_pc', 'delta_z_pc'),
+        ('delta_pmra_km_s', 'delta_pmdec_km_s')
+    ]
+    ldict = {
+        'delta_x_pc':'$\Delta$X [pc]',
+        'delta_y_pc':'$\Delta$Y [pc]',
+        'delta_z_pc':'$\Delta$Z [pc]',
+        'delta_pmra_km_s': r"$\Delta \mu_{{\alpha'}}$ [km$\,$s$^{-1}$]",
+        'delta_pmdec_km_s': r"$\Delta \mu_{\delta}$ [km$\,$s$^{-1}$]"
+    }
+
+    # limit axis by 99th percentile or iqr
+    qlimd = {
+        'delta_x_pc': 0, 'delta_y_pc': 0, 'delta_z_pc': 0, 'delta_pmra_km_s': 0, 'delta_pmdec_km_s': 0
+    }
+    nnlimd = {
+        'delta_x_pc': 1, 'delta_y_pc': 1, 'delta_z_pc': 1, 'delta_pmra_km_s': 1, 'delta_pmdec_km_s': 1
+    }
+
+    for i, xyt in enumerate(xytuples):
+
+        xv, yv = xyt[0], xyt[1]
+
+        # axs[i].scatter(
+        #     nbhd_df[sel_color(nbhd_df)][xv], nbhd_df[sel_color(nbhd_df)][yv],
+        #     c='gray', alpha=0.9, zorder=2, s=5, rasterized=True,
+        #     linewidths=0, label='Field', marker='.'
+        # )
+
+        axs[i].scatter(
+            kc19_df[sel_comp(kc19_df)][xv], kc19_df[sel_comp(kc19_df)][yv],
+            c='orange', alpha=1, zorder=3, s=12, rasterized=True,
+            label='Halo', linewidths=0.1, marker='.', edgecolors='k'
+        )
+        axs[i].scatter(
+            kc19_df[sel_rotn(kc19_df)][xv], kc19_df[sel_rotn(kc19_df)][yv],
+            c='lightskyblue', alpha=1, zorder=6, s=12, rasterized=True,
+            label='Halo + P$_\mathrm{rot}$', linewidths=0.1, marker='.',
+            edgecolors='k'
+        )
+
+        axs[i].scatter(
+            cg18_df[sel_comp(cg18_df)][xv], cg18_df[sel_comp(cg18_df)][yv],
+            c='k', alpha=1, zorder=7, s=2, edgecolors='none',
+            rasterized=True, label='Core', marker='.'
+        )
+
+        if show1937:
+            axs[i].plot(
+                trgt_df[xv], trgt_df[yv], alpha=1, mew=0.5,
+                zorder=8, label='TOI 1937', markerfacecolor='yellow',
+                markersize=7, marker='*', color='black', lw=0
+            )
+
+        axs[i].set_xlabel(ldict[xv], fontsize='small')
+        axs[i].set_ylabel(ldict[yv], fontsize='small')
+
+    # axs[2,2].legend(loc='best', handletextpad=0.1, fontsize='medium', framealpha=0.7)
+    # leg = axs[2,2].legend(bbox_to_anchor=(0.8,0.8), loc="upper right",
+    #                       handletextpad=0.1, fontsize='medium',
+    #                       bbox_transform=f.transFigure)
+
+    # # NOTE: hack size of legend markers
+    # leg.legendHandles[0]._sizes = [20]
+    # leg.legendHandles[1]._sizes = [25]
+    # leg.legendHandles[2]._sizes = [25]
+    # leg.legendHandles[3]._sizes = [20]
+    # if show1937:
+    #     leg.legendHandles[4]._sizes = [20]
+
+    for ax in axs.flatten():
+        format_ax(ax)
+
+    f.tight_layout(h_pad=0.1, w_pad=0.1)
+
+    s = ''
+    s += f'_{basedata}'
+    if show1937:
+        s += f'_show1937'
+    outpath = os.path.join(outdir, f'physical_X_rotation{s}.png')
+    savefig(f, outpath)
+
+
+    # make the histogram too, of histogram_physical_X_rotation_fullfaint
+    if do_histogram:
+
+        if show1937:
+            return
+
+        # this is a plot of the 
+        mdf = pd.concat((cg18_df, kc19_df))
+        comp_df = mdf[sel_comp(mdf)]
+        rot_df = mdf[sel_rotn(mdf)]
+
+        plt.close('all')
+        f, axs = plt.subplots(figsize=(4,3), nrows=1, ncols=2, sharey=True)
+        axs = axs.flatten()
+
+        #
+        # first: delta_r_pc
+        #
+        delta_pc = 25
+        bins = np.arange(0, 500+delta_pc, delta_pc)
+        xvals = bins[:-1] + delta_pc/2
+
+        h_comp, bins_comp = np.histogram(nparr(comp_df.delta_r_pc), bins=bins)
+        h_rot, bins_rot = np.histogram(nparr(rot_df.delta_r_pc), bins=bins)
+
+        axs[0].plot(
+            xvals, h_rot/h_comp, marker='o', linewidth=1, linestyle='dashed',
+            color='k', ms=5
+        )
+        axs[0].set_xlabel('$\Delta r$ [pc]')
+        axs[0].set_ylabel('Fraction in bin with P$_\mathrm{rot}$')
+        axs[0].set_xlim([-delta_pc, 400+delta_pc])
+
+        print(h_rot)
+        print(h_comp)
+
+        #
+        # then: delta_mu_km_s
+        #
+        delta_kms = 2.5
+        bins = np.arange(0, 50+delta_kms, delta_kms)
+        xvals = bins[:-1] + delta_kms/2
+
+        h_comp, bins_comp = np.histogram(nparr(comp_df.delta_mu_km_s), bins=bins)
+        h_rot, bins_rot = np.histogram(nparr(rot_df.delta_mu_km_s), bins=bins)
+
+        axs[1].plot(
+            xvals, h_rot/h_comp, marker='o', linewidth=1, linestyle='dashed',
+            color='k', ms=5
+        )
+        axs[1].set_xlabel('$\Delta v$ [km$\,$s$^{-1}$]')
+        axs[1].set_xlim([-delta_kms, 50+delta_kms])
+
+        print(h_rot)
+        print(h_comp)
+
+        for ax in axs.flatten():
+            format_ax(ax)
+
+        f.tight_layout(h_pad=0.2, w_pad=0.2)
+
+        s = ''
+        s += f'_{basedata}'
+        outpath = os.path.join(outdir, f'histogram_physical_X_rotation{s}.png')
+        savefig(f, outpath)
+
+
