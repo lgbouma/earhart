@@ -10,8 +10,7 @@ import astropy.coordinates as coord
 from astropy.io import ascii
 import matplotlib.pyplot as plt
 import numpy as np
-from aesthetic.plot import savefig, format_ax
-from aesthetic.plot import set_style
+from aesthetic.plot import savefig, format_ax, set_style
 
 # Gala imports.  Set the default Astropy Galactocentric frame parameters to the
 # values adopted in Astropy v4.0.  For the Milky Way model, use the built-in
@@ -88,10 +87,12 @@ def sample_backintegrate(
                               pm_dec=0.009*u.mas/u.yr,
                               radial_velocity=0.1*u.km/u.s)
 ):
+    """
+    Sample from the error distribution over the distance, proper motions, and
+    radial velocity, compute orbits, and plot distributions of mean pericenter
+    and apocenter
+    """
 
-    # Now we’ll sample from the error distribution over the distance, proper
-    # motions, and radial velocity, compute orbits, and plot distributions of mean
-    # pericenter and apocenter:
     n_samples = 32
     dist = np.random.normal(icrs.distance.value, icrs_err.distance.value,
                             n_samples) * icrs.distance.unit
