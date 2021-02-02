@@ -11,7 +11,7 @@ Contents:
         plot_skypositions_x_rotn
         plot_rotation_X_RUWE
         plot_full_kinematics_X_rotation
-        plot_physical_X_rotation
+        plot_physical_X_rotation (+ histogram_physical_X_rotation)
     Lithium:
         plot_randich_lithium
         plot_galah_dr3_lithium
@@ -2224,6 +2224,9 @@ def plot_physical_X_rotation(outdir, basedata='bright', show1937=0,
     """
     Same data as "full_kinematics_X_rotation", but in XYZ coordinates, and with
     physical (on-sky) velocity differences from the cluster mean.
+
+    kwargs:
+        do_histogram: also plot histogram_physical_X_rotation
     """
 
     nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
@@ -2368,13 +2371,15 @@ def plot_physical_X_rotation(outdir, basedata='bright', show1937=0,
         if show1937:
             return
 
-        # this is a plot of the 
+        # this is a plot of the COMBINED core + halo stars...
+        cg18_df['subcluster'] = 'core'
+        kc19_df['subcluster'] = 'halo'
         mdf = pd.concat((cg18_df, kc19_df))
         comp_df = mdf[sel_comp(mdf)]
         rot_df = mdf[sel_rotn(mdf)]
 
         plt.close('all')
-        f, axs = plt.subplots(figsize=(4,3), nrows=1, ncols=2, sharey=True)
+        fig, axs = plt.subplots(figsize=(4,3), nrows=1, ncols=2, sharey=True)
         axs = axs.flatten()
 
         #
@@ -2387,33 +2392,68 @@ def plot_physical_X_rotation(outdir, basedata='bright', show1937=0,
         h_comp, bins_comp = np.histogram(nparr(comp_df.delta_r_pc), bins=bins)
         h_rot, bins_rot = np.histogram(nparr(rot_df.delta_r_pc), bins=bins)
 
-        axs[0].plot(
-            xvals, h_rot/h_comp, marker='o', linewidth=1, linestyle='dashed',
-            color='k', ms=5
+        # f = n/m
+        # sigma_f/f = sqrt( [sigma_n / n]^2 + [sigma_m / m]^2 )
+        # and if poisson, then sigma_n = sqrt(n)
+        n, m = h_rot, h_comp
+        f = n / m
+        sigma_f = f * np.sqrt( (( 1 / np.sqrt(m) ) / m)**2 +  (( 1 / np.sqrt(n) ) / n)**2 )
+
+        sel = np.isnan(f)
+        f[sel] = 0
+        sigma_f[sel] = 0
+
+        axs[0].errorbar(
+            xvals, f, yerr=sigma_f, xerr=0.40*delta_pc,
+            ls='none', color='k', elinewidth=1, capsize=1
         )
+
         axs[0].set_xlabel('$\Delta r$ [pc]')
         axs[0].set_ylabel('Fraction in bin with P$_\mathrm{rot}$')
         axs[0].set_xlim([-delta_pc, 400+delta_pc])
 
-        print(h_rot)
-        print(h_comp)
+        # calculate the >25 pc thing...
+        n, m = np.sum(h_rot[1:]), np.sum(h_comp[1:])
+        _f = n / m
+        _sigma_f = _f * np.sqrt( (( 1 / np.sqrt(m) ) / m)**2 +  (( 1 / np.sqrt(n) ) / n)**2 )
+
+        print(42*'-')
+        print('IN POSITION')
+        print(f'Bin width: {delta_pc}')
+        print(f'Rotators: {h_rot}')
+        print(f'Comparison: {h_comp}')
+        print(f'Rotators < {delta_pc}pc : {f[0]:.5f} +/- {sigma_f[0]:.5f}')
+        print(f'Rotators > {delta_pc}pc : {_f:.5f} +/- {_sigma_f:.5f}')
+        print(f'... where numerator and denom are {n}/{m}')
+
+        print(42*'-')
 
         #
         # then: delta_mu_km_s
         #
-        delta_kms = 2.5
-        bins = np.arange(0, 50+delta_kms, delta_kms)
+        delta_kms = 2.0
+        bins = np.arange(0, 40+delta_kms, delta_kms)
         xvals = bins[:-1] + delta_kms/2
 
         h_comp, bins_comp = np.histogram(nparr(comp_df.delta_mu_km_s), bins=bins)
         h_rot, bins_rot = np.histogram(nparr(rot_df.delta_mu_km_s), bins=bins)
 
-        axs[1].plot(
-            xvals, h_rot/h_comp, marker='o', linewidth=1, linestyle='dashed',
-            color='k', ms=5
+        n, m = h_rot, h_comp
+        f = n / m
+        sigma_f = f * np.sqrt( (( 1 / np.sqrt(m) ) / m)**2 +  (( 1 / np.sqrt(n) ) / n)**2 )
+
+        sel = np.isnan(f)
+        f[sel] = 0
+        sigma_f[sel] = 0
+
+
+        axs[1].errorbar(
+            xvals, f, yerr=sigma_f, xerr=0.40*delta_kms,
+            ls='none', color='k', elinewidth=1, capsize=1
         )
+
         axs[1].set_xlabel('$\Delta v$ [km$\,$s$^{-1}$]')
-        axs[1].set_xlim([-delta_kms, 50+delta_kms])
+        axs[1].set_xlim([-delta_kms, 25])
 
         print(h_rot)
         print(h_comp)
@@ -2421,11 +2461,17 @@ def plot_physical_X_rotation(outdir, basedata='bright', show1937=0,
         for ax in axs.flatten():
             format_ax(ax)
 
-        f.tight_layout(h_pad=0.2, w_pad=0.2)
+        fig.tight_layout(h_pad=0.2, w_pad=0.2)
 
         s = ''
         s += f'_{basedata}'
         outpath = os.path.join(outdir, f'histogram_physical_X_rotation{s}.png')
-        savefig(f, outpath)
+        savefig(fig, outpath)
 
+        outpath = os.path.join(outdir, f'comp_df_physical_X_rotation{s}.csv')
+        comp_df.to_csv(outpath, index=False)
+        print(f'Made {outpath}')
 
+        outpath = os.path.join(outdir, f'rot_df_physical_X_rotation{s}.csv')
+        rot_df.to_csv(outpath, index=False)
+        print(f'Made {outpath}')

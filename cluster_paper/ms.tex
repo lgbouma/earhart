@@ -60,28 +60,33 @@
 % Context, aims, methods, results, conclusions.
 \begin{abstract}
   Recent analyses of the Gaia data have reported the existence of
-  diffuse stellar populations (``halos'') surrounding nearby open clusters.  The stars in these
-  halos could have escaped from the cores of the cluster, or they
-  could be remnants of a star formation
-  complex that has since dispersed.  They could also be field
-  stars---the false positives of overly aggressive clustering algorithms.
-  In this study, we focus on a single reported 250\,pc-long halo
-  around the $\approx$120\,Myr open cluster NGC\,2516.  The classical tidal radius of
-  this cluster is $\sim$XX\,pc.  Combining photometry from Gaia,
-  rotation periods from TESS, and lithium measurements from
-  the Gaia-ESO and GALAH surveys, we find that the halo of
-  NGC\,2516 is real and coeval with the core. At fixed stellar
-  mass, the rotation rate and
-  lithium abundance are strongly anti-correlated. And finally, given Gaia-selected halo
-  members, the contamination rate of field stars in the halo (XX\%) is
-  larger than that in the core (YY\%).  This work expands the set of
-  confirmed NGC\,2516 members by a factor of $\approx$2, and
-  quantifies the degree to which Gaia-based analyses can 
-  identify dispersed stellar populations against a background of field
-  star contaminants.  We highlight the implications for spectroscopic
-  survey targeting, open cluster dispersal, and planet searches around
-  young stars.
+  diffuse stellar populations surrounding nearby open clusters.  The
+  stars in these ``halos'' could have escaped from the cores of the
+  cluster, or they could be remnants of a star formation complex that
+  has since dispersed.  They could also be field stars---false
+  positives from overly aggressive clustering algorithms.  In this
+  study, we focus on a 250\,pc halo reported
+  around the $\approx$120\,Myr open cluster NGC\,2516.  The classical
+  tidal radius of the cluster is {\bf $\sim$XX\,pc}.  Using photometry
+  from Gaia, rotation periods from TESS, and lithium measurements from
+  Gaia-ESO and GALAH, we find that the halo of NGC\,2516 is real and
+  coeval with the core.  Two in three kinematically-selected halo
+  members 25-250\,pc from the cluster center show rotation periods
+  consistent with a gyrochronological age of 120\,Myr.  Stars in the
+  inner 25\,pc show higher period detection rates than the
+  halo (73\% vs.\ 66\%), but both vastly exceed our field star
+  comparison sample ({\bf XX\%}).  The rotation rate and lithium abundance
+  are also anti-correlated at fixed stellar mass, as is the case with
+  comparable clusters.  This work expands the set of confirmed
+  NGC\,2516 members by a factor of $\approx$2, and quantifies the
+  degree to which Gaia-based analyses can identify dispersed stellar
+  populations against a background of field star contaminants.  We
+  highlight the implications for spectroscopic survey targeting, open
+  cluster dispersal, and planet searches around young stars.
 \end{abstract}
+% Rotators < 25pc : 0.72929 +/- 0.00013
+% Rotators > 25pc : 0.66172 +/- 0.00023
+
 
 \keywords{
 	stellar ages (1581),
@@ -204,6 +209,8 @@ Section~\ref{sec:conclusion} gives our conclusions.
 
 \subsection{Gaia Astrometry}
 \label{subsec:astrometry}
+
+{\bf Emphasize that figure 1 does not clearly tell us whether or not the halo is really distinct from the field, by eye.}
 
 \begin{figure*}[t]
 	\begin{center}
@@ -472,28 +479,53 @@ we get an age of ZZZ.
     physical units.}
     Top: relevant projections. Bottom: binned versus 3d position and
     2d velocity difference.
+    Bins have width 25\,pc in position, and 2.0\,km\,s$^{-1}$ in
+    velocity.
 		\label{fig:physical_x_rotn}
 	}
 \end{figure*}
 
-
 How far away from the core, in position and velocity space, does the
 halo actually extend?  We can explore this by crossmatching the
-rotator sample against \nkinematic Gaia DR2 kinematic candidate members.  
+rotator sample against \nkinematic Gaia DR2 kinematic candidate
+members.  
 
 Figure~\ref{fig:gaia6d_x_rotn} shows the result.  An important nuance
 in interpreting this plot is that we show only stars with
 $0.5<(Bp-Rp)_0<1.2$ for which our TESS pipeline successfully made
-detrended light curves.  In other words---the base ``core'' and
-``halo'' samples are the stars for which we could have plausibly
-detected a rotation period.
-Faint stars with $Rp>16$ were beyond our light curve selection
-limit, and crowded stars ({\it e.g.,} near saturated stars
-in the cluster center) do not appear.
-We selected the color limit above based on Figure~\ref{fig:rot},
-since the density of period detections seems to decrease once 
-$(Bp-Rp)_0 \gtrsim 1.25$, {\it i.e.}, for spectral types later
-than $\approx$K4V.
+detrended light curves.  In other words---the base sample is the stars
+for which we could have plausibly detected a rotation period.  Faint
+stars with $Rp>16$ were beyond our light curve selection limit, and
+crowded stars ({\it e.g.,} near saturated stars in the cluster center)
+do not appear.  We selected the color limit above based on
+Figure~\ref{fig:rot}, since the density of period detections seems to
+decrease once $(Bp-Rp)_0 \gtrsim 1.25$, {\it i.e.}, for spectral types
+later than $\approx$K4V.
+Our expectation is that completion effects become important for
+fainter stars.
+At the distance of NGC\,2516, a K4V star has $T\approx 14.5$,
+for which our reductions of the TESS images yield a precision of
+$\approx 7$\,mmag per half-hour exposure \citep{bouma_wasp4b_2019}.
+{\bf 
+The AMPLITUDES of the rotation signals are like 10-100 mmag (CITE
+REBULL 2020, FIGURE 10).
+}
+
+
+%G=18 is like Abs G 9.8, Bp-Rp not corrected of 2.7. 
+% (Bp-Rp )_0 of 1.25 is (Bp-Rp) of 1.38... or Abs G of ~= 6.8.
+% or G-Rp ~= 0.7
+% So, G~=15... meaning Rp~=14.3. 
+
+% IN POSITION
+% Bin width: 25
+% Rotators: [361  82  43  30  16  18  14   8   6   2   4   0   0   0   0
+% 0   0   0 0   0]
+% Comparison: [495 116  65  46  28  20  22  12  11   8   5   1   0   1
+% 0   2   0   0 0   0]
+% Rotators < 25pc : 0.72929 +/- 0.00013
+% Rotators > 25pc : 0.66172 +/- 0.00023
+% ... where numerator and denom are 223/337
 
 Qualitatively, the fraction of kinematic members with TESS-detected rotation 
 periods seems like it may increase with increasing distance from the halo core---both in
