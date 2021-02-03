@@ -26,8 +26,14 @@
 \newcommand{\numcdipslcs}{671{,}901\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
 \newcommand{\numsouthernuniqlcs}{483{,}407\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
 
-\newcommand{\nkinematic}{3{,}018\ } % "fullfaint" kinematic sample, core+halo. from any call of earhat.helpers._get_fullfaint_dataframes
 \newcommand{\nautorot}{1{,}276\ } % drivers.plot_full_kinematics_X_rotation; 2021.01.29
+\newcommand{\nkinematic}{3{,}018\ } % "fullfaint" kinematic sample, core+halo. from any call of earhat.helpers._get_fullfaint_dataframes
+
+\newcommand{\ncalibration}{9{,}619{,}784} % /nfs/phtess2/ar0/TESS/PROJ/lbouma/CDIPS_LCS/counts/check_sum, 2021.02.02
+\newcommand{\nnbhd}{13{,}843\ } % make_compstar_NGC_2516_sourcelist.py
+\newcommand{\nnbhdcaliblc}{10{,}314\ } % make_compstar_NGC_2516_sourcelist.py
+\newcommand{\nnbhdcalibstar}{2{,}212\ } % make_compstar_NGC_2516_sourcelist.py
+
 
 \newcommand{\kms}{\,km\,s$^{-1}$}
 
@@ -70,7 +76,7 @@
   tidal radius of the cluster is {\bf $\sim$XX\,pc}.  Using photometry
   from Gaia, rotation periods from TESS, and lithium measurements from
   Gaia-ESO and GALAH, we find that the halo of NGC\,2516 is real and
-  coeval with the core.  Two in three kinematically-selected halo
+  coeval with the core.  Two in three kinematically selected halo
   members 25-250\,pc from the cluster center show rotation periods
   consistent with a gyrochronological age of 120\,Myr.  Stars in the
   inner 25\,pc show higher period detection rates than the
@@ -302,7 +308,7 @@ We imposed a magnitude limit of $G=19$\,mag, and ran the queries
 using the \texttt{astroquery.gaia} module (CITE).
 % TODO: why?
 We allowed the number of stars in the comparison sample to exceed that
-in the cluster sample by a factor of a few, to ensure broad sampling
+in the cluster sample by a factor of $\approx$5, to ensure broad sampling
 of stellar masses and evolutionary states.
 We also required the comparison sample to not overlap with the cluster
 sample, which led to the omission of 1.1\% of the stars drawn over the
@@ -318,26 +324,16 @@ volume noted above.
 \begin{figure*}[t]
 	\begin{center}
 		\leavevmode
-		\subfloat{
 			\includegraphics[width=0.75\textwidth]{f2a.pdf}
-		}
-	
-		\subfloat{
-			\includegraphics[width=0.75\textwidth]{f2b.pdf}
-		}
 	\end{center}
 	\vspace{-0.7cm}
-  \caption{ {\bf HR diagrams of NGC\,2516, using Gaia EDR3 photometry.}
-    {\it Top:} The core (black) shows a clean sequence consistent with
+  \caption{ {\bf HR diagram of NGC\,2516, using Gaia EDR3 photometry.}
+    The core (black) shows a clean sequence consistent with
     stars with a fixed age and metallicity, and varying mass.  The
-    halo (blue) is similar, but somewhat noisier.  The faintest M
+    halo (blue) is similar, though somewhat noisier.  The faintest M
     dwarfs in the core and halo are brighter than in the field star
     comparison sample (gray), consistent with these stars having not
     yet reached the ZAMS.
-    {\it Bottom:} Reported members of the halo, as a function of
-    galactic latitude. Can the additional scatter in the halo be
-    understood through differential reddening?
-    {\bf Maybe}.
     \label{fig:hr}
   }
 \end{figure*}
@@ -351,16 +347,17 @@ of the cluster members support the claim that they are coeval.
 Figure~\ref{fig:hr} presents similar results to what these
 investigators have already found.  The core members of the cluster
 show a clean sequence consistent with stars with a fixed age and
-metallicity, and varying mass.
-The halo members are roughly consistent with this, but they do show
-greater scatter.  One possible explanation for this scatter is that
-the halo is more contaminated by field stars.
-Another, explored in the other panel of the figure, is differential
-reddening.
-The halo is reported to span 20$^\circ$ on-sky, and varies in position from
-about $b=-12^\circ$ to $b=-20^\circ$, with the stars closest to the
-galactic plane also being further from the Sun
-by up to 200\,pc (Figure~\ref{fig:gaia6d}).
+metallicity, and varying mass.  The halo members show a roughly
+consistent main sequence, but with somewhat greater scatter.  One
+possible explanation for this scatter is that the halo is more
+contaminated by field stars.  Another possible explanation is
+differential reddening.  The halo is reported to span 20$^\circ$
+on-sky, and varies in position from about $b=-12^\circ$ to
+$b=-20^\circ$, with the stars closest to the galactic plane also being
+further from the Sun by up to 200\,pc (Figure~\ref{fig:gaia6d}).
+Empirical evidence for differential reddening is discussed further in
+Appendix~\ref{app:diffred}. A priori, both field star contamination
+and differential reddening could well play a role.
 
 %TODO 
 Comparing these HR diagrams to the PARSEC isochrone models, we find
@@ -447,6 +444,16 @@ The resulting gyrochronology age we find for the core is XXX.
 For the halo, the claimed age from gyrochronology is YYY.
 Applying the same procedure to the field star comparison sample,
 we get an age of ZZZ.
+
+\paragraph{Comparison sample}
+To provide a basis for comparison, we also opted to search the
+``calibration'' light curves ($Rp<13$) that were created as a part of
+the CDIPS project. 
+Over the southern sky (Sectors 1-13 of TESS), this corresponded to a sample of \ncalibration stars.
+Cross-matching these against \nnbhd randomly drawn stars in the
+neighborhood of \cn yielded \nnbhdcalibstar unique stars, with
+\nnbhdcaliblc sector-specific TESS light curves.
+
 
 \subsubsection{Kinematics $\otimes$ Rotation}
 
@@ -1087,8 +1094,29 @@ For every ``target star'', we then decorrelated the raw
 (image-subtracted and background-subtracted) light curve
 using a linear model with ordinary least squares.
 
+\section{Differential Reddening}
+\label{app:diffred}
+
+\begin{figure*}[t]
+	\begin{center}
+		\leavevmode
+			\includegraphics[width=0.75\textwidth]{f2b.pdf}
+	\end{center}
+	\vspace{-0.7cm}
+  \caption{ {\bf HR diagram of NGC\,2516, using Gaia EDR3 photometry.}
+    {\it Bottom:} Reported members of the halo, as a function of
+    galactic latitude. Can the additional scatter in the halo be
+    understood through differential reddening?
+    {\bf Maybe}.
+    \label{fig:diffred}
+  }
+\end{figure*}
+
+Figure~\ref{fig:diffred}.
+
 
 \section{Rotation $\otimes$ RUWE}
+\label{app:ruwe}
 
 \begin{figure*}[t]
 	\begin{center}
