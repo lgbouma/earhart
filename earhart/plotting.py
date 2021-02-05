@@ -964,13 +964,8 @@ def plot_skypositions_x_rotn(outdir):
 
     from earhart.priors import AVG_EBpmRp
 
-    rotdir = os.path.join(DATADIR, 'rotation')
-    df = pd.read_csv(
-        os.path.join(rotdir, 'ngc2516_rotation_periods.csv')
-    )
-    BpmRp_0 = (df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - AVG_EBpmRp)
-    sel = (BpmRp_0 > 0.5) & (BpmRp_0 < 1.2)
-    df = df[sel]
+    runid = "NGC_2516"
+    rot_df, lc_df = get_autorotation_dataframe(runid='NGC_2516', returnbase=True)
 
     set_style()
 
@@ -980,22 +975,22 @@ def plot_skypositions_x_rotn(outdir):
 
     xv, yv = 'ra', 'dec'
 
-    sel = (df.subcluster == 'halo')
+    sel = (lc_df.subcluster == 'halo')
     ax.scatter(
-        df[sel][xv], df[sel][yv], c='lightskyblue', alpha=0.9, zorder=4, s=7,
+        lc_df[sel][xv], lc_df[sel][yv], c='lightskyblue', alpha=0.9, zorder=4, s=7,
         rasterized=True, linewidths=0.15, label='Halo', marker='.',
         edgecolors='white'
     )
-    sel = (df.subcluster == 'halo') & (df.Tags == 'gold')
+    sel = (rot_df.subcluster == 'halo')
     ax.scatter(
-        df[sel][xv], df[sel][yv], c='lightskyblue', alpha=0.9, zorder=6, s=7,
+        rot_df[sel][xv], rot_df[sel][yv], c='lightskyblue', alpha=0.9, zorder=6, s=7,
         rasterized=True, linewidths=0.15, label='Halo + P$_\mathrm{rot}$', marker='.',
         edgecolors='black'
     )
 
-    sel = (df.subcluster == 'core')
+    sel = (lc_df.subcluster == 'core')
     ax.scatter(
-        df[sel][xv], df[sel][yv], c='k', alpha=0.9, zorder=2, s=5, rasterized=True,
+        lc_df[sel][xv], lc_df[sel][yv], c='k', alpha=0.9, zorder=2, s=5, rasterized=True,
         linewidths=0, label='Core', marker='.'
     )
 
@@ -1426,7 +1421,7 @@ def plot_rotation_X_lithium(outdir, cmapname):
     Plot Prot vs (Bp-Rp)_0, color points by Li EW.
 
     This is for Randich+18's Gaia ESO lithium stars, crossmatched against the
-    gold rotator sample.
+    "gold rotator" sample. (So: it needs to be updated in both directions).
     """
 
     from earhart.priors import AVG_EBpmRp
@@ -1488,7 +1483,7 @@ def plot_rotation_X_lithium(outdir, cmapname):
 
 
 
-def plot_rotation_X_RUWE(outdir, cmapname, vs_rotators=1,
+def plot_rotation_X_RUWE(outdir, cmapname, vs_gold=0, vs_auto=1,
                          basedata='fullfaint_edr3', emph_1937=0):
     """
     Plot Prot vs (Bp-Rp)_0, color points by RUWE (i.e., Gaia EDR3 matched).
@@ -1505,7 +1500,12 @@ def plot_rotation_X_RUWE(outdir, cmapname, vs_rotators=1,
     assert basedata == 'fullfaint_edr3'
     nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
 
-    if vs_rotators:
+    if vs_auto:
+        runid = 'NGC_2516'
+        s_comp_df = get_autorotation_dataframe(runid)
+
+    else:
+        raise NotImplementedError('"Gold" is not cleanly defined...')
         rotdir = os.path.join(DATADIR, 'rotation')
         rot_df = pd.read_csv(
             os.path.join(rotdir, 'ngc2516_rotation_periods.csv')
@@ -1516,6 +1516,7 @@ def plot_rotation_X_RUWE(outdir, cmapname, vs_rotators=1,
         selcols = ['Name', 'period', 'Tags', 'source_id', 'subcluster']
         s_comp_df = comp_df[selcols]
 
+
     # merge, noting that the "ngc2516_rotation_periods.csv" measurements were
     # done based on the DR2 source_id list, and in this plot the basedata are
     # from EDR3 (so we use the DR2<->EDR3 crossmatch from
@@ -1523,8 +1524,8 @@ def plot_rotation_X_RUWE(outdir, cmapname, vs_rotators=1,
     full_df = pd.concat((cg18_df,kc19_df))
     assert len(full_df) == len(cg18_df) + len(kc19_df)
     mdf = s_comp_df.merge(full_df, left_on='source_id',
-                          right_on='dr2_source_id', how='left')
-    assert len(mdf) == len(comp_df)
+                          right_on='dr2_source_id', how='left',
+                          suffixes=('_dr2', '_edr3'))
 
     #
     # check crossmatch quality
@@ -1541,7 +1542,7 @@ def plot_rotation_X_RUWE(outdir, cmapname, vs_rotators=1,
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend='both')
     if not emph_1937:
         cax = ax.scatter(
-            mdf['phot_bp_mean_mag'] - mdf['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf['phot_bp_mean_mag_dr2'] - mdf['phot_rp_mean_mag_dr2'] - AVG_EBpmRp,
             mdf['period'],
             c=nparr(mdf['ruwe']), alpha=1, zorder=2, s=10, edgecolors='k',
             marker='o', cmap=cmap, norm=norm, linewidths=0.3
@@ -1550,7 +1551,7 @@ def plot_rotation_X_RUWE(outdir, cmapname, vs_rotators=1,
         _s = 5489726768531119616
         sel = (mdf.dr2_source_id == _s)
         cax = ax.scatter(
-            mdf[~sel]['phot_bp_mean_mag'] - mdf[~sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf[~sel]['phot_bp_mean_mag_dr2'] - mdf[~sel]['phot_rp_mean_mag_dr2'] - AVG_EBpmRp,
             mdf[~sel]['period'],
             c=nparr(mdf[~sel]['ruwe']), alpha=1, zorder=2, s=10, edgecolors='k',
             marker='o', cmap=cmap, norm=norm, linewidths=0.3
@@ -1566,7 +1567,7 @@ def plot_rotation_X_RUWE(outdir, cmapname, vs_rotators=1,
         print(42*'-')
 
         ax.scatter(
-                mdf[sel]['phot_bp_mean_mag'] - mdf[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+                mdf[sel]['phot_bp_mean_mag_dr2'] - mdf[sel]['phot_rp_mean_mag_dr2'] - AVG_EBpmRp,
                 P_ROT,
                 c=nparr(mdf[sel]['ruwe']), alpha=1, zorder=2, s=40, edgecolors='k',
                 marker='*', cmap=cmap, norm=norm, linewidths=0.3,

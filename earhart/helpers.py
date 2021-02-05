@@ -712,21 +712,32 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0):
     )
 
     # automatic selection criteria for viable rotation periods
+    NEQUAL_CUTOFF = 0 # could also do 1
+    NCLOSE_CUTOFF = 100
+    LSP_CUTOFF = 0.08 # 0.08 standard
     sel = (
         (df.period < 15)
         &
-        (df.lspval > 0.08)
+        (df.lspval > LSP_CUTOFF)
         &
-        (df.nequal <= 1)
+        (df.nequal <= NEQUAL_CUTOFF)
+        &
+        (df.nclose <= NCLOSE_CUTOFF)
+    )
+
+    ref_sel = (
+        (df.nequal <= NEQUAL_CUTOFF)
+        &
+        (df.nclose <= NCLOSE_CUTOFF)
     )
 
     if verbose:
         print(f'Getting autorotation dataframe for {runid}...')
-        print(f'Starting with {len(df)} entries...')
-        print(f'Got {len(df[sel])} entries with P<15d, LSP>0.08, nequal<=1')
+        print(f'Starting with {len(df[ref_sel])} entries that meet NEQUAL and NCLOSE criteria...')
+        print(f'Got {len(df[sel])} entries with P<15d, LSP>{LSP_CUTOFF}, nequal<={NEQUAL_CUTOFF}, nclose<={NCLOSE_CUTOFF}')
 
     if not returnbase:
         return df[sel]
     else:
-        return df[sel], df
+        return df[sel], df[ref_sel]
 
