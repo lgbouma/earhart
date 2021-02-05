@@ -1035,15 +1035,8 @@ def plot_skypositions_x_rotn(outdir):
 
 def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear'):
     """
-    Plot rotation periods that satisfy:
-
-        (df.period < 15)
-        &
-        (df.lspval > 0.08)
-        &
-        (df.nequal <= 1)
-
-    (At most one equal-brightness star in the aperture that was used)
+    Plot rotation periods that satisfy the automated selection criteria
+    (specified in helpers.get_autorotation_dataframe)
     """
 
     set_style()
@@ -1878,14 +1871,8 @@ def plot_backintegration_ngc2516(basedata, fix_rvs=0):
 def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
                                  corealpha=0.9):
     """
-    # automatic selection criteria for viable rotation periods
-    sel = (
-        (df.period < 15)
-        &
-        (df.lspval > 0.08)
-        &
-        (df.nequal <= 1)
-    )
+    Plot [ra vs dec], [HR diagram], [Prot vs color], using the automated
+    rotation selection for the right-most plot.
     """
 
     nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
@@ -1971,14 +1958,7 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
     )
 
     # automatic selection criteria for viable rotation periods
-    sel = (
-        (df.period < 15)
-        &
-        (df.lspval > 0.08)
-        &
-        (df.nequal <= 1)
-    )
-    df = df[sel]
+    df = get_autorotation_dataframe(runid)
 
     xval = (
         df['phot_bp_mean_mag'] - df['phot_rp_mean_mag']
