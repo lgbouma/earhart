@@ -26,7 +26,8 @@
 \newcommand{\numcdipslcs}{671{,}901\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
 \newcommand{\numsouthernuniqlcs}{483{,}407\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
 
-\newcommand{\nautorot}{1{,}276\ } % drivers.plot_full_kinematics_X_rotation; 2021.01.29
+\newcommand{\nautorot}{1{,}144\ } % % depends on which cuts are adopted. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
+
 \newcommand{\nkinematic}{3{,}018\ } % "fullfaint" kinematic sample, core+halo. from any call of earhat.helpers._get_fullfaint_dataframes
 
 \newcommand{\ncalibration}{9{,}619{,}784\ } % /nfs/phtess2/ar0/TESS/PROJ/lbouma/CDIPS_LCS/counts/check_sum, 2021.02.02
@@ -54,9 +55,9 @@
 \title{
   Cluster Difference Imaging Photometric Survey. III.
   %The Coeval Core \& Halo of NGC\,2516
-  %The Halo of NGC\,2516 Extends To At Least 250\,pc
-  An Open Cluster With a 250\,pc Halo
-  %NGC\,2516  250\,pc
+  %The Halo of NGC\,2516 Extends To At Least 300\,pc
+  An Open Cluster With a 300\,pc Halo
+  %NGC\,2516  300\,pc
 }
 
 %\suppressAffiliations
@@ -71,7 +72,7 @@
   cluster, or they could be remnants of a star formation complex that
   has since dispersed.  They could also be field stars---false
   positives from overly aggressive clustering algorithms.  In this
-  study, we focus on a 250\,pc halo reported
+  study, we focus on a 300\,pc halo reported
   around the $\approx$120\,Myr open cluster NGC\,2516.  The classical
   tidal radius of the cluster is {\bf $\sim$XX\,pc}.  Using photometry
   from Gaia, rotation periods from TESS, and lithium measurements from
@@ -207,7 +208,7 @@ stellar spin-down and open cluster evolution generally.
 Section~\ref{sec:conclusion} gives our conclusions.
 
 
-\section{A 250\,pc Halo around a Core?}
+\section{A 300\,pc Halo around a Core?}
 \label{sec:gaia}
 %
 % What is the core? What is the halo?
@@ -435,7 +436,7 @@ brightness with 1.25 and 2.5 TESS magnitudes of the target star.
 Figure~\ref{fig:rot} shows the resulting rotation periods.  The points
 on this plot are the \nautorot light curves for which the peak Lomb Scargle
 periodogram period was below 15 days, the LS power exceeded 0.08, and
-at most one equal-brightness companion was within the aperture.  These
+for which no equal-brightness companions were within the aperture.  These
 selection criteria are entirely heuristic.  
 But splitting the sample into the ``core'' and the ``halo'', they
 suggest that the halo is real.
@@ -550,12 +551,18 @@ detected a rotation period --- the same color and observability limits
 discussed above were also applied.
 
 The results are shown in Figure~\ref{fig:physical_x_rotn}.
-The halo extends to about 250\,pc in physical space, and out to at
-least 10 of km/s in tangential velocity space.
-\citet{meingast_2021} by comparison required a physically motivated cut
-in tangential velocity space of 1.5 km per sec.
-This probably improves purity, but clearly doesn't get everthing for
-completeness.
+The halo extends to separations of about 200\,pc in physical space
+from the cluster core.
+This corresponds to a length of $\approx$300-350\,pc, depending on
+which members of the halo are chosen as the ``tips'' on either
+end.
+
+In tangential velocity space, the fraction of stars with rotation
+period detections remains high out to roughly 10\,km/s.
+\citet{meingast_2021} by comparison required a physically motivated
+cut in tangential velocity space of 1.5 km per sec.  This probably
+improves purity, but clearly doesn't get everthing for completeness.
+
 
 % [361  82  43  30  16  18  14   8   6   2   4   0   0   0   0   0]
 % [495 116  65  46  28  20  22  12  11   8   5   1   0   1   0   2]
@@ -583,6 +590,7 @@ completeness.
   plotted against extinction-corrected color ({\it top}), and the
   combination of rotation period and extinction-corrected color ({\it
   bottom}).
+  {\bf TODO: Do this against the autorot sample; Add the GALAH EWs}
   \label{fig:lithium}
   }
 \end{figure*}
