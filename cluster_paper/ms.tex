@@ -653,13 +653,13 @@ caused by the Gaia-ESO targetting selection function.
 % Survey (Martell et al. 2017),
 
 The GALAH DR3 target selection process is discussed in detail by
-\citet{buder_galah_2020}.  The most relevant aspects for our projects
+\citet{buder_galah_2020}.  The most relevant aspects for our project
 are that the ``main'' survey targeted $12.0<V<14.0$ stars at
-$\delta<+10^\circ$, provided they were at least ten degrees from the
+$\delta<+10^\circ$, provided the stars were at least ten degrees from the
 galactic plane.  The survey is spatially inhomogeneous\footnote{See
 the footprint at
 \url{https://www.galah-survey.org/news/announcing-galah-dr3}}. Special
-targetting for stars in the TESS southern continuous viewing zone, and
+targeting for stars in the TESS southern continuous viewing zone, and
 for known open cluster members was also performed.  We identified the
 candidate \cn\ members
 for which spectra had been obtained by searching
@@ -671,10 +671,14 @@ focus is measuring equivalent widths for the Li\,6708\ \AA line, these
 were the most relevant bit flags for our purpose.  Of our \nkinematic
 candidate \cn\ members, 106 had spectra in GALAH DR3.  51 were in the
 ``core''; 55 were in the ``halo''.
+77 had ``finite'' lithium, i.e., no lithium flag set.
+
 
 %/Users/luke/Dropbox/proj/earhart/results/lithium/kinematic_X_galah_dr3.csv
 % https://docs.datacentral.org.au/galah/dr3/catalogue-data-access/
-We downloaded the GALAH DR3 spectra for all 106 entries by doing PROCESS X.
+We downloaded\footnote{Via \url{datacentral.org.au/services/download},
+using the \texttt{sobject_id} identifiers.}
+the GALAH DR3 spectra for all 106 entries.
 We then measured the lithium equivalent widths using PROCESS Y.
 We then concatenated the GALAH DR3 and Gaia-ESO results together.
 
