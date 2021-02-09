@@ -26,7 +26,8 @@
 \newcommand{\numcdipslcs}{671{,}901\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
 \newcommand{\numsouthernuniqlcs}{483{,}407\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
 
-\newcommand{\nautorot}{1{,}144\ } % % depends on which cuts are adopted. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
+%\newcommand{\nautorot}{1{,}144\ } % % For nequal<=0, nclose<=100, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
+\newcommand{\nautorot}{987\ } % % For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
 
 \newcommand{\nkinematic}{3{,}018\ } % "fullfaint" kinematic sample, core+halo. from any call of earhat.helpers._get_fullfaint_dataframes
 
@@ -74,7 +75,7 @@
   positives from overly aggressive clustering algorithms.  In this
   study, we focus on a 300\,pc halo reported
   around the $\approx$120\,Myr open cluster NGC\,2516.  The classical
-  tidal radius of the cluster is {\bf $\sim$XX\,pc}.  Using photometry
+  tidal radius of the cluster is $\sim$10\,pc.  Using photometry
   from Gaia, rotation periods from TESS, and lithium measurements from
   Gaia-ESO and GALAH, we find that the halo of NGC\,2516 is real and
   coeval with the core.  Two in three kinematically selected halo
@@ -151,30 +152,39 @@ young transiting planets.  Young transiting planets are hard to find
 because young stars are rare (CITE), and often reside in crowded regions
 of the sky (CITE).  If the halos of nearby star clusters can be reliably
 identified, this could expand the census of nearby sub-Gyr stars by a
-factor of 2 or 3 (CITE).  A fortuitous benefit of searching for planets
+factor of 2 or 3 (CITE).  
+One path to identify these young stars is to combine photometric
+selection criteria with spectroscopic observations (e.g., CITE Zerjal
+2019, 2020).
+A fortuitous benefit of searching for planets
 in cluster environments is that issues with stellar crowding are also
 alleviated.
 
 Recent clustering studies using Gaia have begun to report the
-identification of structures that could correspond to low-density halos
-of stars that may have evaporated from open clusters (e.g., Kounkel+19,
-Kounkel+20, Meingast+21).  However, different clustering methods on the
+identification of structures that could correspond to low-density
+halos of stars that may have evaporated from open clusters (e.g.,
+Kounkel+19, Kounkel+20, Meingast+21).  There is evidence that in some
+cases, these halos correspond to tidal tails, e.g., in the Hyades
+(CITE Meingast+Alves 20... and Roser+20), and in the Ursa Major moving
+group (CITE Gagne+20).  However, different clustering methods on the
 Gaia data tend to give different results (CITE: Hunt \& Reffert 2020).
 Employing say Gaussian Mixture Modelling, or any analogous method that
 requires ``clusters'' to be ellipses in phase-space (position or
-velocity) unsurprisingly yields open clusters that are roughly elliptical.
-Some unsupervised clustering methods lead to comparable ``roughly
-elliptical'' results \citep[][hereafter
+velocity) unsurprisingly yields open clusters that are roughly
+elliptical.  Some unsupervised clustering methods lead to comparable
+``roughly elliptical'' results \citep[][hereafter
 \citetalias{cantatgaudin_gaia_2018}]{cantatgaudin_gaia_2018}.  Other
 unsupervised methods such as HDBScan (e.g., \citep[][hereafter
 \citetalias{kounkel_untangling_2019}]{kounkel_untangling_2019}) have
-been found to yield additional structures, particularly in lower density
-regions such as the Psc-Eri stream (CITE: Meingast+18, Curtis+19,
-Newton+21, but reword bc discovery didn't use HDBScan), but also more
-generally around many open clusters \citep{kounkel_untangling_2019}.
-Unsupervised approaches that incorporate physical constraints like
-imposing a maximum velocity dispersion on putative members yield similar
-results, potentially with higher purity (Meingast+21).
+been found to yield additional structures, particularly in lower
+density regions such as the Psc-Eri stream (CITE: Meingast+18,
+Curtis+19, Newton+21, but reword bc discovery didn't use HDBScan), but
+also more generally around many open clusters
+\citep{kounkel_untangling_2019}.  Unsupervised approaches that
+incorporate physical constraints like imposing a maximum velocity
+dispersion on putative members yield similar results, potentially with
+higher purity (Meingast+21).
+
 
 % TODO: make the bonafide number below quantitative
 We've recently been making TESS light curves of age-dated stars across
@@ -268,6 +278,14 @@ reported 3003 candidate members, and included stars up to
 $\approx$1\,mag fainter.  Each study used unsupervised clustering
 based on the second Gaia Data Release, detailed in
 Appendix~\ref{app:clustering}.
+%FIXME 
+\citetalias{cantatgaudin_gaia_2018} considered a cone of radius {\bf
+XX DEGREES} centered on the cluster's position.
+Given the classically reported tidal radius of {\it e.g.,} 9\,pc, CITE
+Piskunov+2008, which is 8$^\circ$ at the cluster distance of
+$\approx$400\,pc, perhaps they should have considered stars further
+out.
+
 
 %TODO calculate these physical sizes carefully
 Figure~\ref{fig:gaia6d} shows the cluster members reported by each
@@ -706,6 +724,13 @@ distinguishing them.
 cluster, or they could be remnants of a larger and lower-density star
 formation complex that has since dispersed.''
 Another possibility is {\it triggered star formation}.
+
+One relevant connection may be to the ``Mamajek-2'' stellar group
+(see Jilinski+2009).
+
+
+
+
 
 \subsection{Are the ``very slow rotators'' bonafide members?}
 Unsure. They are not isotropically distributed around the
