@@ -1484,13 +1484,18 @@ def plot_rotation_X_lithium(outdir, cmapname):
 
 
 
-def plot_rotation_X_RUWE(outdir, cmapname, vs_gold=0, vs_auto=1,
-                         basedata='fullfaint_edr3', emph_1937=0):
+def plot_rotation_X_RUWE(outdir, cmapname, vs_auto=1,
+                         basedata='fullfaint_edr3', emph_1937=0,
+                         yscale='linear'):
     """
     Plot Prot vs (Bp-Rp)_0, color points by RUWE (i.e., Gaia EDR3 matched).
 
-    This is for the "fullfaint_edr3" dataset, crossmatched against the
-    gold rotator sample.
+    This is for the "fullfaint_edr3" dataset.
+
+    Args:
+
+    vs_auto (bool): if True, crossmatch against the auto-rotator sample. Else,
+        crossmatch against the manually selected "gold" sample.
     """
 
     from earhart.priors import AVG_EBpmRp, P_ROT
@@ -1582,11 +1587,13 @@ def plot_rotation_X_RUWE(outdir, cmapname, vs_gold=0, vs_auto=1,
     ax.set_ylabel('Rotation Period [days]')
     ax.set_xlabel('(Bp-Rp)$_0$ [mag]')
     ax.set_xlim((0.5, 1.5))
+    ax.set_yscale(yscale)
 
     format_ax(ax)
     outstr = '_' + cmapname
     if emph_1937:
         outstr += '_emph1937'
+    outstr += f'_{yscale}'
     outpath = os.path.join(outdir,
                            f'rotation_vs_BpmRp_X_RUWE{outstr}.png')
     savefig(f, outpath)

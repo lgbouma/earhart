@@ -16,7 +16,7 @@ cp ../results/lithium/randich_lithium_vs_BpmRp_xmatch_goldrot_corehalosplit.pdf 
 cp ../results/rotation_X_lithium/rotation_vs_BpmRp_X_randich18_lithium_viridis.pdf f5b.pdf
 
 # supplementary
-cp ../results/rotation_X_RUWE/rotation_vs_BpmRp_X_RUWE_viridis.pdf f6.pdf
+cp ../results/rotation_X_RUWE/rotation_vs_BpmRp_X_RUWE_viridis_linear.pdf f6.pdf
 
 cp ../results/full_kinematics_X_rotation/full_kinematics_X_rotation_fullfaint_edr3_galactic.pdf f7.pdf
 
