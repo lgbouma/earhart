@@ -713,7 +713,7 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0):
 
     # automatic selection criteria for viable rotation periods
     NEQUAL_CUTOFF = 0 # could also do 1
-    NCLOSE_CUTOFF = 100
+    NCLOSE_CUTOFF = 1
     LSP_CUTOFF = 0.08 # 0.08 standard
     sel = (
         (df.period < 15)

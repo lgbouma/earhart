@@ -1085,28 +1085,29 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear'):
 
         if core_halo and f'{runid}' in _cls:
             sel = (df.subcluster == 'core')
-            ax.plot(
+            ax.scatter(
                 xval[sel],
                 df[sel][ykey],
-                c='C0', alpha=1, zorder=z, markersize=s, rasterized=False,
-                lw=lw, label=f"{runid.replace('_','')} core", marker=m,
-                mew=mew, mfc='C0'
+                c='C0', alpha=1, zorder=z, s=10, edgecolors='k',
+                marker=m, linewidths=0.3, label=f"{runid.replace('_','')} core"
             )
 
             sel = (df.subcluster == 'halo')
-            ax.plot(
+            ax.scatter(
                 xval[sel],
                 df[sel][ykey],
-                c='C1', alpha=1, zorder=z, markersize=s, rasterized=False,
-                lw=lw, label=f"{runid.replace('_','')} halo", marker=m,
-                mew=mew, mfc='C1'
+                c='C1', alpha=1, zorder=z, s=10, edgecolors='k',
+                marker=m, linewidths=0.3, label=f"{runid.replace('_','')} halo"
             )
 
         else:
-            ax.plot(
-                xval, df[ykey], c=_col, alpha=1, zorder=z, markersize=s,
-                rasterized=False, lw=lw, label=l, marker=m, mew=mew, mfc=_col
+            ax.scatter(
+                xval,
+                df[ykey],
+                c=_col, alpha=1, zorder=z, s=10, edgecolors='k',
+                marker=m, linewidths=0.3, label=l
             )
+
 
 
     loc = 'best' if yscale == 'linear' else 'lower right'
