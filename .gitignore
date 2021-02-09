@@ -12,3 +12,4 @@ doc*
 *.out
 drivers/oneoffs*
 *secret*
+SANDBOX*

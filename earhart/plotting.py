@@ -1134,41 +1134,32 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear'):
     savefig(f, outpath)
 
 
-def plot_galah_dr3_lithium(outdir, vs_rotators=1, corehalosplit=0):
+def plot_galah_dr3_lithium(outdir, corehalosplit=0):
 
     from earhart.lithium import get_GalahDR3_lithium
 
     g_tab = get_GalahDR3_lithium(defaultflags=1)
-    scols = ['source_id', 'teff', 'e_teff', 'fe_h', 'e_fe_h', 'flag_fe_h',
-             'Li_fe', 'e_Li_fe', 'nr_Li_fe', 'flag_Li_fe', 'ruwe']
+    scols = ['source_id', 'sobject_id', 'star_id', 'teff', 'e_teff', 'fe_h',
+             'e_fe_h', 'flag_fe_h', 'Li_fe', 'e_Li_fe', 'nr_Li_fe',
+             'flag_Li_fe', 'ruwe']
     g_dict = {k:np.array(g_tab[k]).byteswap().newbyteorder() for k in scols}
     g_df = pd.DataFrame(g_dict)
 
-    if vs_rotators:
-        rotdir = os.path.join(DATADIR, 'rotation')
-        rot_df = pd.read_csv(
-            os.path.join(rotdir, 'ngc2516_rotation_periods.csv')
-        )
-        comp_df = rot_df[rot_df.Tags == 'gold']
-        print('Comparing vs the "gold" NGC2516 rotators sample (core + halo)...')
-
-    else:
-        basedata = 'fullfaint'
-        nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
-        cg18_df['subcluster'] = 'core'
-        kc19_df['subcluster'] = 'halo'
-        comp_df = pd.concat((cg18_df, kc19_df))
-        print('Comparing vs the "fullfaint" kinematic NGC2516 rotators sample (core + halo)...')
-        assert type(comp_df.source_id.iloc[0]) == np.int64
+    basedata = 'fullfaint'
+    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
+    cg18_df['subcluster'] = 'core'
+    kc19_df['subcluster'] = 'halo'
+    comp_df = pd.concat((cg18_df, kc19_df))
+    print('Comparing vs the "fullfaint" kinematic NGC2516 rotators sample (core + halo)...')
+    assert type(comp_df.source_id.iloc[0]) == np.int64
 
     mdf = comp_df.merge(g_df, on='source_id', how='inner')
 
-    if not vs_rotators:
-        outname = 'kinematic_X_galah_dr3'
-        outpath = os.path.join(outdir, f'{outname}.csv')
-        if not os.path.exists(outpath):
-            mdf.to_csv(outpath, index=False)
-            print(f'Made {outpath} with {len(mdf)} entries.')
+    # save it
+    outname = 'kinematic_X_galah_dr3'
+    outpath = os.path.join(outdir, f'{outname}.csv')
+    mdf.to_csv(outpath, index=False)
+    print(f'Made {outpath} with {len(mdf)} entries.')
 
     smdf = mdf
     smdf = mdf[~pd.isnull(mdf.Li_fe)]
@@ -1236,22 +1227,11 @@ def plot_galah_dr3_lithium(outdir, vs_rotators=1, corehalosplit=0):
             zorder=3, label='Li limit (halo)', ms=10, mfc='white', marker='v', lw=0
         )
 
-
-    # from timmy.priors import TEFF, LI_EW
-    # ax.plot(
-    #     TEFF,
-    #     LI_EW,
-    #     alpha=1, mew=0.5, zorder=8, label='TOI 837', markerfacecolor='yellow',
-    #     markersize=18, marker='*', color='black', lw=0
-    # )
-
     ax.legend(loc='best', handletextpad=0.1, fontsize='x-small', framealpha=0.7)
     ax.set_ylabel('[Li/Fe]', fontsize='large')
     ax.set_xlabel('(Bp-Rp)$_0$ [mag]', fontsize='large')
 
-    ax.set_title('Gold rotators, core+halo, x GALAH DR3')
-
-    # ax.set_xlim((4900, 6600))
+    ax.set_title('fullfaint kinematics, x GALAH DR3')
 
     format_ax(ax)
     outname = 'galah_dr3_lithium'
