@@ -20,6 +20,9 @@ cp ../results/rotation_X_RUWE/rotation_vs_BpmRp_X_RUWE_viridis_linear.pdf f6.pdf
 
 cp ../results/full_kinematics_X_rotation/full_kinematics_X_rotation_fullfaint_edr3_galactic.pdf f7.pdf
 
+cp ../results/compstar_rotation/compstar_rotation_NGC_2516_vs_BpmRp_linear.pdf f9.pdf
+
+
 # cp ../results/calc_backintegration_ngc2516/core_halo_to_ngc2516_separation.pdf f7a.pdf
 # cp ../results/calc_backintegration_ngc2516/core_halo_to_ngc2516_separation_fix_rvs.pdf f7b.pdf
 # 

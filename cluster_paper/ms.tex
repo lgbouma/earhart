@@ -27,14 +27,24 @@
 \newcommand{\numsouthernuniqlcs}{483{,}407\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
 
 %\newcommand{\nautorot}{1{,}144\ } % % For nequal<=0, nclose<=100, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
-\newcommand{\nautorot}{987\ } % % For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
 
 \newcommand{\nkinematic}{3{,}018\ } % "fullfaint" kinematic sample, core+halo. from any call of earhat.helpers._get_fullfaint_dataframes
 
 \newcommand{\ncalibration}{9{,}619{,}784\ } % /nfs/phtess2/ar0/TESS/PROJ/lbouma/CDIPS_LCS/counts/check_sum, 2021.02.02
 \newcommand{\nnbhd}{13{,}843\ } % make_compstar_NGC_2516_sourcelist.py
-\newcommand{\nnbhdcaliblc}{10{,}314\ } % make_compstar_NGC_2516_sourcelist.py
-\newcommand{\nnbhdcalibstar}{2{,}212\ } % make_compstar_NGC_2516_sourcelist.py
+\newcommand{\nnbhdcaliblc}{9{,}790\ } % get_auto_rotation_periods.py
+\newcommand{\nnbhdcalibstar}{1{,}987\ } % get_auto_rotation_periods.py
+
+\newcommand{\nautorotdenominator}{1{,}641\ } % plot_autorotation.py, w/ runid=NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
+\newcommand{\nautorotnumerator}{987\ } % plot_autorotation.py, For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
+\newcommand{\ncompstardenominator}{820\ } % plot_autorotation.py, w/ runid=compstar_NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. 
+\newcommand{\ncompstarnumerator}{365\ } % plot_autorotation.py
+\newcommand{\ncompfrac}{44.5\%} % plot_autorotation.py
+\newcommand{\nautovscompstardenominator}{705\ } % plot_autorotation.py, w/ runid=compstar_NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. 
+\newcommand{\nautovscompstarnumerator}{374\ } % plot_autorotation.py
+\newcommand{\nautofrac}{53.1\%} % plot_autorotation.py
+
+ 
 
 
 \newcommand{\kms}{\,km\,s$^{-1}$}
@@ -69,31 +79,28 @@
 \begin{abstract}
   Recent analyses of the Gaia data have reported the existence of
   diffuse stellar populations surrounding nearby open clusters.  The
-  stars in these ``halos'' could have escaped from the cores of the
+  stars in these halos could have escaped from the cores of the
   cluster, or they could be remnants of a star formation complex that
   has since dispersed.  They could also be field stars---false
   positives from overly aggressive clustering algorithms.  In this
-  study, we focus on a 300\,pc halo reported
-  around the $\approx$120\,Myr open cluster NGC\,2516.  The classical
-  tidal radius of the cluster is $\sim$10\,pc.  Using photometry
-  from Gaia, rotation periods from TESS, and lithium measurements from
-  Gaia-ESO and GALAH, we find that the halo of NGC\,2516 is real and
-  coeval with the core.  Two in three kinematically selected halo
-  members 25-250\,pc from the cluster center show rotation periods
-  consistent with a gyrochronological age of 120\,Myr.  Stars in the
-  inner 25\,pc show higher period detection rates than the
-  halo (73\% vs.\ 66\%), but both vastly exceed our field star
-  comparison sample ({\bf XX\%}).  The rotation rate and lithium abundance
-  are also anti-correlated at fixed stellar mass, as is the case with
-  comparable clusters.  This work expands the set of confirmed
-  NGC\,2516 members by a factor of $\approx$2, and quantifies the
-  degree to which Gaia-based analyses can identify dispersed stellar
-  populations against a background of field star contaminants.  We
-  highlight implications for spectroscopic survey targeting, open
-  cluster dispersal, and planet searches around young stars.
+  study, we focus on a halo with a length of 300\,pc reported around
+  the $\approx$120\,Myr open cluster NGC\,2516.  The classical tidal
+  radius of the cluster is $\sim$10\,pc.  Using photometry from Gaia,
+  rotation periods from TESS, and lithium measurements from Gaia-ESO
+  and GALAH, we find that the halo of NGC\,2516 is real and coeval
+  with the core.  Two in three kinematically selected halo members
+  25-250\,pc from the cluster center show rotation periods consistent
+  with a gyrochronological age of 120\,Myr.  A comparison sample of
+  field stars shows no such trend.  The rotation period and lithium
+  abundance for the cluster stars are also anti-correlated at fixed
+  stellar mass, as is the case with comparable stellar populations.
+  This work expands the set of confirmed NGC\,2516 members by a factor
+  of $\approx$2, and quantifies the degree to which Gaia-based
+  analyses can identify dispersed stellar populations against a
+  background of field star contaminants.  We highlight implications
+  for spectroscopic survey targeting, open cluster dispersal, and
+  planet searches around young stars.
 \end{abstract}
-% Rotators < 25pc : 0.72929 +/- 0.00013
-% Rotators > 25pc : 0.66172 +/- 0.00023
 
 
 \keywords{
@@ -396,6 +403,8 @@ we get an age of ZZZ.
 \subsection{Rotation from TESS}
 \label{subsec:tess}
 
+\subsubsection{Cluster Star Sample}
+
 \begin{figure*}[t]
 	\begin{center}
 		\leavevmode
@@ -415,8 +424,6 @@ we get an age of ZZZ.
 		\label{fig:rot}
 	}
 \end{figure*}
-
-
 
 %TODO: what are these numbers?
 Duly motivated, we collected light curves from TESS photometry
@@ -452,11 +459,22 @@ within the aperture of equal brightness to the target stars, and of
 brightness with 1.25 and 2.5 TESS magnitudes of the target star.
 
 Figure~\ref{fig:rot} shows the resulting rotation periods.  The points
-on this plot are the \nautorot light curves for which the peak Lomb Scargle
+on this plot are the \nautorotnumerator light curves for which the peak Lomb Scargle
 periodogram period was below 15 days, the LS power exceeded 0.08, and
-for which no equal-brightness companions were within the aperture.  These
-selection criteria are entirely heuristic.  
-But splitting the sample into the ``core'' and the ``halo'', they
+for which no equal-brightness or greater companions were within the aperture. 
+We also required that at most one companion with brightness exceeding 
+one tenth of the target star could reside in the aperture.
+These
+selection criteria are entirely heuristic, and yielded
+\nautorotdenominator stars for which rotation periods might have been
+detected.  
+By exploring the different possible selection criteria, we found that
+the ones we chose provided a
+reasonable balance between excluding stars on the slow sequence, {\it
+vs.} reporting spurious rotation periods in the ``void'' below the
+slow sequence, where the dominant signal was in fact from a
+neighboring star.
+Splitting the resulting sample into the ``core'' and the ``halo'', they
 suggest that the halo is real.
 
 The resulting gyrochronology age we find for the core is XXX.
@@ -464,14 +482,48 @@ For the halo, the claimed age from gyrochronology is YYY.
 Applying the same procedure to the field star comparison sample,
 we get an age of ZZZ.
 
-\paragraph{Comparison sample}
+\subsubsection{Comparison Star Sample}
+
+\begin{figure}[t]
+	\begin{center}
+		\leavevmode
+    \includegraphics[width=0.49\textwidth]{f9.pdf}
+	\end{center}
+	\vspace{-0.7cm}
+	\caption{ {\bf Field stars show a different rotation period
+  distribution than the kinematically selected members.}
+		\label{fig:compstar}
+	}
+\end{figure}
+
 To provide a basis for comparison, we also opted to search the
 ``calibration'' light curves ($Rp<13$) that were created as a part of
-the CDIPS project. 
-Over the southern sky (Sectors 1-13 of TESS), this corresponded to a sample of \ncalibration stars.
-Cross-matching these against \nnbhd randomly drawn stars in the
-neighborhood of \cn yielded \nnbhdcalibstar unique stars, with
-\nnbhdcaliblc sector-specific TESS light curves.
+the CDIPS project.  Over the southern sky (Sectors 1-13 of TESS), this
+corresponded to a sample of \ncalibration stars.  Cross-matching these
+against the \nnbhd randomly drawn stars in the neighborhood of \cn yielded
+\nnbhdcalibstar unique stars, with a cumulative total of \nnbhdcaliblc TESS
+sectors observed.
+The magnitude cut of $Rp<13$ at the distances of the neighborhood sample
+corresponds to an extinction-corrected color cutoff of $(Bp-Rp)_0
+\approx 0.80$, or spectral types of $\approx$G1V.
+This reaches sufficiently far down the main sequence to enable a
+comparison to the cluster star sample.
+
+We performed the same light curve stitching and period-search
+procedure on the field comparison stars.
+Imposing the same requirements for crowding resulted in
+\ncompstardenominator stars for which rotation periods could have been
+detected.
+Imposing the same Lomb Scargle power cutoff, and period upper limit,
+yielded \ncompstarnumerator period detections (\ncompfrac).
+Within the same brightness cutoff, 
+\nautovscompstarnumerator of \nautovscompstardenominator cluster stars
+yielded period detections (\nautofrac).
+Though the detection fractions are frankly not very different
+(likely because of the brightness cutoff), the period {\it
+vs} color distributions are quite different
+(Figure~\ref{fig:compstar}).
+
 
 
 \subsubsection{Kinematics $\otimes$ Rotation}
@@ -677,7 +729,7 @@ candidate \cn\ members, 106 had spectra in GALAH DR3.  51 were in the
 %/Users/luke/Dropbox/proj/earhart/results/lithium/kinematic_X_galah_dr3.csv
 % https://docs.datacentral.org.au/galah/dr3/catalogue-data-access/
 We downloaded\footnote{Via \url{datacentral.org.au/services/download},
-using the \texttt{sobject_id} identifiers.}
+using the \texttt{sobject\_id} identifiers.}
 the GALAH DR3 spectra for all 106 entries.
 We then measured the lithium equivalent widths using PROCESS Y.
 We then concatenated the GALAH DR3 and Gaia-ESO results together.
