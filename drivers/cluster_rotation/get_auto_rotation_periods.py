@@ -3,7 +3,6 @@ from glob import glob
 import pandas as pd, numpy as np
 from functools import reduce
 from cdips.utils.pipelineutils import load_status
-from earhart.plotting import _get_nbhd_dataframes
 
 def ls_to_df(classfile):
 
@@ -24,10 +23,11 @@ def ls_to_df(classfile):
     return df
 
 def get_auto_rotation_periods(
-    runid='ScoOB2'
+    runid='compstar_NGC_2516'
 ):
     """
-    valid runid: IC_2602, CrA, kc19group_113, Orion
+    valid runid: IC_2602, CrA, kc19group_113, Orion, NGC_2516, ScoOB2,
+    compstar_NGC_2516
     """
 
     # the allvariability logs, including the top 5 lomb-scargle periods, and
@@ -70,29 +70,51 @@ def get_auto_rotation_periods(
     print(f'Got {len(period_df[~pd.isnull(period_df.period)])} periods')
 
     # get the runid's source list
-    sourcelistpath = os.path.join(
-        '/Users/luke/Dropbox/proj/cdips/data/cluster_data/cdips_catalog_split',
-        f'OC_MG_FINAL_v0.4_publishable_CUT_{runid}.csv'
-    )
+    if 'compstar' not in runid:
+        sourcelistpath = os.path.join(
+            '/Users/luke/Dropbox/proj/cdips/data/cluster_data/cdips_catalog_split',
+            f'OC_MG_FINAL_v0.4_publishable_CUT_{runid}.csv'
+        )
+    else:
+        sourcelistpath = (
+            f'/Users/luke/Dropbox/proj/earhart/results/tables/{runid}_sourcelist.csv'
+        )
+
     df = pd.read_csv(
         sourcelistpath
     )
+    if 'compstar' in runid:
+
+        print(42*'-')
+        print(f'{len(df)} light curves made for stars in neighborhood (calib+cdips)')
+        print(f'... for {len(np.unique(df.source_id))} unique stars')
+
+        df = df[df.phot_rp_mean_mag<13]
+        print(f'{len(df)} light curves made for stars in neighborhood (calib+cdips) w/ Rp<13')
+        print(f'... for {len(np.unique(df.source_id))} unique stars')
+        print(42*'-')
+
+        df = df.drop_duplicates(subset='source_id', keep='first')
 
     mdf = period_df.merge(
-        df, how='left', on='source_id'
+        df, how='inner', on='source_id'
     )
 
-    # create "subcluster" column
-    core_sel = (
-        mdf.reference.str.contains('CantatGaudin_2018')
-    )
-    halo_sel = ~core_sel
+    if 'compstar' not in runid:
+        # create "subcluster" column
+        core_sel = (
+            mdf.reference.str.contains('CantatGaudin_2018')
+        )
+        halo_sel = ~core_sel
 
-    corehalo_vec = np.ones(len(mdf)).astype(str)
-    corehalo_vec[core_sel] = 'core'
-    corehalo_vec[halo_sel] = 'halo'
+        corehalo_vec = np.ones(len(mdf)).astype(str)
+        corehalo_vec[core_sel] = 'core'
+        corehalo_vec[halo_sel] = 'halo'
 
-    mdf['subcluster'] = corehalo_vec
+        mdf['subcluster'] = corehalo_vec
+
+    else:
+        mdf['subcluster'] = 'nbhd'
 
     outpath = f'../../data/rotation/{runid}_rotation_periods.csv'
     mdf.to_csv(

@@ -735,6 +735,16 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0):
         print(f'Getting autorotation dataframe for {runid}...')
         print(f'Starting with {len(df[ref_sel])} entries that meet NEQUAL and NCLOSE criteria...')
         print(f'Got {len(df[sel])} entries with P<15d, LSP>{LSP_CUTOFF}, nequal<={NEQUAL_CUTOFF}, nclose<={NCLOSE_CUTOFF}')
+        print(10*'.')
+
+        rp_sel = (df.phot_rp_mean_mag < 13)
+        print(f'Requiring Rp<13 as well for comparison gives...')
+        print(f'Starting with {len(df[ref_sel & rp_sel])} entries that meet NEQUAL and NCLOSE criteria...')
+        print(f'Got {len(df[sel & rp_sel])} entries with P<15d, LSP>{LSP_CUTOFF}, nequal<={NEQUAL_CUTOFF}, nclose<={NCLOSE_CUTOFF}')
+        frac = len(df[sel & rp_sel])/len(df[ref_sel & rp_sel])
+        print(f'Fraction: {frac:.4f}')
+        print(10*'.')
+
 
     if not returnbase:
         return df[sel]

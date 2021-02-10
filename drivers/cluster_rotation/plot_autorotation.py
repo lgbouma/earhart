@@ -3,6 +3,7 @@ import earhart.plotting as ep
 from earhart.paths import RESULTSDIR
 
 RUNID_EXTINCTION_DICT = {
+#    'compstar_NGC_2516': 0.1343, # 0.25 for KC19
     'NGC_2516': 0.1343, # 0.25 for KC19
 #     'IC_2602': 0.0799,  # avg E(B-V) from Randich+18, *1.31 per Stassun+2019
 #     'CrA': 0.06389, # KC19 ratio used
