@@ -8,6 +8,7 @@ Contents:
     Rotation / TESS:
         plot_rotation
         plot_auto_rotation
+        plot_compstar_rotation
         plot_skypositions_x_rotn
         plot_rotation_X_RUWE
         plot_full_kinematics_X_rotation
@@ -1131,6 +1132,92 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear'):
         outstr += '_corehalosplit'
     outstr += f'_{yscale}'
     outpath = os.path.join(outdir, f'{runid}_rotation{outstr}.png')
+    savefig(f, outpath)
+
+
+def plot_compstar_rotation(outdir, E_BpmRp=0.1343, yscale=None):
+    """
+    Plot rotation periods that satisfy the automated selection criteria
+    (specified in helpers.get_autorotation_dataframe)
+    """
+
+    set_style()
+
+    from earhart.paths import DATADIR
+    rotdir = os.path.join(DATADIR, 'rotation')
+
+    # make plot
+    plt.close('all')
+
+    f, ax = plt.subplots(figsize=(4,3))
+
+    runid = 'NGC_2516'
+    classes = ['pleiades', 'praesepe', f'NGC_2516', 'compstar_NGC_2516']
+    colors = ['k', 'gray', 'C0', 'C1']
+    zorders = [3, 2, 4, 5]
+    markers = ['o', 'x', 'o', 'o']
+    lws = [0, 0., 0, 0]
+    mews= [0.5, 0.5, 0.5, 0.5]
+    _s = 3
+    ss = [3.0, 6, _s, _s]
+    labels = ['Pleaides', 'Praesepe', f'NGC 2516', 'Field']
+
+    # plot vals
+    for _cls, _col, z, m, l, lw, s, mew in zip(
+        classes, colors, zorders, markers, labels, lws, ss, mews
+    ):
+
+        if f'{runid}' not in _cls:
+            df = pd.read_csv(os.path.join(rotdir, f'curtis19_{_cls}.csv'))
+
+        else:
+            df = get_autorotation_dataframe(_cls)
+            df = df[df.phot_rp_mean_mag < 13]
+            print(42*'-')
+            print(f'Applying E(Bp-Rp) = {E_BpmRp:.4f}')
+            print(42*'-')
+
+
+        if f'{runid}' not in _cls:
+            xval = get_interp_BpmRp_from_Teff(df['teff'])
+            df['BpmRp_interp'] = xval
+            df.to_csv(
+                os.path.join(rotdir, f'curtis19_{_cls}_BpmRpinterp.csv'),
+                index=False
+            )
+        else:
+            xval = (
+                df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - E_BpmRp
+            )
+
+        ykey = 'prot' if f'{runid}' not in _cls else 'period'
+
+        ax.scatter(
+            xval,
+            df[ykey],
+            c=_col, alpha=0.8, zorder=z, s=10, edgecolors='k',
+            marker=m, linewidths=0.3, label=l
+        )
+
+    loc = 'best' if yscale == 'linear' else 'lower right'
+    ax.legend(loc=loc, handletextpad=0.1, fontsize='x-small', framealpha=0.7)
+    ax.set_ylabel('Rotation Period [days]', fontsize='large')
+
+    ax.set_xlabel('(Bp-Rp)$_0$ [mag]', fontsize='large')
+    ax.set_xlim((0.25, 1.25))
+
+    if yscale == 'linear':
+        ax.set_ylim((0,15))
+    elif yscale == 'log':
+        ax.set_ylim((0.05,15))
+    else:
+        raise NotImplementedError
+    ax.set_yscale(yscale)
+
+    format_ax(ax)
+    outstr = '_vs_BpmRp'
+    outstr += f'_{yscale}'
+    outpath = os.path.join(outdir, f'compstar_rotation_{runid}{outstr}.png')
     savefig(f, outpath)
 
 
