@@ -12,8 +12,8 @@ cp ../results/full_kinematics_X_rotation/full_kinematics_X_rotation_fullfaint_ga
 cp ../results/physical_X_rotation/physical_X_rotation_fullfaint.pdf f8a.pdf
 cp ../results/physical_X_rotation/histogram_physical_X_rotation_fullfaint.pdf f8b.pdf
 
-cp ../results/lithium/randich_lithium_vs_BpmRp_xmatch_goldrot_corehalosplit.pdf f5a.pdf
-cp ../results/rotation_X_lithium/rotation_vs_BpmRp_X_randich18_lithium_viridis.pdf f5b.pdf
+cp ../results/lithium/lithiumEW_vs_BpmRp_xmatch_fullfaintkinematic_gaiaeso_galahdr3_corehalosplit.pdf f5a.pdf
+cp ../results/rotation_X_lithium/rotation_vs_BpmRp_X_lithium_viridis_gaiaeso_galahdr3.pdf f5b.pdf
 
 # supplementary
 cp ../results/rotation_X_RUWE/rotation_vs_BpmRp_X_RUWE_viridis_linear.pdf f6.pdf

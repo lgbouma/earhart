@@ -61,6 +61,8 @@ from earhart.physicalpositions import (
 )
 from earhart.lithium import _get_lithium_EW_df
 
+from earhart.priors import TEFF, P_ROT, AVG_EBpmRp
+
 def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
 
     basedata = 'bright'
@@ -837,8 +839,6 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
 def plot_rotation(outdir, BpmRp=0, include_ngc2516=0, ngc_core_halo=0):
 
-    from earhart.priors import TEFF, P_ROT, AVG_EBpmRp
-
     set_style()
 
     rotdir = os.path.join(DATADIR, 'rotation')
@@ -964,8 +964,6 @@ def plot_rotation(outdir, BpmRp=0, include_ngc2516=0, ngc_core_halo=0):
 
 
 def plot_skypositions_x_rotn(outdir):
-
-    from earhart.priors import AVG_EBpmRp
 
     runid = "NGC_2516"
     rot_df, lc_df = get_autorotation_dataframe(runid='NGC_2516', returnbase=True)
@@ -1268,8 +1266,6 @@ def plot_galah_dr3_lithium_abundance(outdir, corehalosplit=0):
     # make tha plot 
     ##########
 
-    from earhart.priors import TEFF, P_ROT, AVG_EBpmRp
-
     set_style()
 
     plt.close('all')
@@ -1383,7 +1379,6 @@ def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
         'epoch_photometry_url', 'subcluster']
     """
 
-    from earhart.priors import AVG_EBpmRp
     assert abs(AVG_EBpmRp - 0.1343) < 1e-4 # used by KC19
 
     set_style()
@@ -1486,7 +1481,7 @@ def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
         savefig(f, outpath)
 
 
-def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0):
+def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0, corehalosplit=0):
     """
     Plot Li EW vs color for Randich+18's Gaia ESO lithium stars, crossmatched
     against the "fullfaint kinematic" sample.
@@ -1497,7 +1492,6 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0):
 
     """
 
-    from earhart.priors import AVG_EBpmRp
     assert abs(AVG_EBpmRp - 0.1343) < 1e-4 # used by KC19
 
     set_style()
@@ -1506,6 +1500,8 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0):
 
     basedata = 'fullfaint'
     nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
+    cg18_df['subcluster'] = 'core'
+    kc19_df['subcluster'] = 'halo'
     mdf = pd.concat((cg18_df, kc19_df))
 
     df = df.merge(mdf, how='left', on='source_id')
@@ -1516,17 +1512,32 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0):
     plt.close('all')
     f, ax = plt.subplots(figsize=(4,3))
 
-    ax.scatter(
-        df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - AVG_EBpmRp,
-        df['Li_EW_mA'],
-        c='k', alpha=1, zorder=2, s=8, edgecolors='k', marker='o',
-        linewidths=0.3
-    )
-
-    # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), handletextpad=0.1)
+    if not corehalosplit:
+        ax.scatter(
+            df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - AVG_EBpmRp,
+            df['Li_EW_mA'],
+            c='k', alpha=1, zorder=2, s=8, edgecolors='k', marker='o',
+            linewidths=0.3
+        )
+    else:
+        sel = (df.subcluster == 'core')
+        ax.scatter(
+            df[sel]['phot_bp_mean_mag'] - df[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            df[sel]['Li_EW_mA'],
+            c='C0', alpha=1, zorder=2, s=8, edgecolors='k', marker='o',
+            linewidths=0.3, label='Core'
+        )
+        sel = (df.subcluster == 'halo')
+        ax.scatter(
+            df[sel]['phot_bp_mean_mag'] - df[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+            df[sel]['Li_EW_mA'],
+            c='C1', alpha=1, zorder=3, s=8, edgecolors='k', marker='o',
+            linewidths=0.3, label='Halo'
+        )
+        ax.legend(loc='upper left', handletextpad=0.05)
 
     if gaiaeso and galahdr3:
-        ax.set_title('Kinematic $\otimes$ GESO+GALAH')
+        ax.set_title('Kinematic $\otimes$ Lithium')
     if gaiaeso and not galahdr3:
         ax.set_title('Kinematic $\otimes$ Gaia-ESO')
     if not gaiaeso and galahdr3:
@@ -1543,6 +1554,8 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0):
         outstr += '_gaiaeso'
     if galahdr3:
         outstr += '_galahdr3'
+    if corehalosplit:
+        outstr += '_corehalosplit'
     xmstr = 'fullfaintkinematic'
     outpath = os.path.join(outdir,
                            f'lithiumEW_vs_BpmRp_xmatch_{xmstr}{outstr}.png')
@@ -1554,7 +1567,6 @@ def plot_rotation_X_lithium(outdir, cmapname, gaiaeso=0, galahdr3=0):
     Plot Prot vs (Bp-Rp)_0, color points by Li EW.
     """
 
-    from earhart.priors import AVG_EBpmRp
     assert abs(AVG_EBpmRp - 0.1343) < 1e-4 # used by KC19
 
     set_style()
@@ -1625,7 +1637,6 @@ def plot_rotation_X_RUWE(outdir, cmapname, vs_auto=1,
         crossmatch against the manually selected "gold" sample.
     """
 
-    from earhart.priors import AVG_EBpmRp, P_ROT
     assert abs(AVG_EBpmRp - 0.1343) < 1e-4 # used by KC19
 
     set_style()
@@ -2101,7 +2112,6 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
     )
     ykey = 'period'
     if emph_1937:
-        from earhart.priors import AVG_EBpmRp, P_ROT
         BpmRp_tic268 = 13.4400 - 12.4347
         axs[2].plot(
             BpmRp_tic268, P_ROT,
@@ -2125,8 +2135,6 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
     )
 
     axs[2].yaxis.set_major_locator(MaxNLocator(integer=True))
-
-    from earhart.priors import TEFF, P_ROT, AVG_EBpmRp
 
     axs[2].set_ylabel('Rotation Period [days]')
     axs[2].set_xlabel('Bp-Rp [mag]')
@@ -2204,7 +2212,6 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
     nparams = len(params)
     f, axs = plt.subplots(figsize=(6,6), nrows=nparams-1, ncols=nparams-1)
 
-    from earhart.priors import AVG_EBpmRp
     get_BpmRp0 = lambda df: (df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - AVG_EBpmRp)
     # this plot is for (Bp-Rp)_0 from 0.5-1.2, and will highlight which
     # kinematic members (for which we made light curves) are and are not rotators.
@@ -2381,7 +2388,6 @@ def plot_physical_X_rotation(outdir, basedata='bright', show1937=0,
 
     # this plot is for (Bp-Rp)_0 from 0.5-1.2, and will highlight which
     # kinematic members (for which we made light curves) are and are not rotators.
-    from earhart.priors import AVG_EBpmRp
     get_BpmRp0 = lambda df: (df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - AVG_EBpmRp)
     sel_color = lambda df: (get_BpmRp0(df) > 0.5) & (get_BpmRp0(df) < 1.2)
     sel_autorot = lambda df: df.source_id.isin(rot_df.source_id)
