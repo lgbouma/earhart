@@ -1,7 +1,8 @@
 """
 Contents:
-    get_GalahDR3_lithium
     get_Randich18_NGC2516
+    get_GalahDR3_lithium
+    get_GalahDR3_li_EWs
 """
 import os
 import numpy as np, pandas as pd
@@ -11,6 +12,53 @@ from astropy import units as u, constants as const
 from astropy.coordinates import SkyCoord
 
 from earhart.paths import DATADIR, RESULTSDIR
+
+def _get_lithium_EW_df(gaiaeso, galahdr3):
+
+    datapath = os.path.join(DATADIR, 'lithium',
+                            'randich_fullfaintkinematic_xmatch_20210128.csv')
+    if not os.path.exists(datapath):
+        from earhart.lithium import _make_Randich18_xmatch
+        _make_Randich18_xmatch(datapath, vs_rotators=0)
+    gaiaeso_df = pd.read_csv(datapath)
+    gaiaeso_li_col = 'EWLi'
+
+    from earhart.lithium import get_GalahDR3_li_EWs
+    galah_df = get_GalahDR3_li_EWs()
+    #FIXME: shouldn't require fudge
+    galah_li_col = 'Fitted_Li_EW_mA_plus_fudge'
+
+    s_gaiaeso_df = gaiaeso_df[[gaiaeso_li_col, 'source_id']]
+    s_gaiaeso_df = s_gaiaeso_df.rename({gaiaeso_li_col: 'Li_EW_mA'}, axis='columns')
+    s_galah_df = galah_df[[galah_li_col, 'source_id']]
+    s_galah_df = s_galah_df.rename({galah_li_col: 'Li_EW_mA'}, axis='columns')
+
+    if gaiaeso and galahdr3:
+        df = pd.concat((s_gaiaeso_df, s_galah_df))
+    if gaiaeso and not galahdr3:
+        df = s_gaiaeso_df
+    if not gaiaeso and galahdr3:
+        df = s_galah_df
+
+    return df
+
+def get_GalahDR3_li_EWs(verbose=1):
+    """
+    Made by drivers.measure_galah_dr3_Li_EWs.py
+
+    Target spectra are from the crossmatch of "fullfaint" (DR2) with the GALAH
+    target list.
+    """
+
+    if verbose:
+        print("WRN! These GALAH DR3 EWs that I meausred have NOT YET BEEN VALIDATED.")
+    galah_li_path = os.path.join(
+        DATADIR, 'lithium', 'galahdr3_fullfaintkinematic_xmatch_20210211.csv'
+    )
+    li_df = pd.read_csv(galah_li_path)
+
+    return li_df
+
 
 def get_GalahDR3_lithium(verbose=1, defaultflags=0):
     """

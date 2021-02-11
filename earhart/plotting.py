@@ -14,8 +14,9 @@ Contents:
         plot_full_kinematics_X_rotation
         plot_physical_X_rotation (+ histogram_physical_X_rotation)
     Lithium:
+        plot_lithium_EW_vs_color
         plot_randich_lithium
-        plot_galah_dr3_lithium
+        plot_galah_dr3_lithium_abundance
         plot_rotation_X_lithium
     Other:
         plot_gaia_rv_scatter_vs_brightness
@@ -58,6 +59,7 @@ from earhart.helpers import (
 from earhart.physicalpositions import (
     given_gaia_df_get_icrs_arr, calc_dist
 )
+from earhart.lithium import _get_lithium_EW_df
 
 def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
 
@@ -1221,7 +1223,7 @@ def plot_compstar_rotation(outdir, E_BpmRp=0.1343, yscale=None):
     savefig(f, outpath)
 
 
-def plot_galah_dr3_lithium(outdir, corehalosplit=0):
+def plot_galah_dr3_lithium_abundance(outdir, corehalosplit=0):
 
     from earhart.lithium import get_GalahDR3_lithium
 
@@ -1321,7 +1323,7 @@ def plot_galah_dr3_lithium(outdir, corehalosplit=0):
     ax.set_title('fullfaint kinematics, x GALAH DR3')
 
     format_ax(ax)
-    outname = 'galah_dr3_lithium'
+    outname = 'galah_dr3_lithium_abundance'
     if corehalosplit:
         outname += '_corehalosplit'
     outpath = os.path.join(outdir, f'{outname}.png')
@@ -1484,12 +1486,15 @@ def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
         savefig(f, outpath)
 
 
-def plot_rotation_X_lithium(outdir, cmapname):
+def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0):
     """
-    Plot Prot vs (Bp-Rp)_0, color points by Li EW.
+    Plot Li EW vs color for Randich+18's Gaia ESO lithium stars, crossmatched
+    against the "fullfaint kinematic" sample.
 
-    This is for Randich+18's Gaia ESO lithium stars, crossmatched against the
-    "gold rotator" sample. (So: it needs to be updated in both directions).
+    Relevant R+18 columns:
+        'CName', 'Cluster', 'Inst', 'Teff', 'e_Teff', 'logg', 'e_logg',
+        '__Fe_H_', 'e__Fe_H_', 'l_EWLi', 'EWLi', 'e_EWLi', 'f_EWLi'
+
     """
 
     from earhart.priors import AVG_EBpmRp
@@ -1497,28 +1502,78 @@ def plot_rotation_X_lithium(outdir, cmapname):
 
     set_style()
 
-    datapath = os.path.join(DATADIR, 'lithium',
-                            'randich_goldrot_xmatch_20201205.csv')
+    df = _get_lithium_EW_df(gaiaeso, galahdr3)
 
-    if not os.path.exists(datapath):
-        raise NotImplementedError('assumed plot_randich_lithium already run')
+    basedata = 'fullfaint'
+    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
+    mdf = pd.concat((cg18_df, kc19_df))
 
-    mdf = pd.read_csv(datapath)
+    df = df.merge(mdf, how='left', on='source_id')
+
+    #
+    # check crossmatch quality
+    #
+    plt.close('all')
+    f, ax = plt.subplots(figsize=(4,3))
+
+    ax.scatter(
+        df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - AVG_EBpmRp,
+        df['Li_EW_mA'],
+        c='k', alpha=1, zorder=2, s=8, edgecolors='k', marker='o',
+        linewidths=0.3
+    )
+
+    # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), handletextpad=0.1)
+
+    if gaiaeso and galahdr3:
+        ax.set_title('Kinematic $\otimes$ GESO+GALAH')
+    if gaiaeso and not galahdr3:
+        ax.set_title('Kinematic $\otimes$ Gaia-ESO')
+    if not gaiaeso and galahdr3:
+        ax.set_title('Kinematic $\otimes$ GALAH-DR3')
+
+    ax.set_ylabel('Li$_{6708}$ EW [m$\mathrm{\AA}$]')
+    ax.set_xlabel('(Bp-Rp)$_0$ [mag]')
+    ax.set_xlim([-0.2, 2.8])
+    ax.set_ylim([-50, 350])
+
+    format_ax(ax)
+    outstr = ''
+    if gaiaeso:
+        outstr += '_gaiaeso'
+    if galahdr3:
+        outstr += '_galahdr3'
+    xmstr = 'fullfaintkinematic'
+    outpath = os.path.join(outdir,
+                           f'lithiumEW_vs_BpmRp_xmatch_{xmstr}{outstr}.png')
+    savefig(f, outpath)
+
+
+def plot_rotation_X_lithium(outdir, cmapname, gaiaeso=0, galahdr3=0):
+    """
+    Plot Prot vs (Bp-Rp)_0, color points by Li EW.
+    """
+
+    from earhart.priors import AVG_EBpmRp
+    assert abs(AVG_EBpmRp - 0.1343) < 1e-4 # used by KC19
+
+    set_style()
+
+    # get the rotation and lithium dataframes
+    runid = "NGC_2516"
+    rot_df = get_autorotation_dataframe(runid)
+    li_df = _get_lithium_EW_df(gaiaeso, galahdr3)
+    mdf = li_df.merge(rot_df, how='inner', on='source_id')
+
+    print(f'rotation dataframe has {len(rot_df)} entries')
+    print(f'lithium dataframe has {len(li_df)} entries')
+    print(f'merged dataframe has {len(mdf)} entries')
 
     #
     # check crossmatch quality
     #
     plt.close('all')
     f, ax = plt.subplots(figsize=(4.5,3))
-
-    detections = (mdf.f_EWLi == 0)
-    upper_limits = (mdf.f_EWLi == 3)
-
-    print(f'Got {len(mdf[detections])} kinematic X rotation X lithium detections')
-    print(f'Got {len(mdf[upper_limits])} kinematic X rotation X lithium upper limits')
-
-    # not plotting upper limits b/c there arent any
-    assert len(mdf[upper_limits]) == 0
 
     # color scheme
     if cmapname == 'nipy_spectral':
@@ -1527,10 +1582,12 @@ def plot_rotation_X_lithium(outdir, cmapname):
         cmap = mpl.cm.viridis
     bounds = np.arange(0,260,20)
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend='max')
+
+    sel = (mdf['Li_EW_mA'] > 10)
     cax = ax.scatter(
-        mdf[detections]['phot_bp_mean_mag'] - mdf[detections]['phot_rp_mean_mag'] - AVG_EBpmRp,
-        mdf[detections]['period'],
-        c=nparr(mdf[detections]['EWLi']), alpha=1, zorder=2, s=10, edgecolors='k',
+        mdf[sel]['phot_bp_mean_mag'] - mdf[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+        mdf[sel]['period'],
+        c=nparr(mdf[sel]['Li_EW_mA']), alpha=1, zorder=2, s=10, edgecolors='k',
         marker='o', cmap=cmap, norm=norm, linewidths=0.3
     )
 
@@ -1545,10 +1602,13 @@ def plot_rotation_X_lithium(outdir, cmapname):
 
     format_ax(ax)
     outstr = '_' + cmapname
+    if gaiaeso:
+        outstr += '_gaiaeso'
+    if galahdr3:
+        outstr += '_galahdr3'
     outpath = os.path.join(outdir,
-                           f'rotation_vs_BpmRp_X_randich18_lithium{outstr}.png')
+                           f'rotation_vs_BpmRp_X_lithium{outstr}.png')
     savefig(f, outpath)
-
 
 
 def plot_rotation_X_RUWE(outdir, cmapname, vs_auto=1,
