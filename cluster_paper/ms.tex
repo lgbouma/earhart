@@ -21,6 +21,7 @@
 %TODO:
 %
 % n rotation period logs: 2238 % ~/proj/cdips/results/allvariability_reports/NGC_2516/logs
+% ... which came from ~/Dropbox/proj/cdips/data/cluster_data/cdips_catalog_split/OC_MG_FINAL_v0.4_publishable_CUT_NGC_2516.csv
 % n all variability reports: 2201 % ~/proj/cdips/results/allvariability_reports/NGC_2516/reports
 
 \newcommand{\numcdipslcs}{671{,}901\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
@@ -29,6 +30,7 @@
 %\newcommand{\nautorot}{1{,}144\ } % % For nequal<=0, nclose<=100, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
 
 \newcommand{\nkinematic}{3{,}018\ } % "fullfaint" kinematic sample, core+halo. from any call of earhat.helpers._get_fullfaint_dataframes
+\newcommand{\ncdips}{2,238\ } % e.g., from OC_MG_FINAL_v0.4_publishable_CUT_NGC_2516.csv. checked with plot_target_vs_actual_list_sanity_checks.py
 
 \newcommand{\ncalibration}{9{,}619{,}784\ } % /nfs/phtess2/ar0/TESS/PROJ/lbouma/CDIPS_LCS/counts/check_sum, 2021.02.02
 \newcommand{\nnbhd}{13{,}843\ } % make_compstar_NGC_2516_sourcelist.py
@@ -425,17 +427,18 @@ we get an age of ZZZ.
 	}
 \end{figure*}
 
-%TODO: what are these numbers?
-Duly motivated, we collected light curves from TESS photometry
-for YYYY of the ZZZZ cluster members.
-%TODO write the words to describe the procedure, the detrending, the
-%selection function you used for these janky periods, etc.
+First, we collected the \nkinematic Gaia DR2 source\_ids corresponding to the
+kinematically-identified core and halo members.  For each source, we first retrieved all
+available CDIPS light curves, on a per-sector basis. 
+This yielded
+\ncdips light curves, all brighter than $Rp=16$\,mag.
+The $Rp=16$\,mag cutoff imposed during the CDIPS processing corresponds
+roughly to $(Bp-Rp)_0$ of 2.2, or a spectral type of $\approx$M2V, at
+the distance of NGC\,2516.
 
-First, we collected the XXXX Gaia DR2 source\_ids corresponding to the
-core and halo members.  For each source, we first retrieved all
-available CDIPS light curves, on a per-sector basis.  Then, we
-detrended the systematics in each sector individually, and stitched
-together the resulting light curves before searching for the
+We cleaned and stitched the light curves as follows.
+First, we detrended the systematics in each sector individually, and
+stitched together the resulting light curves before searching for the
 periodicity.  Some details regarding our detrending approach are
 discussed in Appendix~\ref{app:detrending}.  After applying a
 detrending step aimed at removing systematic trends, we proceeding

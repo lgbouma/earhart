@@ -26,7 +26,7 @@ df = pd.read_csv(inpath)
 #
 # get the available spectra
 #
-workingdir = os.path.join(DATADIR, 'galah_dr3_spectra', 'EXAMPLE', 'galah',
+workingdir = os.path.join(DATADIR, 'galah_dr3_spectra', 'galah',
                           'dr3', 'spectra', 'hermes')
 
 red_specpaths = glob(os.path.join(workingdir, '*3.fits'))
@@ -60,7 +60,12 @@ for _, r in mdf.iterrows():
     assert len(specpath) == 1
     specpath = specpath[0]
 
-
     outpath = os.path.join(OUTDIR,
                            f'gaiadr2_{dr2_source_id}_GALAHDR3_Li6708_EW.png')
-    get_Li_6708_EW(specpath, outpath=outpath)
+
+    LiI_a = 6707.76
+    LiI_b = 6707.91
+    Li_avg = (LiI_a + LiI_b)/2
+
+    xshift = 6708.30 - Li_avg
+    get_Li_6708_EW(specpath, xshift=xshift, outpath=outpath)
