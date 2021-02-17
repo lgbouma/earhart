@@ -269,22 +269,22 @@ def plot_full_kinematics(outdir, basedata='bright', show1937=1,
                 empty_string_labels = ['']*len(labels)
                 axs[i,j].set_xticklabels(empty_string_labels)
 
+    f.tight_layout(h_pad=0.05, w_pad=0.05)
+
     axs[2,2].legend(loc='best', handletextpad=0.1, fontsize='medium', framealpha=0.7)
     leg = axs[2,2].legend(bbox_to_anchor=(0.8,0.8), loc="upper right",
                           handletextpad=0.1, fontsize='medium',
                           bbox_transform=f.transFigure)
 
     # NOTE: hack size of legend markers
-    leg.legendHandles[0]._sizes = [20]
-    leg.legendHandles[1]._sizes = [25]
-    leg.legendHandles[2]._sizes = [25]
+    leg.legendHandles[0]._sizes = [1.5*20]
+    leg.legendHandles[1]._sizes = [1.5*25]
+    leg.legendHandles[2]._sizes = [1.5*20]
     if show1937:
-        leg.legendHandles[3]._sizes = [20]
+        leg.legendHandles[3]._sizes = [1.5*20]
 
     for ax in axs.flatten():
         format_ax(ax)
-
-    f.tight_layout(h_pad=0.05, w_pad=0.05)
 
     s = ''
     s += f'_{basedata}'
@@ -609,7 +609,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
     if not colorhalobyglat:
         ax.scatter(
-            get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.2, zorder=2,
+            get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.5, zorder=2,
             s=5, rasterized=True, linewidths=0, label='Field', marker='.'
         )
         ax.scatter(
@@ -788,14 +788,14 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
                         framealpha=0.9)
         # # NOTE: hack size of legend markers
         if show1937:
-            leg.legendHandles[0]._sizes = [18]
-            leg.legendHandles[1]._sizes = [25]
-            leg.legendHandles[2]._sizes = [25]
-            leg.legendHandles[3]._sizes = [25]
+            leg.legendHandles[0]._sizes = [1.3*18]
+            leg.legendHandles[1]._sizes = [1.3*25]
+            leg.legendHandles[2]._sizes = [1.3*25]
+            leg.legendHandles[3]._sizes = [1.3*25]
         else:
-            leg.legendHandles[0]._sizes = [25]
-            leg.legendHandles[1]._sizes = [25]
-            leg.legendHandles[2]._sizes = [25]
+            leg.legendHandles[0]._sizes = [1.3*25]
+            leg.legendHandles[1]._sizes = [1.3*25]
+            leg.legendHandles[2]._sizes = [1.3*25]
 
 
     ax.set_ylabel('Absolute G [mag]', fontsize='large')
@@ -1046,17 +1046,17 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear'):
     f, ax = plt.subplots(figsize=(4,3))
 
     classes = ['pleiades', 'praesepe', f'{runid}']
-    colors = ['k', 'gray', 'C0']
-    zorders = [3, 2, 4]
-    markers = ['o', 'x', 'o']
-    lws = [0, 0., 0]
+    colors = ['gray', 'gray', 'k']
+    zorders = [-2, -3, -1]
+    markers = ['s', 'x', 'o']
+    lws = [0., 0.3, 0.2]
     mews= [0.5, 0.5, 0.5]
     _s = 3 if runid != 'VelaOB2' else 1.2
-    ss = [3.0, 6, _s]
+    ss = [3, 4.5, _s]
     labels = ['Pleaides', 'Praesepe', f'{runid}']
 
     # plot vals
-    for _cls, _col, z, m, l, lw, s, mew in zip(
+    for _cls, _col, z, m, l, _lw, s, mew in zip(
         classes, colors, zorders, markers, labels, lws, ss, mews
     ):
 
@@ -1089,30 +1089,28 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear'):
             ax.scatter(
                 xval[sel],
                 df[sel][ykey],
-                c='C0', alpha=1, zorder=z, s=10, edgecolors='k',
-                marker=m, linewidths=0.3, label=f"{runid.replace('_','')} core"
+                c='k', alpha=1, zorder=z, s=7, edgecolors='k',
+                marker=m, linewidths=_lw, label=f"{runid.replace('_','')} core"
             )
 
             sel = (df.subcluster == 'halo')
             ax.scatter(
                 xval[sel],
                 df[sel][ykey],
-                c='C1', alpha=1, zorder=z, s=10, edgecolors='k',
-                marker=m, linewidths=0.3, label=f"{runid.replace('_','')} halo"
+                c='lightskyblue', alpha=1, zorder=z, s=7, edgecolors='k',
+                marker=m, linewidths=_lw, label=f"{runid.replace('_','')} halo"
             )
 
         else:
             ax.scatter(
                 xval,
                 df[ykey],
-                c=_col, alpha=1, zorder=z, s=10, edgecolors='k',
-                marker=m, linewidths=0.3, label=l
+                c=_col, alpha=1, zorder=z, s=7, edgecolors='k',
+                marker=m, linewidths=_lw, label=f"{l.replace('_','')}"
             )
 
-
-
     loc = 'best' if yscale == 'linear' else 'lower right'
-    ax.legend(loc=loc, handletextpad=0.1, fontsize='x-small', framealpha=0.7)
+    ax.legend(loc=loc, handletextpad=0.1, fontsize='x-small', framealpha=1.0)
     ax.set_ylabel('Rotation Period [days]', fontsize='large')
 
     ax.set_xlabel('(Bp-Rp)$_0$ [mag]', fontsize='large')
@@ -1153,17 +1151,17 @@ def plot_compstar_rotation(outdir, E_BpmRp=0.1343, yscale=None):
 
     runid = 'NGC_2516'
     classes = ['pleiades', 'praesepe', f'NGC_2516', 'compstar_NGC_2516']
-    colors = ['k', 'gray', 'C0', 'C1']
-    zorders = [3, 2, 4, 5]
-    markers = ['o', 'x', 'o', 'o']
-    lws = [0, 0., 0, 0]
+    colors = ['gray', 'gray', 'k', 'C2']
+    zorders = [-2, -3, -1, -1]
+    markers = ['s', 'x', 'o', 'o']
+    lws = [0, 0.3, 0.2, 0.2]
     mews= [0.5, 0.5, 0.5, 0.5]
     _s = 3
     ss = [3.0, 6, _s, _s]
-    labels = ['Pleaides', 'Praesepe', f'NGC 2516', 'Field']
+    labels = ['Pleaides', 'Praesepe', f'NGC2516', 'Field']
 
     # plot vals
-    for _cls, _col, z, m, l, lw, s, mew in zip(
+    for _cls, _col, z, m, l, _lw, s, mew in zip(
         classes, colors, zorders, markers, labels, lws, ss, mews
     ):
 
@@ -1195,8 +1193,8 @@ def plot_compstar_rotation(outdir, E_BpmRp=0.1343, yscale=None):
         ax.scatter(
             xval,
             df[ykey],
-            c=_col, alpha=0.8, zorder=z, s=10, edgecolors='k',
-            marker=m, linewidths=0.3, label=l
+            c=_col, alpha=0.8, zorder=z, s=8, edgecolors='k',
+            marker=m, linewidths=_lw, label=l
         )
 
     loc = 'best' if yscale == 'linear' else 'lower right'
@@ -1204,7 +1202,7 @@ def plot_compstar_rotation(outdir, E_BpmRp=0.1343, yscale=None):
     ax.set_ylabel('Rotation Period [days]', fontsize='large')
 
     ax.set_xlabel('(Bp-Rp)$_0$ [mag]', fontsize='large')
-    ax.set_xlim((0.25, 1.25))
+    ax.set_xlim((0.25, 1.05))
 
     if yscale == 'linear':
         ax.set_ylim((0,15))
@@ -1524,14 +1522,14 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0, corehalosplit=0):
         ax.scatter(
             df[sel]['phot_bp_mean_mag'] - df[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
             df[sel]['Li_EW_mA'],
-            c='C0', alpha=1, zorder=2, s=8, edgecolors='k', marker='o',
+            c='k', alpha=1, zorder=2, s=8, edgecolors='k', marker='o',
             linewidths=0.3, label='Core'
         )
         sel = (df.subcluster == 'halo')
         ax.scatter(
             df[sel]['phot_bp_mean_mag'] - df[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
             df[sel]['Li_EW_mA'],
-            c='C1', alpha=1, zorder=3, s=8, edgecolors='k', marker='o',
+            c='lightskyblue', alpha=1, zorder=3, s=8, edgecolors='k', marker='o',
             linewidths=0.3, label='Halo'
         )
         ax.legend(loc='upper left', handletextpad=0.05)
@@ -2312,23 +2310,23 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
                 empty_string_labels = ['']*len(labels)
                 axs[i,j].set_xticklabels(empty_string_labels)
 
+    f.tight_layout(h_pad=0.05, w_pad=0.05)
+
     axs[2,2].legend(loc='best', handletextpad=0.1, fontsize='medium', framealpha=0.7)
     leg = axs[2,2].legend(bbox_to_anchor=(0.8,0.8), loc="upper right",
                           handletextpad=0.1, fontsize='medium',
                           bbox_transform=f.transFigure)
 
     # NOTE: hack size of legend markers
-    leg.legendHandles[0]._sizes = [20]
-    leg.legendHandles[1]._sizes = [25]
-    leg.legendHandles[2]._sizes = [25]
-    leg.legendHandles[3]._sizes = [20]
+    leg.legendHandles[0]._sizes = [1.5*20]
+    leg.legendHandles[1]._sizes = [1.5*25]
+    leg.legendHandles[2]._sizes = [1.5*25]
+    leg.legendHandles[3]._sizes = [1.5*20]
     if show1937:
-        leg.legendHandles[4]._sizes = [20]
+        leg.legendHandles[4]._sizes = [1.5*20]
 
     for ax in axs.flatten():
         format_ax(ax)
-
-    f.tight_layout(h_pad=0.01, w_pad=0.01)
 
     s = ''
     s += f'_{basedata}'
