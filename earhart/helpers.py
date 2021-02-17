@@ -699,7 +699,8 @@ def get_denis_xmatch(c, _id=None, mag=None, drop_duplicates=1):
         return denis_xm.to_pandas()
 
 
-def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0):
+def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0,
+                               clean_harmonics=0):
     """
     runid = 'NGC_2516', for example
     """
@@ -724,6 +725,13 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0):
         &
         (df.nclose <= NCLOSE_CUTOFF)
     )
+    if clean_harmonics:
+        sel_periodogram_match = (
+            (0.9 < (df.spdmperiod/df.period))
+            &
+            (1.1 > (df.spdmperiod/df.period))
+        )
+        sel &= sel_periodogram_match
 
     ref_sel = (
         (df.nequal <= NEQUAL_CUTOFF)
@@ -735,15 +743,19 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0):
         print(f'Getting autorotation dataframe for {runid}...')
         print(f'Starting with {len(df[ref_sel])} entries that meet NEQUAL and NCLOSE criteria...')
         print(f'Got {len(df[sel])} entries with P<15d, LSP>{LSP_CUTOFF}, nequal<={NEQUAL_CUTOFF}, nclose<={NCLOSE_CUTOFF}')
+        if clean_harmonics:
+            print(f'...AND required LS and SPDM periods to agree.')
+
         print(10*'.')
 
-        rp_sel = (df.phot_rp_mean_mag < 13)
-        print(f'Requiring Rp<13 as well for comparison gives...')
-        print(f'Starting with {len(df[ref_sel & rp_sel])} entries that meet NEQUAL and NCLOSE criteria...')
-        print(f'Got {len(df[sel & rp_sel])} entries with P<15d, LSP>{LSP_CUTOFF}, nequal<={NEQUAL_CUTOFF}, nclose<={NCLOSE_CUTOFF}')
-        frac = len(df[sel & rp_sel])/len(df[ref_sel & rp_sel])
-        print(f'Fraction: {frac:.4f}')
-        print(10*'.')
+        if 'compstar' in runid:
+            rp_sel = (df.phot_rp_mean_mag < 13)
+            print(f'Requiring Rp<13 as well for comparison gives...')
+            print(f'Starting with {len(df[ref_sel & rp_sel])} entries that meet NEQUAL and NCLOSE criteria...')
+            print(f'Got {len(df[sel & rp_sel])} entries with P<15d, LSP>{LSP_CUTOFF}, nequal<={NEQUAL_CUTOFF}, nclose<={NCLOSE_CUTOFF}')
+            frac = len(df[sel & rp_sel])/len(df[ref_sel & rp_sel])
+            print(f'Fraction: {frac:.4f}')
+            print(10*'.')
 
 
     if not returnbase:

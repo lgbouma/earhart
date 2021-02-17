@@ -1,4 +1,4 @@
-import os, shutil, socket
+import os, shutil, socket, pickle
 from glob import glob
 import pandas as pd, numpy as np
 from functools import reduce
@@ -23,11 +23,12 @@ def ls_to_df(classfile):
     return df
 
 def get_auto_rotation_periods(
-    runid='compstar_NGC_2516'
+    runid='NGC_2516',
+    get_spdm=True
 ):
     """
-    valid runid: IC_2602, CrA, kc19group_113, Orion, NGC_2516, ScoOB2,
-    compstar_NGC_2516
+    valid runids include:
+        IC_2602, CrA, kc19group_113, Orion, NGC_2516, ScoOB2, compstar_NGC_2516
     """
 
     # the allvariability logs, including the top 5 lomb-scargle periods, and
@@ -36,6 +37,14 @@ def get_auto_rotation_periods(
     logfiles = glob(os.path.join(logdir, '*status.log'))
     print(f'Got {len(logfiles)} log files.')
 
+    if get_spdm:
+        pkldir = f'/Users/luke/Dropbox/proj/cdips/results/allvariability_reports/{runid}/data'
+        pklfiles = glob(os.path.join(pkldir, '*reportinfo.pkl'))
+        N_pklfiles = len(pklfiles)
+        print(f'Got {N_pklfiles} pickle files.')
+        if N_pklfiles < 10:
+            raise ValueError('Too few pickle files... Port from phtess2?')
+
     source_ids = np.array(
         [np.int64(os.path.basename(f).split('_')[0]) for f in logfiles]
     )
@@ -43,8 +52,24 @@ def get_auto_rotation_periods(
     # retrieve the LS periods. only top period; since we're not bothering with
     # the "second period" classification option.
     periods, lspvals, nequal, nclose, nfaint = [], [], [], [], []
+    if get_spdm:
+        spdmperiods, spdmvals = [], []
+
     for source_id, logpath in zip(source_ids, logfiles):
+
         s = load_status(logpath)
+
+        if get_spdm:
+            pklpath = os.path.join(pkldir, f'{source_id}_reportinfo.pkl')
+            if not os.path.exists(pklpath):
+                spdmperiods.append(np.nan)
+                spdmvals.append(np.nan)
+            else:
+                with open(pklpath, 'rb') as f:
+                    d = pickle.load(f)
+                spdmperiods.append(float(d['spdm']['bestperiod']))
+                spdmvals.append(float(d['spdm']['bestlspval']))
+
         try:
             periods.append(float(s['report_info']['ls_period']))
             lspvals.append(float(s['report_info']['bestlspval']))
@@ -58,6 +83,7 @@ def get_auto_rotation_periods(
             nclose.append(np.nan)
             nfaint.append(np.nan)
 
+
     period_df = pd.DataFrame({
         'source_id': source_ids,
         'period': periods,
@@ -66,6 +92,9 @@ def get_auto_rotation_periods(
         'nclose': nclose,
         'nfaint': nfaint
     })
+    if get_spdm:
+        period_df['spdmperiod'] = spdmperiods
+        period_df['spdmval'] = spdmvals
 
     print(f'Got {len(period_df[~pd.isnull(period_df.period)])} periods')
 

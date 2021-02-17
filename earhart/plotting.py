@@ -1029,7 +1029,8 @@ def plot_skypositions_x_rotn(outdir):
     savefig(f, outpath)
 
 
-def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear'):
+def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
+                       clean_harmonics=0):
     """
     Plot rotation periods that satisfy the automated selection criteria
     (specified in helpers.get_autorotation_dataframe)
@@ -1064,7 +1065,9 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear'):
             df = pd.read_csv(os.path.join(rotdir, f'curtis19_{_cls}.csv'))
 
         else:
-            df = get_autorotation_dataframe(runid)
+            df = get_autorotation_dataframe(
+                runid, clean_harmonics=clean_harmonics
+            )
 
             print(42*'-')
             print(f'Applying E(Bp-Rp) = {E_BpmRp:.4f}')
@@ -1129,6 +1132,8 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear'):
     if core_halo:
         outstr += '_corehalosplit'
     outstr += f'_{yscale}'
+    if clean_harmonics:
+        outstr += '_cleanharmonics'
     outpath = os.path.join(outdir, f'{runid}_rotation{outstr}.png')
     savefig(f, outpath)
 
