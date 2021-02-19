@@ -503,7 +503,7 @@ selection criteria are entirely heuristic, and yielded
 \nautorotdenominator stars for which rotation periods might have been
 detected.  
 By exploring the different possible selection criteria, we found that
-the ones we chose provided a
+the ones we adopted provided a
 reasonable balance between excluding stars on the slow sequence, {\it
 vs.} reporting spurious rotation periods in the ``void'' below the
 slow sequence, where the dominant signal was in fact from a
@@ -511,58 +511,28 @@ neighboring star.
 Splitting the resulting sample into the ``core'' and the ``halo'', they
 suggest that the halo is real.
 
+To put the clusters on the same color scale, we needed to adopt
+reddening corrections.
+We assumed {X} for the Pleiades, and {Y} for Praesepe.
+For NGC\,2516, we queried the 2MASS DUST service to find the
+extinction parameters for the positions of each NGC\,2516 member
+(CITE: astrobase.services.dust; 2MASS DUST).  The mean and standard
+deviation of the E(B-V) values for the Schlegel+98 and SF11 maps were
+consistent, so we considered those of Schlegel+1998:
+$E(B-V)=0.206\pm0.039$.  Bonifacio+2000 noted though that Schlegel+98
+overestimate the reddening values when the color excess exceeds about
+0.10 mag. We applied their correction (Eq 1 from Bonifacio+2000),
+which led to an adopted $E(B-V)=0.102\pm0.019$.  Finally, to convert
+to Gaia colors we adopted the calibration of Stassun et al 2019, and
+assumed $E(Bp-Rp)=1.31 E(B-V)$ and $A_G=2.72 E(B-V)$.  This yielded
+$E(Bp-Rp)=0.134\pm0.025$, which is used in the plots.
+
+
 The resulting gyrochronology age we find for the core is XXX.
 For the halo, the claimed age from gyrochronology is YYY.
-Applying the same procedure to the field star comparison sample,
-we get an age of ZZZ.
-
-\subsubsection{Comparison Star Sample}
-
-\begin{figure}[t]
-	\begin{center}
-		\leavevmode
-    \includegraphics[width=0.49\textwidth]{f9.pdf}
-	\end{center}
-	\vspace{-0.7cm}
-	\caption{ {\bf Rotation in NGC\,2516 compared to the field.}
-  Stars with Gaia $Rp<13$\,mag in the cluster and field samples were
-  considered. (Fainter stars in the field sample were not studied as part
-  of the broader CDIPS project).
-  The field stars show a different rotation period distribution than
-  the kinematically selected NGC\,2516 members.
-  \label{fig:compstar}
-	}
-\end{figure}
-
-To provide a basis for comparison, we also opted to search the
-``calibration'' light curves ($Rp<13$) that were created as a part of
-the CDIPS project.  Over the southern sky (Sectors 1-13 of TESS), this
-corresponded to a sample of \ncalibration stars.  Cross-matching these
-against the \nnbhd randomly drawn stars in the neighborhood of \cn yielded
-\nnbhdcalibstar unique stars, with a cumulative total of \nnbhdcaliblc TESS
-sectors observed.
-The magnitude cut of $Rp<13$ at the distances of the neighborhood sample
-corresponds to an extinction-corrected color cutoff of $(Bp-Rp)_0
-\approx 0.80$, or spectral types of $\approx$G1V.
-This reaches sufficiently far down the main sequence to enable a
-comparison to the cluster star sample.
-
-We performed the same light curve stitching and period-search
-procedure on the field comparison stars.
-Imposing the same requirements for crowding resulted in
-\ncompstardenominator stars for which rotation periods could have been
-detected.
-Imposing the same Lomb Scargle power cutoff, and period upper limit,
-yielded \ncompstarnumerator period detections (\ncompfrac).
-Within the same brightness cutoff, 
-\nautovscompstarnumerator of \nautovscompstardenominator cluster stars
-yielded period detections (\nautofrac).
-Though the detection fractions are frankly not very different
-(likely because of the brightness cutoff), the period {\it
-vs} color distributions are quite different
-(Figure~\ref{fig:compstar}).
-
-
+Applying the same procedure to the field star comparison sample (see
+Appendix~\ref{app:compstar}),
+we get an age of ZZZ+/-AAA.
 
 \subsubsection{Kinematics $\otimes$ Rotation}
 
@@ -1260,6 +1230,57 @@ A few other choices seemed to be more important:
 For every ``target star'', we then decorrelated the raw
 (image-subtracted and background-subtracted) light curve
 using a linear model with ordinary least squares.
+
+\section{Comparison Star Rotation Periods}
+\label{app:compstar}
+
+\begin{figure}[t]
+	\begin{center}
+		\leavevmode
+    \includegraphics[width=0.49\textwidth]{f9.pdf}
+	\end{center}
+	\vspace{-0.7cm}
+	\caption{ {\bf Rotation in NGC\,2516 compared to the field.}
+  Stars with Gaia $Rp<13$\,mag in the cluster and field samples were
+  considered. (Fainter stars in the field sample were not studied as part
+  of the broader CDIPS project).
+  The field stars show a different rotation period distribution than
+  the kinematically selected NGC\,2516 members.
+  \label{fig:compstar}
+	}
+\end{figure}
+
+To provide a basis for comparison, we also opted to search the
+``calibration'' light curves ($Rp<13$) that were created as a part of
+the CDIPS project.  Over the southern sky (Sectors 1-13 of TESS), this
+corresponded to a sample of \ncalibration stars.  Cross-matching these
+against the \nnbhd randomly drawn stars in the neighborhood of \cn yielded
+\nnbhdcalibstar unique stars, with a cumulative total of \nnbhdcaliblc TESS
+sectors observed.
+The magnitude cut of $Rp<13$ at the distances of the neighborhood sample
+corresponds to an extinction-corrected color cutoff of $(Bp-Rp)_0
+\approx 0.80$, or spectral types of $\approx$G1V.
+This reaches sufficiently far down the main sequence to enable a
+comparison to the cluster star sample.
+
+We performed the same light curve stitching and period-search
+procedure on the field comparison stars.
+Imposing the same requirements for crowding resulted in
+\ncompstardenominator stars for which rotation periods could have been
+detected.
+Imposing the same Lomb Scargle power cutoff, and period upper limit,
+yielded \ncompstarnumerator period detections (\ncompfrac).
+Within the same brightness cutoff, 
+\nautovscompstarnumerator of \nautovscompstardenominator cluster stars
+yielded period detections (\nautofrac).
+Though the detection fractions are frankly not very different
+(likely because of the brightness cutoff), the period {\it
+vs} color distributions are quite different
+(Figure~\ref{fig:compstar}).
+
+
+
+
 
 \section{Differential Reddening}
 \label{app:diffred}
