@@ -69,3 +69,9 @@ print(f'{len(df[sel_spdm3x])} have SPDM period 3x that of LS (within 10%)')
 print(f'{len(df[sel_spdm4x])} have SPDM period 4x that of LS (within 10%)')
 print(f'{len(df[sel_spdmpt5x])} have SPDM period 0.5x that of LS (within 10%)')
 print(42*'.')
+
+outpath = '../results/rotation/NGC_2516/NGC_2516_LS_vs_SPDM_periods_spdm2x.csv'
+df[sel_spdm2x].source_id.to_csv(outpath, index=False)
+
+outpath = '../results/rotation/NGC_2516/NGC_2516_LS_vs_SPDM_periods_spdm3x.csv'
+df[sel_spdm3x].source_id.to_csv(outpath, index=False)

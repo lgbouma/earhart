@@ -1030,7 +1030,7 @@ def plot_skypositions_x_rotn(outdir):
 
 
 def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
-                       clean_harmonics=0):
+                       cleaning=None):
     """
     Plot rotation periods that satisfy the automated selection criteria
     (specified in helpers.get_autorotation_dataframe)
@@ -1066,7 +1066,7 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
 
         else:
             df = get_autorotation_dataframe(
-                runid, clean_harmonics=clean_harmonics
+                runid, cleaning=cleaning
             )
 
             print(42*'-')
@@ -1132,8 +1132,9 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     if core_halo:
         outstr += '_corehalosplit'
     outstr += f'_{yscale}'
-    if clean_harmonics:
-        outstr += '_cleanharmonics'
+    if cleaning:
+        if cleaning != 'nocleaning':
+            outstr += f'_{cleaning}'
     outpath = os.path.join(outdir, f'{runid}_rotation{outstr}.png')
     savefig(f, outpath)
 

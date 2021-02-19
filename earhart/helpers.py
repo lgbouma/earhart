@@ -700,9 +700,15 @@ def get_denis_xmatch(c, _id=None, mag=None, drop_duplicates=1):
 
 
 def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0,
-                               clean_harmonics=0):
+                               cleaning=None):
     """
     runid = 'NGC_2516', for example
+
+    Cleaning options:
+        'periodogram_match' requires LS and SPDM periods to agree to within 10%
+        'match234_alias': requires LS and SPDM periods to agree to within 10%
+            (up to 1x,2x,3x,4x harmonic).
+        'nocleaning': ...
     """
 
     from earhart.paths import DATADIR
@@ -725,13 +731,61 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0,
         &
         (df.nclose <= NCLOSE_CUTOFF)
     )
-    if clean_harmonics:
-        sel_periodogram_match = (
-            (0.9 < (df.spdmperiod/df.period))
-            &
-            (1.1 > (df.spdmperiod/df.period))
-        )
-        sel &= sel_periodogram_match
+
+    if isinstance(cleaning, str):
+
+        if cleaning == 'periodogram_match':
+
+            sel_periodogram_match = (
+                (0.9 < (df.spdmperiod/df.period))
+                &
+                (1.1 > (df.spdmperiod/df.period))
+            )
+            sel &= sel_periodogram_match
+
+        elif cleaning == 'match234_alias':
+
+            sel_match = (
+                (0.9 < (df.spdmperiod/df.period))
+                &
+                (1.1 > (df.spdmperiod/df.period))
+            )
+
+            sel_spdm2x = (
+                (1.9 < (df.spdmperiod/df.period))
+                &
+                (2.1 > (df.spdmperiod/df.period))
+            )
+
+            sel_spdm3x = (
+                (2.9 < (df.spdmperiod/df.period))
+                &
+                (3.1 > (df.spdmperiod/df.period))
+            )
+
+            sel_spdm4x = (
+                (3.9 < (df.spdmperiod/df.period))
+                &
+                (4.1 > (df.spdmperiod/df.period))
+            )
+
+            sel &= (
+                sel_match
+                |
+                sel_spdm2x
+                |
+                sel_spdm3x
+                |
+                sel_spdm4x
+            )
+
+        elif cleaning == 'nocleaning':
+
+            pass
+
+        else:
+
+            raise ValueError(f'Got cleaning == {cleaning}, not recognized.')
 
     ref_sel = (
         (df.nequal <= NEQUAL_CUTOFF)
@@ -743,9 +797,10 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0,
         print(f'Getting autorotation dataframe for {runid}...')
         print(f'Starting with {len(df[ref_sel])} entries that meet NEQUAL and NCLOSE criteria...')
         print(f'Got {len(df[sel])} entries with P<15d, LSP>{LSP_CUTOFF}, nequal<={NEQUAL_CUTOFF}, nclose<={NCLOSE_CUTOFF}')
-        if clean_harmonics:
+        if cleaning == 'periodogram_match':
             print(f'...AND required LS and SPDM periods to agree.')
-
+        elif cleaning == 'match234_alias':
+            print(f'...AND required LS and SPDM periods to agree (up to 1x,2x,3x,4x harmonic).')
         print(10*'.')
 
         if 'compstar' in runid:
