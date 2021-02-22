@@ -62,6 +62,7 @@
 \defcitealias{bouma_wasp4b_2019}{B19}
 \defcitealias{cantatgaudin_gaia_2018}{CG18}
 \defcitealias{kounkel_untangling_2019}{KC19}
+\defcitealias{meingast_2021}{M21}
 
 \title{
   Cluster Difference Imaging Photometric Survey. III.
@@ -79,8 +80,9 @@
 \begin{abstract}
   Recent analyses of the Gaia data have reported the existence of
   diffuse stellar populations surrounding nearby open clusters. 
-  The stars in these diffuse halos could have escaped from the cores of the
-  cluster, or they could be dispersed remnants of the initial star formation complex.
+  The stars in these diffuse halos could be the tidal escapees of the
+  cluster cores, or they could be remnants of an initially
+  dispersed star formation complex.
   They could also be field stars---the false positives of overly
   aggressive clustering algorithms.
   In this study, we focus on a halo with a length of 300\,pc reported
@@ -119,138 +121,118 @@
 
 \section{Introduction}
 
-Star clusters form within hierarchically structured molecular clouds
-(CITE).  Over the first $\approx$10\,Myr, ``feedback'' effects
+Star clusters form in hierarchically structured molecular clouds
+\citep{shu_star_1987}.  Over the first 10\,Myr, ``feedback'' effects
 including protostellar outflows, photoionization, radiation pressure,
-and supernova shocks disperse the gas out of the cloud (CITE
-Krumholz+19).  Since only a small fraction of the cloud mass is
-converted into stars ($\approx 1\%$; see Krumholz+19 Figure 10), the
-gas dispersal drives the majority ($\approx$90\%) of stars in the
-cluster to become gravitationally unbound (e.g., Lada \& Lada 03).
+and supernova shocks disperse the gas out of the cloud
+\citep{krumholz_star_2019}.  Since only a small fraction of the cloud
+mass is converted into stars ($\sim 1\%$), gas dispersal enables the
+majority ($\sim$90\%) of stars in the cluster to escape the cluster's
+gravitational well \citep{lada_embedded_2003}.
 
-From 10 to 1000\,Myr, the portion of the cluster that survives gas
-dispersal suffers an onslaught that typically unbinds the remaining stars.
-Internal to the cluster, mass loss from supernovae and AGB winds, and
-close stellar encounters (``relaxation'') are important over 10s and
-100s of megayears, respectively (CITE, CITE).  External to the
-cluster, collisions with GMCs (Spitzer 1958), and perturbations from
-the galactic tide in both the radial (CITE) and vertical (CITE)
-dimensions further drive stars toward the ``high velocity tails'' of
-the stellar energy distribution.
+From 10 to 1000\,Myr, the cluster remnants that survive gas dispersal
+suffer an onslaught that almost always leads to dissolution.
+Within the cluster supernovae, AGB winds, and close stellar encounters
+lead to additional mass loss \citep{lamers_mass_loss_2010}.  Extrinsic to
+the cluster, collisions with giant molecular clouds
+\citep{spitzer_disruption_1958}, and perturbations from the galactic
+tide in both the radial and vertical dimensions further promote
+stellar escape \citep[{\it
+e.g.},][]{fukushige_timescale_2000,bergond_gravitational_2001}.
 
-% In the traditional picture of star formation molecular clouds go
-% gravitationally unstable, and collapse into little knots.  The knots
-% produce groups of stars close to each other.  The resulting ``open star
-% clusters'' are, as with any first-order guess, spherical.
+Finding the stars that have dispersed from their natal clusters
+into the galactic field is of interest for a few reasons.  One is to
+understand the predominant conditions under which stars and star
+clusters form \citep[{\it e.g.},][]{wright_kinematics_2018}.  Another is
+to understand the Sun's birth environment
+\citep{adams_birth_2010}.  Did the Sun form in an open cluster,
+and if so, what type? Is there any hope at identifying the stars that
+formed near the Sun?  Open clusters and their dispersed
+remnants also provide a test case for ``chemical tagging'' \citep[{\it
+e.g.},]{freeman_new_2002,hogg_chemical_2016,ness_dopplergangers_2018}.
+The converse holds too: one could use chemical tagging to test the
+viability of kinematic clustering methods.
 
-% How does the cluster evolve?  The answer depends on the total stellar
-% mass.  The smallest 90\% of star clusters disperse during the ``embedded
-% phase'' (CITE Lada \& Lada 03, Krumholz 19 ARAA).  This is driven mostly
-% by {\it process A} (CITE).  The more massive clusters make it maybe 100
-% Myr. Maybe a bit longer.  Their evaporation is thought to be driven by
-% collisions with molecular clouds (CITE, Spitzer 1958, maybe Sec 7.2 of
-% Ryden), and the galactic tide (CITE), and {\it process A}, and {\it
-% process B}.  Of course, the expected evaporation time should depend on
-% factors including the mass of the cluster itself, and how many high-mass
-% (O and B) stars form, since their winds [and maybe supernovae] clear out
-% most of the cloud, and the initial density of the gas cloud to begin
-% with.
-% 
-% Assuming that the cluster achieves virial equilibrium, stellar fly-bys
-% then conspire to segregate the stellar mass distribution within the
-% cluster, evaporating the lowest mass stars soonest (2T+U=0, U=-GM/r,
-% assuming equipartition of the specific ``thermal energy'' per star, then
-% kT = 0.5$mv^2$ at lower masses requires higher velocities).  
+A separate project that benefits from the new discoveries of dispersed
+stellar populations is that of finding young transiting exoplanets.
+Young transiting planets are hard to find because young stars are
+rare, and mostly reside in crowded galactic plane \citep[see {\it e.g.},][]{Kharchenko_et_al_2013,piskunov_global_2018}.  If the
+dispersed halos of nearby star clusters could be reliably identified,
+this could expand the census of nearby young stars by up to a factor
+of $10$, based on the expected fraction of stars thought to be lost
+during gas dispersal.
 
-Identifying the stars that have dispersed from their natal clusters
-into the galactic field is of interest for a few reasons.  One 
-is to understand the predominant conditions under which stars and star
-clusters form (e.g., Wright Mamajek 2018 ScoCen), in addition to
-the processes that drive cluster dissolution.
-Another is to understand the Sun's birth conditions---
-did it form in an open
-cluster, and if so, what type? Is there any hope at
-identifying the stars that formed near the Sun (e.g., Adams 2010)?
-Finally, the dispersal of open clusters also provides 
-a strong test case for ``chemical tagging'', aka.\
-``galactic archaeology'' for stars in the thin and thick disk of
-the Galaxy (CITE).  If one cannot chemically tag stars
-that are known to be kinematically associated, why would 
-it be possible to do so once
-they are radially mixed throughout the galactic disk?
+The detection of dispersed stellar associations, although
+possible before Gaia, has now reached a breakthrough pace \citep[{\it
+e.g.},][]{bergond_gravitational_2001,zuckerman_young_2004,oh_comoving_2017,cantatgaudin_gaia_2018,gagne_banyan_XII_2018,gagne_banyan_XIII_2018,kounkel_apogee2_2018,zari_3d_2018,kounkel_untangling_2019,furnkranz_comabernbhr_2019}.
+The resuls can be summarized as follows. On one end are coeval populations with no
+discernable cores ({\it e.g.}, Psc Eri and $\mu$ Tau,
+\citealt{meingast_psceri_2019,curtis_tess_2019,gagne_mutau_2020}).  On
+the other are hierarchically structured populations with many over and
+under-densities  \citep[{\it e.g.} the Sco-Cen and Vela OB2
+associations][]{pecaut_star_2016,cantatgaudin_velaOB2_2019}.  Here,
+we focus on the middle: low-density halos associated with a single
+overdensity, typically an open cluster that was known before Gaia
+\citep[see][]{kounkel_untangling_2019,kounkel_untanglingII_2020,meingast_2021}.
+In some cases, these halos could correspond to tidal tails, as have been
+reported in the Hyades \citep{meingast_hyades_2019,roser_hyades_2019},
+the Ursa Major moving group \citep{gagne_lowmassUMA_2020}, and in Coma
+Berenices \citep{tang_comaber_2019}. 
 
-Identifying the remnant
-halos\footnote{ The low-density outer regions of open clusters have
-been referred to in general terms as ``halos'' and ``coronae''; we
-adopt the former (CITE, CITE). } of open clusters is also important for a
-separate project: that of discovering young transiting planets.  Young
-transiting planets are hard to find because young stars are rare
-(e.g., CITE Piskunov 2018), and reside in crowded regions of the
-sky (e.g., Kharchenko 2013).  If the dispersed halos of
-nearby star clusters could be reliably identified in a complete
-manner, this could expand the census of nearby young stars by up to
-a factor of $10$, based on the expected fraction of stars thought to
-be lost during gas dispersal.
+One point of difficulty however is that
+different clustering methods yield differing levels of both
+sensitivity and precision \citep{hunt_clustering_2020}.  Using say a
+Gaussian Mixture Model tautologically yields open clusters that
+are elliptical \citep[{\it e.g.},][]{wallace_m4_2018}.  Some
+unsupervised methods yield dispersed and asymmetric structures with
+number densities down to 100 times less than the field around the same
+regions (see {\it e.g.} \citealt{kounkel_untangling_2019}, hereafter
+\citetalias{kounkel_untangling_2019}], and
+\citealt{meingast_2021}, hereafter \citetalias{meingast_2021}).
+Discrepancies between different clustering methods leads to
+the question of how contaminated the resulting samples are,
+and in some cases whether the reported structures are truly
+coeval stellar populations.
 
-The identification of low-density (GIVE A NUMBER DENSITY) stellar
-associations, though possible before Gaia (e.g.,
-Zuckerman+ CITE, Bergond+01), has reached a breakthrough pace in the present era.
-Some low-density moving groups have no discernable
-cores (e.g., Psc Eri CITE, mu Tau CITE); others are hierarchically
-sub-structured (e.g., USco CITE, Taurus[?]).
-The focus of this work is
-low-density
-halos that are associated with previously known open clusters (e.g.,
-Kounkel+19, Kounkel+20, Meingast+21).  In some
-cases, these halos correspond to tidal tails, e.g., in the Hyades
-(CITE Meingast+Alves 20, Roser+20), and in the Ursa Major moving
-group (CITE Gagne+20). 
-However, applying different clustering methods on the
-Gaia data yields different results (CITE: Hunt \& Reffert 2020).
-Using say Gaussian Mixture Modelling, or any analogous method that
-requires ``clusters'' to be ellipses in phase-space unsurprisingly
-yields open clusters that are roughly elliptical.  Some unsupervised
-clustering methods lead to similar results \citep[][hereafter
-\citetalias{cantatgaudin_gaia_2018}]{cantatgaudin_gaia_2018}.  Other
-unsupervised methods
-have yielded dispersed and asymmetric structures
-with number densities down to 100 times less than the field, spread
-over many hundreds of parsecs
-(e.g., \citep[][hereafter
-\citetalias{kounkel_untangling_2019}]{kounkel_untangling_2019}; Meingast+21).
+We have recently been making TESS light curves of stars reported
+to be members of such populations
+(CDIPS, \citealt{bouma_cdipsI_2019}).  Our analysis of TESS Cycle 1
+(Sectors 1-13) yielded light curves of \numsouthernuniqlcs candidate
+cluster members in the Southern Ecliptic hemisphere, available on
+MAST\footnote{\url{https://archive.stsci.edu/hlsp/cdips}}.
 
-% TODO: make the bonafide number below quantitative
-We've recently been making TESS light curves of age-dated stars across
-the sky, as part of a Cluster Difference Imaging Photometry Survey
-(CDIPS, CITE Bouma+19).  Our analysis of Cycle 1 (Sectors 1-13) yielded
-light curves of \numsouthernuniqlcs candidate cluster members in the
-Southern Ecliptic hemisphere, available on
-MAST\footnote{\url{https://archive.stsci.edu/hlsp/cdips}}.  Based on
-rotation periods, $\approx$25\% appear to be bonafide cluster members. 
+%; B3V at the turnoff
+As part of this broader project, we focus here on a modest question:
+in just a single rich southern open cluster, is the cluster halo truly
+coeval with the core?  We chose NGC\,2516 for this analysis since it
+is young ($\approx$120\,Myr) and sufficiently nearby
+($d\approx400$\,pc) to facilitate photometric rotation measurements
+using TESS, and some degree of spectroscopic analysis.  Its halo is
+decidedly non-spherical: \citetalias{kounkel_untangling_2019} reported
+its dimensions as $\approx20\times10\times350$\,pc.  We want
+to know: is the halo real? To what extent can we use Gaia alone to
+reliably identify age-dated needles in the haystack of field
+stars?  What are the implications, observationally and theoretically,
+if we can identify the dispersed halos of open clusters?
 
-As part of a broader project of identifying a large and clean sample of
-young stars for a transit search, we focus in this paper on a 
-modest question: in just a single rich southern open cluster, is the
-cluster halo coeval with the core?  We chose
-NGC\,2516 for this analysis since it is young ($\sim$120\,Myr; B3V at
-the turnoff) and close
-($d\approx400$\,pc) enough to facilitate rotation measurements using
-TESS, and some degree of spectroscopic analysis.  
-Its halo, spanning $\approx$300\,pc, is also quite large.
-We want to know: is
-the halo real? To what extent can we use Gaia alone to reliably identify
-age-dated needles in the haystack of boring field stars?  And more
-generally, what are the implications for the evolution of open clusters
-if they do have halos?
+A brief
+note on terminology.  Low-density stellar associations connected to a
+dense population (the ``core'') have been described as ``halos'',
+``strings'', ``coronae'', ``snakes'', and ``tidal tails'' \citep[{\it
+	e.g.},][]{davenport_death_2010,kounkel_untangling_2019,roser_hyades_2019,tian_discovery_2020,meingast_2021}.
+The latter term implies a particular model for the
+formation of the association.  We opt to use ``halo'' because it is
+concise and model agnostic.  It suffers however from the suggestion of
+spherical symmetry.  The halo of NGC\,2516 is anything but.  
 
-Section~\ref{sec:gaia} presents the astrometric data from Gaia, and
-clarifies our usage of the terms ``core'' and ``halo''.
-Section~\ref{sec:agedate} age-dates the halo of NGC\,2516, based on Gaia
-photometry (Section~\ref{subsec:hr}), TESS gyrochronology
+Section~\ref{sec:gaia} summarizes the astrometric analyses of the Gaia
+data that led to our interest in NGC\,2516.
+Section~\ref{sec:agedate} age-dates the cluster's halo and core using
+Gaia photometry (Section~\ref{subsec:hr}), TESS gyrochronology
 (Section~\ref{subsec:tess}), and lithium depletion
 (Section~\ref{subsec:lithium}).  In Section~\ref{sec:discussion} we
-discuss the implications of this analysis for NGC\,2516 specifically and
-stellar spin-down and open cluster evolution generally.
+discuss the implications of our analysis for NGC\,2516 specifically
+and stellar spin-down and open cluster evolution generally.
 Section~\ref{sec:conclusion} gives our conclusions.
 
 
@@ -691,7 +673,7 @@ Gaia-ESO selected {\it cluster candidates} to be observed with the
 GIRAFFE and UVES spectrographs based on previously reported literature
 members and publicly available optical and NIR photometry.  This
 target selection approach included many stars in the spatial proximity
-of previously known members.  Since the possible existence of the \cn
+of previously known members.  Since the possible existence of the \cn\ 
 halo was not known at the time of targetting, very few ``halo'' stars
 are in their ultimate sample.  For \cn, \citet{randich_gaiaeso_2018}
 ultimately reported stellar parameters (including lithium equivalent
@@ -755,7 +737,7 @@ trends in the Pleiades were noted nearly three decades ago by
 \citet{soderblom_evolution_1993}.  More recent studies have found
 comparable results in the Pleiades, the Psc-Eri stream, and M\,35
 \citep{bouvier_pleiades_lirot_2018,arancibia_2020,jeffries_m35_li_2020}.
-The fact that we see the same trend across the core and halo of \cn
+The fact that we see the same trend across the core and halo of \cn\ 
 {\it a)} supports the conclusion that the halo is coeval with the
 core, and {\it b)} suggests that the lithium-rotation correlation is
 not explained by environmental effects such as the density of the cluster
