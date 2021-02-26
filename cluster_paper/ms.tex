@@ -81,8 +81,8 @@
   Recent analyses of the Gaia data have reported the existence of
   diffuse stellar populations surrounding nearby open clusters. 
   The stars in these diffuse halos could be the tidal escapees of the
-  cluster cores, or they could be remnants of an initially
-  dispersed star formation complex.
+  cluster cores, or they could be remnants of an initially dispersed
+  star formation complex.
   They could also be field stars---the false positives of overly
   aggressive clustering algorithms.
   In this study, we focus on a halo with a length of 300\,pc reported
@@ -203,7 +203,6 @@ analysis of TESS Cycle 1 (Sectors 1-13) yielded light curves of
 hemisphere, available on
 MAST\footnote{\url{https://archive.stsci.edu/hlsp/cdips}}.
 
-%; B3V at the turnoff
 As part of this broader project, we focus here on a modest question:
 in just a single rich southern open cluster, is the cluster halo truly
 coeval with the core?  We chose NGC\,2516 for this analysis since it
@@ -240,9 +239,6 @@ Section~\ref{sec:conclusion} gives our conclusions.
 
 \section{A 300\,pc Halo around a Core?}
 \label{sec:gaia}
-%
-% What is the core? What is the halo?
-%
 
 \subsection{Gaia Astrometry}
 \label{subsec:astrometry}
@@ -270,34 +266,36 @@ Section~\ref{sec:conclusion} gives our conclusions.
 
 We selected candidate \cn\ members based on those available in the
 literature.  While a number of pre-Gaia catalogs were available, the
-purity and accuracy of the Gaia-derived results are expected to be the
-current state of the art.
+purity and accuracy of the Gaia-derived results are the current state
+of the art.
 We therefore adopted what we viewed as the most interesting clustering
 samples to compare: those of \citet{cantatgaudin_gaia_2018}
-(\citetalias{cantatgaudin_gaia_2018}) and
+(\citetalias{cantatgaudin_gaia_2018}),
 \citet{kounkel_untangling_2019}
-(\citetalias{kounkel_untangling_2019})\footnote{A third sample was
-also recently reported by \citet{meingast_2021}. Although the results
-of this study were made publicly available too late to be included in
-our analysis,  1577 of the 1860 \citet{meingast_2021} sources (85\%)
-were included in the \citet{kounkel_untangling_2019} sample.  A
-complete set of \cn\ members could very well include some of the newly
-reported candidate members from \citet{meingast_2021}.}.  A useful
-visualization of these samples is available online\footnote{
+(\citetalias{kounkel_untangling_2019}),
+and \citet{meingast_2021} (\citetalias{meingast_2021}).
+A useful visualization of these samples is available online\footnote{
   \url{https://homepage.univie.ac.at/stefan.meingast/coronae.html},
   made by \citet{meingast_2021}.  }.
 While we could have performed our own clustering analysis based on the
-Gaia data, such an effort would be replicating the work of these
-investigators. And why would our clustering methods be better than
-theirs? We opt instead to use their studies as starting points.
+Gaia data, such an effort would be only replicating the work of these
+investigators.  We opt to instead use their studies as starting
+points.
+
+%FIXME FIXME FIXME FROM HERE
 
 % Theia 613
 \citetalias{cantatgaudin_gaia_2018} reported 1106 candidate members of
 \cn, brighter than $G=18$\,mag.  \citet{kounkel_untangling_2019}
 reported 3003 candidate members, and included stars up to
-$\approx$1\,mag fainter.  Each study used unsupervised clustering
-based on the second Gaia Data Release, detailed in
+$\approx$1\,mag fainter.  
+Finally, 1577 of the 1860 \citet{meingast_2021} sources (85\%)
+were included in the \citet{kounkel_untangling_2019} sample.  
+Each study applied unsupervised clustering techniques
+to the second Gaia Data Release, as detailed in
 Appendix~\ref{app:clustering}.
+
+
 %FIXME 
 \citetalias{cantatgaudin_gaia_2018} considered a cone of radius {\bf
 XX DEGREES} centered on the cluster's position.
@@ -367,19 +365,21 @@ volume noted above.
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ {\bf HR diagram of NGC\,2516.}
-    No reddening correction has been applied; the photometric data are
-    from Gaia EDR3.  The core (black) shows a main sequence and
+    The photometric data are from Gaia EDR3; no reddening correction
+    has been applied.  The core (black) shows a main-sequence and
     turnoff consistent with stars of a fixed age and metallicity.  The
     halo (blue) is similar, though the binary sequence is less
-    well-defined.  The faintest M dwarfs in the core and halo are
-    brighter than in the field star comparison sample (gray),
-    consistent with these stars having not yet reached the ZAMS.
+    defined.  At fixed color, the faintest M dwarfs in the core and
+    halo are brighter than in the field star comparison sample (gray),
+    consistent with these stars having not yet reached the
+    main-sequence.
     \label{fig:hr}
   }
 \end{figure*}
 
-The first check on whether this membership assignment is plausible was
-already performed by \citetalias{cantatgaudin_gaia_2018},
+The first check on the plausibility of the candidate cluster members
+being coeval was already performed by
+\citetalias{cantatgaudin_gaia_2018},
 \citetalias{kounkel_untangling_2019}, and more recently by
 \citet{meingast_2021}.  That check is to see whether the HR diagrams
 of the cluster members support the claim that they are coeval.
@@ -388,7 +388,7 @@ Figure~\ref{fig:hr} presents similar results to what these
 investigators have already found.  The core members of the cluster
 show a clean sequence consistent with stars with a fixed age and
 metallicity, and varying mass.  The halo members show a roughly
-consistent main sequence, but with somewhat greater scatter.  One
+consistent main-sequence, but with somewhat greater scatter.  One
 possible explanation for this scatter is that the halo is more
 contaminated by field stars.  Another possible explanation is
 differential reddening.  The halo is reported to span 20$^\circ$
@@ -747,7 +747,7 @@ The fact that we see the same trend across the core and halo of \cn\
 core, and {\it b)} suggests that the lithium-rotation correlation is
 not explained by environmental effects such as the density of the cluster
 during its embedded phase, but is instead tied to physical processes
-acting on all low-mass pre-main sequence stars.
+acting on all low-mass pre-main-sequence stars.
 
 % TODO: this paragraph more or less parrots the processes described by
 % Bouvier+20. are there others? is there a better way to describe
@@ -855,6 +855,8 @@ The authors thank X and Y for fruitful discussions.
 %
 L.G.B. and J.H. acknowledge support by the TESS GI Program, program
 NUMBER, through NASA grant NUMBER.
+L.G.B. was also supported by a XXXX Fellowship from Princeton
+University.
 %
 This study was based in part on observations at Cerro Tololo
 Inter-American Observatory at NSF's NOIRLab (NOIRLab Prop. ID
@@ -1042,7 +1044,7 @@ members for their efforts to make the mission a continued success.
 \label{app:clustering}
 
 %
-% TODO: the following two paragraphs, when quoted, are ENTIRELY FROM
+% TODO: the following two paragraphs, WHEN QUOTED, are ENTIRELY FROM
 % the relevant papers. they should probably be nixed in favor of
 % concision.
 %
@@ -1113,6 +1115,13 @@ to adjust them separately.''
 Regarding membership proabilities,
 \citetalias{kounkel_untangling_2019} did not report continuous membership
 probabilities, instead opting for the binary ``member'' or ``not''.
+
+\citetalias{meingast_2021} did the same as
+\citetalias{kounkel_untangling_2019}, but required A) the tangential
+velocity dispersions to be smaller, and B) deconvolved the distances.
+{\bf FIXME FIXME FIXME}
+{\bf FIXME FIXME FIXME}
+{\bf FIXME FIXME FIXME}
 
 
 
@@ -1247,7 +1256,7 @@ sectors observed.
 The magnitude cut of $Rp<13$ at the distances of the neighborhood sample
 corresponds to an extinction-corrected color cutoff of $(Bp-Rp)_0
 \approx 0.80$, or spectral types of $\approx$G1V.
-This reaches sufficiently far down the main sequence to enable a
+This reaches sufficiently far down the main-sequence to enable a
 comparison to the cluster star sample.
 
 We performed the same light curve stitching and period-search
