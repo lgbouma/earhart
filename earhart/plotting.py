@@ -555,22 +555,24 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
     )
 
     if isochrone in ['mist', 'parsec']:
-        raise NotImplementedError
         if isochrone == 'mist':
+            # see /doc/20210226_isochrones_theory.txt
             from timmy.read_mist_model import ISOCMD
-            isocmdpath = os.path.join(DATADIR, 'cluster',
-                                      'MIST_isochrones_age7pt60206_Av0pt217_FeH0',
-                                      'MIST_iso_5f04eb2b54f51.iso.cmd')
+            isocmdpath = os.path.join(DATADIR, 'isochrones',
+                                      'MIST_iso_6039374449e9d.iso.cmd')
             # relevant params: star_mass log_g log_L log_Teff Gaia_RP_DR2Rev
             # Gaia_BP_DR2Rev Gaia_G_DR2Rev
             isocmd = ISOCMD(isocmdpath)
-            # 10, 20, 30, 40 Myr.
-            assert len(isocmd.isocmds) == 4
+            assert len(isocmd.isocmds) > 1
 
         elif isochrone == 'parsec':
-            isopath = os.path.join(DATADIR, 'cluster', 'PARSEC_isochrones',
-                                   'output799447099984.dat')
-            iso_df = pd.read_csv(isopath, delim_whitespace=True)
+			# v1
+            #isopath = os.path.join(DATADIR, 'isochrones',
+            #                       'output624293709713.dat')
+            # v2
+            isopath = os.path.join(DATADIR, 'isochrones',
+                                   'output911305443923.dat')
+            iso_df = pd.read_csv(isopath, delim_whitespace=True, comment='#')
 
 
     ##########
@@ -622,8 +624,6 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         glatkey = 'b'
         cmap = mpl.cm.viridis
 
-        #bounds = np.arange(-25,-7.5,2.5)
-        #bounds = np.arange(-20,-8, 1)
         bounds = np.arange(-20,-11, 1)
         norm = mpl.colors.BoundaryNorm(bounds, cmap.N)#, extend='max')
 
@@ -667,12 +667,11 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
     if isochrone:
 
+        from earhart.priors import AVG_AG, AVG_EBpmRp
+
         if isochrone == 'mist':
 
-            if not do_cmd:
-                print(f'{mediancorr:.2f}')
-
-            ages = [10, 20, 30, 40]
+            ages = [100, 178, 316]
             N_ages = len(ages)
             colors = plt.cm.cool(np.linspace(0,1,N_ages))[::-1]
 
@@ -680,11 +679,13 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
                 mstar = isocmd.isocmds[i]['star_mass']
                 sel = (mstar < 7)
 
-                if not do_cmd:
-                    _yval = isocmd.isocmds[i]['Gaia_G_DR2Rev'][sel] + mediancorr
-                else:
-                    corr = 5.75
-                    _yval = isocmd.isocmds[i]['Gaia_G_DR2Rev'][sel] + corr
+                corr = 7.85
+                _yval = (
+                    isocmd.isocmds[i]['Gaia_G_DR2Rev'][sel] +
+                    5*np.log10(np.nanmedian(cg18_df['parallax']/1e3)) + 5
+                    + AVG_AG
+                    + corr
+                )
 
                 if color0 == 'phot_bp_mean_mag':
                     _c0 = 'Gaia_BP_DR2Rev'
@@ -693,95 +694,55 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
                 else:
                     raise NotImplementedError
 
+                _xval = (
+                    isocmd.isocmds[i][_c0][sel]-isocmd.isocmds[i]['Gaia_RP_DR2Rev'][sel]
+                    + AVG_EBpmRp
+                )
+
                 ax.plot(
-                    isocmd.isocmds[i][_c0][sel]-isocmd.isocmds[i]['Gaia_RP_DR2Rev'][sel],
+                    _xval,
                     _yval,
                     c=c, alpha=1., zorder=4, label=f'{a} Myr', lw=0.5
                 )
 
-                if i == 3 and do_cmd:
-                    sel = (mstar < 1.15) & (mstar > 1.08)
-                    print(mstar[sel])
-                    teff = 10**isocmd.isocmds[i]['log_Teff']
-                    print(teff[sel])
-                    logg = isocmd.isocmds[i]['log_g']
-                    print(logg[sel])
-                    rstar = ((( (10**logg)*u.cm/(u.s*u.s)) /
-                              (const.G*mstar*u.Msun))**(-1/2)).to(u.Rsun)
-                    print(rstar[sel])
-                    rho = (mstar*u.Msun/(4/3*np.pi*rstar**3)).cgs
-                    print(rho[sel])
-
-                    _yval = isocmd.isocmds[i]['Gaia_G_DR2Rev'][sel] + corr
-
-                    ax.scatter(
-                        isocmd.isocmds[i][_c0][sel]-isocmd.isocmds[i]['Gaia_RP_DR2Rev'][sel],
-                        _yval,
-                        c=c, alpha=1., zorder=10, s=0.5, marker=".", linewidths=0
-                    )
-
         elif isochrone == 'parsec':
 
-            if not do_cmd:
-                print(f'{mediancorr:.2f}')
-
-            ages = [10, 20, 30, 40]
-            logages = [7, 7.30103, 7.47712, 7.60206]
+            ages = [100, 178, 316]
+            logages = [8, 8.25, 8.5]
             N_ages = len(ages)
             colors = plt.cm.cool(np.linspace(0,1,N_ages))[::-1]
 
             for i, (a, la, c) in enumerate(zip(ages, logages, colors)):
 
-                sel = (np.abs(iso_df.logAge - la) < 0.01) & (iso_df.Mass < 7)
+                sel = (
+                    (np.abs(iso_df.logAge - la) < 0.01) &
+                    (iso_df.Mass < 7)
+                )
 
-                if not do_cmd:
-                    _yval = iso_df[sel]['Gmag'] + mediancorr
-                else:
-                    corr = 5.65
-                    _yval = iso_df[sel]['Gmag'] + corr
+                corr = 7.85
+                _yval = (
+                    iso_df[sel]['Gmag'] +
+                    5*np.log10(np.nanmedian(cg18_df['parallax']/1e3)) + 5
+                    + AVG_AG
+                    + corr
+                )
+                sel2 = (_yval < 15) # numerical issue
+                _yval = _yval[sel2]
 
                 if color0 == 'phot_bp_mean_mag':
                     _c0 = 'G_BPmag'
                 elif color0 == 'phot_g_mean_mag':
                     _c0 = 'Gmag'
-                else:
-                    raise NotImplementedError
 
-                ax.plot(
-                    iso_df[sel][_c0]-iso_df[sel]['G_RPmag'],
-                    _yval,
-                    c=c, alpha=1., zorder=4, label=f'{a} Myr', lw=0.5
+                _xval = (
+                    iso_df[sel][sel2][_c0]-iso_df[sel][sel2]['G_RPmag']
+                    + AVG_EBpmRp
                 )
 
-                if i == 3 and do_cmd:
-                    sel = (
-                        (np.abs(iso_df.logAge - la) < 0.01) &
-                        (iso_df.Mass < 1.1) &
-                        (iso_df.Mass > 0.95)
-                    )
-                    mstar = np.array(iso_df.Mass)
-
-                    print(42*'#')
-                    print(f'{_c0} - Rp')
-                    print(mstar[sel])
-                    teff = np.array(10**iso_df['logTe'])
-                    print(teff[sel])
-                    logg = np.array(iso_df['logg'])
-                    print(logg[sel])
-                    rstar = ((( (10**logg)*u.cm/(u.s*u.s)) /
-                              (const.G*mstar*u.Msun))**(-1/2)).to(u.Rsun)
-                    print(rstar[sel])
-                    rho = (mstar*u.Msun/(4/3*np.pi*rstar**3)).cgs
-                    print(rho[sel])
-
-                    _yval = iso_df[sel]['Gmag'] + corr
-
-                    ax.scatter(
-                        iso_df[sel][_c0]-iso_df[sel]['G_RPmag'],
-                        _yval,
-                        c='red', alpha=1., zorder=10, s=2, marker=".", linewidths=0
-                    )
-
+                ax.plot(
+                    _xval, _yval,
+                    c=c, alpha=1., zorder=4, label=f'{a} Myr', lw=0.5
+                )
 
     if not colorhalobyglat:
         leg = ax.legend(loc='upper right', handletextpad=0.1, fontsize='x-small',
@@ -819,6 +780,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
     if basedata == 'fullfaint_edr3' and color0 == 'phot_bp_mean_mag':
         ax.set_xlim([-0.46, 3.54])
+        ax.set_ylim([14.2, -4.8])
 
     format_ax(ax)
     if not isochrone:
@@ -831,6 +793,8 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         c0s += '_highlight_companion'
     if show1937:
         c0s += '_show1937'
+    if isochrone is not None:
+        c0s += f'_{isochrone}'
     c0s += f'_{basedata}'
     outpath = os.path.join(outdir, f'hr{s}{c0s}.png')
 

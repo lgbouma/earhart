@@ -34,6 +34,9 @@ AVG_EBmV_corr = given_S98_EBmV_correct(AVG_EBmV, distance_pc=DISTANCE_PC, b=b_25
 AVG_EBpmRp = 1.31 * AVG_EBmV_corr
 AVG_AG = 2.72 * AVG_EBmV_corr
 
+# R_V = A(V) / E(B-V)
+AVG_AV_corr = 3.1 * AVG_EBmV_corr
+
 
 def initialize_prior_d(modelcomponents, datasets=None):
 
