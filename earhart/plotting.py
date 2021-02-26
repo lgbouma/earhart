@@ -529,7 +529,7 @@ def plot_edr3_blending_vs_apparentmag(outdir, basedata='fullfaint', num=None):
 
 def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
             basedata='fullfaint', highlight_companion=0, colorhalobyglat=0,
-            show1937=1):
+            show1937=1, rasterized=False):
     """
     basedata (str): any of ['bright', 'extinctioncorrected', 'fullfaint',
     'fullfaint_edr3'], where each defines a different set of neighborhood /
@@ -579,7 +579,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
     plt.close('all')
 
-    f, ax = plt.subplots(figsize=(4,3))
+    f, ax = plt.subplots(figsize=(1.5*2,1.5*3))
 
     get_yval = (
         lambda _df: np.array(
@@ -610,13 +610,18 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
 
     if not colorhalobyglat:
+        if isochrone is None:
+            l0,l1 = 'Field', 'Halo'
+        else:
+            l0,l1 = None, None
+        # mixed rasterizing along layers b/c we keep the loading times nice
         ax.scatter(
             get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.5, zorder=2,
-            s=5, rasterized=True, linewidths=0, label='Field', marker='.'
+            s=6, rasterized=False, linewidths=0, label=l0, marker='.'
         )
         ax.scatter(
             get_xval(kc19_df), get_yval(kc19_df), c='lightskyblue', alpha=1,
-            zorder=3, s=5, rasterized=True, linewidths=0.15, label='Halo',
+            zorder=3, s=6, rasterized=rasterized, linewidths=0.03, label=l1,
             marker='.', edgecolors='k'
         )
 
@@ -629,7 +634,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
         cax = ax.scatter(
             get_xval(kc19_df), get_yval(kc19_df), c=nparr(kc19_df[glatkey]),
-            alpha=1, zorder=3, s=2, rasterized=True, linewidths=0.1,
+            alpha=1, zorder=3, s=2, rasterized=rasterized, linewidths=0.1,
             label='Halo', marker='o', edgecolors='none', cmap=cmap, norm=norm,
         )
 
@@ -638,9 +643,10 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
 
     if not colorhalobyglat:
+        _l = 'Core' if isochrone is None else None
         ax.scatter(
             get_xval(cg18_df), get_yval(cg18_df), c='k', alpha=0.9,
-            zorder=4, s=5, rasterized=True, linewidths=0, label='Core', marker='.'
+            zorder=4, s=6, rasterized=rasterized, linewidths=0, label=_l, marker='.'
         )
         _l = 'TOI 1937' if not highlight_companion else 'TOI 1937A'
         if show1937:
@@ -745,7 +751,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
                 )
 
     if not colorhalobyglat:
-        leg = ax.legend(loc='upper right', handletextpad=0.1, fontsize='x-small',
+        leg = ax.legend(loc='lower left', handletextpad=0.1, fontsize='x-small',
                         framealpha=0.9)
         # # NOTE: hack size of legend markers
         if show1937:
@@ -754,9 +760,10 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
             leg.legendHandles[2]._sizes = [1.3*25]
             leg.legendHandles[3]._sizes = [1.3*25]
         else:
-            leg.legendHandles[0]._sizes = [1.3*25]
-            leg.legendHandles[1]._sizes = [1.3*25]
-            leg.legendHandles[2]._sizes = [1.3*25]
+            if isochrone is None:
+                leg.legendHandles[0]._sizes = [1.3*25]
+                leg.legendHandles[1]._sizes = [1.3*25]
+                leg.legendHandles[2]._sizes = [1.3*25]
 
 
     ax.set_ylabel('Absolute G [mag]', fontsize='large')
@@ -780,7 +787,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
     if basedata == 'fullfaint_edr3' and color0 == 'phot_bp_mean_mag':
         ax.set_xlim([-0.46, 3.54])
-        ax.set_ylim([14.2, -4.8])
+        ax.set_ylim([13.7, -4.8])
 
     format_ax(ax)
     if not isochrone:

@@ -249,17 +249,17 @@ Section~\ref{sec:conclusion} gives our conclusions.
 		\includegraphics[width=0.95\textwidth]{f1.pdf}
 	\end{center}
 	\vspace{-0.7cm}
-  \caption{ {\bf Reported components of NGC\,2516 in position and
-  velocity space.} The core, identified by
-  \citet{cantatgaudin_gaia_2018} using Gaia DR2, is coincident with
+  \caption{ {\bf NGC\,2516 has multiple reported components in position and
+  velocity space.} The core (black) was identified by
+  \citet{cantatgaudin_gaia_2018} using Gaia DR2, and is coincident with
   the visual overdensity of stars canonically accepted as ``the
   cluster''.  The halo was identified by
-  \citet{kounkel_untangling_2019} using a less restrictive membership
-  assignment algorithm (see Appendix~\ref{app:clustering}).  The field
+  \citet{kounkel_untangling_2019} and \citet{meingast_2021} using less restrictive membership
+  assignment algorithms (see Appendix~\ref{app:clustering}).  The field
   sample is randomly drawn from a $(\alpha, \delta, \pi)$ cube
-  centered on the cluster.  It is difficult to visually distinguish
-  the field and the halo samples due to the low volume density of the
-  halo stars.
+  centered on the cluster.  The low volume density of the
+  halo stars makes it difficult to visually distinguish
+  the field and the halo samples.
   \label{fig:gaia6d}
 	}
 \end{figure*}
@@ -361,11 +361,15 @@ volume noted above.
 \begin{figure*}[t]
 	\begin{center}
 		\leavevmode
-			\includegraphics[width=0.85\textwidth]{f2a.pdf}
+			%\includegraphics[width=0.85\textwidth]{f2a.pdf}
+		\subfloat{
+			\includegraphics[width=0.49\textwidth]{f2a.pdf}
+			\includegraphics[width=0.49\textwidth]{f2b.pdf}
+		}
 	\end{center}
 	\vspace{-0.7cm}
-  \caption{ {\bf HR diagram of NGC\,2516.}
-    The photometric data are from Gaia EDR3; no reddening correction
+  \caption{ {\bf HR diagrams of NGC\,2516.}
+    {\it Left}: The photometric data are from Gaia EDR3; no reddening correction
     has been applied.  The core (black) shows a main-sequence and
     turnoff consistent with stars of a fixed age and metallicity.  The
     halo (blue) is similar, though the binary sequence is less
@@ -373,6 +377,13 @@ volume noted above.
     halo are brighter than in the field star comparison sample (gray),
     consistent with these stars having not yet reached the
     main-sequence.
+    {\it Right}: Solar-metallicity PARSEC isochrones are overplotted
+    at intervals of $\log_{10}(t/\mathrm{yr})=\{8, 8.25, 8.5\}$ with a
+    reddening correction applied.
+    The main-sequence turn-off location and evolved stars suggests a
+    cluster age slightly older than the Pleiades.  The models diverge
+    from the data for $M_\star \lesssim 0.45M_\odot$ ($\approx$M2V;
+    $\mathrm{Bp}-\mathrm{Rp}\approx2.2$).
     \label{fig:hr}
   }
 \end{figure*}
@@ -380,38 +391,69 @@ volume noted above.
 The first check on the plausibility of the candidate cluster members
 being coeval was already performed by
 \citetalias{cantatgaudin_gaia_2018},
-\citetalias{kounkel_untangling_2019}, and more recently by
-\citet{meingast_2021}.  That check is to see whether the HR diagrams
-of the cluster members support the claim that they are coeval.
+\citetalias{kounkel_untangling_2019}, and \citetalias{meingast_2021}.
+That check is to see whether the HR diagrams of the cluster members
+support the claim that they are coeval.
 
 Figure~\ref{fig:hr} presents similar results to what these
 investigators have already found.  The core members of the cluster
 show a clean sequence consistent with stars with a fixed age and
 metallicity, and varying mass.  The halo members show a roughly
-consistent main-sequence, but with somewhat greater scatter.  One
-possible explanation for this scatter is that the halo is more
-contaminated by field stars.  Another possible explanation is
-differential reddening.  The halo is reported to span 20$^\circ$
-on-sky, and varies in position from about $b=-12^\circ$ to
+consistent main-sequence, perhaps with greater scatter.  One
+possible explanation for the additional scatter could be that the halo
+is more contaminated by field stars.  
+For instance, $\approx5$ evolved halo stars are visible in the
+field-star portion of the red giant branch (RGB).
+Given the expected age of the system, these stars must be field
+interlopers.
+
+A separate possible explanation for scatter in the halo's HR diagram
+could be differential reddening.  The halo is reported to span
+20$^\circ$ on-sky, and varies in position from about $b=-12^\circ$ to
 $b=-20^\circ$, with the stars closest to the galactic plane also being
 further from the Sun by up to 200\,pc (Figure~\ref{fig:gaia6d}).
-Empirical evidence for differential reddening is discussed further in
-Appendix~\ref{app:diffred}. A priori, both field star contamination
-and differential reddening could well play a role.
+Some empirical evidence for differential reddening is discussed
+further in Appendix~\ref{app:diffred}. Based on the available
+evidence, we expect that both field star contamination and
+differential reddening could play a role.
+A third possibility that we have not explored is whether the binary
+fraction could differ in spatially different regions of the cluster.
 
-%TODO 
-Comparing these HR diagrams to the PARSEC isochrone models, we find
-that X, Y, and Z.
-In particular, ``the faintest M dwarfs in the core and halo are
-brighter than in the field star comparison sample, consistent with
-these stars having not yet reached the ZAMS.''
-This is consistent with the 
-main-sequence turn-off being at $Bp-Rp\approx0.05$, which implies an
-age of XXX.
-The resulting photometric age we calculate for the core is XXX.
-For the halo, the claimed age from photometry is YYY.
-Applying the same procedure to the field star comparison sample,
-we get an age of ZZZ.
+In the right panel of Figure~\ref{fig:hr}, we compare the observed
+photometry with PARSEC isochrones
+\citep{bressan_parsec_2012,chen_improving_2014,chen_parsec_2015,marigo_new_2017}.
+We used the web
+interface\footnote{\url{http://stev.oapd.inaf.it/cgi-bin/cmd},
+\texttt{2021-02-26}, \texttt{CMD3.4}} to interpolate these isochrones
+at $\log_{10}(t/\mathrm{yr})=\{8, 8.25, 8.5\}$, and then applied the
+reddening correction described in Section~\ref{subsec:tess}, in the
+sense of adding the $E(Bp-Rp)$ correction to the synthetic Gaia EDR3
+photometry.  The data and models generally agree for masses above
+approximately 0.45\,$M_\odot$.  Below this mass, at colors redder than
+Bp-Rp$\approx2.2$, the agreement is worse.  The MIST isochrones show a
+comparable disagreement \citep{choi_mesa_2016}.  Explanations invoking
+both starspots and incomplete molecular line lists have been proposed
+\citep[{\it
+e.g.},][]{stauffer_why_2003,feiden_magnetic_2013,rajpurohit_effective_2013,mann_spectrothermometry_2013,choi_mesa_2016}.
+For purposes of age-dating the cluster, we prefer to simply focus on
+the main-sequence turn-off (MSTO), since it is where the models have maximal
+predictive power.
+
+Our photometric age-dating procedure is as follows.  We selected all
+stars in the cluster with absolute magnitudes $M_{\rm G}>5$.  We
+excluded the six\footnote{{\bf NAMES???}} halo stars that are clear
+outliers from the rest of the cluster.  Using an isochrone grid
+spanning $\log_{10}(t/\mathrm{yr})=\{7.75 -- 8.75\}$ with 0.01\,dex
+spacing, we then numerically evaluated the $\chi^2$ fit for each
+possible age.  The resulting median, 16$^{\rm th}$, and 84$^{\rm th}$
+percentiles are used as summary statstics.
+
+% NOTE: probably asymmetric.
+The resulting MSTO photometric age for the core is $XXX\pm YYY$\,Myr.
+For the halo, it is $XXX\pm YYY$\,Myr.  Combining the two samples
+yields $XXX\pm YYY$\,Myr.  And finally, applying the same procedure to
+the field star comparison sample gives an age of $XXX\pm YYY$\,Myr.
+
 
 
 \subsection{Rotation from TESS}
@@ -1284,7 +1326,7 @@ vs} color distributions are quite different
 \begin{figure*}[t]
 	\begin{center}
 		\leavevmode
-			\includegraphics[width=0.75\textwidth]{f2b.pdf}
+			\includegraphics[width=0.75\textwidth]{f2c.pdf}
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ {\bf HR diagram of NGC\,2516, using Gaia EDR3 photometry.}
