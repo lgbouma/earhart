@@ -86,7 +86,7 @@
   They could also be field stars---the false positives of overly
   aggressive clustering algorithms.
   In this study, we focus on a halo with a length of 300\,pc reported
-  around the $\approx$120\,Myr open cluster NGC\,2516.
+  around the $\approx$175\,Myr open cluster NGC\,2516.
   %TODO: says who?
   The classical tidal radius of the cluster is $\approx$10\,pc.
   Combining photometry from Gaia, rotation periods from TESS, and
@@ -249,13 +249,13 @@ Section~\ref{sec:conclusion} gives our conclusions.
 		\includegraphics[width=0.95\textwidth]{f1.pdf}
 	\end{center}
 	\vspace{-0.7cm}
-  \caption{ {\bf NGC\,2516 has multiple reported components in position and
+  \caption{ {\bf The dense and diffuse components of NGC\,2516 across position and
   velocity space.} The core (black) was identified by
   \citet{cantatgaudin_gaia_2018} using Gaia DR2, and is coincident with
   the visual overdensity of stars canonically accepted as ``the
-  cluster''.  The halo was identified by
+  cluster''.  The halo (blue) was identified by
   \citet{kounkel_untangling_2019} and \citet{meingast_2021} using less restrictive membership
-  assignment algorithms (see Appendix~\ref{app:clustering}).  The field
+  assignment algorithms described in Appendix~\ref{app:clustering}.  The field
   sample is randomly drawn from a $(\alpha, \delta, \pi)$ cube
   centered on the cluster.  The low volume density of the
   halo stars makes it difficult to visually distinguish
@@ -378,8 +378,9 @@ volume noted above.
     consistent with these stars having not yet reached the
     main-sequence.
     {\it Right}: Solar-metallicity PARSEC isochrones are overplotted
-    at intervals of $\log_{10}(t/\mathrm{yr})=\{8, 8.25, 8.5\}$ with a
-    reddening correction applied.
+    at intervals of $\log_{10}(t/\mathrm{yr})=\{8, 8.25, 8.5\}$.
+    The arrow represents the average reddening correction applied
+    to the models.
     The main-sequence turn-off location and evolved stars suggests a
     cluster age slightly older than the Pleiades.  The models diverge
     from the data for $M_\star \lesssim 0.45M_\odot$ ($\approx$M2V;
@@ -425,34 +426,61 @@ photometry with PARSEC isochrones
 We used the web
 interface\footnote{\url{http://stev.oapd.inaf.it/cgi-bin/cmd},
 \texttt{2021-02-26}, \texttt{CMD3.4}} to interpolate these isochrones
-at $\log_{10}(t/\mathrm{yr})=\{8, 8.25, 8.5\}$, and then applied the
-reddening correction described in Section~\ref{subsec:tess}, in the
-sense of adding the $E(Bp-Rp)$ correction to the synthetic Gaia EDR3
-photometry.  The data and models generally agree for masses above
+at $\log_{10}(t/\mathrm{yr})=\{8, 8.25, 8.5\}$, and applied the
+reddening correction described in Section~\ref{subsec:tess}. This
+entailed by including using our corrected value of
+$E(B-V)=0.102\pm0.019$, assuming $R_V=3.1$, and applying the
+\citet{odonnell_1994} SED-dependent reddening law.
+The data and models generally agree for masses above
 approximately 0.45\,$M_\odot$.  Below this mass, at colors redder than
-Bp-Rp$\approx2.2$, the agreement is worse.  The MIST isochrones show a
+Bp-Rp$\approx2.2$, the data and models diverge.  The MIST isochrones show a
 comparable disagreement \citep{choi_mesa_2016}.  Explanations invoking
 both starspots and incomplete molecular line lists have been proposed
 \citep[{\it
 e.g.},][]{stauffer_why_2003,feiden_magnetic_2013,rajpurohit_effective_2013,mann_spectrothermometry_2013,choi_mesa_2016}.
+We adopt the 
+PARSEC isochrones since they diverge at slightly lower mass than the
+MIST models, due to the temperature-opacity calibration
+discussed by \citet{chen_improving_2014}.
 For purposes of age-dating the cluster, we prefer to simply focus on
-the main-sequence turn-off (MSTO), since it is where the models have maximal
-predictive power.
+the main-sequence turn-off (MSTO), since it is where the models have
+maximal predictive power.
 
-Our photometric age-dating procedure is as follows.  We selected all
-stars in the cluster with absolute magnitudes $M_{\rm G}>5$.  We
-excluded the six\footnote{{\bf NAMES???}} halo stars that are clear
-outliers from the rest of the cluster.  Using an isochrone grid
-spanning $\log_{10}(t/\mathrm{yr})=\{7.75 -- 8.75\}$ with 0.01\,dex
-spacing, we then numerically evaluated the $\chi^2$ fit for each
-possible age.  The resulting median, 16$^{\rm th}$, and 84$^{\rm th}$
-percentiles are used as summary statstics.
+\citet{cummings_2018} presented techniques for mitigating some of the
+complexities of MSTO age-dating ({\it e.g.}, sparse turnoffs, stellar
+rotation, high binarity fractions, and the presence of blue
+stragglers).  Combining a $UBV$ color-color analysis with Gaia DR2
+cluster memberships, they found MSTO ages for NGC\,2516 ranging from
+165 to 195\,Myr, depending on the choice of model isochrone (Y$^2$,
+PARSEC, MIST, or SYCLIST).  The statistical uncertainties ($\approx
+25$\,Myr) were comparable to the systematic uncertainties.
 
-% NOTE: probably asymmetric.
-The resulting MSTO photometric age for the core is $XXX\pm YYY$\,Myr.
-For the halo, it is $XXX\pm YYY$\,Myr.  Combining the two samples
-yields $XXX\pm YYY$\,Myr.  And finally, applying the same procedure to
-the field star comparison sample gives an age of $XXX\pm YYY$\,Myr.
+Our primary goal is to determine whether the ages of the core and halo
+are consistent.  The left panel of Figure~\ref{fig:hr} shows
+empirically that they seem to be: stars past the turnoff in both the
+halo and core are on a consistent locus.  The right panel of
+Figure~\ref{fig:hr} suggests the precision with which the claim can be
+made.  The MSTO stars are consistent with the 178 and 316 Myr models,
+but are bluer than the 100 Myr model.  The RGB stars are consistent
+only with the 178 Myr ($\log_{10} t/{\rm yr} = 8.25$) model.  Based on
+the assumption that the width of the MSTO can be attributed to binary
+stars, we are most interested in the blue edge. This seems most
+compatible with the 178 Myr model.
+
+% Our photometric age-dating procedure is as follows.  We selected all
+% stars in the cluster with absolute magnitudes $M_{\rm G}>5$.  We
+% excluded the six\footnote{{\bf NAMES???}} halo stars that are clear
+% outliers from the rest of the cluster.  Using an isochrone grid
+% spanning $\log_{10}(t/\mathrm{yr})=\{7.75 -- 8.75\}$ with 0.01\,dex
+% spacing, we then numerically evaluated the $\chi^2$ fit for each
+% possible age.  The resulting median, 16$^{\rm th}$, and 84$^{\rm th}$
+% percentiles are used as summary statstics.
+% 
+% % NOTE: probably asymmetric.
+% The resulting MSTO photometric age for the core is $XXX\pm YYY$\,Myr.
+% For the halo, it is $XXX\pm YYY$\,Myr.  Combining the two samples
+% yields $XXX\pm YYY$\,Myr.  And finally, applying the same procedure to
+% the field star comparison sample gives an age of $XXX\pm YYY$\,Myr.
 
 
 
@@ -481,8 +509,11 @@ the field star comparison sample gives an age of $XXX\pm YYY$\,Myr.
     The Pleiades \citep[125\,Myr][]{rebull_rotation_2016a}
     and Praesepe \citep[650\,Myr][]{douglas_poking_2017}
     are shown for reference.
-    Stars in the core and the halo of NGC\,2516 are
-    gyrochronologically coeval with the Pleiades.
+    Stars in the core and the halo of NGC\,2516 appear
+    gyrochronologically coeval with the Pleiades at (Bp-Rp)$_0$$<$1.25.
+    There is a narrow range of color, from 1.25$<$(Bp-Rp)$_0$$<$1.75,
+    in which some NGC\,2516 members appear elevated with respect to
+    the Pleiades, suggesting a slightly older age.
 		\label{fig:rot}
 	}
 \end{figure*}

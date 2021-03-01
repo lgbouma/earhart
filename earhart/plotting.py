@@ -567,11 +567,15 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
         elif isochrone == 'parsec':
 			# v1
-            #isopath = os.path.join(DATADIR, 'isochrones',
-            #                       'output624293709713.dat')
+            # isopath = os.path.join(DATADIR, 'isochrones',
+            #                        'output624293709713.dat')
             # v2
             isopath = os.path.join(DATADIR, 'isochrones',
                                    'output911305443923.dat')
+            nored_iso_df = pd.read_csv(isopath, delim_whitespace=True, comment='#')
+            # v3
+            isopath = os.path.join(DATADIR, 'isochrones',
+                                   'output4767372113.dat')
             iso_df = pd.read_csv(isopath, delim_whitespace=True, comment='#')
 
 
@@ -619,11 +623,26 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
             get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.5, zorder=2,
             s=6, rasterized=False, linewidths=0, label=l0, marker='.'
         )
+        _s = 6
+
+
+        # wonky way to get output lines...
         ax.scatter(
             get_xval(kc19_df), get_yval(kc19_df), c='lightskyblue', alpha=1,
-            zorder=3, s=6, rasterized=rasterized, linewidths=0.03, label=l1,
+            zorder=4, s=_s, rasterized=rasterized, linewidths=0, label=None,
             marker='.', edgecolors='k'
         )
+        ax.scatter(
+            get_xval(kc19_df), get_yval(kc19_df), c='k', alpha=1,
+            zorder=3, s=_s+1, rasterized=rasterized, linewidths=0, label=None,
+            marker='.', edgecolors='k'
+        )
+        ax.scatter(
+            -99, -99, c='lightskyblue', alpha=1,
+            zorder=4, s=_s, rasterized=rasterized, linewidths=0.2, label=l1,
+            marker='.', edgecolors='k'
+        )
+
 
     else:
         glatkey = 'b'
@@ -646,7 +665,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         _l = 'Core' if isochrone is None else None
         ax.scatter(
             get_xval(cg18_df), get_yval(cg18_df), c='k', alpha=0.9,
-            zorder=4, s=6, rasterized=rasterized, linewidths=0, label=_l, marker='.'
+            zorder=5, s=6, rasterized=rasterized, linewidths=0, label=_l, marker='.'
         )
         _l = 'TOI 1937' if not highlight_companion else 'TOI 1937A'
         if show1937:
@@ -708,7 +727,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
                 ax.plot(
                     _xval,
                     _yval,
-                    c=c, alpha=1., zorder=4, label=f'{a} Myr', lw=0.5
+                    c=c, alpha=1., zorder=7, label=f'{a} Myr', lw=0.5
                 )
 
         elif isochrone == 'parsec':
@@ -725,7 +744,9 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
                     (iso_df.Mass < 7)
                 )
 
-                corr = 7.85
+                #corr = 7.85
+                #corr = 7.65
+                corr = 7.60
                 _yval = (
                     iso_df[sel]['Gmag'] +
                     5*np.log10(np.nanmedian(cg18_df['parallax']/1e3)) + 5
@@ -740,15 +761,50 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
                 elif color0 == 'phot_g_mean_mag':
                     _c0 = 'Gmag'
 
+                #+ AVG_EBpmRp  # NOTE: reddening already included!
                 _xval = (
                     iso_df[sel][sel2][_c0]-iso_df[sel][sel2]['G_RPmag']
-                    + AVG_EBpmRp
                 )
+
+                nored_y = (
+                    nored_iso_df[sel]['Gmag'] +
+                    5*np.log10(np.nanmedian(cg18_df['parallax']/1e3)) + 5
+                    + AVG_AG
+                    + corr
+                )
+                nored_y = nored_y[sel2] # same jank numerical issue
+                nored_x = (
+                    nored_iso_df[sel][sel2][_c0] - nored_iso_df[sel][sel2]['G_RPmag']
+                )
+
+                diff_x = -(nored_x - _xval)
+                diff_y = -(nored_y - _yval)
 
                 ax.plot(
                     _xval, _yval,
-                    c=c, alpha=1., zorder=4, label=f'{a} Myr', lw=0.5
+                    c=c, alpha=1., zorder=7, label=f'{a} Myr', lw=0.5
                 )
+
+                # SED-dependent reddening check, usually off.
+                print(42*'*')
+                print(f'Median Bp-Rp difference: {np.median(diff_x):.4f}')
+                print(42*'*')
+                if i == 0:
+                    sep = 2
+                    # # NOTE: to show EVERYTHING
+                    # ax.quiver(
+                    #     nored_x[::sep], nored_y[::sep], diff_x[::sep], diff_y[::sep], angles='xy',
+                    #     scale_units='xy', scale=1, color='magenta',
+                    #     width=1e-3, linewidths=1, headwidth=5, zorder=9
+                    # )
+
+                    ax.quiver(
+                        2.6, 3.5, np.nanmedian(diff_x[::sep]),
+                        np.nanmedian(diff_y[::sep]), angles='xy',
+                        scale_units='xy', scale=1, color='black',
+                        width=3e-3, linewidths=2, headwidth=5, zorder=9
+                    )
+
 
     if not colorhalobyglat:
         leg = ax.legend(loc='lower left', handletextpad=0.1, fontsize='x-small',
