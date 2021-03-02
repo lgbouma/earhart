@@ -369,20 +369,20 @@ volume noted above.
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ {\bf HR diagrams of NGC\,2516.}
-    {\it Left}: The photometric data are from Gaia EDR3; no reddening correction
+    {\it Left}: Photometric data from Gaia EDR3; no reddening correction
     has been applied.  The core (black) shows a main-sequence and
     turnoff consistent with stars of a fixed age and metallicity.  The
     halo (blue) is similar, though the binary sequence is less
     defined.  At fixed color, the faintest M dwarfs in the core and
     halo are brighter than in the field star comparison sample (gray),
-    consistent with these stars having not yet reached the
+    consistent with these stars not having yet reached the
     main-sequence.
-    {\it Right}: Solar-metallicity PARSEC isochrones are overplotted
+    {\it Right}: PARSEC isochrones ([Fe/H]=+0.06) are overplotted
     at intervals of $\log_{10}(t/\mathrm{yr})=\{8, 8.25, 8.5\}$.
     The arrow represents the average reddening correction applied
     to the models.
     The main-sequence turn-off location and evolved stars suggests a
-    cluster age slightly older than the Pleiades.  The models diverge
+    cluster age slightly older than the Pleiades (dark blue line).  The models diverge
     from the data for $M_\star \lesssim 0.45M_\odot$ ($\approx$M2V;
     $\mathrm{Bp}-\mathrm{Rp}\approx2.2$).
     \label{fig:hr}
@@ -400,51 +400,64 @@ Figure~\ref{fig:hr} presents similar results to what these
 investigators have already found.  The core members of the cluster
 show a clean sequence consistent with stars with a fixed age and
 metallicity, and varying mass.  The halo members show a roughly
-consistent main-sequence, perhaps with greater scatter.  One
-possible explanation for the additional scatter could be that the halo
-is more contaminated by field stars.  
-For instance, $\approx5$ evolved halo stars are visible in the
-field-star portion of the red giant branch (RGB).
-Given the expected age of the system, these stars must be field
-interlopers.
+consistent main-sequence, with somewhat greater scatter.  One
+possible explanation for the additional scatter could be that the
+halo is more contaminated by field stars.  For instance, $\approx5$
+evolved halo stars are visible in the field-star portion of the red
+giant branch (RGB).  Given the age of the system, these stars must be
+field interlopers.
 
 A separate possible explanation for scatter in the halo's HR diagram
-could be differential reddening.  The halo is reported to span
-20$^\circ$ on-sky, and varies in position from about $b=-12^\circ$ to
-$b=-20^\circ$, with the stars closest to the galactic plane also being
-further from the Sun by up to 200\,pc (Figure~\ref{fig:gaia6d}).
-Some empirical evidence for differential reddening is discussed
-further in Appendix~\ref{app:diffred}. Based on the available
-evidence, we expect that both field star contamination and
-differential reddening could play a role.
-A third possibility that we have not explored is whether the binary
-fraction could differ in spatially different regions of the cluster.
+could be differential reddening across different sightlines.  The halo
+is reported to span 20$^\circ$ on-sky, and varies in position from
+about $b=-12^\circ$ to $b=-20^\circ$, with the stars closest to the
+galactic plane also being further from the Sun by up to 200\,pc
+(Figure~\ref{fig:gaia6d}).  Some empirical evidence for differential
+reddening is discussed further in Appendix~\ref{app:diffred}. Based on
+the available evidence, we expect that both field star contamination
+and differential reddening could play a role in the larger scatter of
+the halo relative to the core.  A third possibility that we have not
+explored is whether the binary fraction could also differ between the
+different regions of the cluster.
 
 In the right panel of Figure~\ref{fig:hr}, we compare the observed
 photometry with PARSEC isochrones
 \citep{bressan_parsec_2012,chen_improving_2014,chen_parsec_2015,marigo_new_2017}.
 We used the web
 interface\footnote{\url{http://stev.oapd.inaf.it/cgi-bin/cmd},
-\texttt{2021-02-26}, \texttt{CMD3.4}} to interpolate these isochrones
-at $\log_{10}(t/\mathrm{yr})=\{8, 8.25, 8.5\}$, and applied the
-reddening correction described in Section~\ref{subsec:tess}. This
-entailed by including using our corrected value of
-$E(B-V)=0.102\pm0.019$, assuming $R_V=3.1$, and applying the
-\citet{odonnell_1994} SED-dependent reddening law.
-The data and models generally agree for masses above
-approximately 0.45\,$M_\odot$.  Below this mass, at colors redder than
-Bp-Rp$\approx2.2$, the data and models diverge.  The MIST isochrones show a
-comparable disagreement \citep{choi_mesa_2016}.  Explanations invoking
-both starspots and incomplete molecular line lists have been proposed
-\citep[{\it
+\texttt{2021-02-26}, \texttt{CMD3.4}, \texttt{YBC} bolometric
+corrections as in \citet{chen_2019_YBC}.} to interpolate these
+isochrones at $\log_{10}(t/\mathrm{yr})=\{8, 8.25, 8.5\}$, and applied
+the reddening correction described in Section~\ref{subsec:tess}.  We
+assumed a reddening of $E(B-V)=0.102\pm0.019$, $R_V=3.1$, and applyied
+the \citet{odonnell_1994} SED-dependent extinction law star-by-star
+through the PARSEC interface.  For the metallicity, we considered a
+range of super and sub-solar metallicities to fit as much of the locus
+from $0.5<Bp-Rp<1.5$ as possible, and settled on the slightly
+super-solar $[M/H]=0.06$.  Sub-solar metallicities led to model
+predictions too blue along the main sequence by $\approx$0.1\,mag.
+Our adopted metallicity agrees with that found by
+\citet[][Sec~4.4.4]{cummings_2011_li_iron}, and with the iron
+abundance recently determined by the Gaia-ESO team
+\citep{baratella_gaiaeso_2020}, which represented an up-revision from
+an earlier sub-solar metallicity \citep{randich_gaiaeso_2018}.  While
+\citet{bailey_rv_2018} report a slightly sub-solar metallicity for
+the cluster, we prefer super-solar based on the goodness of fit from
+the photometry.
+
+Overall, the data and models agree for masses above
+approximately 0.45\,$M_\odot$.  However below this mass, the data and
+models diverge at colors redder than Bp-Rp$\approx2.2$.  The MIST
+isochrones showed a comparable disagreement \citep{choi_mesa_2016}.
+Explanations invoking both starspots and incomplete molecular line
+lists have been proposed \citep[{\it
 e.g.},][]{stauffer_why_2003,feiden_magnetic_2013,rajpurohit_effective_2013,mann_spectrothermometry_2013,choi_mesa_2016}.
-We adopt the 
-PARSEC isochrones since they diverge at slightly lower mass than the
-MIST models, due to the temperature-opacity calibration
-discussed by \citet{chen_improving_2014}.
-For purposes of age-dating the cluster, we prefer to simply focus on
-the main-sequence turn-off (MSTO), since it is where the models have
-maximal predictive power.
+We adopt the PARSEC isochrones since they diverge at slightly lower
+mass than the MIST models, due to the temperature-opacity calibration
+implemented by \citet{chen_improving_2014}.  For purposes of
+age-dating the cluster, we prefer to simply focus on the main-sequence
+turn-off (MSTO), since it is where the models have maximal predictive
+power.
 
 \citet{cummings_2018} presented techniques for mitigating some of the
 complexities of MSTO age-dating ({\it e.g.}, sparse turnoffs, stellar
@@ -457,16 +470,21 @@ PARSEC, MIST, or SYCLIST).  The statistical uncertainties ($\approx
 
 Our primary goal is to determine whether the ages of the core and halo
 are consistent.  The left panel of Figure~\ref{fig:hr} shows
-empirically that they seem to be: stars past the turnoff in both the
-halo and core are on a consistent locus.  The right panel of
-Figure~\ref{fig:hr} suggests the precision with which the claim can be
+empirically that they are: stars past the turnoff in both the halo and
+core are on a consistent locus.  The right panel of
+Figure~\ref{fig:hr} demonstrates the precision with which the claim can be
 made.  The MSTO stars are consistent with the 178 and 316 Myr models,
 but are bluer than the 100 Myr model.  The RGB stars are consistent
 only with the 178 Myr ($\log_{10} t/{\rm yr} = 8.25$) model.  Based on
 the assumption that the width of the MSTO can be attributed to binary
-stars, we are most interested in the blue edge. This seems most
-compatible with the 178 Myr model.
+stars, we are most interested in the blue edge. This appears most
+compatible with the 178 Myr model.  These results are consistent with
+the MSTO age range of 165 to 195\,Myr found by \citet{cummings_2018},
+and we refer to their work for a more precise model-dependent
+comparison.
 
+% FIXME: do you want to do the procedure below? Seems like overkill
+% given the Cummings study.
 % Our photometric age-dating procedure is as follows.  We selected all
 % stars in the cluster with absolute magnitudes $M_{\rm G}>5$.  We
 % excluded the six\footnote{{\bf NAMES???}} halo stars that are clear

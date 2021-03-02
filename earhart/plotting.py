@@ -566,17 +566,36 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
             assert len(isocmd.isocmds) > 1
 
         elif isochrone == 'parsec':
+            #
+            # see /doc/20210226_isochrones_theory.txt
+            #
 			# v1
             # isopath = os.path.join(DATADIR, 'isochrones',
             #                        'output624293709713.dat')
-            # v2
+
+            # # v2
+            # isopath = os.path.join(DATADIR, 'isochrones',
+            #                        'output911305443923.dat')
+            # nored_iso_df = pd.read_csv(isopath, delim_whitespace=True, comment='#')
+            # # v3
+            # isopath = os.path.join(DATADIR, 'isochrones',
+            #                        'output4767372113.dat')
+            # iso_df = pd.read_csv(isopath, delim_whitespace=True, comment='#')
+
+            # v4
             isopath = os.path.join(DATADIR, 'isochrones',
-                                   'output911305443923.dat')
+                                   'output360587063784.dat')
             nored_iso_df = pd.read_csv(isopath, delim_whitespace=True, comment='#')
-            # v3
+
+            # v5
             isopath = os.path.join(DATADIR, 'isochrones',
-                                   'output4767372113.dat')
+                                   'output813364732851.dat')
             iso_df = pd.read_csv(isopath, delim_whitespace=True, comment='#')
+
+            # # v6
+            # isopath = os.path.join(DATADIR, 'isochrones',
+            #                        'output659369601708.dat')
+            # iso_df = pd.read_csv(isopath, delim_whitespace=True, comment='#')
 
 
     ##########
@@ -744,9 +763,9 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
                     (iso_df.Mass < 7)
                 )
 
-                #corr = 7.85
+                corr = 7.80
                 #corr = 7.65
-                corr = 7.60
+                #corr = 7.60
                 _yval = (
                     iso_df[sel]['Gmag'] +
                     5*np.log10(np.nanmedian(cg18_df['parallax']/1e3)) + 5
@@ -766,6 +785,11 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
                     iso_df[sel][sel2][_c0]-iso_df[sel][sel2]['G_RPmag']
                 )
 
+                ax.plot(
+                    _xval, _yval,
+                    c=c, alpha=1., zorder=7, label=f'{a} Myr', lw=0.5
+                )
+
                 nored_y = (
                     nored_iso_df[sel]['Gmag'] +
                     5*np.log10(np.nanmedian(cg18_df['parallax']/1e3)) + 5
@@ -779,11 +803,6 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
                 diff_x = -(nored_x - _xval)
                 diff_y = -(nored_y - _yval)
-
-                ax.plot(
-                    _xval, _yval,
-                    c=c, alpha=1., zorder=7, label=f'{a} Myr', lw=0.5
-                )
 
                 # SED-dependent reddening check, usually off.
                 print(42*'*')
