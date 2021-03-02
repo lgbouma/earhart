@@ -206,31 +206,27 @@ def get_gaia_basedata(basedata):
 
     if basedata == 'extinctioncorrected':
         raise NotImplementedError('need to implement extinction')
-        nbhd_df, cg18_df, kc19_df, target_df = _get_extinction_dataframes()
-    elif basedata == 'bright':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_nbhd_dataframes()
+        nbhd_df, core_df, halo_df, full_df, target_df = _get_extinction_dataframes()
     elif basedata == 'fullfaint':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
+        nbhd_df, core_df, halo_df, full_df, target_df = _get_fullfaint_dataframes()
     elif basedata == 'fullfaint_edr3':
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_edr3_dataframes()
+        nbhd_df, core_df, halo_df, full_df, target_df = _get_fullfaint_edr3_dataframes()
+    elif basedata == 'bright':
+        nbhd_df, core_df, halo_df, full_df, target_df = _get_nbhd_dataframes()
     else:
         raise NotImplementedError
 
-    return nbhd_df, cg18_df, kc19_df, target_df
-
+    return nbhd_df, core_df, halo_df, full_df, target_df
 
 
 def _get_nbhd_dataframes():
     """
-    Return: nbhd_df, cg18_df, kc19_df, target_df
-    (for NGC 2516)
-
-    The "core" is the match of the CDIPS target catalog (G_Rp<16) with
-    Cantat-Gaudin 2018.
-
-    The "halo" is the match of the CDIPS target catalog (G_Rp<16) with
-    Kounkel & Covey 2019, provided that the source is not in the core. (i.e.,
-    KC19 get no points for getting the "core" targets correct).
+    WARNING!: this "bright" subset is a crossmatch between the full NGC 2516
+    target list (CG18+KC19+M21), and the CDIPS target catalog (G_Rp<16; v0.4).
+    However, since the CDIPS targets didn't incorporate M21, it's not as direct
+    of a match as desired. This is fine for understanding the auto-detection of
+    rotation periods. But for overall cluster rotation period completeness,
+    it's not.
 
     The "neighborhood" was selected via
 
@@ -241,90 +237,50 @@ def _get_nbhd_dataframes():
                                      overwrite=False, manual_gmag_limit=17)
 
     This procedure yields:
-        Got 5908 neighbors
-        Got 893 in core (CG18)
-        Got 1345 in corona (KC19, minus any CG18)
-        Got 888 KC19 / CG18 overlaps
+        Got 7052 neighbors with Rp<16
+        Got 893 in core from CDIPS target catalog
+        Got 1345 in corona from CDIPS target catalog
     """
 
     df = get_cdips_catalog(ver=0.4)
 
-    kc19_sel = (
-        (df.cluster.str.contains('NGC_2516')) &
-        (df.reference.str.contains('Kounkel_2019'))
-    )
-    cg18_sel = (
-        (df.cluster.str.contains('NGC_2516')) &
-        (df.reference.str.contains('CantatGaudin_2018'))
-    )
+    nbhd_df, core_df, halo_df, full_df, target_df = _get_fullfaint_dataframes()
 
-    kc19_df = df[kc19_sel]
-    cg18_df = df[cg18_sel]
+    #
+    # do the "bright" selection by a crossmatch between the full target list
+    # and the CDIPS catalog. so implicitly, it's a CDIPS target star catalog
+    # match.  this misses some Meingast stars, b/c they weren't in the CDIPS
+    # v0.4 target list. but this 
+    #
+    cdips_df = df['source_id']
+    mdf = full_df.merge(cdips_df, on='source_id', how='inner')
 
-    kc19_cg18_overlap_df = kc19_df[(kc19_df.source_id.isin(cg18_df.source_id))]
+    nbhd_df = nbhd_df[nbhd_df.phot_rp_mean_mag < 16]
 
-    kc19_df = kc19_df[~(kc19_df.source_id.isin(cg18_df.source_id))]
+    core_df = mdf[mdf.subcluster == 'core']
+    halo_df = mdf[mdf.subcluster == 'halo']
 
+    print(42*'.')
+    print('"Bright" sample:')
+    print(f'...Got {len(nbhd_df)} neighbors with Rp<16')
+    print(f'...Got {len(core_df)} in core from CDIPS target catalog')
+    print(f'...Got {len(halo_df)} in corona from CDIPS target catalog')
+    print(42*'.')
 
-    ##########
-
-    # NGC 2516 rough
-    bounds = {
-        'parallax_lower': 1.5, 'parallax_upper': 4.0, 'ra_lower': 108,
-        'ra_upper': 132, 'dec_lower': -76, 'dec_upper': -45
-    }
-    groupname = 'customngc2516'
-
-    nbhd_df = query_neighborhood(bounds, groupname, n_max=6000,
-                                 overwrite=False, manual_gmag_limit=17)
-
-    # NOTE: kind of silly: need to requery gaia DR2 because the CDIPS target
-    # catalog, where the source_ids are from, doesn't have the radial
-    # velocities.
-
-    kc19_df_0 = given_source_ids_get_gaia_data(
-        np.array(kc19_df.source_id),
-        'ngc2516_kc19_earhart', n_max=10000, overwrite=False,
-        enforce_all_sourceids_viable=True
-    )
-    cg18_df_0 = given_source_ids_get_gaia_data(
-        np.array(cg18_df.source_id),
-        'ngc2516_cg18_earhart', n_max=10000, overwrite=False,
-        enforce_all_sourceids_viable=True
-    )
-
-    assert len(cg18_df) == len(cg18_df_0)
-    assert len(kc19_df) == len(kc19_df_0)
-
-    target_df = kc19_df_0[kc19_df_0.source_id == 5489726768531119616] # TIC 2683...
-
-    sel_nbhd = (
-        (~nbhd_df.source_id.isin(kc19_df.source_id))
-        &
-        (~nbhd_df.source_id.isin(cg18_df.source_id))
-    )
-    orig_nbhd_df = deepcopy(nbhd_df)
-    nbhd_df = nbhd_df[sel_nbhd]
-
-    print(f'Got {len(nbhd_df)} neighbors')
-    print(f'Got {len(cg18_df)} in core')
-    print(f'Got {len(kc19_df)} in corona')
-    print(f'Got {len(kc19_cg18_overlap_df)} KC19 / CG18 overlaps')
-
-    return nbhd_df, cg18_df_0, kc19_df_0, target_df
+    return nbhd_df, core_df, halo_df, full_df, target_df
 
 
 def _get_fullfaint_dataframes():
     """
-    Return: nbhd_df, cg18_df, kc19_df, target_df
+    Return: nbhd_df, core_df, halo_df, full_df, target_df
     (for NGC 2516, "full faint" sample -- i.e., as faint as possible.)
 
     The "core" is all available Cantat-Gaudin 2018 members, with no magnitude
     cutoff.
 
-    The "halo" is the full Kounkel & Covey 2019 member set, provided that the
-    source is not in the core. (i.e., KC19 get no points for getting the "core"
-    targets correct).
+    The "halo" is the full Kounkel & Covey 2019 + Meingast 2021 member set,
+    provided that the source is not in the core. (i.e., KC19 and M21 get no
+    points for getting the "core" targets correct).
 
     The "neighborhood" was selected via
 
@@ -338,11 +294,17 @@ def _get_fullfaint_dataframes():
 
         Got 1106 in fullfaint CG18
         Got 3003 in fullfaint KC19
-        Got 1912 in fullfaint KC19 after removing matches
-        Got 13843 neighbors
+        Got 1860 in fullfaint M21
+        Got 1912 in fullfaint KC19 after removing core matches
+        Got 1096 in fullfaint M21 after removing core matches
+        Got 280 in fullfaint M21 after removing KC19 matches
+
+        Got 13834 neighbors
         Got 1106 in core
-        Got 1912 in corona
+        Got 2192 in corona
         Got 1091 KC19 / CG18 overlaps
+        Got 764 M21 / CG18 overlaps
+        Got 3298 unique sources in the cluster.
     """
 
     # get the full CG18 NGC 2516 memberships, downloaded from Vizier
@@ -359,13 +321,24 @@ def _get_fullfaint_dataframes():
     kc19_df = pd.read_csv(kc19path)
     kc19_df = kc19_df[kc19_df.group_id == 613]
 
+    # get the full M21 NGC 2516 memberships
+    m21path = os.path.join(DATADIR, 'gaia', 'Meingast_2021_NGC2516_all1860members.fits')
+    m21_df = Table(fits.open(m21path)[1].data).to_pandas()
+    m21_df = m21_df.rename(mapper={'GaiaDR2': 'source_id'}, axis=1)
+
     print(f'Got {len(cg18_df)} in fullfaint CG18')
     print(f'Got {len(kc19_df)} in fullfaint KC19')
+    print(f'Got {len(m21_df)} in fullfaint M21')
 
     kc19_cg18_overlap_df = kc19_df[(kc19_df.source_id.isin(cg18_df.source_id))]
     kc19_df = kc19_df[~(kc19_df.source_id.isin(cg18_df.source_id))]
+    print(f'Got {len(kc19_df)} in fullfaint KC19 after removing core matches')
 
-    print(f'Got {len(kc19_df)} in fullfaint KC19 after removing matches')
+    m21_cg18_overlap_df = m21_df[(m21_df.source_id.isin(cg18_df.source_id))]
+    m21_df = m21_df[~(m21_df.source_id.isin(cg18_df.source_id))]
+    print(f'Got {len(m21_df)} in fullfaint M21 after removing core matches')
+    m21_df = m21_df[~(m21_df.source_id.isin(kc19_df.source_id))]
+    print(f'Got {len(m21_df)} in fullfaint M21 after removing KC19 matches')
 
     ##########
 
@@ -390,9 +363,15 @@ def _get_fullfaint_dataframes():
         'ngc2516_cg18_earhart_fullfaint', n_max=10000, overwrite=False,
         enforce_all_sourceids_viable=True
     )
+    m21_df_0 = given_source_ids_get_gaia_data(
+        np.array(m21_df.source_id),
+        'ngc2516_m21_earhart_fullfaint', n_max=10000, overwrite=False,
+        enforce_all_sourceids_viable=True
+    )
 
     assert len(cg18_df) == len(cg18_df_0)
     assert len(kc19_df) == len(kc19_df_0)
+    assert len(m21_df) == len(m21_df_0)
 
     target_df = kc19_df_0[kc19_df_0.source_id == 5489726768531119616] # TIC 2683...
 
@@ -400,21 +379,42 @@ def _get_fullfaint_dataframes():
         (~nbhd_df.source_id.isin(kc19_df.source_id))
         &
         (~nbhd_df.source_id.isin(cg18_df.source_id))
+        &
+        (~nbhd_df.source_id.isin(m21_df.source_id))
     )
     orig_nbhd_df = deepcopy(nbhd_df)
     nbhd_df = nbhd_df[sel_nbhd]
 
     print(f'Got {len(nbhd_df)} neighbors')
     print(f'Got {len(cg18_df)} in core')
-    print(f'Got {len(kc19_df)} in corona')
+    print(f'Got {len(kc19_df)+len(m21_df)} in corona')
     print(f'Got {len(kc19_cg18_overlap_df)} KC19 / CG18 overlaps')
+    print(f'Got {len(m21_cg18_overlap_df)} M21 / CG18 overlaps')
 
-    return nbhd_df, cg18_df_0, kc19_df_0, target_df
+    #
+    # wrap up into the full source list
+    #
+    cg18_df_0['subcluster'] = 'core'
+    kc19_df_0['subcluster'] = 'halo'
+    m21_df_0['subcluster'] = 'halo'
+
+    core_df = cg18_df_0
+    halo_df = pd.concat((kc19_df_0, m21_df_0)).reset_index()
+
+    full_df = pd.concat((core_df, halo_df)).reset_index()
+    assert len(np.unique(full_df.source_id)) == len(full_df)
+    print(f'Got {len(full_df)} unique sources in the cluster.')
+
+    full_df['in_CG18'] = full_df.source_id.isin(cg18_df.source_id)
+    full_df['in_KC19'] = full_df.source_id.isin(kc19_df.source_id)
+    full_df['in_M21'] = full_df.source_id.isin(m21_df.source_id)
+
+    return nbhd_df, core_df, halo_df, full_df, target_df
 
 
 def _get_fullfaint_edr3_dataframes():
     """
-    Return: nbhd_df, cg18_df, kc19_df, target_df
+    Return: nbhd_df, core_df, halo_df, full_df, target_df
     (for NGC 2516, "full faint" sample -- i.e., as faint as possible, but
     ***after crossmatching the GAIA DR2 targets with GAIA EDR3***. This
     crossmatch is run using the dr2_neighbourhood table from the Gaia archive,
@@ -425,27 +425,35 @@ def _get_fullfaint_edr3_dataframes():
 
     This procedure yields:
 
-        FOR DR2:
-            Got 1106 in fullfaint CG18
-            Got 3003 in fullfaint KC19
-            Got 1912 in fullfaint KC19 after removing matches
-            Got 13843 neighbors
-            Got 1106 in core
-            Got 1912 in corona
-            Got 1091 KC19 / CG18 overlaps
+		FOR DR2:
+			Got 1106 in fullfaint CG18
+			Got 3003 in fullfaint KC19
+			Got 1860 in fullfaint M21
+			Got 1912 in fullfaint KC19 after removing core matches
+			Got 1096 in fullfaint M21 after removing core matches
+			Got 280 in fullfaint M21 after removing KC19 matches
+			Got 13834 neighbors
+			Got 1106 in core
+			Got 2192 in corona
+			Got 1091 KC19 / CG18 overlaps
+			Got 764 M21 / CG18 overlaps
+
         FOR EDR3:
 
-            CG18/core: got 1143 matches vs 1106 source id queries.
-            KC19/halo: got 2005 matches vs 1912 source id queries
-            Nbhd:      got 15123 matches vs 13843 source id queries.
+			Got 1106 EDR3 matches in core.
+			99th pct [arcsec] 1577.8 -> 0.3
+			Got 1912 EDR3 matches in KC19.
+			99th pct [arcsec] 1702.8 -> 0.5
+			Got 280 EDR3 matches in M21.
+			99th pct [arcsec] 1426.6 -> 0.3
+			Got 13843 EDR3 matches in nbhd.
+			99th pct [arcsec] 1833.9 -> 3.7
 
-            Got 1106 EDR3 matches in core.
-            99th pct [arcsec] 1577.8 -> 0.3
-            Got 1912 EDR3 matches in halo.
-            99th pct [arcsec] 1702.8 -> 0.5
-            Got 13843 EDR3 matches in nbhd.
-            99th pct [arcsec] 1833.9 -> 3.7
-
+			(((
+				CG18/core: got 1143 matches vs 1106 source id queries.
+				KC19/halo: got 2005 matches vs 1912 source id queries
+				Nbhd:      got 15123 matches vs 13843 source id queries.
+			)))
     """
 
     # get the full CG18 NGC 2516 memberships, downloaded from Vizier
@@ -462,14 +470,25 @@ def _get_fullfaint_edr3_dataframes():
     kc19_df = pd.read_csv(kc19path)
     kc19_df = kc19_df[kc19_df.group_id == 613]
 
+    # get the full M21 NGC 2516 memberships
+    m21path = os.path.join(DATADIR, 'gaia', 'Meingast_2021_NGC2516_all1860members.fits')
+    m21_df = Table(fits.open(m21path)[1].data).to_pandas()
+    m21_df = m21_df.rename(mapper={'GaiaDR2': 'source_id'}, axis=1)
+
     print(42*'='+'\nFOR DR2:')
     print(f'Got {len(cg18_df)} in fullfaint CG18')
     print(f'Got {len(kc19_df)} in fullfaint KC19')
+    print(f'Got {len(m21_df)} in fullfaint M21')
 
     kc19_cg18_overlap_df = kc19_df[(kc19_df.source_id.isin(cg18_df.source_id))]
     kc19_df = kc19_df[~(kc19_df.source_id.isin(cg18_df.source_id))]
+    print(f'Got {len(kc19_df)} in fullfaint KC19 after removing core matches')
 
-    print(f'Got {len(kc19_df)} in fullfaint KC19 after removing matches')
+    m21_cg18_overlap_df = m21_df[(m21_df.source_id.isin(cg18_df.source_id))]
+    m21_df = m21_df[~(m21_df.source_id.isin(cg18_df.source_id))]
+    print(f'Got {len(m21_df)} in fullfaint M21 after removing core matches')
+    m21_df = m21_df[~(m21_df.source_id.isin(kc19_df.source_id))]
+    print(f'Got {len(m21_df)} in fullfaint M21 after removing KC19 matches')
 
     ##########
 
@@ -487,14 +506,21 @@ def _get_fullfaint_edr3_dataframes():
         (~nbhd_df.source_id.isin(kc19_df.source_id))
         &
         (~nbhd_df.source_id.isin(cg18_df.source_id))
+        &
+        (~nbhd_df.source_id.isin(m21_df.source_id))
     )
     orig_nbhd_df = deepcopy(nbhd_df)
     nbhd_df = nbhd_df[sel_nbhd]
 
     print(f'Got {len(nbhd_df)} neighbors')
     print(f'Got {len(cg18_df)} in core')
-    print(f'Got {len(kc19_df)} in corona')
+    print(f'Got {len(kc19_df)+len(m21_df)} in corona')
     print(f'Got {len(kc19_cg18_overlap_df)} KC19 / CG18 overlaps')
+    print(f'Got {len(m21_cg18_overlap_df)} M21 / CG18 overlaps')
+    assert (
+        len(cg18_df)+len(kc19_df)+len(m21_df) ==
+        len(np.unique(np.array(pd.concat((cg18_df, kc19_df, m21_df))['source_id'])))
+    )
 
     cg18_df_edr3 = (
         given_dr2_sourceids_get_edr3_xmatch(
@@ -504,6 +530,11 @@ def _get_fullfaint_edr3_dataframes():
     kc19_df_edr3 = (
         given_dr2_sourceids_get_edr3_xmatch(
             nparr(kc19_df.source_id).astype(np.int64), 'fullfaint_ngc2516_kc19_df',
+            overwrite=False)
+    )
+    m21_df_edr3 = (
+        given_dr2_sourceids_get_edr3_xmatch(
+            nparr(m21_df.source_id).astype(np.int64), 'fullfaint_ngc2516_m21_df',
             overwrite=False)
     )
     nbhd_df_edr3 = (
@@ -523,13 +554,17 @@ def _get_fullfaint_edr3_dataframes():
 
     s_cg18_df_edr3 = get_edr3_xm(cg18_df_edr3)
     s_kc19_df_edr3 = get_edr3_xm(kc19_df_edr3)
+    s_m21_df_edr3 = get_edr3_xm(m21_df_edr3)
     s_nbhd_df_edr3 = get_edr3_xm(nbhd_df_edr3)
 
     print(f'Got {len(s_cg18_df_edr3)} EDR3 matches in core.\n'+
           f'99th pct [arcsec] {np.nanpercentile(cg18_df_edr3.angular_distance, 99):.1f} -> {np.nanpercentile(s_cg18_df_edr3.angular_distance, 99):.1f}')
 
-    print(f'Got {len(s_kc19_df_edr3)} EDR3 matches in halo.\n'+
+    print(f'Got {len(s_kc19_df_edr3)} EDR3 matches in KC19.\n'+
           f'99th pct [arcsec] {np.nanpercentile(kc19_df_edr3.angular_distance, 99):.1f} -> {np.nanpercentile(s_kc19_df_edr3.angular_distance, 99):.1f}')
+
+    print(f'Got {len(s_m21_df_edr3)} EDR3 matches in M21.\n'+
+          f'99th pct [arcsec] {np.nanpercentile(m21_df_edr3.angular_distance, 99):.1f} -> {np.nanpercentile(s_m21_df_edr3.angular_distance, 99):.1f}')
 
     print(f'Got {len(s_nbhd_df_edr3)} EDR3 matches in nbhd.\n'+
           f'99th pct [arcsec] {np.nanpercentile(nbhd_df_edr3.angular_distance, 99):.1f} -> {np.nanpercentile(s_nbhd_df_edr3.angular_distance, 99):.1f}')
@@ -546,6 +581,11 @@ def _get_fullfaint_edr3_dataframes():
         'fullfaint_ngc2516_cg18_df_edr3', n_max=10000, overwrite=False,
         enforce_all_sourceids_viable=True, gaia_datarelease='gaiaedr3'
     )
+    m21_df_0 = given_source_ids_get_gaia_data(
+        np.array(s_m21_df_edr3.dr3_source_id),
+        'fullfaint_ngc2516_m21_df_edr3', n_max=10000, overwrite=False,
+        enforce_all_sourceids_viable=True, gaia_datarelease='gaiaedr3'
+    )
     nbhd_df_0 = given_source_ids_get_gaia_data(
         np.array(s_nbhd_df_edr3.dr3_source_id),
         'fullfaint_ngc2516_nbhd_df_edr3', n_max=15000, overwrite=False,
@@ -554,23 +594,47 @@ def _get_fullfaint_edr3_dataframes():
 
     assert len(cg18_df) == len(cg18_df_0)
     assert len(kc19_df) == len(kc19_df_0)
+    assert len(m21_df) == len(m21_df_0)
     assert len(nbhd_df) == len(nbhd_df_0)
 
-    # nb. these source_ids are now EDR3 source_ids.
+    # nb. these "source_ids" are now EDR3 source_ids.
     np.testing.assert_array_equal(np.array(kc19_df_0.source_id),
                                   np.array(kc19_df_0.source_id_2))
     np.testing.assert_array_equal(np.array(cg18_df_0.source_id),
                                   np.array(cg18_df_0.source_id_2))
+    np.testing.assert_array_equal(np.array(m21_df_0.source_id),
+                                  np.array(m21_df_0.source_id_2))
     np.testing.assert_array_equal(np.array(nbhd_df_0.source_id),
                                   np.array(nbhd_df_0.source_id_2))
 
     kc19_df_0['dr2_source_id'] = nparr(s_kc19_df_edr3['dr2_source_id']).astype(np.int64)
     cg18_df_0['dr2_source_id'] = nparr(s_cg18_df_edr3['dr2_source_id']).astype(np.int64)
+    m21_df_0['dr2_source_id'] = nparr(s_m21_df_edr3['dr2_source_id']).astype(np.int64)
     nbhd_df_0['dr2_source_id'] = nparr(s_nbhd_df_edr3['dr2_source_id']).astype(np.int64)
 
     target_df = kc19_df_0[kc19_df_0.source_id == 5489726768531119616] # TIC 2683...
 
-    return nbhd_df_0, cg18_df_0, kc19_df_0, target_df
+    #
+    # wrap up into the full source list
+    #
+    cg18_df_0['subcluster'] = 'core'
+    kc19_df_0['subcluster'] = 'halo'
+    m21_df_0['subcluster'] = 'halo'
+
+    core_df = cg18_df_0
+    halo_df = pd.concat((kc19_df_0, m21_df_0)).reset_index()
+
+    full_df = pd.concat((core_df, halo_df)).reset_index()
+    assert len(np.unique(full_df.source_id)) == len(full_df)
+    print(f'Got {len(full_df)} unique sources in the cluster.')
+
+    full_df['in_CG18'] = full_df.source_id.isin(cg18_df.source_id)
+    full_df['in_KC19'] = full_df.source_id.isin(kc19_df.source_id)
+    full_df['in_M21'] = full_df.source_id.isin(m21_df.source_id)
+
+    nbhd_df['dr2_radial_velocity'] = nbhd_df['radial_velocity']
+
+    return nbhd_df, core_df, halo_df, full_df, target_df
 
 
 def _get_denis_fullfaint_edr3_dataframes():

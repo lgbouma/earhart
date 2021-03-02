@@ -151,7 +151,7 @@ def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
 def plot_full_kinematics(outdir, basedata='bright', show1937=1,
                          galacticframe=0):
 
-    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
+    nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
 
     if galacticframe:
         c_nbhd = SkyCoord(ra=nparr(nbhd_df.ra)*u.deg, dec=nparr(nbhd_df.dec)*u.deg)
@@ -208,12 +208,12 @@ def plot_full_kinematics(outdir, basedata='bright', show1937=1,
                 rasterized=True, linewidths=0, label='Field', marker='.'
             )
             axs[i,j].scatter(
-                kc19_df[xv], kc19_df[yv], c='lightskyblue', alpha=1,
+                halo_df[xv], halo_df[yv], c='lightskyblue', alpha=1,
                 zorder=3, s=12, rasterized=True, label='Halo',
                 linewidths=0.1, marker='.', edgecolors='k'
             )
             axs[i,j].scatter(
-                cg18_df[xv], cg18_df[yv], c='k', alpha=0.9, zorder=4, s=5,
+                core_df[xv], core_df[yv], c='k', alpha=0.9, zorder=4, s=5,
                 rasterized=True, label='Core', marker='.'
             )
             if show1937:
@@ -541,7 +541,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
     set_style()
 
-    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
+    nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
 
     comp_arr = np.array([5489726768531118848]).astype(np.int64)
     runid = (
@@ -647,12 +647,12 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
         # wonky way to get output lines...
         ax.scatter(
-            get_xval(kc19_df), get_yval(kc19_df), c='lightskyblue', alpha=1,
+            get_xval(halo_df), get_yval(halo_df), c='lightskyblue', alpha=1,
             zorder=4, s=_s, rasterized=rasterized, linewidths=0, label=None,
             marker='.', edgecolors='k'
         )
         ax.scatter(
-            get_xval(kc19_df), get_yval(kc19_df), c='k', alpha=1,
+            get_xval(halo_df), get_yval(halo_df), c='k', alpha=1,
             zorder=3, s=_s+1, rasterized=rasterized, linewidths=0, label=None,
             marker='.', edgecolors='k'
         )
@@ -671,7 +671,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         norm = mpl.colors.BoundaryNorm(bounds, cmap.N)#, extend='max')
 
         cax = ax.scatter(
-            get_xval(kc19_df), get_yval(kc19_df), c=nparr(kc19_df[glatkey]),
+            get_xval(halo_df), get_yval(halo_df), c=nparr(halo_df[glatkey]),
             alpha=1, zorder=3, s=2, rasterized=rasterized, linewidths=0.1,
             label='Halo', marker='o', edgecolors='none', cmap=cmap, norm=norm,
         )
@@ -683,7 +683,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
     if not colorhalobyglat:
         _l = 'Core' if isochrone is None else None
         ax.scatter(
-            get_xval(cg18_df), get_yval(cg18_df), c='k', alpha=0.9,
+            get_xval(core_df), get_yval(core_df), c='k', alpha=0.9,
             zorder=5, s=6, rasterized=rasterized, linewidths=0, label=_l, marker='.'
         )
         _l = 'TOI 1937' if not highlight_companion else 'TOI 1937A'
@@ -726,7 +726,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
                 corr = 7.85
                 _yval = (
                     isocmd.isocmds[i]['Gaia_G_DR2Rev'][sel] +
-                    5*np.log10(np.nanmedian(cg18_df['parallax']/1e3)) + 5
+                    5*np.log10(np.nanmedian(core_df['parallax']/1e3)) + 5
                     + AVG_AG
                     + corr
                 )
@@ -768,7 +768,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
                 #corr = 7.60
                 _yval = (
                     iso_df[sel]['Gmag'] +
-                    5*np.log10(np.nanmedian(cg18_df['parallax']/1e3)) + 5
+                    5*np.log10(np.nanmedian(core_df['parallax']/1e3)) + 5
                     + AVG_AG
                     + corr
                 )
@@ -792,7 +792,7 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
                 nored_y = (
                     nored_iso_df[sel]['Gmag'] +
-                    5*np.log10(np.nanmedian(cg18_df['parallax']/1e3)) + 5
+                    5*np.log10(np.nanmedian(core_df['parallax']/1e3)) + 5
                     + AVG_AG
                     + corr
                 )
@@ -2216,11 +2216,11 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
     Match the kinematic members against the AUTOrotation sample.
     """
 
-    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
+    nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
 
     rot_df, lc_df = get_autorotation_dataframe(runid='NGC_2516', returnbase=True)
 
-    dfs = [nbhd_df, cg18_df, kc19_df, trgt_df, rot_df]
+    dfs = [nbhd_df, core_df, halo_df, trgt_df, rot_df]
     nbhd_df.source_id = nbhd_df.source_id.astype(np.int64)
     for _df in dfs:
         assert type(_df.source_id.iloc[0]) == np.int64
@@ -2292,19 +2292,19 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
             )
 
             axs[i,j].scatter(
-                kc19_df[sel_comp(kc19_df)][xv], kc19_df[sel_comp(kc19_df)][yv],
+                halo_df[sel_comp(halo_df)][xv], halo_df[sel_comp(halo_df)][yv],
                 c='orange', alpha=1, zorder=3, s=12, rasterized=True,
                 label='Halo', linewidths=0.1, marker='.', edgecolors='k'
             )
             axs[i,j].scatter(
-                kc19_df[sel_rotn(kc19_df)][xv], kc19_df[sel_rotn(kc19_df)][yv],
+                halo_df[sel_rotn(halo_df)][xv], halo_df[sel_rotn(halo_df)][yv],
                 c='lightskyblue', alpha=1, zorder=6, s=12, rasterized=True,
                 label='Halo + P$_\mathrm{rot}$', linewidths=0.1, marker='.',
                 edgecolors='k'
             )
 
             axs[i,j].scatter(
-                cg18_df[sel_comp(cg18_df)][xv], cg18_df[sel_comp(cg18_df)][yv],
+                core_df[sel_comp(core_df)][xv], core_df[sel_comp(core_df)][yv],
                 c='k', alpha=0.9, zorder=7, s=2,
                 rasterized=True, label='Core', marker='.', edgecolors='none'
             )
@@ -2402,37 +2402,37 @@ def plot_physical_X_rotation(outdir, basedata='bright', show1937=0,
         do_histogram: also plot histogram_physical_X_rotation
     """
 
-    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
+    nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
     rot_df, lc_df = get_autorotation_dataframe(runid='NGC_2516', returnbase=True)
 
     # select the high probability CG18 members to get median parameters
-    cg18_path = os.path.join(DATADIR, 'gaia', 'CantatGaudin2018_vizier_only_NGC2516.fits')
-    t_df = Table(fits.open(cg18_path)[1].data).to_pandas()
+    core_path = os.path.join(DATADIR, 'gaia', 'CantatGaudin2018_vizier_only_NGC2516.fits')
+    t_df = Table(fits.open(core_path)[1].data).to_pandas()
     if basedata == 'fullfaint':
-        assert len(t_df) == len(cg18_df)
+        assert len(t_df) == len(core_df)
 
     CUTOFF_PROB = 0.7
     sel = (t_df.PMemb > CUTOFF_PROB)
 
     s_t_df = t_df[sel]
 
-    assert np.all(s_t_df.Source.isin(cg18_df.source_id))
+    assert np.all(s_t_df.Source.isin(core_df.source_id))
 
-    sel = cg18_df.source_id.isin(s_t_df.Source)
+    sel = core_df.source_id.isin(s_t_df.Source)
 
-    s_cg18_df = cg18_df[sel]
+    s_core_df = core_df[sel]
 
     rvkey = (
         'radial_velocity' if 'edr3' not in basedata else 'dr2_radial_velocity'
     )
     getcols = ['ra', 'dec', 'parallax', 'pmra', 'pmdec', rvkey]
 
-    med_df = pd.DataFrame(s_cg18_df[getcols].median()).T
-    std_df = pd.DataFrame(s_cg18_df[getcols].std()).T
+    med_df = pd.DataFrame(s_core_df[getcols].median()).T
+    std_df = pd.DataFrame(s_core_df[getcols].std()).T
 
     from earhart.physicalpositions import append_physicalpositions
-    cg18_df = append_physicalpositions(cg18_df, med_df)
-    kc19_df = append_physicalpositions(kc19_df, med_df)
+    core_df = append_physicalpositions(core_df, med_df)
+    halo_df = append_physicalpositions(halo_df, med_df)
     nbhd_df = append_physicalpositions(nbhd_df, med_df)
     trgt_df = append_physicalpositions(trgt_df, med_df)
 
@@ -2484,19 +2484,19 @@ def plot_physical_X_rotation(outdir, basedata='bright', show1937=0,
         # )
 
         axs[i].scatter(
-            kc19_df[sel_comp(kc19_df)][xv], kc19_df[sel_comp(kc19_df)][yv],
+            halo_df[sel_comp(halo_df)][xv], halo_df[sel_comp(halo_df)][yv],
             c='orange', alpha=1, zorder=3, s=12, rasterized=True,
             label='Halo', linewidths=0.1, marker='.', edgecolors='k'
         )
         axs[i].scatter(
-            kc19_df[sel_rotn(kc19_df)][xv], kc19_df[sel_rotn(kc19_df)][yv],
+            halo_df[sel_rotn(halo_df)][xv], halo_df[sel_rotn(halo_df)][yv],
             c='lightskyblue', alpha=1, zorder=6, s=12, rasterized=True,
             label='Halo + P$_\mathrm{rot}$', linewidths=0.1, marker='.',
             edgecolors='k'
         )
 
         axs[i].scatter(
-            cg18_df[sel_comp(cg18_df)][xv], cg18_df[sel_comp(cg18_df)][yv],
+            core_df[sel_comp(core_df)][xv], core_df[sel_comp(core_df)][yv],
             c='k', alpha=1, zorder=7, s=2, edgecolors='none',
             rasterized=True, label='Core', marker='.'
         )
@@ -2544,9 +2544,9 @@ def plot_physical_X_rotation(outdir, basedata='bright', show1937=0,
             return
 
         # this is a plot of the COMBINED core + halo stars...
-        cg18_df['subcluster'] = 'core'
-        kc19_df['subcluster'] = 'halo'
-        mdf = pd.concat((cg18_df, kc19_df))
+        core_df['subcluster'] = 'core'
+        halo_df['subcluster'] = 'halo'
+        mdf = pd.concat((core_df, halo_df))
         comp_df = mdf[sel_comp(mdf)]
         rot_df = mdf[sel_rotn(mdf)]
 
