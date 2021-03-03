@@ -23,6 +23,7 @@ cp ../results/full_kinematics_X_rotation/full_kinematics_X_rotation_fullfaint_ed
 
 cp ../results/compstar_rotation/compstar_rotation_NGC_2516_vs_BpmRp_linear.pdf f9.pdf
 
+cp ../results/venn/venn.pdf f10.pdf
 
 # cp ../results/calc_backintegration_ngc2516/core_halo_to_ngc2516_separation.pdf f7a.pdf
 # cp ../results/calc_backintegration_ngc2516/core_halo_to_ngc2516_separation_fix_rvs.pdf f7b.pdf

@@ -406,7 +406,11 @@ def _get_fullfaint_dataframes():
     print(f'Got {len(full_df)} unique sources in the cluster.')
 
     full_df['in_CG18'] = full_df.source_id.isin(cg18_df.source_id)
+    kc19_df = pd.read_csv(kc19path)
+    kc19_df = kc19_df[kc19_df.group_id == 613]
     full_df['in_KC19'] = full_df.source_id.isin(kc19_df.source_id)
+    m21_df = Table(fits.open(m21path)[1].data).to_pandas()
+    m21_df = m21_df.rename(mapper={'GaiaDR2': 'source_id'}, axis=1)
     full_df['in_M21'] = full_df.source_id.isin(m21_df.source_id)
 
     return nbhd_df, core_df, halo_df, full_df, target_df

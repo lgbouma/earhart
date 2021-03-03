@@ -24,6 +24,7 @@ Contents:
         plot_edr3_blending_vs_apparentmag
         plot_bisector_span_vs_RV
         plot_backintegration_ngc2516
+        plot_venn
 """
 import os, corner, pickle
 from glob import glob
@@ -2647,3 +2648,31 @@ def plot_physical_X_rotation(outdir, basedata='bright', show1937=0,
         outpath = os.path.join(outdir, f'rot_df_physical_X_rotation{s}.csv')
         rot_df.to_csv(outpath, index=False)
         print(f'Made {outpath}')
+
+
+def plot_venn(outdir):
+
+    basedata = 'fullfaint'
+    nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
+
+    cg18_set = set(full_df[full_df.in_CG18].source_id)
+    kc19_set = set(full_df[full_df.in_KC19].source_id)
+    m21_set = set(full_df[full_df.in_M21].source_id)
+
+    from matplotlib_venn import venn3, venn3_circles
+
+    fig, ax = plt.subplots(figsize=(4,4))
+
+    v = venn3(
+        [cg18_set, kc19_set, m21_set],
+        set_labels=('CG18', 'KC19', 'M21'),
+        normalize_to=1e1
+    )
+
+    v.get_patch_by_id('100').set_alpha(0.2)
+    v.get_patch_by_id('010').set_alpha(0.2)
+    v.get_patch_by_id('001').set_alpha(0.2)
+
+    outpath = os.path.join(outdir, f'venn.png')
+    savefig(fig, outpath)
+
