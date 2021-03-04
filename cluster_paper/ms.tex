@@ -74,7 +74,10 @@
 %\NewPageAfterKeywords
 \input{authors.tex}
 
-% Context, aims, methods, results, conclusions.
+% NB. the "classical tidal radius" is from e.g., Piskunov+08 or
+% Kharchenko+2013. The latter givs a radius r2 of 0.71 degrees. At 380
+% pc, corresponds to 4.7pc. The King tidal radius given by K13 is
+% 7.70pc.
 \begin{abstract}
   Recent analyses of the Gaia data have reported the existence of
   diffuse stellar populations surrounding nearby open clusters. 
@@ -85,8 +88,7 @@
   aggressive clustering algorithms.
   In this study, we focus on a halo with a length of 300\,pc reported
   around the $\approx$175\,Myr open cluster NGC\,2516.
-  %TODO: Says who? Says Piskunov+08
-  The classical tidal radius of the cluster is $\approx$10\,pc.
+  The classical tidal radius of the cluster is $\lesssim$10\,pc.
   Combining photometry from Gaia, rotation periods from TESS, and
   lithium measurements from Gaia-ESO and GALAH, we find that the halo
   of NGC\,2516 is real and coeval with the core.
@@ -119,17 +121,18 @@
 
 \section{Introduction}
 
-Star clusters form in hierarchically structured molecular clouds
+Star clusters form from the densest filaments of 
+hierarchically structured molecular clouds
 \citep{shu_star_1987}.  Over the first 10\,Myr, feedback effects
 including protostellar outflows, photoionization, radiation pressure,
 and supernova shocks disperse the gas out of the cloud
-\citep{krumholz_star_2019}.  Since only a small fraction of the cloud
-mass is converted into stars ($\sim 1\%$), gas dispersal enables the
+\citep{krumholz_star_2019}.  Since only $\sim 1\%$ of the cloud
+mass is converted into stars, gas dispersal enables the
 majority ($\sim$90\%) of stars in the cluster to escape the cluster's
 gravitational well \citep{lada_embedded_2003}.
 
 From 10 to 1000\,Myr, the cluster remnants that survive gas dispersal
-suffer an onslaught that almost always leads to dissolution.  Within
+suffer an onslaught that almost always leads to dissolution.  Inside
 the cluster supernovae, AGB winds, and close stellar encounters lead
 to additional mass loss \citep{lamers_mass_loss_2010}.  Extrinsic to
 the cluster, collisions with giant molecular clouds
@@ -138,17 +141,16 @@ tide in both the radial and vertical dimensions further promote
 stellar escape \citep[{\it
 e.g.},][]{fukushige_timescale_2000,bergond_gravitational_2001}.
 
-% NOTE: words in this paragraph need work
 Finding the stars that have dispersed from their natal clusters into
-the galactic field is of interest for a few reasons.  One is to
-understand the predominant conditions under which stars and star
-clusters form \citep[{\it e.g.},][]{wright_kinematics_2018}.  Another
+the galactic field is a pressing topic for a few reasons.  One is to
+understand the spatial extent and duration of star formation events
+\citep[{\it e.g.},][]{wright_kinematics_2018}.  Another
 is to understand the Sun's birth environment \citep{adams_birth_2010}.
 Did the Sun form in an open cluster, and if so, what type? Is there
 any hope at identifying the stars that formed near the Sun?  Open
 clusters and their dispersed remnants also provide a test case for
 ``chemical tagging'' \citep[{\it
-e.g.},]{freeman_new_2002,hogg_chemical_2016,ness_dopplergangers_2018}.
+e.g.},][]{freeman_new_2002,hogg_chemical_2016,ness_dopplergangers_2018}.
 The converse holds too: one can use chemical tagging to test the
 viability of kinematic clustering methods.
 
@@ -170,8 +172,8 @@ On one end are coeval groups with no discernable cores ({\it e.g.},
 Psc Eri and $\mu$ Tau,
 \citealt{meingast_psceri_2019,curtis_tess_2019,gagne_mutau_2020}).  On
 the other are hierarchically structured associations with many over
-and under-densities  \citep[{\it e.g.} Sco-Cen and Vela
-OB2][]{pecaut_star_2016,cantatgaudin_velaOB2_2019}.  Here, we focus on
+and under-densities  \citep[{\it e.g.} the Sco-Cen and Vela
+associations][]{pecaut_star_2016,cantatgaudin_velaOB2_2019}.  Here, we focus on
 an intermediate regime: low-density halos associated with a single
 overdensity, typically an open cluster that was known before Gaia
 \citep[see][]{kounkel_untangling_2019,kounkel_untanglingII_2020,meingast_2021}.
@@ -189,19 +191,19 @@ e.g.},][]{wallace_m4_2018}.  Some unsupervised methods yield dispersed
 and asymmetric structures with number densities down to 100 times less
 than the field around the same regions (see {\it e.g.}
 \citealt{kounkel_untangling_2019} and \citealt{meingast_2021}).
-Difference between different clustering methods raises the issue of
+Differences between different clustering methods raise the issue of
 how contaminated the resulting samples are, and in some cases whether
 the reported structures are truly coeval stellar populations at all.
 
 We have recently been making TESS light curves of stars reported to be
 members of coeval populations (CDIPS, \citealt{bouma_cdipsI_2019}).
-Our analysis of TESS Cycle 1 (Sectors 1-13) yielded light curves of
+Our analysis of TESS Sectors 1-13 yielded light curves of
 \numsouthernuniqlcs candidate cluster members in the Southern Ecliptic
 hemisphere, which are available on
 MAST\footnote{\url{https://archive.stsci.edu/hlsp/cdips}}.
 
 As part of this broader project, we focus here on a modest question:
-in just a single rich southern open cluster, is the cluster halo truly
+in just a single southern open cluster, is the cluster halo truly
 coeval with the core?  We chose NGC\,2516 for this analysis since it
 is young (100--200\,Myr) and sufficiently nearby ($d\approx400$\,pc)
 to facilitate photometric rotation measurements using TESS, and some
@@ -220,11 +222,11 @@ being in ``halos'', ``strings'', ``coronae'', ``snakes'',
 ``outskirts'', and ``tidal tails'' \citep[{\it
 e.g.},][]{davenport_death_2010,kounkel_untangling_2019,roser_hyades_2019,tian_discovery_2020,meingast_2021}.
 The latter term implies a particular model for the formation of the
-association.  We opt to use ``halo'' because it is concise and model
+association.  We opt for ``halo'' because it is concise and model
 agnostic.  It suffers however from the suggestion of spherical
-symmetry.  The halo of NGC\,2516 might be better-described as ``tidal
-tails'', but the primary goal of this study however is
-not to verify this claim.
+symmetry.  The halo of NGC\,2516 might be best-described as ``tails'',
+but the primary goal of this study is
+not to verify whether these tails are tidal.
 
 Section~\ref{sec:gaia} summarizes the astrometric analyses of the Gaia
 data that led to our interest in NGC\,2516.  Section~\ref{sec:agedate}
@@ -264,10 +266,11 @@ Section~\ref{sec:conclusion} gives our conclusions.
 	}
 \end{figure*}
 
-We selected candidate \cn\ members based on those available in the
-literature.  While a number of pre-Gaia catalogs were available, the
+We selected candidate \cn\ members based on those reported in the
+literature.  While a number of pre-Gaia 
+studies have been performed, the
 purity and accuracy of the Gaia-derived results are the current state
-of the art.  We therefore adopted what we viewed as the most
+of the art \citep{jeffries_ngc2516_2001,Kharchenko_et_al_2013}.  We therefore adopted what we viewed as the most
 interesting clustering samples to compare: those of
 \citet{cantatgaudin_gaia_2018}, \citet{kounkel_untangling_2019} and
 \citet{meingast_2021}.  We refer to these studies in the following as
@@ -276,56 +279,49 @@ interesting clustering samples to compare: those of
 respectively.  A useful visualization of the different samples is
 available online\footnote{
   \url{https://homepage.univie.ac.at/stefan.meingast/coronae.html},
-  made by \citet{meingast_2021}.}.  While we considering performing
+  made by \citet{meingast_2021}.}.  While we considered performing
 our own clustering analysis using the Gaia data, such an effort would
 in effect only replicate the work of these investigators.  We opt to
 instead use their studies as starting points.
 
-The Gaia clustering studies each used slightly different selection
-functions, with different results.
-\citetalias{cantatgaudin_gaia_2018} considered stars brighter than
-$G=18$\,mag within a few degrees of the cluster center, and reported
-1106 candidate members of \cn.  \citetalias{kounkel_untangling_2019}
-and \citetalias{meingast_2021} considered stars up to $\approx$1\,mag
-fainter, and reported 3003 and 1860 members respectively.  The
-unsupervised clustering techniques that each of these studies applied
-to the second Gaia Data Release are discussed
-Appendix~\ref{app:clustering}, as is the overlap between their
-resulting membership samples.
-
-
-% %FIXME 
-% \citetalias{cantatgaudin_gaia_2018} considered a cone of radius {\bf
-% XX DEGREES} centered on the cluster's position.
-% Given the classically reported tidal radius of {\it e.g.,} 9\,pc, CITE
-% Piskunov+2008, which is 8$^\circ$ at the cluster distance of
-% $\approx$400\,pc, perhaps they should have considered stars further
-% out.
-
+The Gaia clustering studies each used different selection functions,
+which yielded different results.  \citetalias{cantatgaudin_gaia_2018}
+considered stars brighter than $G=18$\,mag within a few degrees of the
+cluster center, and reported 1106 candidate members of \cn.
+\citetalias{kounkel_untangling_2019} and \citetalias{meingast_2021}
+considered stars up to $\approx$1\,mag fainter, and reported 3003 and
+1860 members respectively.  The unsupervised clustering techniques
+that each of these studies applied to the second Gaia data release are
+discussed Appendix~\ref{app:clustering}, as is the overlap between
+their resulting membership samples.
 
 Figure~\ref{fig:gaia6d} shows the cluster members reported by each
-study.  The \citetalias{cantatgaudin_gaia_2018} members are all within
-a few degrees of the cluster center, while the
+study in the space of positions, proper motions, and radial velocity
+when available.  The \citetalias{cantatgaudin_gaia_2018} members are
+all within a few degrees of the cluster center, while the
 \citetalias{kounkel_untangling_2019} and \citetalias{meingast_2021}
-members span tens of degrees.  In physical units, the physical size of
-the entire structure is $\approx20\times10\times350$\,pc.
-As a side note, stars in the upper right quadrant of $\mu_{\alpha'}$
-{\it vs.} $\mu_\delta$ were reported almost entirely by
+members (the ``halo'') span tens of degrees. 
+Inverting the parallax shows that members have been reported from
+line-of-sight distances ranging from $300$ to $600\,$pc.
+Stars in the upper right quadrant of the $\mu_{\alpha'}$ {\it vs.}
+$\mu_\delta$ projection were reported almost entirely by
 \citet{meingast_2021}.
 
 In Figure~\ref{fig:gaia6d}, and for the remainder of the study, we
 describe the \citetalias{cantatgaudin_gaia_2018} members as the
 ``core'' of the cluster, and any non-overlapping
 \citetalias{kounkel_untangling_2019} and \citetalias{meingast_2021}
-members as the ``halo''.  These definitions imply that there are
-\ncore core members, and \nhalo halo members.  This distinction is
+members as the ``halo''.  This defintion implies that there are
+\ncore\ core members, and \nhalo\ halo members.  The distinction is
 perhaps tautological, because \citetalias{cantatgaudin_gaia_2018} did
 not extend their search for members out to tens of degrees from the
-cluster center.  Nonetheless, the membership catalog of
-\citetalias{cantatgaudin_gaia_2018} echoes that of many previous
-investigators (CITE, CITE, CITE), and is consistent with the general
-{\it visual} impression that one has when looking at \cn\ in the night
-sky: it appears to span $\approx$2$^\circ$, and not $\approx20^\circ$.
+cluster center.  Nonetheless, the \citetalias{cantatgaudin_gaia_2018}
+membership catalog is consistent with that of many previous
+investigators \citep[{\it
+e.g.},][]{jeffries_ngc2516_2001,Kharchenko_et_al_2013}, and is
+consistent with the general {\it visual} impression that one has when
+looking at \cn\ in the night sky: it appears to span
+$\approx$2$^\circ$, not $\approx20^\circ$.
 
 The discrepancy between our canonical understanding of open clusters
 and the possibility of a diffuse population existing around \cn\
@@ -342,12 +338,12 @@ following ``cube'' in right ascension, declination, and parallax:
   \pi\,[\mathrm{mas}] &\in [1.5, 4.0].
 \end{align}
 We imposed a magnitude limit of $G=19$\,mag, and ran the queries using
-the \texttt{astroquery.gaia} module (CITE).  We allowed the number of
-stars in the comparison sample to exceed that in the cluster sample by
-a factor of $\approx$5, to ensure broad sampling of stellar masses and
-evolutionary states.  We also required the comparison sample to not
-overlap with the cluster sample, which led to the omission of 1.1\% of
-the stars drawn from the volume noted above.
+the \texttt{astroquery.gaia} module \citep{astroquery_2018}.  We
+allowed the number of stars in the comparison sample to exceed that in
+the cluster sample by a factor of $\approx$5, to ensure broad sampling
+of stellar masses and evolutionary states.  We also required the
+comparison sample to not overlap with the cluster sample, which led to
+the omission of 1.1\% of the stars drawn from the volume noted above.
 
 
 \section{Age-Dating the Halo of NGC\,2516}
@@ -379,10 +375,9 @@ the stars drawn from the volume noted above.
     at intervals of $\log_{10}(t/\mathrm{yr})=\{8, 8.25, 8.5\}$.
     The arrow represents the average reddening correction applied
     to the models.
-    The main-sequence turn-off location and evolved stars suggests a
-    cluster age slightly older than the Pleiades (dark blue line).  The models diverge
+     The models diverge
     from the data for $M_\star \lesssim 0.45M_\odot$ ($\approx$M2V;
-    $\mathrm{Bp}-\mathrm{Rp}\approx2.2$).
+    $Bp-Rp\approx2.2$).
     \label{fig:hr}
   }
 \end{figure*}
@@ -407,7 +402,7 @@ A separate possible explanation for scatter in the halo's HR diagram
 could be differential reddening across different sightlines.  The
 reported halo spans 20$^\circ$ on-sky, and varies in position from
 about $b=-12^\circ$ to $b=-20^\circ$, with the stars closest to the
-galactic plane also being further from the Sun by up to 200\,pc
+galactic plane also being further from the Sun by up to 300\,pc
 (Figure~\ref{fig:gaia6d}).  Some empirical evidence for differential
 reddening is discussed in Appendix~\ref{app:diffred}. Based on the
 available evidence, we expect that both field star contamination and
@@ -477,6 +472,8 @@ interested in the blue edge. This appears most compatible with the 178
 Myr model.  These results are consistent with the MSTO age range of
 165 to 195\,Myr found by \citet{cummings_2018}, and we refer to their
 work for a more precise model-dependent comparison.
+This implies an absolute age slightly older than the Pleiades
+\citep[{\it cf.}][]{mermilliod_comparative_1981}.
 
 % FIXME: do you want to do the procedure below? Seems like overkill
 % given the Cummings study.
@@ -521,8 +518,6 @@ work for a more precise model-dependent comparison.
 	\vspace{-0.7cm}
 	\caption{ {\bf The core and halo of \cn\ in the space of rotation
     period and dereddened Gaia color.}
-    % The {\it top} plot shows periods against a linear scale, while the
-    % {\it bottom}  shows them against a logarithmic scale.
     The Pleiades \citep[125\,Myr][]{rebull_rotation_2016a}
     and Praesepe \citep[650\,Myr][]{douglas_poking_2017}
     are shown for reference.
@@ -535,14 +530,15 @@ work for a more precise model-dependent comparison.
 	}
 \end{figure*}
 
-First, we collected the \nkinematic Gaia DR2 source\_ids corresponding to the
-kinematically-identified core and halo members.  For each source, we first retrieved all
-available CDIPS light curves, on a per-sector basis. 
-This yielded
-\ncdips light curves, all brighter than $Rp=16$\,mag.
-The $Rp=16$\,mag cutoff imposed during the CDIPS processing corresponds
-roughly to $(Bp-Rp)_0$ of 2.2, or a spectral type of $\approx$M2V, at
-the distance of NGC\,2516.
+%FIXME: except actually, will need to redo with the new source list
+%too .......
+First, we collected the \nkinematic Gaia DR2 source\_ids corresponding
+to the kinematically-identified core and halo members.  For each
+source, we first retrieved all available CDIPS light curves, on a
+per-sector basis.  This yielded \ncdips light curves, all brighter
+than $Rp=16$\,mag.  The $Rp=16$\,mag cutoff imposed during the CDIPS
+processing corresponds roughly to $(Bp-Rp)_0$ of 2.2, or a spectral
+type of $\approx$M2V, at the distance of NGC\,2516.
 
 We cleaned and stitched the light curves as follows.
 First, we detrended the systematics in each sector individually, and
@@ -629,29 +625,59 @@ we get an age of ZZZ+/-AAA.
 	}
 \end{figure*}
 
-\begin{figure*}[t]
+\begin{figure}[t]
 	\begin{center}
-		\leavevmode
-		\subfloat{
-			\includegraphics[width=0.75\textwidth]{f8a.pdf}
-		}
-	
-		\subfloat{
-			\includegraphics[width=0.75\textwidth]{f8b.pdf}
-		}
+			\includegraphics[width=0.49\textwidth]{f8a.pdf}
 	\end{center}
 	\vspace{-0.7cm}
-	\caption{ {\bf Gaia-based components of NGC\,2516 in position and
-    velocity space, cross-matched against the rotators, in physical
-    units.}
-    {\it Top:} projections in position and 2d-tangential velocity
-    space. {\it Bottom:} radially binned versus 3d position and
-    2d velocity difference.
-    Bins have width 25\,pc in position, and 2.0\,km\,s$^{-1}$ in
-    velocity.
-		\label{fig:physical_x_rotn}
+  \caption{ {\bf Kinematic members of NGC\,2516, cross-matched against
+  rotational members.}
+    The projections are in galactic position coordinates and 2d-tangential velocity
+    space.
+    \label{fig:physical_x_rotn}
 	}
-\end{figure*}
+\end{figure}
+
+\begin{figure}[t]
+	\begin{center}
+			\includegraphics[width=0.49\textwidth]{f8b.pdf}
+	\end{center}
+	\vspace{-0.7cm}
+  \caption{ {\bf Histogram of Figure~\ref{fig:physical_x_rotn}, binned
+  versus 3d separation from the core and 2d velocity difference.} Bins have width
+  25\,pc in position, and 2.0\,km\,s$^{-1}$ in velocity.
+  {\bf Uncertainties in the fraction are taken as the quadrature sum of
+  the rel unc of the numerator and denominator (FIXME)}.
+  Bonafide members appear to exist hundreds of parsecs from the core, and
+  up to $\approx$10\,km\,s$^{-1}$ in tangential velocity separation.
+  \label{fig:hist_physical_x_rotn}
+	}
+\end{figure}
+
+
+%\begin{figure*}[t]
+%	\begin{center}
+%		\leavevmode
+%		\subfloat{
+%			\includegraphics[width=0.75\textwidth]{f8a.pdf}
+%		}
+%	
+%		\subfloat{
+%			\includegraphics[width=0.75\textwidth]{f8b.pdf}
+%		}
+%	\end{center}
+%	\vspace{-0.7cm}
+%	\caption{ {\bf Gaia-based components of NGC\,2516 in position and
+%    velocity space, cross-matched against the rotators, in physical
+%    units.}
+%    {\it Top:} projections in position and 2d-tangential velocity
+%    space. {\it Bottom:} radially binned versus 3d position and
+%    2d velocity difference.
+%    Bins have width 25\,pc in position, and 2.0\,km\,s$^{-1}$ in
+%    velocity.
+%		\label{fig:physical_x_rotn}
+%	}
+%\end{figure*}
 
 How far away from the core, in position and velocity space, does the
 halo actually extend?  We can explore this by crossmatching the
@@ -1140,7 +1166,7 @@ members for their efforts to make the mission a continued success.
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ {\bf Different clustering techniques yield different
-  outcomes.} 3298 unique candidate cluster members found
+  outcomes.} \nkinematic unique candidate cluster members found
   using three different techniques are considered in this study.
   \citetalias{cantatgaudin_gaia_2018}: \citet{cantatgaudin_gaia_2018},
   \citetalias{kounkel_untangling_2019}:
@@ -1150,7 +1176,16 @@ members for their efforts to make the mission a continued success.
 	}
 \end{figure*}
 
-
+Figure~\ref{fig:venn} is a Venn diagram showing the overlap between
+the three membership catalogs concatenated in this study.  99\% of the
+\citetalias{cantatgaudin_gaia_2018} sample overlaps with
+\citetalias{kounkel_untangling_2019}, \citetalias{meingast_2021}, or
+both.  By comparison, 36\% of the \citetalias{kounkel_untangling_2019}
+sample, and 15\% of the \citetalias{meingast_2021} sample are
+non-overlapping.
+The data---Gaia DR2---used by all the studies was the same.
+What are the differences in methodology that produce these different
+outcomes?
 
 %
 % TODO: the following two paragraphs, WHEN QUOTED, are ENTIRELY FROM

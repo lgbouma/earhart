@@ -1,4 +1,5 @@
-cp ../results/cluster_membership/full_kinematics_bright_galactic.pdf f1.pdf
+#cp ../results/cluster_membership/full_kinematics_bright_galactic.pdf f1.pdf
+cp ../results/cluster_membership/full_kinematics_fullfaint_galactic.pdf f1.pdf
 
 cp ../results/hr/hr_Bp_m_Rp_fullfaint_edr3.pdf f2a.pdf
 cp ../results/hr/hr_parsec_Bp_m_Rp_parsec_fullfaint_edr3.pdf f2b.pdf
