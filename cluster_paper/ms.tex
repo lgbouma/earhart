@@ -87,7 +87,7 @@
   They could also be field stars---the false positives of overly
   aggressive clustering algorithms.
   In this study, we focus on a halo with a length of 300\,pc reported
-  around the $\approx$175\,Myr open cluster NGC\,2516.
+  around the $\approx$150\,Myr open cluster NGC\,2516.
   The classical tidal radius of the cluster is $\lesssim$10\,pc.
   Combining photometry from Gaia, rotation periods from TESS, and
   lithium measurements from Gaia-ESO and GALAH, we find that the halo
@@ -425,9 +425,10 @@ the \citet{odonnell_1994} SED-dependent extinction law star-by-star
 through the PARSEC interface.  For the metallicity, we considered a
 range of super and sub-solar metallicities to fit as much of the locus
 from $0.5<Bp-Rp<1.5$ as possible, and settled on the slightly
-super-solar $[M/H]=0.06$.  Sub-solar metallicities led to model
-predictions too blue along the main sequence by $\approx$0.1\,mag.
-Our adopted metallicity agrees with that found by
+super-solar $[M/H]=0.06$ \citep{cummings_2011_li_iron}.  Sub-solar
+metallicities led to model predictions too blue along the main
+sequence by $\approx$0.1\,mag.  Our adopted metallicity agrees with
+the spectroscopic metallicity from
 \citet[][Sec~4.4.4]{cummings_2011_li_iron}, and with the iron
 abundance recently determined by the Gaia-ESO team
 \citep{baratella_gaiaeso_2020}, which represented an up-revision from
@@ -438,16 +439,17 @@ photometry.
 
 Overall, the data and models agree for masses above approximately
 0.45\,$M_\odot$.  However below this mass, the data and models diverge
-at colors redder than Bp-Rp$\approx2.2$.  The MIST isochrones showed a
-comparable disagreement \citep{choi_mesa_2016}.  Explanations invoking
-both starspots and incomplete molecular line lists have been proposed
-\citep[{\it
+at colors redder than Bp-Rp$\approx2.2$, in the sense that the model
+isochrones have lower luminosities and bluer colors than the
+observations.  The MIST isochrones showed a comparable disagreement
+\citep{choi_mesa_2016}.  Explanations invoking both starspots and
+incomplete molecular line lists have been proposed \citep[{\it
 e.g.},][]{stauffer_why_2003,feiden_magnetic_2013,rajpurohit_effective_2013,mann_spectrothermometry_2013,choi_mesa_2016}.
 We adopt the PARSEC isochrones since they diverge at slightly lower
 mass than the MIST models, due to the temperature-opacity calibration
 implemented by \citet{chen_improving_2014}.  For purposes of
-age-dating the cluster, we prefer to simply focus on the main-sequence
-turn-off (MSTO), since it is where the models have maximal predictive
+age-dating the cluster, we prefer to focus on the main-sequence
+turn-off (MSTO), since this is where the models have maximal predictive
 power.
 
 \citet{cummings_2018} presented techniques for mitigating some of the
@@ -530,12 +532,14 @@ This implies an absolute age slightly older than the Pleiades
 	}
 \end{figure*}
 
+We began our rotation analysis by considering all \nkinematic\
+candidate cluster members.  For each source, we first retrieved all
+available CDIPS light curves, on a per-sector basis.  
+
 %FIXME: except actually, will need to redo with the new source list
 %too .......
-First, we collected the \nkinematic Gaia DR2 source\_ids corresponding
-to the kinematically-identified core and halo members.  For each
-source, we first retrieved all available CDIPS light curves, on a
-per-sector basis.  This yielded \ncdips light curves, all brighter
+
+This yielded \ncdips light curves, all brighter
 than $Rp=16$\,mag.  The $Rp=16$\,mag cutoff imposed during the CDIPS
 processing corresponds roughly to $(Bp-Rp)_0$ of 2.2, or a spectral
 type of $\approx$M2V, at the distance of NGC\,2516.
@@ -586,20 +590,24 @@ suggest that the halo is real.
 
 To put the clusters on the same color scale, we needed to adopt
 reddening corrections.
+% FIXME: where did these reference tables come from???
 We assumed {X} for the Pleiades, and {Y} for Praesepe.
-For NGC\,2516, we queried the 2MASS DUST service to find the
-extinction parameters for the positions of each NGC\,2516 member
-(CITE: astrobase.services.dust; 2MASS DUST).  The mean and standard
-deviation of the E(B-V) values for the Schlegel+98 and SF11 maps were
-consistent, so we considered those of Schlegel+1998:
-$E(B-V)=0.206\pm0.039$.  Bonifacio+2000 noted though that Schlegel+98
-overestimate the reddening values when the color excess exceeds about
-0.10 mag. We applied their correction (Eq 1 from Bonifacio+2000),
-which led to an adopted $E(B-V)=0.102\pm0.019$.  Finally, to convert
-to Gaia colors we adopted the calibration of Stassun et al 2019, and
-assumed $E(Bp-Rp)=1.31 E(B-V)$ and $A_G=2.72 E(B-V)$.  This yielded
-$E(Bp-Rp)=0.134\pm0.025$, which is used in the plots.
-
+For NGC\,2516, we used the \texttt{astrobase.services.dust} module to
+query the 2MASS DUST
+service\footnote{\url{http://irsa.ipac.caltech.edu/applications/DUST}}
+and retrieve the extinction parameters for the positions of each
+NGC\,2516 member \citep{bhatti_astrobase_2018}.  The mean and standard
+deviation of the $E(B-V)$ values for the \citet{schlegel_maps_1998}
+and \citet{schlafly_measuring_2011} maps were consistent, so we
+adopted the average from \citet{schlegel_maps_1998}:
+$E(B-V)=0.206\pm0.039$.  \citet{bonifacio_search_2000}
+\citet{schlegel_maps_1998} maps overestimate the reddening values when
+the color excess exceeds about 0.10 mag. Applying the correction
+proposed by \citet{bonifacio_search_2000} leads to our adopted
+$E(B-V)=0.102\pm0.019$.  Finally, to convert to Gaia colors we adopted
+the calibration of \citet{stassun_TIC8_2019}, namely $E(Bp-Rp)=1.31
+E(B-V)$ and $A_G=2.72 E(B-V)$.  This yielded $E(Bp-Rp)=0.134\pm0.025$,
+which is used in the plots.
 
 The resulting gyrochronology age we find for the core is XXX.
 For the halo, the claimed age from gyrochronology is YYY.
@@ -918,16 +926,26 @@ One relevant connection may be to the ``Mamajek-2'' stellar group
 
 
 
+\subsection{What is the contamination fraction in the halo? Does it change vs. location?}
+
 \subsection{Are the ``very slow rotators'' bonafide members?}
 Unsure. They are not isotropically distributed around the
 cluster... so either triggered star formation (CITE, CITE), or they're
 actually field stars.
 
-\subsection{What is the contamination fraction in the halo? Does it change vs. location?}
-
 \subsection{Mass differences between center and outer reaches?}
 
 \subsection{Fast and blue rotators: are we going faster than other clusters?}
+
+\subsection{Absolute age of NGC 2516}
+Cummings & Kalirai (2018) favor 150 Myr based on MSTO.
+Godoy-Rivera+2021 favor 150 Myr... based on ...? what?
+"""
+Similar to Cummings et al. (2016), Cummings & Kalirai (2018),
+and Cummings et al. (2018) (see also Fritzewski et al. 2020 and Healy
+&
+McCullough 2020)
+"""
 
 \subsection{Ways of doing this at different ages}
 Some final discussion is warranted on the applicability of our
