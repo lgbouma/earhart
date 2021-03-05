@@ -51,10 +51,11 @@ def get_auto_rotation_periods(
 
     # retrieve the LS periods. only top period; since we're not bothering with
     # the "second period" classification option.
-    periods, lspvals, nequal, nclose, nfaint = [], [], [], [], []
+    periods, lspvals, nequal, nclose, nfaint, nsectors = [], [], [], [], [], []
     if get_spdm:
         spdmperiods, spdmvals = [], []
 
+    ix = 0
     for source_id, logpath in zip(source_ids, logfiles):
 
         s = load_status(logpath)
@@ -70,6 +71,8 @@ def get_auto_rotation_periods(
                 spdmperiods.append(float(d['spdm']['bestperiod']))
                 spdmvals.append(float(d['spdm']['bestlspval']))
 
+        n_sectors = int(s['lc_info']['n_sectors'])
+        nsectors.append(n_sectors)
         try:
             periods.append(float(s['report_info']['ls_period']))
             lspvals.append(float(s['report_info']['bestlspval']))
@@ -83,9 +86,9 @@ def get_auto_rotation_periods(
             nclose.append(np.nan)
             nfaint.append(np.nan)
 
-
     period_df = pd.DataFrame({
         'source_id': source_ids,
+        'n_cdips_sector': nsectors,
         'period': periods,
         'lspval': lspvals,
         'nequal': nequal,
@@ -96,14 +99,20 @@ def get_auto_rotation_periods(
         period_df['spdmperiod'] = spdmperiods
         period_df['spdmval'] = spdmvals
 
+    print(f'Got {len(period_df[period_df.n_cdips_sector > 0])} sources with at least 1 cdips sector')
     print(f'Got {len(period_df[~pd.isnull(period_df.period)])} periods')
 
     # get the runid's source list
     if 'compstar' not in runid:
-        sourcelistpath = os.path.join(
-            '/Users/luke/Dropbox/proj/cdips/data/cluster_data/cdips_catalog_split',
-            f'OC_MG_FINAL_v0.4_publishable_CUT_{runid}.csv'
-        )
+        if runid == 'NGC_2516':
+            sourcelistpath = (
+                '/Users/luke/Dropbox/proj/cdips/data/cluster_data/NGC_2516_full_fullfaint_20210305.csv'
+            )
+        else:
+            sourcelistpath = os.path.join(
+                '/Users/luke/Dropbox/proj/cdips/data/cluster_data/cdips_catalog_split',
+                f'OC_MG_FINAL_v0.4_publishable_CUT_{runid}.csv'
+            )
     else:
         sourcelistpath = (
             f'/Users/luke/Dropbox/proj/earhart/results/tables/{runid}_sourcelist.csv'
@@ -128,22 +137,6 @@ def get_auto_rotation_periods(
     mdf = period_df.merge(
         df, how='inner', on='source_id'
     )
-
-    if 'compstar' not in runid:
-        # create "subcluster" column
-        core_sel = (
-            mdf.reference.str.contains('CantatGaudin_2018')
-        )
-        halo_sel = ~core_sel
-
-        corehalo_vec = np.ones(len(mdf)).astype(str)
-        corehalo_vec[core_sel] = 'core'
-        corehalo_vec[halo_sel] = 'halo'
-
-        mdf['subcluster'] = corehalo_vec
-
-    else:
-        mdf['subcluster'] = 'nbhd'
 
     outpath = f'../../data/rotation/{runid}_rotation_periods.csv'
     mdf.to_csv(

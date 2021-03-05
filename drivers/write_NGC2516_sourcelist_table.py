@@ -14,16 +14,13 @@ neighborhood members too.
 import os, corner, pickle
 import numpy as np, matplotlib.pyplot as plt, pandas as pd
 
-from earhart.helpers import (
-    get_gaia_basedata
-)
+from earhart.helpers import get_gaia_basedata
 from earhart.paths import RESULTSDIR
 
 OUTDIR = os.path.join(RESULTSDIR, 'tables')
 
 runid = "NGC_2516"
 basedata = 'fullfaint'
-
 nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
 
 dfdict = {

@@ -26,10 +26,11 @@
 \newcommand{\ncore}{1{,}106}  % "fullfaint" kinematic sample, CG18. from any call of earhat.helpers._get_fullfaint_dataframes
 \newcommand{\nhalo}{2{,}2192} % "fullfaint" kinematic sample, KC19+M21. from any call of earhat.helpers._get_fullfaint_dataframes
 
-% n rotation period logs: 2238 % ~/proj/cdips/results/allvariability_reports/NGC_2516/logs
-% ... which came from ~/Dropbox/proj/cdips/data/cluster_data/cdips_catalog_split/OC_MG_FINAL_v0.4_publishable_CUT_NGC_2516.csv
-% n all variability reports: 2201 % ~/proj/cdips/results/allvariability_reports/NGC_2516/reports
-\newcommand{\ncdips}{2,238\ } % e.g., from OC_MG_FINAL_v0.4_publishable_CUT_NGC_2516.csv. checked with plot_target_vs_actual_list_sanity_checks.py
+% from drivers.cluster_rotation.get_auto_rotation_periods.py
+% checked with plot_target_vs_actual_list_sanity_checks.py
+\newcommand{\ncdips}{2{,}205\ }
+\newcommand{\nkinematicrpltsixteen}{2{,}270\ }
+\newcommand{\nkinematicCGandKC}{2{,}236\ }
 
 \newcommand{\ncalibration}{9{,}619{,}784\ } % /nfs/phtess2/ar0/TESS/PROJ/lbouma/CDIPS_LCS/counts/check_sum, 2021.02.02
 \newcommand{\nnbhdcaliblc}{9{,}790\ } % get_auto_rotation_periods.py
@@ -533,22 +534,23 @@ This implies an absolute age slightly older than the Pleiades
 \end{figure*}
 
 We began our rotation analysis by considering all \nkinematic\
-candidate cluster members.  For each source, we first retrieved all
-available CDIPS light curves, on a per-sector basis.  
-
-%FIXME: except actually, will need to redo with the new source list
-%too .......
-
-This yielded \ncdips light curves, all brighter
-than $Rp=16$\,mag.  The $Rp=16$\,mag cutoff imposed during the CDIPS
+candidate members of \cn.  For each source, we first retrieved all
+available CDIPS light curves, on a per-sector basis.  This yielded
+\ncdips stars with at least one sector from a CDIPS light curve, all
+brighter than $Rp=16$\,mag.  \nkinematicrpltsixteen\ of the
+stars from the source list have $Rp<16$.  The difference is comprised
+of 34 stars unique to \citet{meingast_2021} which were not
+available at the time of the CDIPS reductions and stars falling on
+the TESS chip gaps.  The $Rp=16$\,mag cutoff imposed during the CDIPS
 processing corresponds roughly to $(Bp-Rp)_0$ of 2.2, or a spectral
 type of $\approx$M2V, at the distance of NGC\,2516.
 
-We cleaned and stitched the light curves as follows.
-First, we detrended the systematics in each sector individually, and
+We removed systematic trends shared between
+all light curves on each CCD in each sector individually, and
 stitched together the resulting light curves before searching for the
-periodicity.  Some details regarding our detrending approach are
-discussed in Appendix~\ref{app:detrending}.  After applying a
+periodicity.  Details regarding our detrending approach are
+discussed in Appendix~\ref{app:detrending}.  After applying the
+initial
 detrending step aimed at removing systematic trends, we proceeding
 with a few small cleaning steps aimed at improving the purity of the
 rotation period measurements: we masked 0.7 days at the beginning and
@@ -557,9 +559,9 @@ rejection window over the light curve, which removed any outlying
 points within $\pm3\times$MAD of the median in each window.
 
 We then measured the rotation period of the resulting light curve.  We
-used the the aperture radius that, based on theoretical expectations,
+used the CDIPS aperture radius that, based on theoretical expectations,
 was expected to give the optimal balance between light from the target
-and background-light (CITE Sullivan15).  This typically resulted in an
+and background-light \citep{Sullivan_2015}.  This typically resulted in an
 aperture radius of either 1 or 1.5 pixels.  To measure the periods, we
 used the periodogram implementations in \texttt{astrobase}, in
 particular the Stellingwerf PDM periodogram (CITE), along with the
@@ -938,12 +940,12 @@ actually field stars.
 \subsection{Fast and blue rotators: are we going faster than other clusters?}
 
 \subsection{Absolute age of NGC 2516}
-Cummings & Kalirai (2018) favor 150 Myr based on MSTO.
+Cummings \& Kalirai (2018) favor 150 Myr based on MSTO.
 Godoy-Rivera+2021 favor 150 Myr... based on ...? what?
 """
-Similar to Cummings et al. (2016), Cummings & Kalirai (2018),
+Similar to Cummings et al. (2016), Cummings \& Kalirai (2018),
 and Cummings et al. (2018) (see also Fritzewski et al. 2020 and Healy
-&
+\&
 McCullough 2020)
 """
 
