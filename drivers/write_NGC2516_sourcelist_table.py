@@ -1,9 +1,11 @@
 """
-Feb 2021
+Mar 2021
 
-Make the following CSV files of source lists in the neighborhood,
-core, and halo.
+Make CSV file of candidate members of the cluster. Include the
+neighborhood members too.
 
+    /Users/luke/Dropbox/proj/earhart/results/tables/NGC_2516_full_fullfaint.csv
+        (--> Has everything)
     /Users/luke/Dropbox/proj/earhart/results/tables/NGC_2516_nbhd_fullfaint.csv
     /Users/luke/Dropbox/proj/earhart/results/tables/NGC_2516_core_fullfaint.csv
     /Users/luke/Dropbox/proj/earhart/results/tables/NGC_2516_halo_fullfaint.csv
@@ -22,12 +24,13 @@ OUTDIR = os.path.join(RESULTSDIR, 'tables')
 runid = "NGC_2516"
 basedata = 'fullfaint'
 
-nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
+nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
 
 dfdict = {
+    'full': full_df,
     'nbhd': nbhd_df,
-    'core': cg18_df,
-    'halo': kc19_df,
+    'core': core_df,
+    'halo': halo_df,
     'trgt': trgt_df
 }
 
