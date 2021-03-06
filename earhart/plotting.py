@@ -1091,7 +1091,7 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     # make plot
     plt.close('all')
 
-    f, ax = plt.subplots(figsize=(4,3))
+    f, ax = plt.subplots(figsize=(4,5))
 
     classes = ['pleiades', 'praesepe', f'{runid}']
     colors = ['gray', 'gray', 'k']

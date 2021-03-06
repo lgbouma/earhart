@@ -18,27 +18,28 @@
 
 \newcommand{\cn}{NGC\,2516} % cluster name
 
-\newcommand{\numcdipslcs}{671{,}901\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
-\newcommand{\numsouthernuniqlcs}{483{,}407\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
-
+% gaia target sample numbers
 \newcommand{\nkinematic}{3{,}298\ } % "fullfaint" kinematic sample, core+halo (CG18+KC19+M21). from any call of earhat.helpers._get_fullfaint_dataframes
 \newcommand{\nnbhd}{13{,}843\ } % make_compstar_NGC_2516_sourcelist.py
 \newcommand{\ncore}{1{,}106}  % "fullfaint" kinematic sample, CG18. from any call of earhat.helpers._get_fullfaint_dataframes
 \newcommand{\nhalo}{2{,}2192} % "fullfaint" kinematic sample, KC19+M21. from any call of earhat.helpers._get_fullfaint_dataframes
 
-% from drivers.cluster_rotation.get_auto_rotation_periods.py
-% checked with plot_target_vs_actual_list_sanity_checks.py
+% from drivers.cluster_rotation.get_auto_rotation_periods.py;  checked with plot_target_vs_actual_list_sanity_checks.py
 \newcommand{\ncdips}{2{,}205\ }
 \newcommand{\nkinematicrpltsixteen}{2{,}270\ }
 \newcommand{\nkinematicCGandKC}{2{,}236\ }
+
+% cdips results numbers
+\newcommand{\numcdipslcs}{671{,}901\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
+\newcommand{\numsouthernuniqlcs}{483{,}407\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
 
 \newcommand{\ncalibration}{9{,}619{,}784\ } % /nfs/phtess2/ar0/TESS/PROJ/lbouma/CDIPS_LCS/counts/check_sum, 2021.02.02
 \newcommand{\nnbhdcaliblc}{9{,}790\ } % get_auto_rotation_periods.py
 \newcommand{\nnbhdcalibstar}{1{,}987\ } % get_auto_rotation_periods.py
 
-%FIXME these change depending on your cutoff. ensure the final numbers agree!
 \newcommand{\nautorotdenominator}{1{,}641\ } % plot_autorotation.py, w/ runid=NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
 \newcommand{\nautorotnumerator}{987\ } % plot_autorotation.py, For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
+\newcommand{\nautorotnumeratormatching}{507\ } % plot_autorotation.py, LSP=SPDM period
 \newcommand{\ncompstardenominator}{820\ } % plot_autorotation.py, w/ runid=compstar_NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. 
 \newcommand{\ncompstarnumerator}{365\ } % plot_autorotation.py
 \newcommand{\ncompfrac}{44.5\%} % plot_autorotation.py
@@ -419,17 +420,38 @@ We used the web
 interface\footnote{\url{http://stev.oapd.inaf.it/cgi-bin/cmd},
 \texttt{2021-02-26}, \texttt{CMD3.4}, \texttt{YBC} bolometric
 corrections as in \citet{chen_2019_YBC}.} to interpolate these
-isochrones at $\log_{10}(t/\mathrm{yr})=\{8, 8.25, 8.5\}$, and applied
-the reddening correction described in Section~\ref{subsec:tess}.  We
-assumed a reddening of $E(B-V)=0.102\pm0.019$, $R_V=3.1$, and applied
-the \citet{odonnell_1994} SED-dependent extinction law star-by-star
-through the PARSEC interface.  For the metallicity, we considered a
-range of super and sub-solar metallicities to fit as much of the locus
-from $0.5<Bp-Rp<1.5$ as possible, and settled on the slightly
-super-solar $[M/H]=0.06$ \citep{cummings_2011_li_iron}.  Sub-solar
-metallicities led to model predictions too blue along the main
-sequence by $\approx$0.1\,mag.  Our adopted metallicity agrees with
-the spectroscopic metallicity from
+isochrones at $\log_{10}(t/\mathrm{yr})=\{8, 8.25, 8.5\}$.
+
+To determine the reddening correction across the NGC\,2516 cluster, we
+queried the 2MASS
+DUST
+service\footnote{
+	\url{http://irsa.ipac.caltech.edu/applications/DUST};
+	query performed using the \texttt{astrobase.services.dust} module
+	\citep{bhatti_astrobase_2018}.
+}
+and retrieved the extinction parameters at the positions of each
+NGC\,2516 member.  The mean and standard
+deviation of the $E(B-V)$ values for the \citet{schlegel_maps_1998}
+and \citet{schlafly_measuring_2011} maps were consistent, so we
+adopted the average from \citet{schlegel_maps_1998}: $E(B-V)_{\rm
+S}=0.206\pm0.039$.  \citet{bonifacio_search_2000} found however that
+the \citet{schlegel_maps_1998} maps overestimate the reddening values
+when the color excess exceeds about 0.10\,mag. Applying the correction
+proposed by \citet{bonifacio_search_2000} leads to our adopted
+$E(B-V)=0.102\pm0.019$.  Finally, to convert to Gaia colors we used
+the calibration of \citet{stassun_TIC8_2019}, namely $E(Bp-Rp)=1.31
+E(B-V)$ and $A_G=2.72 E(B-V)$.  This yielded $E(Bp-Rp)=0.134\pm0.025$,
+which is used in the plots.  To redden the isochrones, we assumed
+$R_V=3.1$, and applied the \citet{odonnell_1994} SED-dependent
+extinction law star-by-star through the PARSEC interface. 
+
+For the metallicity, we considered a range of super and sub-solar
+metallicities to fit as much of the locus from $0.5<Bp-Rp<1.5$ as
+possible, and settled on the slightly super-solar $[M/H]=0.06$
+\citep{cummings_2011_li_iron}.  Sub-solar metallicities led to model
+predictions too blue along the main sequence by $\approx$0.1\,mag.
+Our adopted metallicity agrees with the spectroscopic metallicity from
 \citet[][Sec~4.4.4]{cummings_2011_li_iron}, and with the iron
 abundance recently determined by the Gaia-ESO team
 \citep{baratella_gaiaeso_2020}, which represented an up-revision from
@@ -509,21 +531,24 @@ This implies an absolute age slightly older than the Pleiades
 \begin{figure*}[t]
 	\begin{center}
 		\leavevmode
-    \includegraphics[width=0.75\textwidth]{f3a.pdf}
-		% \subfloat{
-		% 	\includegraphics[width=0.75\textwidth]{f3a.pdf}
-		% }
-	
-		% \subfloat{
-		% 	\includegraphics[width=0.75\textwidth]{f3b.pdf}
-		% }
+		\subfloat{
+			\includegraphics[width=0.49\textwidth]{f3a.pdf}
+			\includegraphics[width=0.49\textwidth]{f3b.pdf}
+		}
+	   %
+		%\subfloat{
+		%	\includegraphics[width=0.6\textwidth]{f3b.pdf}
+		%}
 	\end{center}
 	\vspace{-0.7cm}
-	\caption{ {\bf The core and halo of \cn\ in the space of rotation
+  \caption{ {\bf The core and halo of \cn\ in the space of rotation
     period and dereddened Gaia color.}
-    The Pleiades \citep[125\,Myr][]{rebull_rotation_2016a}
-    and Praesepe \citep[650\,Myr][]{douglas_poking_2017}
-    are shown for reference.
+    Subset $\mathcal{A}$ ({\it top}) and $\mathcal{B}$ ({\it bottom})
+    undergo successive degrees of automated cleaning, described in the
+    text.
+    The Pleiades \citep[125\,Myr][]{rebull_rotation_2016a} and
+    Praesepe \citep[650\,Myr][]{douglas_poking_2017} are shown for
+    reference.
     Stars in the core and the halo of NGC\,2516 appear
     gyrochronologically coeval with the Pleiades at (Bp-Rp)$_0$$<$1.25.
     There is a narrow range of color, from 1.25$<$(Bp-Rp)$_0$$<$1.75,
@@ -537,80 +562,70 @@ We began our rotation analysis by considering all \nkinematic\
 candidate members of \cn.  For each source, we first retrieved all
 available CDIPS light curves, on a per-sector basis.  This yielded
 \ncdips stars with at least one sector from a CDIPS light curve, all
-brighter than $Rp=16$\,mag.  \nkinematicrpltsixteen\ of the
-stars from the source list have $Rp<16$.  The difference is comprised
-of 34 stars unique to \citet{meingast_2021} which were not
-available at the time of the CDIPS reductions and stars falling on
-the TESS chip gaps.  The $Rp=16$\,mag cutoff imposed during the CDIPS
-processing corresponds roughly to $(Bp-Rp)_0$ of 2.2, or a spectral
-type of $\approx$M2V, at the distance of NGC\,2516.
+brighter than $Rp=16$\,mag.  \nkinematicrpltsixteen\ of the stars from
+the source list have $Rp<16$.  The difference is comprised of 34 stars
+unique to \citet{meingast_2021} which were not available at the time
+of the CDIPS reductions and stars falling on the TESS chip gaps.  The
+$Rp=16$\,mag cutoff imposed during the CDIPS processing corresponds
+roughly to $(Bp-Rp)_0$ of 2.2, or a spectral type of $\approx$M2V, at
+the distance of NGC\,2516.
 
-We removed systematic trends shared between
-all light curves on each CCD in each sector individually, and
-stitched together the resulting light curves before searching for the
-periodicity.  Details regarding our detrending approach are
-discussed in Appendix~\ref{app:detrending}.  After applying the
-initial
-detrending step aimed at removing systematic trends, we proceeding
-with a few small cleaning steps aimed at improving the purity of the
-rotation period measurements: we masked 0.7 days at the beginning and
-end of each spacecraft orbit, and ran a sliding standard-deviation
-rejection window over the light curve, which removed any outlying
-points within $\pm3\times$MAD of the median in each window.
+We removed systematic trends shared between all light curves on each
+CCD in each sector individually, and stitched together the resulting
+light curves before searching for the periodicity.  Details regarding
+our detrending approach are discussed in
+Appendix~\ref{app:detrending}.  After applying the initial detrending
+step aimed at removing systematic trends, we proceeding with a few
+small cleaning steps aimed at improving the purity of the rotation
+period measurements: we masked 0.7 days at the beginning and end of
+each spacecraft orbit, and ran a sliding standard-deviation rejection
+window over the light curve, which removed any outlying points within
+$\pm3\times$MAD of the median in each window.
 
-We then measured the rotation period of the resulting light curve.  We
-used the CDIPS aperture radius that, based on theoretical expectations,
-was expected to give the optimal balance between light from the target
-and background-light \citep{Sullivan_2015}.  This typically resulted in an
-aperture radius of either 1 or 1.5 pixels.  To measure the periods, we
-used the periodogram implementations in \texttt{astrobase}, in
-particular the Stellingwerf PDM periodogram (CITE), along with the
-more traditional Lomb-Scargle (CITE).  We recorded the top five
-periodogram peaks from each method, and their corresponding powers.
-Finally, as a check on crowding, we also recorded the number of stars
-within the aperture of equal brightness to the target stars, and of
-brightness with 1.25 and 2.5 TESS magnitudes of the target star.
+We then measured the rotation period from the resulting light curve.
+We used the CDIPS aperture radius that, based on theoretical
+expectations, was expected to give the optimal balance between light
+from the target and background-light \citep{Sullivan_2015}.  This
+typically resulted in an aperture radius of either 1 or 1.5 pixels.
+To measure the periods, we used the periodogram implementations in
+\texttt{astrobase}, in particular the Stellingwerf phase-dispersion
+minimization periodogram, along with the more traditional Lomb-Scargle
+\citep{lomb_1976,stellingwerf_period_1978,scargle_studies_1982,stellingwerf_period_2011,bhatti_astrobase_2018}.
+We recorded the top five periodogram peaks from each method, and their
+corresponding powers.  Finally, as a check on crowding, we also
+recorded the number of stars within the aperture of equal brightness
+to the target stars, and of brightness with 1.25 and 2.5 TESS
+magnitudes of the target star.
 
-Figure~\ref{fig:rot} shows the resulting rotation periods.  The points
-on this plot are the \nautorotnumerator light curves for which the peak Lomb Scargle
-periodogram period was below 15 days, the LS power exceeded 0.08, and
-for which no equal-brightness or greater companions were within the aperture. 
-We also required that at most one companion with brightness exceeding 
-one tenth of the target star could reside in the aperture.
-These
-selection criteria are entirely heuristic, and yielded
-\nautorotdenominator stars for which rotation periods might have been
-detected.  
-By exploring the different possible selection criteria, we found that
-the ones we adopted provided a
-reasonable balance between excluding stars on the slow sequence, {\it
-vs.} reporting spurious rotation periods in the ``void'' below the
-slow sequence, where the dominant signal was in fact from a
-neighboring star.
-Splitting the resulting sample into the ``core'' and the ``halo'', they
-suggest that the halo is real.
+Figure~\ref{fig:rot} shows the resulting rotation periods, following
+three different sets of cleaning criteria.  The first and second sets
+of criteria were entirely automated, and yielded subsets we denote
+$\mathcal{A}$ and $\mathcal{B}$.  For both subsets, we considered
+light curves for which the peak Lomb-Scargle periodogram period was
+below 15 days, the normalized Lomb-Scargle power exceeded 0.08, and
+for which no equal-brightness or greater companions were within the
+aperture.  We also required that the target star be the brightest star
+in the aperture, and that at most one companion with brightness
+exceeding one tenth of the target star's brightness be present in the
+aperture according to the Gaia DR2 source catalog.  For subset
+$\mathcal{A}$, this yielded \nautorotnumerator light curves, out of
+\nautorotdenominator stars for which rotation periods might plausibly
+have been detected.  For subset $\mathcal{B}$, we additionally
+required that the Lomb-Scargle and Stellingwerf phase-dispersion
+methods yielded periods identical to within 10\%.  This yielded
+\nautorotnumeratormatching light curves.
+Subset $\mathcal{A}$ is more complete than 
+subset $\mathcal{B}$, at the expense of greater contamination.
 
+{\bf TODO CORRECTLY}
 To put the clusters on the same color scale, we needed to adopt
 reddening corrections.
+For \cn, we used the same average reddening as described in
+Section~\ref{subsec:hr}.
 % FIXME: where did these reference tables come from???
-We assumed {X} for the Pleiades, and {Y} for Praesepe.
-For NGC\,2516, we used the \texttt{astrobase.services.dust} module to
-query the 2MASS DUST
-service\footnote{\url{http://irsa.ipac.caltech.edu/applications/DUST}}
-and retrieve the extinction parameters for the positions of each
-NGC\,2516 member \citep{bhatti_astrobase_2018}.  The mean and standard
-deviation of the $E(B-V)$ values for the \citet{schlegel_maps_1998}
-and \citet{schlafly_measuring_2011} maps were consistent, so we
-adopted the average from \citet{schlegel_maps_1998}:
-$E(B-V)=0.206\pm0.039$.  \citet{bonifacio_search_2000}
-\citet{schlegel_maps_1998} maps overestimate the reddening values when
-the color excess exceeds about 0.10 mag. Applying the correction
-proposed by \citet{bonifacio_search_2000} leads to our adopted
-$E(B-V)=0.102\pm0.019$.  Finally, to convert to Gaia colors we adopted
-the calibration of \citet{stassun_TIC8_2019}, namely $E(Bp-Rp)=1.31
-E(B-V)$ and $A_G=2.72 E(B-V)$.  This yielded $E(Bp-Rp)=0.134\pm0.025$,
-which is used in the plots.
+For the Pleiades, and for Praesepe, we used {\bf XXX, YYY}.
 
+{\bf TODO CORRECTLY}
 The resulting gyrochronology age we find for the core is XXX.
 For the halo, the claimed age from gyrochronology is YYY.
 Applying the same procedure to the field star comparison sample (see
