@@ -1109,7 +1109,16 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     ):
 
         if f'{runid}' not in _cls:
-            df = pd.read_csv(os.path.join(rotdir, f'curtis19_{_cls}.csv'))
+            t = Table.read(
+                os.path.join(rotdir, 'Curtis_2020_apjabbf58t5_mrt.txt'),
+                format='cds'
+            )
+            if _cls == 'pleiades':
+                df = t[t['Cluster'] == 'Pleiades'].to_pandas()
+            elif _cls == 'praesepe':
+                df = t[t['Cluster'] == 'Praesepe'].to_pandas()
+            else:
+                raise NotImplementedError
 
         else:
             df = get_autorotation_dataframe(
@@ -1121,18 +1130,21 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
             print(42*'-')
 
         if f'{runid}' not in _cls:
-            xval = get_interp_BpmRp_from_Teff(df['teff'])
-            df['BpmRp_interp'] = xval
-            df.to_csv(
-                os.path.join(rotdir, f'curtis19_{_cls}_BpmRpinterp.csv'),
-                index=False
-            )
+            xval = df['(BP-RP)0']
+
+            # NOTE: deprecated; based on the webplotdigitzing approach
+            # xval = get_interp_BpmRp_from_Teff(df['teff'])
+            # df['BpmRp_interp'] = xval
+            # df.to_csv(
+            #     os.path.join(rotdir, f'curtis19_{_cls}_BpmRpinterp.csv'),
+            #     index=False
+            # )
         else:
             xval = (
                 df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - E_BpmRp
             )
 
-        ykey = 'prot' if f'{runid}' not in _cls else 'period'
+        ykey = 'Prot' if f'{runid}' not in _cls else 'period'
 
         if core_halo and f'{runid}' in _cls:
             sel = (df.subcluster == 'core')

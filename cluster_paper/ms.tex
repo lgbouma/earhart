@@ -379,7 +379,7 @@ the omission of 1.1\% of the stars drawn from the volume noted above.
     to the models.
      The models diverge
     from the data for $M_\star \lesssim 0.45M_\odot$ ($\approx$M2V;
-    $Bp-Rp\approx2.2$).
+    $Bp-Rp\approx$2.2).
     \label{fig:hr}
   }
 \end{figure*}
@@ -462,7 +462,7 @@ photometry.
 
 Overall, the data and models agree for masses above approximately
 0.45\,$M_\odot$.  However below this mass, the data and models diverge
-at colors redder than Bp-Rp$\approx2.2$, in the sense that the model
+at colors redder than $Bp-Rp\approx2.2$, in the sense that the model
 isochrones have lower luminosities and bluer colors than the
 observations.  The MIST isochrones showed a comparable disagreement
 \citep{choi_mesa_2016}.  Explanations invoking both starspots and
@@ -498,7 +498,7 @@ Myr model.  These results are consistent with the MSTO age range of
 165 to 195\,Myr found by \citet{cummings_2018}, and we refer to their
 work for a more precise model-dependent comparison.
 This implies an absolute age slightly older than the Pleiades
-\citep[{\it cf.}][]{mermilliod_comparative_1981}.
+\citep[cf.][]{mermilliod_comparative_1981}.
 
 % FIXME: do you want to do the procedure below? Seems like overkill
 % given the Cummings study.
@@ -527,6 +527,7 @@ This implies an absolute age slightly older than the Pleiades
 \label{subsec:tess}
 
 \subsubsection{Cluster Star Sample}
+\label{subsubsec:cluster}
 
 \begin{figure*}[t]
 	\begin{center}
@@ -544,14 +545,13 @@ This implies an absolute age slightly older than the Pleiades
   \caption{ {\bf The core and halo of \cn\ in the space of rotation
     period and dereddened Gaia color.}
     Subset $\mathcal{A}$ ({\it top}) and $\mathcal{B}$ ({\it bottom})
-    undergo successive degrees of automated cleaning, described in the
-    text.
-    The Pleiades \citep[125\,Myr][]{rebull_rotation_2016a} and
-    Praesepe \citep[650\,Myr][]{douglas_poking_2017} are shown for
+    undergo successive degrees of automated cleaning, described in Section~\ref{subsubsec:cluster}.
+    The Pleiades \citep[120\,Myr;][]{rebull_rotation_2016a} and
+    Praesepe \citep[650\,Myr;][]{douglas_poking_2017} are shown for
     reference.
     Stars in the core and the halo of NGC\,2516 appear
-    gyrochronologically coeval with the Pleiades at (Bp-Rp)$_0$$<$1.25.
-    There is a narrow range of color, from 1.25$<$(Bp-Rp)$_0$$<$1.75,
+    gyrochronologically coeval with the Pleiades at $(Bp-Rp)_0$$<$1.2.
+    There is a narrow range of color, from $1.2<(Bp-Rp)_0<1.7$,
     in which some NGC\,2516 members appear elevated with respect to
     the Pleiades, suggesting a slightly older age.
 		\label{fig:rot}
@@ -604,28 +604,65 @@ $\mathcal{A}$ and $\mathcal{B}$.  For both subsets, we considered
 light curves for which the peak Lomb-Scargle periodogram period was
 below 15 days, the normalized Lomb-Scargle power exceeded 0.08, and
 for which no equal-brightness or greater companions were within the
-aperture.  We also required that the target star be the brightest star
-in the aperture, and that at most one companion with brightness
-exceeding one tenth of the target star's brightness be present in the
-aperture according to the Gaia DR2 source catalog.  For subset
-$\mathcal{A}$, this yielded \nautorotnumerator light curves, out of
-\nautorotdenominator stars for which rotation periods might plausibly
-have been detected.  For subset $\mathcal{B}$, we additionally
-required that the Lomb-Scargle and Stellingwerf phase-dispersion
-methods yielded periods identical to within 10\%.  This yielded
-\nautorotnumeratormatching light curves.
-Subset $\mathcal{A}$ is more complete than 
-subset $\mathcal{B}$, at the expense of greater contamination.
+aperture.  Beyond requiring that the target star be the brightest star
+in the aperture, we also required that at most one companion with
+brightness exceeding one tenth of the target star's brightness be
+present in the aperture according to the Gaia DR2 source catalog.  For
+set $\mathcal{A}$, this yielded \nautorotnumerator light curves,
+out of \nautorotdenominator stars for which rotation periods might
+plausibly have been detected.  For set $\mathcal{B}$, we
+then additionally required that the Lomb-Scargle and Stellingwerf
+phase-dispersion methods yielded identical periods to within 10\%.
+This yielded \nautorotnumeratormatching light curves. 
 
-{\bf TODO CORRECTLY}
-To put the clusters on the same color scale, we needed to adopt
-reddening corrections.
-For \cn, we used the same average reddening as described in
-Section~\ref{subsec:hr}.
-% FIXME: where did these reference tables come from???
-For the Pleiades, and for Praesepe, we used {\bf XXX, YYY}.
+The comparison to the Pleiades and Praesepe is made using the rotation
+periods and dereddened colors from Table~5 of \citet{curtis_rup147_2020}, which
+were based data from \citet{rebull_rotation_2016a} and
+\citet{douglas_k2_2019} respectively.
 
-{\bf TODO CORRECTLY}
+A few conclusions can be drawn by comparing
+the \cn\ rotation periods with those of
+the Pleiades and Praesepe.
+The first is that in both stages of cleaning,
+the core and halo of \cn\ both show
+gyrochronological ``slow sequences''.
+These sequences appear to be
+coeval with each other, and at least to first order
+appear to overlap with the Pleiades sequence.
+
+Second, subset
+$\mathcal{A}$ is more complete than subset $\mathcal{B}$.
+This completeness comes at the
+expense of greater contamination.
+The slow sequence
+has a factor of $\sim$twice as many stars in subset
+$\mathcal{A}$ than $\mathcal{B}$.
+However stars above the slow sequence, which could
+well be field contaminants, for the most part disappear in
+subset $\mathcal{B}$.
+The ``void'' underneath the slow sequence
+is also more pronounced in the cleaner
+subset,
+though it seems to not be as empty as in
+the Pleiades.
+
+Finally, comparing the slow sequences of the Pleaides
+and \cn, they appear to overlap from roughly
+$0.5<(Bp-Rp)_0<1.2$.
+For stars that are redder,
+the dispersion in rotation periods increases.
+From
+$1.2<(Bp-Rp)_0<1.7$, subset
+$\mathcal{B}$ of \cn\ has stars that overlap with 
+the Pleiades.
+However, it also has about ten stars at longer rotation periods---extending
+up to $\approx$11 days, rather than the
+$\approx$8.5day limit for the Pleiades.
+This is consistent with \cn\ being slightly
+older than the Pleiades.
+
+{\bf We explore this quantitatively by fitting
+interpolated models}[?].
 The resulting gyrochronology age we find for the core is XXX.
 For the halo, the claimed age from gyrochronology is YYY.
 Applying the same procedure to the field star comparison sample (see
