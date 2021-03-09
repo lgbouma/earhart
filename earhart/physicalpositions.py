@@ -1,5 +1,10 @@
 """
 Tools for working in XYZ, UVW, and Δμ_δ, Δμ_α' [km/s] coordinates.
+
+Contents:
+    append_physicalpositions: (α,δ,π)->(X,Y,Z).
+    given_gaia_df_get_icrs_arr: DataFrame -> SkyCoord conversion
+    calc_dist: between two 3d cartesian points.
 """
 
 import numpy as np
@@ -22,6 +27,11 @@ def append_physicalpositions(df, median_df):
     the XYZ coordinates, the "delta_pmra_km_s" and "delta_pmdec_km_s"
     coordinates, the "delta_r_pc" (3d separation) and "delta_mu_km_s" (velocity
     separation) coordinates, and append them to the dataframe.
+
+    Returns:
+        DataFrame with ['x_pc', 'y_pc', 'z_pc', 'delta_r_pc',
+        'delta_mu_km_s', 'delta_pmra_km_s' ,'delta_pmdec_km_s']
+        appended.
     """
 
     # get XYZ in galactocentric
@@ -49,10 +59,16 @@ def append_physicalpositions(df, median_df):
         df[new_key] = new_val
 
         if c in ['pmra', 'pmdec']:
+            #
+            # naive approach: just take the different to the median
+            # pmra/pmdec of the cluster. (ignoring the spatial
+            # projection effect).
+            #
             # recall:
             # θ_arcsec = r_AU / d_pc
             # mu_arcsec/yr = v_AU/yr / d_pc
             # v_AU/yr = mu_arcsec/yr * d_pc
+            #
             d_pc = (nparr(1/(df.parallax*1e-3))*u.pc).value
             c_AU_per_yr = ((( nparr(df[c]) - nparr(median_df[c]) )*1e-3) * d_pc)*(u.AU/u.yr)
             c_km_per_sec = c_AU_per_yr.to(u.km/u.second)
@@ -86,13 +102,18 @@ def given_gaia_df_get_icrs_arr(df, zero_rv=0):
         )
 
     else:
+        rvkey = 'dr2_radial_velocity'
+        if rvkey in df:
+            pass
+        else:
+            rvkey = 'radial_velocity'
         return coord.SkyCoord(
             ra=nparr(df.ra)*u.deg,
             dec=nparr(df.dec)*u.deg,
             distance=nparr(1/(df.parallax*1e-3))*u.pc,
             pm_ra_cosdec=nparr(df.pmra)*u.mas/u.yr,
             pm_dec=nparr(df.pmdec)*u.mas/u.yr,
-            radial_velocity=nparr(df.dr2_radial_velocity)*u.km/u.s
+            radial_velocity=nparr(df[rvkey])*u.km/u.s
         )
 
 

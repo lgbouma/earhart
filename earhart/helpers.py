@@ -10,6 +10,7 @@ get_gaia_basedata
     _get_fullfaint_edr3_dataframes
     _get_denis_fullfaint_edr3_dataframes
     _get_extinction_dataframes
+    _get_median_ngc2516_core_params
 get_denis_xmatch
 """
 import os, collections, pickle
@@ -886,3 +887,28 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0,
     else:
         return df[sel], df[ref_sel]
 
+
+def _get_median_ngc2516_core_params(core_df, basedata, CUTOFF_PROB=0.7):
+    """
+    To get median parameters of the NGC 2516 cluster, select the high
+    probability CG18 members, and take a median.
+    """
+
+    core_path = os.path.join(DATADIR, 'gaia', 'CantatGaudin2018_vizier_only_NGC2516.fits')
+    t_df = Table(fits.open(core_path)[1].data).to_pandas()
+    if basedata == 'fullfaint':
+        assert len(t_df) == len(core_df)
+
+    sel = (t_df.PMemb > CUTOFF_PROB)
+    s_t_df = t_df[sel]
+    assert np.all(s_t_df.Source.isin(core_df.source_id))
+    sel = core_df.source_id.isin(s_t_df.Source)
+    s_core_df = core_df[sel]
+    rvkey = (
+        'radial_velocity' if 'edr3' not in basedata else 'dr2_radial_velocity'
+    )
+    getcols = ['ra', 'dec', 'parallax', 'pmra', 'pmdec', rvkey]
+    med_df = pd.DataFrame(s_core_df[getcols].median()).T
+    std_df = pd.DataFrame(s_core_df[getcols].std()).T
+
+    return med_df, std_df

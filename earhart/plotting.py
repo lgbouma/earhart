@@ -25,6 +25,7 @@ Contents:
         plot_bisector_span_vs_RV
         plot_backintegration_ngc2516
         plot_venn
+        plot_vtangential_projection
 """
 import os, corner, pickle
 from glob import glob
@@ -33,6 +34,7 @@ import numpy as np, matplotlib.pyplot as plt, pandas as pd, pymc3 as pm
 from numpy import array as nparr
 
 import matplotlib as mpl
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from astropy import units as u, constants as const
 from astropy.coordinates import SkyCoord
@@ -55,7 +57,8 @@ from cdips.utils.mamajek import get_interp_BpmRp_from_Teff
 
 from earhart.paths import DATADIR, RESULTSDIR
 from earhart.helpers import (
-    get_gaia_basedata, get_autorotation_dataframe
+    get_gaia_basedata, get_autorotation_dataframe,
+    _get_median_ngc2516_core_params
 )
 from earhart.physicalpositions import (
     given_gaia_df_get_icrs_arr, calc_dist
@@ -2259,11 +2262,11 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
     params = [xkey, ykey, 'parallax', 'pmra', 'pmdec', rvkey]
     # whether to limit axis by 5/95th percetile
     qlimd = {
-        xkey: 0, ykey: 0, 'parallax': 0, 'pmra': 1, 'pmdec': 1, rvkey: 1
+        xkey: 0, ykey: 0, 'parallax': 0, 'pmra': 0, 'pmdec': 0, rvkey: 0
     }
     # whether to limit axis by 99th percentile
     nnlimd = {
-        xkey: 1, ykey: 1, 'parallax': 1, 'pmra': 0, 'pmdec': 0, rvkey: 0
+        xkey:0, ykey:0, 'parallax':0, 'pmra':0, 'pmdec':0, rvkey:0
     }
     ldict = {
         xkey: xl, ykey: yl,
@@ -2298,11 +2301,11 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
             yv = params[i+1]
             print(i,j,xv,yv)
 
-            axs[i,j].scatter(
-                nbhd_df[sel_color(nbhd_df)][xv], nbhd_df[sel_color(nbhd_df)][yv],
-                c='gray', alpha=0.9, zorder=2, s=5, rasterized=True,
-                linewidths=0, label='Field', marker='.'
-            )
+            # axs[i,j].scatter(
+            #     nbhd_df[sel_color(nbhd_df)][xv], nbhd_df[sel_color(nbhd_df)][yv],
+            #     c='gray', alpha=0.9, zorder=2, s=5, rasterized=True,
+            #     linewidths=0, label='Field', marker='.'
+            # )
 
             axs[i,j].scatter(
                 halo_df[sel_comp(halo_df)][xv], halo_df[sel_comp(halo_df)][yv],
@@ -2339,12 +2342,12 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
                         np.nanpercentile(nbhd_df[yv], 95))
                 axs[i,j].set_ylim(ylim)
             if nnlimd[xv]:
-                xlim = (np.nanpercentile(nbhd_df[xv], 1),
-                        np.nanpercentile(nbhd_df[xv], 99))
+                xlim = (np.nanpercentile(halo_df[xv], 1),
+                        np.nanpercentile(halo_df[xv], 99))
                 axs[i,j].set_xlim(xlim)
             if nnlimd[yv]:
-                ylim = (np.nanpercentile(nbhd_df[yv], 1),
-                        np.nanpercentile(nbhd_df[yv], 99))
+                ylim = (np.nanpercentile(halo_df[yv], 1),
+                        np.nanpercentile(halo_df[yv], 99))
                 axs[i,j].set_ylim(ylim)
 
 
@@ -2383,12 +2386,12 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
                           bbox_transform=f.transFigure)
 
     # NOTE: hack size of legend markers
-    leg.legendHandles[0]._sizes = [1.5*20]
+    leg.legendHandles[0]._sizes = [1.5*25]
     leg.legendHandles[1]._sizes = [1.5*25]
-    leg.legendHandles[2]._sizes = [1.5*25]
-    leg.legendHandles[3]._sizes = [1.5*20]
+    leg.legendHandles[2]._sizes = [1.5*20]
+    #leg.legendHandles[3]._sizes = [1.5*20]
     if show1937:
-        leg.legendHandles[4]._sizes = [1.5*20]
+        leg.legendHandles[3]._sizes = [1.5*20]
 
     for ax in axs.flatten():
         format_ax(ax)
@@ -2405,7 +2408,7 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
     savefig(f, outpath)
 
 
-def plot_physical_X_rotation(outdir, basedata='bright', show1937=0,
+def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
                              do_histogram=1):
     """
     Same data as "full_kinematics_X_rotation", but in XYZ coordinates, and with
@@ -2417,31 +2420,7 @@ def plot_physical_X_rotation(outdir, basedata='bright', show1937=0,
 
     nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
     rot_df, lc_df = get_autorotation_dataframe(runid='NGC_2516', returnbase=True)
-
-    # select the high probability CG18 members to get median parameters
-    core_path = os.path.join(DATADIR, 'gaia', 'CantatGaudin2018_vizier_only_NGC2516.fits')
-    t_df = Table(fits.open(core_path)[1].data).to_pandas()
-    if basedata == 'fullfaint':
-        assert len(t_df) == len(core_df)
-
-    CUTOFF_PROB = 0.7
-    sel = (t_df.PMemb > CUTOFF_PROB)
-
-    s_t_df = t_df[sel]
-
-    assert np.all(s_t_df.Source.isin(core_df.source_id))
-
-    sel = core_df.source_id.isin(s_t_df.Source)
-
-    s_core_df = core_df[sel]
-
-    rvkey = (
-        'radial_velocity' if 'edr3' not in basedata else 'dr2_radial_velocity'
-    )
-    getcols = ['ra', 'dec', 'parallax', 'pmra', 'pmdec', rvkey]
-
-    med_df = pd.DataFrame(s_core_df[getcols].median()).T
-    std_df = pd.DataFrame(s_core_df[getcols].std()).T
+    med_df, _ = _get_median_ngc2516_core_params(core_df, basedata)
 
     from earhart.physicalpositions import append_physicalpositions
     core_df = append_physicalpositions(core_df, med_df)
@@ -2458,6 +2437,17 @@ def plot_physical_X_rotation(outdir, basedata='bright', show1937=0,
 
     sel_comp = lambda df: (sel_color(df)) & (sel_haslc(df))
     sel_rotn =  lambda df: (sel_color(df)) & (sel_autorot(df))
+
+    #
+    # verify 1/parallax approximation is ok...
+    #
+    print(42*'.')
+    h0 = halo_df[sel_comp(halo_df)]['parallax_over_error'].describe()
+    c0 = core_df[sel_comp(core_df)]['parallax_over_error'].describe()
+    print('Verifying 1/parallax is OK...')
+    print(h0)
+    print(c0)
+    print(42*'.')
 
     # make it!
     plt.close('all')
@@ -2540,7 +2530,7 @@ def plot_physical_X_rotation(outdir, basedata='bright', show1937=0,
     for ax in axs.flatten():
         format_ax(ax)
 
-    f.tight_layout(h_pad=0.1, w_pad=0.1)
+    f.tight_layout(h_pad=0.2, w_pad=0.2)
 
     s = ''
     s += f'_{basedata}'
@@ -2637,7 +2627,7 @@ def plot_physical_X_rotation(outdir, basedata='bright', show1937=0,
             ls='none', color='k', elinewidth=1, capsize=1
         )
 
-        axs[1].set_xlabel('$\Delta v$ [km$\,$s$^{-1}$]')
+        axs[1].set_xlabel('$\Delta v_{\mathrm{2D}}$ [km$\,$s$^{-1}$]')
         axs[1].set_xlim([-delta_kms, 25])
 
         print(h_rot)
@@ -2687,4 +2677,265 @@ def plot_venn(outdir):
 
     outpath = os.path.join(outdir, f'venn.png')
     savefig(fig, outpath)
+
+
+def plot_vtangential_projection(outdir, basedata='fullfaint'):
+    """
+    Creates a few plots...
+
+    * Candidate cluster members positions in X,Y,Z projections, to
+    give an idea for the geometry.  (...and overplots the galactic
+    orbit)
+
+    * v_tangential Projection effect Mollweide sky maps.
+    """
+
+    nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
+    rot_df, lc_df = get_autorotation_dataframe(runid='NGC_2516', returnbase=True)
+    med_df, _ = _get_median_ngc2516_core_params(core_df, basedata)
+
+    from earhart.physicalpositions import append_physicalpositions
+    core_df = append_physicalpositions(core_df, med_df)
+    halo_df = append_physicalpositions(halo_df, med_df)
+    nbhd_df = append_physicalpositions(nbhd_df, med_df)
+    trgt_df = append_physicalpositions(trgt_df, med_df)
+
+    #
+    # sanity check the median velocities too 
+    #
+    from earhart.physicalpositions import given_gaia_df_get_icrs_arr
+    from astropy.coordinates import Galactocentric
+    import astropy.coordinates as coord
+    _ = coord.galactocentric_frame_defaults.set('v4.0')
+
+    get_galcen = lambda _c : _c.transform_to(coord.Galactocentric())
+    # for the median icrs coordinate array, keep the mean RV!
+    c_median = get_galcen(
+        given_gaia_df_get_icrs_arr(med_df, zero_rv=0)
+    )
+    c_core = given_gaia_df_get_icrs_arr(core_df)
+    c_halo = given_gaia_df_get_icrs_arr(halo_df)
+
+    vdiff_median = c_median.velocity - c_median.galcen_v_sun
+
+    s_halo_df = halo_df[halo_df.parallax_over_error > 20]
+    print(42*'.')
+    print(f'N halo members with plx S/N > 20: {len(s_halo_df)}')
+    print('For the median core cluster member, after subtracting the galactocentric solar velocity...')
+    print(vdiff_median)
+    print(42*'.')
+
+    #
+    # plot X, Y, and Z, with the galactic orbits.
+    #
+    set_style()
+    plt.close('all')
+    fig, axs = plt.subplots(ncols=3, figsize=(8,3))
+    axs[0].scatter(s_halo_df.x_pc, s_halo_df.y_pc, s=1, c='k', rasterized=True)
+    delta_x = 0.1
+    axs[0].arrow(0.75, 0.07, delta_x, 0,
+                 length_includes_head=True, head_width=1e-2,
+                 head_length=1e-2,
+                 transform=axs[0].transAxes)
+    axs[0].text(0.75+delta_x/2, 0.08, 'Galactic\ncenter', va='bottom',
+                ha='center', transform=axs[0].transAxes)
+
+    factor=3
+    x0,y0 = -8150, -220
+    axs[0].quiver(
+        x0, y0, factor*vdiff_median.d_x.value,
+        factor*vdiff_median.d_y.value, angles='xy',
+        scale_units='xy', scale=1, color='C0',
+        width=6e-3, linewidths=4, headwidth=8, zorder=9
+    )
+    ## NOTE the galactic motion is dominant!!!!
+    # axs[0].quiver(
+    #     x0, y0, factor*c_median.v_x.value,
+    #     factor*c_median.v_y.value, angles='xy',
+    #     scale_units='xy', scale=1, color='gray',
+    #     width=6e-3, linewidths=4, headwidth=10, zorder=9
+    # )
+    axs[0].update({'xlabel': 'X [pc]', 'ylabel': 'Y [pc]'})
+
+    axs[1].scatter(s_halo_df.x_pc, s_halo_df.z_pc, s=1, c='k', rasterized=True)
+    x0,y0 = -8160, -50
+    axs[1].quiver(
+        x0, y0, factor*vdiff_median.d_x.value,
+        factor*vdiff_median.d_z.value, angles='xy',
+        scale_units='xy', scale=1, color='C0',
+        width=6e-3, linewidths=4, headwidth=8, zorder=9
+    )
+    axs[1].update({'xlabel': 'X [pc]', 'ylabel': 'Z [pc]'})
+
+    axs[2].scatter(s_halo_df.y_pc, s_halo_df.z_pc, s=1, c='k', rasterized=True)
+    x0,y0 = -600, -50
+    axs[2].quiver(
+        x0, y0, factor*vdiff_median.d_y.value,
+        factor*vdiff_median.d_z.value, angles='xy',
+        scale_units='xy', scale=1, color='C0',
+        width=6e-3, linewidths=4, headwidth=8, zorder=9
+    )
+
+    delta_x = 0.1
+    axs[2].arrow(0.75, 0.07, delta_x, 0,
+                 length_includes_head=True, head_width=1e-2,
+                 head_length=1e-2,
+                 transform=axs[2].transAxes)
+    axs[2].text(0.75+delta_x/2, 0.08, 'Galactic\nrotation', va='bottom',
+                ha='center', transform=axs[2].transAxes)
+
+    axs[2].update({'xlabel': 'Y [pc]', 'ylabel': 'Z [pc]'})
+
+    #
+    # ... and overplot the past and future cluster orbit.
+    #
+    from earhart.backintegrate import backintegrate
+    n_steps = int(1e3)
+    dt = -0.01*u.Myr
+    orbits_past = backintegrate(c_median, dt=dt, n_steps=n_steps)
+    orbits_future = backintegrate(c_median, dt=-dt, n_steps=n_steps)
+
+    xlim, ylim = axs[0].get_xlim(), axs[0].get_ylim()
+    axs[0].plot(orbits_past.x.to(u.pc), orbits_past.y.to(u.pc), c='gray', zorder=2, lw=1)
+    axs[0].plot(orbits_future.x.to(u.pc), orbits_future.y.to(u.pc), c='gray', zorder=2, lw=1)
+    axs[0].update({'xlim': xlim, 'ylim': ylim})
+
+    xlim, ylim = axs[1].get_xlim(), axs[1].get_ylim()
+    axs[1].plot(orbits_past.x.to(u.pc), orbits_past.z.to(u.pc), c='gray', zorder=2, lw=1)
+    axs[1].plot(orbits_future.x.to(u.pc), orbits_future.z.to(u.pc), c='gray', zorder=2, lw=1)
+    axs[1].update({'xlim': xlim, 'ylim': ylim})
+
+    xlim, ylim = axs[2].get_xlim(), axs[2].get_ylim()
+    axs[2].plot(orbits_past.y.to(u.pc), orbits_past.z.to(u.pc), c='gray', zorder=2, lw=1)
+    axs[2].plot(orbits_future.y.to(u.pc), orbits_future.z.to(u.pc), c='gray', zorder=2, lw=1)
+    axs[2].update({'xlim': xlim, 'ylim': ylim})
+
+    outpath = os.path.join(outdir, f'XYZ_with_orbit.png')
+    fig.tight_layout()
+    savefig(fig, outpath)
+
+    #
+    # quick convention check for the maptlotlib mollweide sky map
+    #
+    plt.close('all')
+    fig = plt.figure(figsize=(4,3))
+    ax = fig.add_subplot(111, projection='mollweide')
+
+    # 180 latitudes, 360 longitudes
+    arr = np.random.rand(180, 360)
+
+    lon = np.linspace(-np.pi, np.pi, 360)
+    lat = np.linspace(-np.pi/2., np.pi/2.,180)
+
+    Lon,Lat = np.meshgrid(lon,lat)
+
+    im = ax.pcolormesh(Lon, Lat, arr, cmap=plt.cm.jet, shading='auto')
+
+    outpath = os.path.join(
+        outdir, f'sanity_check_skymap_tangential_velocity_noise.png'
+    )
+    fig.tight_layout()
+    savefig(fig, outpath, writepdf=0)
+
+    #
+    # now, compute and plot the velocity differences across the sky.
+    # per
+    # https://docs.astropy.org/en/stable/coordinates/velocities.html#adding-velocities-to-existing-frame-objects
+    #
+
+    # make gridded (ra,dec) sphere at the distance of the cluster core...
+    grid_icrs = coord.SkyCoord(
+                ra=nparr( np.rad2deg(Lon) + 180  )*u.deg,
+                dec=nparr( np.rad2deg(Lat) )*u.deg,
+                distance=float(nparr(1/(med_df.parallax*1e-3)))*u.pc,
+                frame='icrs'
+    )
+
+    #
+    # the v_x, v_y_, v_z velocity of each of the points on the sphere
+    # (in the ICRS frame) will be *appended* to the synthetic grid
+    # that was made. this is the step where astropy.coordinates saves
+    # the day.
+    #
+    c_median = given_gaia_df_get_icrs_arr(med_df, zero_rv=0)
+    vel_to_add = np.ones((180, 360))*c_median.velocity
+
+    _ = grid_icrs.data.to_cartesian().with_differentials(vel_to_add)
+    c_full = grid_icrs.realize_frame(_)
+
+    #
+    # create the plot vs pmdec difference
+    #
+    plt.close('all')
+    fig = plt.figure(figsize=(6,4))
+    ax = fig.add_subplot(111, projection='mollweide')
+    ax.grid(True, zorder=1)
+
+    im = ax.pcolormesh(Lon, Lat, c_full.pm_dec - c_median.pm_dec,
+                       cmap=plt.cm.bwr, shading='auto', zorder=-1)
+
+    ax.plot(
+        np.deg2rad(c_median.ra - 180*u.deg), np.deg2rad(c_median.dec),
+        marker='*', color='k', markersize=10, mew=0.2,
+        markerfacecolor='white'
+    )
+
+    ax.scatter(
+        np.deg2rad(c_halo.ra - 180*u.deg), np.deg2rad(c_halo.dec),
+        marker='.', color='k', s=1, linewidths=0, alpha=0.5, rasterized=True
+    )
+
+    ax.set_xlabel(r'$\alpha$ [deg]')
+    ax.set_ylabel('$\delta$ [deg]')
+    xticklabels = np.array([30,60,90,120,150,180,210,240,270,300,330])
+    xticklabels = np.array([str(xtl)+'$\!$$^\circ$' for xtl in xticklabels])
+    ax.set_xticklabels(xticklabels)
+
+    cb0 = plt.colorbar(im, fraction=0.025, pad=0.04)
+    cb0.set_label('$\Delta v_{\delta}^{*}$ [mas/yr]')
+
+    outpath = os.path.join(
+        outdir, f'skymap_tangential_velocity_pmdec.png'
+    )
+    fig.tight_layout()
+    savefig(fig, outpath)
+
+    #
+    # create the plot vs pmra difference
+    #
+    plt.close('all')
+    fig = plt.figure(figsize=(6,4))
+    ax = fig.add_subplot(111, projection='mollweide')
+    ax.grid(True, zorder=1)
+
+    im = ax.pcolormesh(Lon, Lat, c_full.pm_ra_cosdec - c_median.pm_ra_cosdec,
+                       cmap=plt.cm.bwr, shading='auto', zorder=-1)
+
+    ax.plot(
+        np.deg2rad(c_median.ra - 180*u.deg), np.deg2rad(c_median.dec),
+        marker='*', color='k', markersize=10, mew=0.2,
+        markerfacecolor='white'
+    )
+
+    ax.scatter(
+        np.deg2rad(c_halo.ra - 180*u.deg), np.deg2rad(c_halo.dec),
+        marker='.', color='k', s=1, linewidths=0, alpha=0.5,
+        rasterized=True
+    )
+
+    ax.set_xlabel(r'$\alpha$ [deg]')
+    ax.set_ylabel('$\delta$ [deg]')
+    xticklabels = np.array([30,60,90,120,150,180,210,240,270,300,330])
+    xticklabels = np.array([str(xtl)+'$\!$$^\circ$' for xtl in xticklabels])
+    ax.set_xticklabels(xticklabels)
+
+    cb0 = plt.colorbar(im, fraction=0.025, pad=0.04)
+    cb0.set_label(r"$\Delta v_{\alpha'}^{*}$ [mas/yr]")
+
+    outpath = os.path.join(
+        outdir, f'skymap_tangential_velocity_pmra_cosdec.png'
+    )
+    fig.tight_layout()
+    savefig(fig, outpath)
+
 

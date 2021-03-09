@@ -17,6 +17,10 @@ cp ../results/physical_X_rotation/histogram_physical_X_rotation_fullfaint.pdf f8
 cp ../results/lithium/lithiumEW_vs_BpmRp_xmatch_fullfaintkinematic_gaiaeso_galahdr3_corehalosplit.pdf f5a.pdf
 cp ../results/rotation_X_lithium/rotation_vs_BpmRp_X_lithium_viridis_gaiaeso_galahdr3.pdf f5b.pdf
 
+cp ../results/vtangential_projection/XYZ_with_orbit.pdf f11.pdf
+cp ../results/vtangential_projection/skymap_tangential_velocity_pmdec.pdf f12a.pdf
+cp ../results/vtangential_projection/skymap_tangential_velocity_pmra_cosdec.pdf f12b.pdf
+
 # supplementary
 cp ../results/rotation_X_RUWE/rotation_vs_BpmRp_X_RUWE_viridis_linear.pdf f6.pdf
 

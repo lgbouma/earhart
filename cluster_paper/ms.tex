@@ -68,7 +68,8 @@
   Cluster Difference Imaging Photometric Survey. III.
   %The Coeval Core \& Halo of NGC\,2516
   %The Halo of NGC\,2516 Extends To At Least 300\,pc
-  An Open Cluster With a 300\,pc Halo
+  %An Open Cluster With a 300\,pc Halo
+  An Open Cluster Spread Across 500\,pc
   %NGC\,2516  300\,pc
 }
 
@@ -83,28 +84,30 @@
 \begin{abstract}
   Recent analyses of the Gaia data have reported the existence of
   diffuse stellar populations surrounding nearby open clusters. 
-  The stars in these diffuse halos could be the tidal escapees of the
+  The stars in these diffuse halos could be tidal escapees from the
   cluster cores, or they could be remnants of an initially dispersed
   star formation complex.
   They could also be field stars---the false positives of overly
-  aggressive clustering algorithms.
-  In this study, we focus on a halo with a length of 300\,pc reported
-  around the $\approx$150\,Myr open cluster NGC\,2516.
+  sensitive clustering algorithms.
+  In this study, we focus on a halo with a tip-to-tip length of
+  500\,pc reported around the $\approx$150\,Myr open cluster
+  NGC\,2516.
   The classical tidal radius of the cluster is $\lesssim$10\,pc.
   Combining photometry from Gaia, rotation periods from TESS, and
   lithium measurements from Gaia-ESO and GALAH, we find that the halo
   of NGC\,2516 is real and coeval with the core.
   Two in three kinematically selected halo members 25-250\,pc from the
   cluster center show rotation periods consistent with a
-  gyrochronological age of 120\,Myr.
+  gyrochronological age of 150\,Myr.
   A comparison sample of field stars shows no such trend.
   The rotation period and lithium abundances of the cluster stars are
   also anti-correlated at fixed stellar mass, as has been observed in
   similar stellar populations.
-  This work expands the set of confirmed NGC\,2516 members by a factor
-  of $\approx$2, and quantifies the degree to which Gaia-based
+  This work quantifies the degree to which Gaia-based
   analyses can identify dispersed stellar populations against a
-  background of field star contaminants.
+  background of field star contaminants, and
+  expands the set of confirmed NGC\,2516 members by a factor
+  of $\approx$2.
   We highlight the implications for spectroscopic survey targeting,
   open cluster dispersal, and planet searches around young stars.
 \end{abstract}
@@ -114,7 +117,7 @@
 	stellar ages (1581),
   stellar associations (1582),
   open clusters (1160),
-  %stellar dynamics (1596),
+  stellar dynamics (1596),
   stellar rotation (1629)
 }
 
@@ -123,15 +126,14 @@
 
 \section{Introduction}
 
-Star clusters form from the densest filaments of 
-hierarchically structured molecular clouds
-\citep{shu_star_1987}.  Over the first 10\,Myr, feedback effects
-including protostellar outflows, photoionization, radiation pressure,
-and supernova shocks disperse the gas out of the cloud
-\citep{krumholz_star_2019}.  Since only $\sim 1\%$ of the cloud
-mass is converted into stars, gas dispersal enables the
-majority ($\sim$90\%) of stars in the cluster to escape the cluster's
-gravitational well \citep{lada_embedded_2003}.
+Star clusters form when dense filaments in hierarchically structured
+molecular clouds collide and collapse \citep{shu_star_1987}.  Over the
+first 10\,Myr, feedback effects including protostellar outflows,
+photoionization, radiation pressure, and supernova shocks disperse the
+gas out of the cloud \citep{krumholz_star_2019}.  Since only $\sim
+1\%$ of the cloud mass is converted into stars, gas dispersal enables
+the majority ($\sim$90\%) of stars in the cluster to escape the
+cluster's gravitational well \citep{lada_embedded_2003}.
 
 From 10 to 1000\,Myr, the cluster remnants that survive gas dispersal
 suffer an onslaught that almost always leads to dissolution.  Inside
@@ -226,9 +228,9 @@ e.g.},][]{davenport_death_2010,kounkel_untangling_2019,roser_hyades_2019,tian_di
 The latter term implies a particular model for the formation of the
 association.  We opt for ``halo'' because it is concise and model
 agnostic.  It suffers however from the suggestion of spherical
-symmetry.  The halo of NGC\,2516 might be best-described as ``tails'',
-but the primary goal of this study is
-not to verify whether these tails are tidal.
+symmetry.  The halo of NGC\,2516 might be better described as ``tails'',
+but the primary goal of this study is not to verify whether these
+tails are tidal.
 
 Section~\ref{sec:gaia} summarizes the astrometric analyses of the Gaia
 data that led to our interest in NGC\,2516.  Section~\ref{sec:agedate}
@@ -268,22 +270,44 @@ Section~\ref{sec:conclusion} gives our conclusions.
 	}
 \end{figure*}
 
+\begin{figure*}[t]
+	\begin{center}
+		\leavevmode
+		\includegraphics[width=0.95\textwidth]{f11.pdf}
+	\end{center}
+	\vspace{-0.7cm}
+  \caption{ {\bf NGC\,2516 in the galactic context.} 
+  Points denote halo members with $\pi/\sigma_\pi>20$.
+  In our coordinate system, the Sun is at
+  $\{X,Y,Z\} = \{ -8122, 0, +20.8\}\,{\rm pc}$.
+  The gray line traces the past and future cluster orbit.  In
+  different projections, the line spans different time intervals: the
+  longest time window is visible in the $(Z,X)$ projection.
+  The large blue arrows denote the median cluster velocity after
+  subtracting the local standard of rest: 
+  $\{v_{\rm X}, v_{\rm Y}, v_{\rm Z}\} = \{-22.2, -25.3, -4.6\}$\kms.
+  Their sizes are internally proportionate.
+  By comparison, $\vec{v}_{\rm LSR} = \{12.9, 245.6, 7.78\}$\kms.
+  \label{fig:XYZ}
+	}
+\end{figure*}
+
 We selected candidate \cn\ members based on those reported in the
-literature.  While a number of pre-Gaia 
-studies have been performed, the
-purity and accuracy of the Gaia-derived results are the current state
-of the art \citep{jeffries_ngc2516_2001,Kharchenko_et_al_2013}.  We therefore adopted what we viewed as the most
-interesting clustering samples to compare: those of
-\citet{cantatgaudin_gaia_2018}, \citet{kounkel_untangling_2019} and
-\citet{meingast_2021}.  We refer to these studies in the following as
+literature.  While a number of pre-Gaia studies have been performed,
+the purity and accuracy of the Gaia-derived results are the current
+state of the art \citep{jeffries_ngc2516_2001,Kharchenko_et_al_2013}.
+We therefore adopted what we viewed as the most interesting clustering
+samples to compare: those of \citet{cantatgaudin_gaia_2018},
+\citet{kounkel_untangling_2019} and \citet{meingast_2021}.  We refer
+to these studies in the following as
 \citetalias{cantatgaudin_gaia_2018},
 \citetalias{kounkel_untangling_2019}, and \citetalias{meingast_2021}
 respectively.  A useful visualization of the different samples is
 available online\footnote{
   \url{https://homepage.univie.ac.at/stefan.meingast/coronae.html},
-  made by \citet{meingast_2021}.}.  While we considered performing
-our own clustering analysis using the Gaia data, such an effort would
-in effect only replicate the work of these investigators.  We opt to
+  made by \citet{meingast_2021}.}.  While we considered performing our
+own clustering analysis using the Gaia data, such an effort would in
+effect only replicate the work of these investigators.  We opt to
 instead use their studies as starting points.
 
 The Gaia clustering studies each used different selection functions,
@@ -325,11 +349,6 @@ consistent with the general {\it visual} impression that one has when
 looking at \cn\ in the night sky: it appears to span
 $\approx$2$^\circ$, not $\approx20^\circ$.
 
-The discrepancy between our canonical understanding of open clusters
-and the possibility of a diffuse population existing around \cn\
-prompted our initial interest in this analysis.  What is the true
-structure of \cn?  Are the core and halo truly coeval?
-
 Outside of the core and halo, we also define a set of nearby field
 stars in the ``neighborhood'' of \cn.  Based on the observed
 distribution of halo members, we drew these stars randomly from the
@@ -346,6 +365,19 @@ the cluster sample by a factor of $\approx$5, to ensure broad sampling
 of stellar masses and evolutionary states.  We also required the
 comparison sample to not overlap with the cluster sample, which led to
 the omission of 1.1\% of the stars drawn from the volume noted above.
+
+The discrepancy between our canonical understanding of open clusters
+and the possibility of a diffuse population existing around \cn\
+prompted our initial interest in this analysis.  What is the true
+structure of \cn?  Are the core and halo truly coeval?
+
+% FIXME FIXME FIXME
+{\bf
+To at least visualize the thing better...
+}
+Figure~\ref{fig:XYZ}.
+
+
 
 
 \section{Age-Dating the Halo of NGC\,2516}
@@ -615,51 +647,38 @@ then additionally required that the Lomb-Scargle and Stellingwerf
 phase-dispersion methods yielded identical periods to within 10\%.
 This yielded \nautorotnumeratormatching light curves. 
 
+{\bf Curtis TODO: set $\mathcal{C}$ was created through a manual
+curation process.}
+
 The comparison to the Pleiades and Praesepe is made using the rotation
 periods and dereddened colors from Table~5 of \citet{curtis_rup147_2020}, which
 were based data from \citet{rebull_rotation_2016a} and
 \citet{douglas_k2_2019} respectively.
 
-A few conclusions can be drawn by comparing
-the \cn\ rotation periods with those of
-the Pleiades and Praesepe.
-The first is that in both stages of cleaning,
-the core and halo of \cn\ both show
-gyrochronological ``slow sequences''.
-These sequences appear to be
-coeval with each other, and at least to first order
-appear to overlap with the Pleiades sequence.
+A few conclusions can be drawn by comparing the \cn\ rotation periods
+with those of the Pleiades and Praesepe.  The first is that in both
+stages of cleaning, the core and halo of \cn\ both show
+gyrochronological ``slow sequences''.  These sequences appear to be
+coeval with each other, and at least to first order appear to overlap
+with the Pleiades sequence.
 
-Second, subset
-$\mathcal{A}$ is more complete than subset $\mathcal{B}$.
-This completeness comes at the
-expense of greater contamination.
-The slow sequence
-has a factor of $\sim$twice as many stars in subset
-$\mathcal{A}$ than $\mathcal{B}$.
-However stars above the slow sequence, which could
-well be field contaminants, for the most part disappear in
-subset $\mathcal{B}$.
-The ``void'' underneath the slow sequence
-is also more pronounced in the cleaner
-subset,
-though it seems to not be as empty as in
-the Pleiades.
+Second, subset $\mathcal{A}$ is more complete than subset
+$\mathcal{B}$.  This completeness comes at the expense of greater
+contamination.  The slow sequence has a factor of $\sim$twice as many
+stars in subset $\mathcal{A}$ than $\mathcal{B}$.  However stars above
+the slow sequence, which could well be field contaminants, for the
+most part disappear in subset $\mathcal{B}$.  The ``void'' underneath
+the slow sequence is also more pronounced in the cleaner subset,
+though it seems to not be as empty as in the Pleiades.
 
-Finally, comparing the slow sequences of the Pleaides
-and \cn, they appear to overlap from roughly
-$0.5<(Bp-Rp)_0<1.2$.
-For stars that are redder,
-the dispersion in rotation periods increases.
-From
-$1.2<(Bp-Rp)_0<1.7$, subset
-$\mathcal{B}$ of \cn\ has stars that overlap with 
-the Pleiades.
-However, it also has about ten stars at longer rotation periods---extending
-up to $\approx$11 days, rather than the
-$\approx$8.5day limit for the Pleiades.
-This is consistent with \cn\ being slightly
-older than the Pleiades.
+Finally, comparing the slow sequences of the Pleaides and \cn, they
+appear to overlap from roughly $0.5<(Bp-Rp)_0<1.2$.  For stars that
+are redder, the dispersion in rotation periods increases.  From
+$1.2<(Bp-Rp)_0<1.7$, subset $\mathcal{B}$ of \cn\ has stars that
+overlap with the Pleiades.  However, it also has about ten stars at
+longer rotation periods---extending up to $\approx$11 days, rather
+than the $\approx$8.5day limit for the Pleiades.  This is consistent
+with \cn\ being slightly older than the Pleiades.
 
 {\bf We explore this quantitatively by fitting
 interpolated models}[?].
@@ -671,21 +690,28 @@ we get an age of ZZZ+/-AAA.
 
 \subsubsection{Kinematics $\otimes$ Rotation}
 
-\begin{figure*}[t]
+\begin{figure}[t]
 	\begin{center}
 		\leavevmode
-		\includegraphics[width=0.95\textwidth]{f4.pdf}
+		\subfloat{
+			\includegraphics[width=0.49\textwidth]{f12a.pdf}
+		}
+
+		\subfloat{
+			\includegraphics[width=0.49\textwidth]{f12b.pdf}
+		}
 	\end{center}
 	\vspace{-0.7cm}
-	\caption{ {\bf Gaia-based components of NGC\,2516 in position and
-    velocity space, cross-matched against the rotators.}
-    The plotted stars are those with $0.5<(Bp-Rp)_0<1.2$ that meet the
-    crowding restrictions described in Section~\ref{subsec:tess}: they
-    should have been sufficiently bright and non-crowded to enable
-    rotation period detection.
-		\label{fig:gaia6d_x_rotn}
+  \caption{ {\bf Projection effects for co-moving populations
+  		across the sky.}
+  	The map is colored by the velocity difference
+  	a star co-moving with \cn\ would exhibit across
+  	the equatorial sphere.
+  	Actual positions of candidate \cn\ members are shown with points; the star denotes the cluster center.
+	\label{fig:vproj}
 	}
-\end{figure*}
+\end{figure}
+
 
 \begin{figure}[t]
 	\begin{center}
@@ -693,10 +719,9 @@ we get an age of ZZZ+/-AAA.
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ {\bf Kinematic members of NGC\,2516, cross-matched against
-  rotational members.}
-    The projections are in galactic position coordinates and 2d-tangential velocity
-    space.
-    \label{fig:physical_x_rotn}
+  rotational members.} The projections are in galactic position
+  coordinates and 2d-tangential velocity space.
+  \label{fig:physical_x_rotn}
 	}
 \end{figure}
 
@@ -706,73 +731,45 @@ we get an age of ZZZ+/-AAA.
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ {\bf Histogram of Figure~\ref{fig:physical_x_rotn}, binned
-  versus 3d separation from the core and 2d velocity difference.} Bins have width
-  25\,pc in position, and 2.0\,km\,s$^{-1}$ in velocity.
-  {\bf Uncertainties in the fraction are taken as the quadrature sum of
-  the rel unc of the numerator and denominator (FIXME)}.
-  Bonafide members appear to exist hundreds of parsecs from the core, and
-  up to $\approx$10\,km\,s$^{-1}$ in tangential velocity separation.
+  versus 3d separation from the core and 2d velocity difference.} Bins
+  have width 25\,pc in position, and 2.0\,km\,s$^{-1}$ in velocity.
+  {\bf Uncertainties in the fraction are taken as the quadrature sum
+  of the rel unc of the numerator and denominator (FIXME)}.  Bonafide
+  members appear to exist hundreds of parsecs from the core, and up to
+  $\approx$10\kms in tangential velocity separation.
   \label{fig:hist_physical_x_rotn}
 	}
 \end{figure}
 
-
-%\begin{figure*}[t]
-%	\begin{center}
-%		\leavevmode
-%		\subfloat{
-%			\includegraphics[width=0.75\textwidth]{f8a.pdf}
-%		}
-%	
-%		\subfloat{
-%			\includegraphics[width=0.75\textwidth]{f8b.pdf}
-%		}
-%	\end{center}
-%	\vspace{-0.7cm}
-%	\caption{ {\bf Gaia-based components of NGC\,2516 in position and
-%    velocity space, cross-matched against the rotators, in physical
-%    units.}
-%    {\it Top:} projections in position and 2d-tangential velocity
-%    space. {\it Bottom:} radially binned versus 3d position and
-%    2d velocity difference.
-%    Bins have width 25\,pc in position, and 2.0\,km\,s$^{-1}$ in
-%    velocity.
-%		\label{fig:physical_x_rotn}
-%	}
-%\end{figure*}
-
 How far away from the core, in position and velocity space, does the
-halo actually extend?  We can explore this by crossmatching the
-rotator sample against \nkinematic Gaia DR2 kinematic candidate
-members.  
-
-Figure~\ref{fig:gaia6d_x_rotn} shows the result.  An important nuance
-in interpreting this plot is that we show only stars with
-$0.5<(Bp-Rp)_0<1.2$ for which our TESS pipeline successfully made
-detrended light curves.  In other words---the base sample is the stars
-for which we could have plausibly detected a rotation period.  Faint
-stars with $Rp>16$ were beyond our light curve selection limit, and
-crowded stars ({\it e.g.,} near saturated stars in the cluster center)
-do not appear.  We selected the color limit above based on
-Figure~\ref{fig:rot}, since the density of period detections seems to
-decrease once $(Bp-Rp)_0 \gtrsim 1.25$, {\it i.e.}, for spectral types
-later than $\approx$K4V.
+halo extend?  We can explore this by crossmatching the stars with
+detected rotation periods against our original target list of
+\nkinematic Gaia DR2 kinematic candidate members.  For a fair
+comparison, we consider only the stars with $0.5<(Bp-Rp)_0<1.2$ for
+which our TESS pipeline successfully made detrended light curves.  In
+other words---the base sample is the stars for which we could have
+plausibly detected a rotation period.  Faint stars with $Rp>16$ were
+beyond our light curve selection limit, and crowded stars ({\it e.g.,}
+near saturated stars in the cluster center) are similarly omitted.  We
+selected the color limit above based on Figure~\ref{fig:rot}, since
+the density of period detections seems to decrease once $(Bp-Rp)_0
+\gtrsim 1.25$, {\it i.e.}, for spectral types later than $\approx$K4V.
 Our expectation is that completion effects become important for
 fainter stars.
-At the distance of NGC\,2516, a K4V star has $T\approx 14.5$,
-for which our reductions of the TESS images yield a precision of
-$\approx 7$\,mmag per half-hour exposure \citep{bouma_wasp4b_2019}.
-{\bf 
-The AMPLITUDES of the rotation signals are like 10-100 mmag (CITE
-REBULL 2020, FIGURE 10).
-}
-
-
+%
+% At the distance of NGC\,2516, a K4V star has $T\approx 14.5$,
+% for which our reductions of the TESS images yield a precision of
+% $\approx 7$\,mmag per half-hour exposure \citep{bouma_wasp4b_2019}.
+% {\bf 
+% The AMPLITUDES of the rotation signals are like 10-100 mmag (CITE
+% REBULL 2020, FIGURE 10).
+% }
+%
 %G=18 is like Abs G 9.8, Bp-Rp not corrected of 2.7. 
 % (Bp-Rp )_0 of 1.25 is (Bp-Rp) of 1.38... or Abs G of ~= 6.8.
 % or G-Rp ~= 0.7
 % So, G~=15... meaning Rp~=14.3. 
-
+%
 % IN POSITION
 % Bin width: 25
 % Rotators: [361  82  43  30  16  18  14   8   6   2   4   0   0   0   0
@@ -781,35 +778,47 @@ REBULL 2020, FIGURE 10).
 % 0   2   0   0 0   0]
 % Rotators < 25pc : 0.72929 +/- 0.00013
 % Rotators > 25pc : 0.66172 +/- 0.00023
-% ... where numerator and denom are 223/337
+%
 
-Qualitatively, the fraction of kinematic members with TESS-detected rotation 
-periods seems like it may increase with increasing distance from the halo core---both in
-position and in velocity space.
-To quantify this, we computed the relelvant distances in physical coordinates.
-This entailed first transforming from $(\alpha, \delta, \pi)$ to galactocentric ($X,Y,Z$) which we did 
-assuming the AstroPy v4.0 coordinate standard (CITE).
-We then converted the on-sky proper motions to physical units by dividing by the distance of each star.
-We then computed the SEPARATIONS of all of these positions and
-2d-velocities from the ``median core member'', which was selected by
-taking \citetalias{cantatgaudin_gaia_2018} members with membership
-probability exceeding 70\%.
-Again, we only considered stars for which we could have plausibly
-detected a rotation period --- the same color and observability limits
-discussed above were also applied.
+The results are shown using physical coordinates in
+Figure~\ref{fig:physical_x_rotn}.  Appendix~\ref{app:gaia6d_x_rotn}
+includes a supplemental visualization in the non-transformed space of
+Gaia measurements.  To compute the physical positions, we transformed
+from $(\alpha, \delta, \pi)$ to galactocentric ($X,Y,Z$) assuming the
+\texttt{astropy v4.0} coordinate standard \citep{astropy_2018}.  We
+then converted the on-sky proper motions to physical units by dividing
+by the distance of each star, taken as the inverse parallax.  The
+inverse parallax approximation does not introduce significant biases
+for this sample: the mean $\pi/\sigma_\pi$ and its standard deviation
+are 122 and 40 respectively; the minimum is 19.5.
+Qualitatively, the fraction of kinematic members with TESS-detected
+rotation periods seems like it may decrease with increasing distance
+from the halo core---both in position and in velocity space.  
 
-The results are shown in Figure~\ref{fig:physical_x_rotn}.
-The halo extends to separations of about 200\,pc in physical space
-from the cluster core.
-This corresponds to a length of $\approx$300-350\,pc, depending on
-which members of the halo are chosen as the ``tips'' on either
-end.
+To quantify this, we computed the separation of the positions and 2D
+velocities from the median core member, selected by taking the median
+across \citetalias{cantatgaudin_gaia_2018} members with membership
+probabilities exceeding 70\%.  The result is shown in
+Figure~\ref{fig:hist_physical_x_rotn}.  The halo extends to
+separations of about 200\,pc in physical space from the cluster core.
+This corresponds to total a length of $\approx$300-350\,pc, depending on
+which members of the halo are chosen as the ``tips'' on either end.
+Broadly speaking, this agrees with the results of
+\citetalias{kounkel_untangling_2019}.
 
 In tangential velocity space, the fraction of stars with rotation
-period detections remains high out to roughly 10\,km/s.
+period detections remains high out to roughly 10\kms.
 \citet{meingast_2021} by comparison required a physically motivated
-cut in tangential velocity space of 1.5 km per sec.  This probably
-improves purity, but clearly doesn't get everthing for completeness.
+cut in tangential velocity space of 1.5\kms.  
+
+Of course, an important aspect of the tangential velocity cut needs to
+be understood in light of 
+PROJECTION EFFECTS.
+
+... So uhhhhh yeah I need to compute that map.
+
+While this 
+improves purity, it is somewhat lacking in completeness...
 
 
 % [361  82  43  30  16  18  14   8   6   2   4   0   0   0   0   0]
@@ -1519,6 +1528,41 @@ vs} color distributions are quite different
 \end{figure*}
 
 Figure~\ref{fig:diffred}.
+
+
+\section{Kinematics $\otimes$ Rotation}
+
+\begin{figure*}[t]
+	\begin{center}
+		\leavevmode
+		\includegraphics[width=0.95\textwidth]{f4.pdf}
+	\end{center}
+	\vspace{-0.7cm}
+  \caption{ {\bf Gaia-based components of NGC\,2516 in position and
+  velocity space, cross-matched against the rotators.} The plotted
+  stars are those with $0.5<(Bp-Rp)_0<1.2$ that meet the crowding
+  restrictions described in Section~\ref{subsec:tess}: they should
+  have been sufficiently bright and non-crowded to enable rotation
+  period detection.  We caution that the appearance of fewer
+  non-rotators being present toward the core is due the layering of
+  the plot: quantitatively, stars toward the cluster center do not all
+  show rotation periods in our analysis (see
+  Figure~\ref{fig:hist_physical_x_rotn}).
+  \label{fig:gaia6d_x_rotn}
+	}
+\end{figure*}
+
+Figure~\ref{fig:gaia6d_x_rotn} is an alternative visualization of the
+data shown in Figure~\ref{fig:physical_x_rotn}.  The rotation periods
+in this diagram correspond to ``Set $\mathcal{A}$'' as described in
+Section~\ref{subsec:tess}.  Many stars in the outer region of the
+cluster show rotation periods consistent with a young age.  One issue
+with the visualization as displayed however is that it hides the
+amount of non-rotators toward the cluster center: we did not detect
+rotation periods for roughly one in four stars at the cluster
+center (see Figures~\ref{fig:physical_x_rotn}
+and~\ref{fig:hist_physical_x_rotn}).
+
 
 
 \section{Rotation $\otimes$ RUWE}
