@@ -2451,29 +2451,29 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
 
     # make it!
     plt.close('all')
-    f, axs = plt.subplots(figsize=(4,3), nrows=2, ncols=2)
+    f, axs = plt.subplots(figsize=(4,4), nrows=2, ncols=2)
     axs = axs.flatten()
 
     xytuples = [
-        ('delta_x_pc', 'delta_y_pc'),
-        ('delta_x_pc', 'delta_z_pc'),
-        ('delta_y_pc', 'delta_z_pc'),
-        ('delta_pmra_km_s', 'delta_pmdec_km_s')
+        ('x_pc', 'y_pc'),
+        ('x_pc', 'z_pc'),
+        ('y_pc', 'z_pc'),
+        ('delta_pmra_prime_km_s', 'delta_pmdec_prime_km_s')
     ]
     ldict = {
-        'delta_x_pc':'$\Delta$X [pc]',
-        'delta_y_pc':'$\Delta$Y [pc]',
-        'delta_z_pc':'$\Delta$Z [pc]',
-        'delta_pmra_km_s': r"$\Delta \mu_{{\alpha'}}$ [km$\,$s$^{-1}$]",
-        'delta_pmdec_km_s': r"$\Delta \mu_{\delta}$ [km$\,$s$^{-1}$]"
+        'x_pc':'X [pc]',
+        'y_pc':'Y [pc]',
+        'z_pc':'Z [pc]',
+        'delta_pmra_prime_km_s': r"$\Delta \mu_{{\alpha'}}^{*}$ [km$\,$s$^{-1}$]",
+        'delta_pmdec_prime_km_s': r"$\Delta \mu_{\delta}^{*}$ [km$\,$s$^{-1}$]"
     }
 
     # limit axis by 99th percentile or iqr
     qlimd = {
-        'delta_x_pc': 0, 'delta_y_pc': 0, 'delta_z_pc': 0, 'delta_pmra_km_s': 0, 'delta_pmdec_km_s': 0
+        'x_pc': 0, 'y_pc': 0, 'z_pc': 0, 'delta_pmra_km_s': 0, 'delta_pmdec_km_s': 0
     }
     nnlimd = {
-        'delta_x_pc': 1, 'delta_y_pc': 1, 'delta_z_pc': 1, 'delta_pmra_km_s': 1, 'delta_pmdec_km_s': 1
+        'x_pc': 1, 'y_pc': 1, 'z_pc': 1, 'delta_pmra_km_s': 1, 'delta_pmdec_km_s': 1
     }
 
     for i, xyt in enumerate(xytuples):
@@ -2488,12 +2488,12 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
 
         axs[i].scatter(
             halo_df[sel_comp(halo_df)][xv], halo_df[sel_comp(halo_df)][yv],
-            c='orange', alpha=1, zorder=3, s=12, rasterized=True,
+            c='orange', alpha=1, zorder=3, s=16, rasterized=True,
             label='Halo', linewidths=0.1, marker='.', edgecolors='k'
         )
         axs[i].scatter(
             halo_df[sel_rotn(halo_df)][xv], halo_df[sel_rotn(halo_df)][yv],
-            c='lightskyblue', alpha=1, zorder=6, s=12, rasterized=True,
+            c='lightskyblue', alpha=1, zorder=6, s=16, rasterized=True,
             label='Halo + P$_\mathrm{rot}$', linewidths=0.1, marker='.',
             edgecolors='k'
         )
@@ -2554,7 +2554,7 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
         rot_df = mdf[sel_rotn(mdf)]
 
         plt.close('all')
-        fig, axs = plt.subplots(figsize=(4,3), nrows=1, ncols=2, sharey=True)
+        fig, axs = plt.subplots(figsize=(4,4), nrows=1, ncols=2, sharey=True)
         axs = axs.flatten()
 
         #
@@ -2604,14 +2604,14 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
         print(42*'-')
 
         #
-        # then: delta_mu_km_s
+        # then: delta_mu_prime_km_s
         #
-        delta_kms = 2.0
-        bins = np.arange(0, 40+delta_kms, delta_kms)
+        delta_kms = 1.0
+        bins = np.arange(0, 20+delta_kms, delta_kms)
         xvals = bins[:-1] + delta_kms/2
 
-        h_comp, bins_comp = np.histogram(nparr(comp_df.delta_mu_km_s), bins=bins)
-        h_rot, bins_rot = np.histogram(nparr(rot_df.delta_mu_km_s), bins=bins)
+        h_comp, bins_comp = np.histogram(nparr(comp_df.delta_mu_prime_km_s), bins=bins)
+        h_rot, bins_rot = np.histogram(nparr(rot_df.delta_mu_prime_km_s), bins=bins)
 
         n, m = h_rot, h_comp
         f = n / m
@@ -2627,8 +2627,8 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
             ls='none', color='k', elinewidth=1, capsize=1
         )
 
-        axs[1].set_xlabel('$\Delta v_{\mathrm{2D}}$ [km$\,$s$^{-1}$]')
-        axs[1].set_xlim([-delta_kms, 25])
+        axs[1].set_xlabel('$\Delta v_{\mathrm{2D}}^{*}$ [km$\,$s$^{-1}$]')
+        axs[1].set_xlim([-delta_kms, 14])
 
         print(h_rot)
         print(h_comp)

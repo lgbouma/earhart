@@ -69,7 +69,7 @@
   %The Coeval Core \& Halo of NGC\,2516
   %The Halo of NGC\,2516 Extends To At Least 300\,pc
   %An Open Cluster With a 300\,pc Halo
-  An Open Cluster Spread Across 500\,pc
+  An Open Cluster Spread Across 400\,pc
   %NGC\,2516  300\,pc
 }
 
@@ -90,7 +90,7 @@
   They could also be field stars---the false positives of overly
   sensitive clustering algorithms.
   In this study, we focus on a halo with a tip-to-tip length of
-  500\,pc reported around the $\approx$150\,Myr open cluster
+  $\approx$400\,pc reported around the $\approx$150\,Myr open cluster
   NGC\,2516.
   The classical tidal radius of the cluster is $\lesssim$10\,pc.
   Combining photometry from Gaia, rotation periods from TESS, and
@@ -243,7 +243,7 @@ and stellar spin-down and open cluster evolution generally.
 Section~\ref{sec:conclusion} gives our conclusions.
 
 
-\section{A 300\,pc Halo around a Core?}
+\section{A Dispersed Halo and a Core?}
 \label{sec:gaia}
 
 %\subsection{Gaia Astrometry}
@@ -276,18 +276,17 @@ Section~\ref{sec:conclusion} gives our conclusions.
 		\includegraphics[width=0.95\textwidth]{f11.pdf}
 	\end{center}
 	\vspace{-0.7cm}
-  \caption{ {\bf NGC\,2516 in the galactic context.} 
-  Points denote halo members with $\pi/\sigma_\pi>20$.
-  In our coordinate system, the Sun is at
-  $\{X,Y,Z\} = \{ -8122, 0, +20.8\}\,{\rm pc}$.
-  The gray line traces the past and future cluster orbit.  In
-  different projections, the line spans different time intervals: the
-  longest time window is visible in the $(Z,X)$ projection.
-  The large blue arrows denote the median cluster velocity after
-  subtracting the local standard of rest: 
-  $\{v_{\rm X}, v_{\rm Y}, v_{\rm Z}\} = \{-22.2, -25.3, -4.6\}$\kms.
-  Their sizes are internally proportionate.
-  By comparison, $\vec{v}_{\rm LSR} = \{12.9, 245.6, 7.78\}$\kms.
+  \caption{ {\bf Position and orbit of NGC\,2516 in the Galaxy.} 
+  Points denote halo members with $\pi/\sigma_\pi>20$.  In our
+  galactic coordinate system, the Sun is at $\{X,Y,Z\} = \{ -8122, 0,
+  +20.8\}\,{\rm pc}$.  The gray line traces the past and future
+  cluster orbit.  In different projections, the line spans different
+  time intervals: the longest time window is visible in the $(Z,X)$
+  projection.  The large blue arrows denote the median cluster
+  velocity after subtracting the local standard of rest: $\{v_{\rm X},
+  v_{\rm Y}, v_{\rm Z}\} = \{-22.2, -25.3, -4.6\}$\kms.  The sizes of
+  the blue arrows are internally proportionate.  By comparison,
+  $\vec{v}_{\rm LSR} = \{12.9, 245.6, 7.78\}$\kms.
   \label{fig:XYZ}
 	}
 \end{figure*}
@@ -322,16 +321,15 @@ discussed Appendix~\ref{app:clustering}, as is the overlap between
 their resulting membership samples.
 
 Figure~\ref{fig:gaia6d} shows the cluster members reported by each
-study in the space of positions, proper motions, and radial velocity
-when available.  The \citetalias{cantatgaudin_gaia_2018} members are
-all within a few degrees of the cluster center, while the
+study in the space of observed positions, proper motions, and radial
+velocity when available.  The \citetalias{cantatgaudin_gaia_2018}
+members are all within a few degrees of the cluster center, while the
 \citetalias{kounkel_untangling_2019} and \citetalias{meingast_2021}
-members (the ``halo'') span tens of degrees. 
-Inverting the parallax shows that members have been reported from
-line-of-sight distances ranging from $300$ to $600\,$pc.
-Stars in the upper right quadrant of the $\mu_{\alpha'}$ {\it vs.}
-$\mu_\delta$ projection were reported almost entirely by
-\citet{meingast_2021}.
+members (the ``halo'') span tens of degrees.  Inverting the parallax
+shows that members have been reported from line-of-sight distances
+ranging from $300$ to $600\,$pc.  Stars in the upper right quadrant of
+the $\mu_{\alpha'}$ {\it vs.} $\mu_\delta$ projection were reported
+almost entirely by \citet{meingast_2021}.
 
 In Figure~\ref{fig:gaia6d}, and for the remainder of the study, we
 describe the \citetalias{cantatgaudin_gaia_2018} members as the
@@ -352,7 +350,7 @@ $\approx$2$^\circ$, not $\approx20^\circ$.
 Outside of the core and halo, we also define a set of nearby field
 stars in the ``neighborhood'' of \cn.  Based on the observed
 distribution of halo members, we drew these stars randomly from the
-following ``cube'' in right ascension, declination, and parallax:
+following intervals of right ascension, declination, and parallax:
 \begin{align}
   \alpha\,[\mathrm{deg}] &\in [108, 132], \\
   \delta\,[\mathrm{deg}] &\in [-76, -45], \\
@@ -368,14 +366,22 @@ the omission of 1.1\% of the stars drawn from the volume noted above.
 
 The discrepancy between our canonical understanding of open clusters
 and the possibility of a diffuse population existing around \cn\
-prompted our initial interest in this analysis.  What is the true
-structure of \cn?  Are the core and halo truly coeval?
-
-% FIXME FIXME FIXME
-{\bf
-To at least visualize the thing better...
-}
-Figure~\ref{fig:XYZ}.
+prompted our interest in understanding the reality and origin of the
+diffuse population.  Figure~\ref{fig:XYZ} helps in visualizing the
+proposed structure and kinematics of the halo.  We computed the
+physical positions by transforming from $(\alpha, \delta, \pi)$ to
+galactocentric ($X,Y,Z$) assuming the \texttt{astropy v4.0} coordinate
+standard \citep{astropy_2018}.  The direction of galactic rotation is
+$+\hat{Y}$. The cluster orbit (gray line) was evaluted by taking the
+median parameters for core members for which
+\citetalias{cantatgaudin_gaia_2018} reported membership probabilities
+exceeding 70\%.  We then integrated the orbit using \texttt{gala} and
+the \texttt{MWPotential2014} potential \citep{bovy_galpy_2015,gala}.
+The elongation of the cluster in both the $(X,Y)$ and $(Z,Y)$ planes
+is correlated with the direction of the LSR-corrected median cluster
+velocity.  A similar correlation was noted in Coma Ber by
+\citet{tang_comaber_2019}.  Possible explanations are discussed in
+Section~\ref{subsec:origin}.
 
 
 
@@ -690,56 +696,46 @@ we get an age of ZZZ+/-AAA.
 
 \subsubsection{Kinematics $\otimes$ Rotation}
 
-\begin{figure}[t]
+\begin{figure*}[t]
 	\begin{center}
-		\leavevmode
 		\subfloat{
-			\includegraphics[width=0.49\textwidth]{f12a.pdf}
+			\includegraphics[width=0.5\textwidth]{f8a.pdf}
+			\includegraphics[width=0.5\textwidth]{f8b.pdf}
 		}
-
-		\subfloat{
-			\includegraphics[width=0.49\textwidth]{f12b.pdf}
-		}
+	%		\includegraphics[width=0.7\textwidth]{f8a.pdf}
 	\end{center}
 	\vspace{-0.7cm}
-  \caption{ {\bf Projection effects for co-moving populations
-  		across the sky.}
-  	The map is colored by the velocity difference
-  	a star co-moving with \cn\ would exhibit across
-  	the equatorial sphere.
-  	Actual positions of candidate \cn\ members are shown with points; the star denotes the cluster center.
-	\label{fig:vproj}
-	}
-\end{figure}
-
-
-\begin{figure}[t]
-	\begin{center}
-			\includegraphics[width=0.49\textwidth]{f8a.pdf}
-	\end{center}
-	\vspace{-0.7cm}
-  \caption{ {\bf Kinematic members of NGC\,2516, cross-matched against
-  rotational members.} The projections are in galactic position
-  coordinates and 2d-tangential velocity space.
+  \caption{ 
+  {\bf Members of NGC\,2516 exist hundreds of parsecs from the core,
+  and up to $\approx$5\kms\ from the core in tangential velocity.} Stars
+  that meet both kinematic and rotational membership criteria are shown in
+  blue.  Stars for which rotation periods should have been detectable,
+  but were not detected, are shown in orange.  Projections are shown in galactic coordinates and
+  (projection-corrected) 2D-tangential velocity space.  The histogram
+  on the right bins versus 3D separation from the core and
+  2D velocity difference. Bins have width 25\,pc
+  in position, and 1.0\,km\,s$^{-1}$ in velocity.  {\bf Uncertainties
+  in the fraction are taken as the quadrature sum of the rel unc of
+  the numerator and denominator (FIXME)}
   \label{fig:physical_x_rotn}
 	}
-\end{figure}
+\end{figure*}
 
-\begin{figure}[t]
-	\begin{center}
-			\includegraphics[width=0.49\textwidth]{f8b.pdf}
-	\end{center}
-	\vspace{-0.7cm}
-  \caption{ {\bf Histogram of Figure~\ref{fig:physical_x_rotn}, binned
-  versus 3d separation from the core and 2d velocity difference.} Bins
-  have width 25\,pc in position, and 2.0\,km\,s$^{-1}$ in velocity.
-  {\bf Uncertainties in the fraction are taken as the quadrature sum
-  of the rel unc of the numerator and denominator (FIXME)}.  Bonafide
-  members appear to exist hundreds of parsecs from the core, and up to
-  $\approx$10\kms in tangential velocity separation.
-  \label{fig:hist_physical_x_rotn}
-	}
-\end{figure}
+% \begin{figure}[t]
+% 	\begin{center}
+% 			\includegraphics[width=0.49\textwidth]{f8b.pdf}
+% 	\end{center}
+% 	\vspace{-0.7cm}
+%   \caption{ {\bf Histogram of Figure~\ref{fig:physical_x_rotn}, binned
+%   versus 3d separation from the core and projection-corrected 2d velocity difference.} Bins
+%   have width 25\,pc in position, and 1.0\,km\,s$^{-1}$ in velocity.
+%   {\bf Uncertainties in the fraction are taken as the quadrature sum
+%   of the rel unc of the numerator and denominator (FIXME)}.  Bonafide
+%   members appear to exist hundreds of parsecs from the core, and up to
+%   $\approx$5\kms in tangential velocity separation.
+%   \label{fig:hist_physical_x_rotn}
+% 	}
+% \end{figure}
 
 How far away from the core, in position and velocity space, does the
 halo extend?  We can explore this by crossmatching the stars with
@@ -756,20 +752,7 @@ the density of period detections seems to decrease once $(Bp-Rp)_0
 \gtrsim 1.25$, {\it i.e.}, for spectral types later than $\approx$K4V.
 Our expectation is that completion effects become important for
 fainter stars.
-%
-% At the distance of NGC\,2516, a K4V star has $T\approx 14.5$,
-% for which our reductions of the TESS images yield a precision of
-% $\approx 7$\,mmag per half-hour exposure \citep{bouma_wasp4b_2019}.
-% {\bf 
-% The AMPLITUDES of the rotation signals are like 10-100 mmag (CITE
-% REBULL 2020, FIGURE 10).
-% }
-%
-%G=18 is like Abs G 9.8, Bp-Rp not corrected of 2.7. 
-% (Bp-Rp )_0 of 1.25 is (Bp-Rp) of 1.38... or Abs G of ~= 6.8.
-% or G-Rp ~= 0.7
-% So, G~=15... meaning Rp~=14.3. 
-%
+
 % IN POSITION
 % Bin width: 25
 % Rotators: [361  82  43  30  16  18  14   8   6   2   4   0   0   0   0
@@ -782,51 +765,45 @@ fainter stars.
 
 The results are shown using physical coordinates in
 Figure~\ref{fig:physical_x_rotn}.  Appendix~\ref{app:gaia6d_x_rotn}
-includes a supplemental visualization in the non-transformed space of
-Gaia measurements.  To compute the physical positions, we transformed
-from $(\alpha, \delta, \pi)$ to galactocentric ($X,Y,Z$) assuming the
-\texttt{astropy v4.0} coordinate standard \citep{astropy_2018}.  We
-then converted the on-sky proper motions to physical units by dividing
-by the distance of each star, taken as the inverse parallax.  The
-inverse parallax approximation does not introduce significant biases
-for this sample: the mean $\pi/\sigma_\pi$ and its standard deviation
-are 122 and 40 respectively; the minimum is 19.5.
-Qualitatively, the fraction of kinematic members with TESS-detected
-rotation periods seems like it may decrease with increasing distance
-from the halo core---both in position and in velocity space.  
+includes a supplemental visualization in the observed space of Gaia
+measurements.  The observed proper motions however suffer from
+projection effects, discussed in Appendix~\ref{app:vproj}.  These
+effects are important in the equatorial coordinate system due to the
+proximity of some \cn\ members to the southern ecliptic pole.  For a
+star at position $(\alpha, \delta)$, we correct for the projection
+effect by comparing the observed proper motion $(\mu_{\alpha'},
+\mu_\delta)$ to what the proper motion at the star's position would
+have been if the star were comoving with the core of \cn.  This yields
+a quantity we denote $\Delta \mu^{*}$, following
+\citetalias{meingast_2021}.  We then convert these proper motion
+differences to physical units by dividing by the distance of each
+star, taken as the inverse parallax.  The inverse parallax
+approximation does not introduce significant biases for this sample,
+since the mean $\pi/\sigma_\pi$ and its standard deviation are 122 and
+40 respectively; the minimum is 19.5.  An inspection of the results
+suggests that the fraction of kinematic members with TESS-detected
+rotation periods may decrease with increasing distance from the halo
+core---both in position and in velocity space.  
 
-To quantify this, we computed the separation of the positions and 2D
-velocities from the median core member, selected by taking the median
-across \citetalias{cantatgaudin_gaia_2018} members with membership
-probabilities exceeding 70\%.  The result is shown in
-Figure~\ref{fig:hist_physical_x_rotn}.  The halo extends to
-separations of about 200\,pc in physical space from the cluster core.
-This corresponds to total a length of $\approx$300-350\,pc, depending on
-which members of the halo are chosen as the ``tips'' on either end.
-Broadly speaking, this agrees with the results of
+To quantify this, we compute the separation of the positions and 2D
+velocities from the median \citetalias{cantatgaudin_gaia_2018} core
+member.  The result is shown on the right side of
+Figure~\ref{fig:physical_x_rotn}.  The halo extends to separations of
+about 200\,pc in physical space from the cluster core.  This
+corresponds to total a length of $\approx$400\,pc, depending on which
+members of the halo are chosen as the ``tips'' on either end.  This
+agrees broadly speaking with the structure of the halo reported by
 \citetalias{kounkel_untangling_2019}.
 
-In tangential velocity space, the fraction of stars with rotation
-period detections remains high out to roughly 10\kms.
-\citet{meingast_2021} by comparison required a physically motivated
-cut in tangential velocity space of 1.5\kms.  
+In projection-corrected tangential velocity space, the fraction of
+stars with rotation period detections remains high out to roughly
+5\kms.  \citet{meingast_2021} by comparison required a physically
+motivated cut in tangential velocity space of 1.5\kms.  
+Our results show that at the expense of higher field star
+contamination rates, bonafide members can be identified even out to
+higher velocity separations.
+{\bf todo: anything else to mention? e.g., the actual numbers?}
 
-Of course, an important aspect of the tangential velocity cut needs to
-be understood in light of 
-PROJECTION EFFECTS.
-
-... So uhhhhh yeah I need to compute that map.
-
-While this 
-improves purity, it is somewhat lacking in completeness...
-
-
-% [361  82  43  30  16  18  14   8   6   2   4   0   0   0   0   0]
-% [495 116  65  46  28  20  22  12  11   8   5   1   0   1   0   2]
-% [384 109  45  27  15   4   0   0   0   0   0   0   0   0   0   0   0   0
-%    0   0]
-% [533 153  67  40  23  10   3   1   2   0   0   0   0   0   0   0   0   0
-%    0   0]
 
 \subsection{Lithium from Gaia-ESO and GALAH}
 \label{subsec:lithium}
@@ -963,6 +940,15 @@ distinguishing them.
 \label{sec:discussion}
 
 \subsection{How did the halo form?}
+\label{subsec:origin}
+
+Differential rotation in the galaxy is clearly important. Meingast+21
+established this; in ten different cluster halos, nine showed leading
+and trailing arms oriented in line with the differential rotation of
+the Galaxy.
+(See e.g., their Figure 13).
+
+
 Another way to frame this question: should we call these stars a tidal
 tail?
 % TODO: read Gagne+20 on this...
@@ -1172,6 +1158,7 @@ members for their efforts to make the mission a continued success.
   %\texttt{exoplanet} \citep{exoplanet:exoplanet}, and its
   %dependencies \citep{exoplanet:agol20, exoplanet:kipping13, exoplanet:luger18,
   % 	exoplanet:theano},
+	\texttt{gala} \citep{gala,PriceWhelan_2017_gala_zenodo},
 	%\texttt{IDL Astronomy User's Library} \citep{landsman_1995},
   \texttt{IPython} \citep{perez_2007},
 	%\texttt{isochrones} \citep{morton_2015_isochrones},
@@ -1506,7 +1493,33 @@ vs} color distributions are quite different
 (Figure~\ref{fig:compstar}).
 
 
+\section{Projection effects for 2D velocities}
+\label{app:vproj}
 
+\begin{figure}[t]
+	\begin{center}
+		\leavevmode
+		\subfloat{
+			\includegraphics[width=0.49\textwidth]{f12a.pdf}
+		}
+
+		\subfloat{
+			\includegraphics[width=0.49\textwidth]{f12b.pdf}
+		}
+	\end{center}
+	\vspace{-0.7cm}
+  \caption{ {\bf Projection effects for co-moving populations across
+  the sky.} The map is colored by the velocity difference a star
+  co-moving with \cn\ would exhibit across the equatorial sphere.
+  Actual positions of candidate \cn\ members are shown with points;
+  the star denotes the cluster center.
+	\label{fig:vproj}
+	}
+\end{figure}
+
+Figure~\ref{fig:vproj} shows why the correct approach for comparing
+any star's proper motions against the cluster's mean depends on the
+position of the star being considered.
 
 
 \section{Differential Reddening}

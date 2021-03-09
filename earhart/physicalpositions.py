@@ -39,6 +39,11 @@ def append_physicalpositions(df, median_df):
     c_median = get_galcen(given_gaia_df_get_icrs_arr(median_df, zero_rv=1))
     c_df = get_galcen(given_gaia_df_get_icrs_arr(df, zero_rv=1))
 
+    # ditto, but in icrs. used in the comoving projection trick.
+    # as in plotting.plot_vtangential_projection
+    icrs_c_median = given_gaia_df_get_icrs_arr(median_df, zero_rv=0)
+    icrs_c_df = given_gaia_df_get_icrs_arr(df, zero_allvelocities=1)
+
     # get 3D separation from cluster median
     sep_3d_position_pc = (c_median.separation_3d(c_df)).to(u.pc).value
 
@@ -77,19 +82,50 @@ def append_physicalpositions(df, median_df):
             new_val = c_km_per_sec
             df[new_key] = new_val
 
+            #
+            # sophisticated thing: actually correct for the projection
+            # effect.
+            #
+            vel_to_add = np.ones(len(df))*icrs_c_median.velocity
+            _ = icrs_c_df.data.to_cartesian().with_differentials(vel_to_add)
+            c_full = icrs_c_df.realize_frame(_)
+
+            if c == 'pmra':
+                c_AU_per_yr = ((( nparr(df[c]) - nparr(c_full.pm_ra_cosdec) )*1e-3) * d_pc)*(u.AU/u.yr)
+            elif c == 'pmdec':
+                c_AU_per_yr = ((( nparr(df[c]) - nparr(c_full.pm_dec) )*1e-3) * d_pc)*(u.AU/u.yr)
+
+            c_km_per_sec = c_AU_per_yr.to(u.km/u.second)
+            new_key = 'delta_'+c+'_prime_km_s'
+            new_val = c_km_per_sec
+            df[new_key] = new_val
+
     df['delta_mu_km_s'] = np.sqrt(
         df['delta_pmra_km_s']**2 + df['delta_pmdec_km_s']**2
+    )
+    df['delta_mu_prime_km_s'] = np.sqrt(
+        df['delta_pmra_prime_km_s']**2 + df['delta_pmdec_prime_km_s']**2
     )
 
     return df
 
 
-def given_gaia_df_get_icrs_arr(df, zero_rv=0):
+def given_gaia_df_get_icrs_arr(df, zero_rv=0, zero_allvelocities=0):
     """
     Given a pandas dataframe with [ra, dec, parallax, pmra, pmdec] and
     optionally [dr2_radial_velocity], return an initialized astropy SkyCoord
     instance of the corresponding ICRS coordinates.
     """
+
+    if zero_allvelocities:
+        return coord.SkyCoord(
+            ra=nparr(df.ra)*u.deg,
+            dec=nparr(df.dec)*u.deg,
+            distance=nparr(1/(df.parallax*1e-3))*u.pc,
+            pm_ra_cosdec=None,
+            pm_dec=None,
+            radial_velocity=None
+        )
 
     if zero_rv:
         return coord.SkyCoord(
@@ -101,20 +137,19 @@ def given_gaia_df_get_icrs_arr(df, zero_rv=0):
             radial_velocity=0*u.km/u.s
         )
 
+    rvkey = 'dr2_radial_velocity'
+    if rvkey in df:
+        pass
     else:
-        rvkey = 'dr2_radial_velocity'
-        if rvkey in df:
-            pass
-        else:
-            rvkey = 'radial_velocity'
-        return coord.SkyCoord(
-            ra=nparr(df.ra)*u.deg,
-            dec=nparr(df.dec)*u.deg,
-            distance=nparr(1/(df.parallax*1e-3))*u.pc,
-            pm_ra_cosdec=nparr(df.pmra)*u.mas/u.yr,
-            pm_dec=nparr(df.pmdec)*u.mas/u.yr,
-            radial_velocity=nparr(df[rvkey])*u.km/u.s
-        )
+        rvkey = 'radial_velocity'
+    return coord.SkyCoord(
+        ra=nparr(df.ra)*u.deg,
+        dec=nparr(df.dec)*u.deg,
+        distance=nparr(1/(df.parallax*1e-3))*u.pc,
+        pm_ra_cosdec=nparr(df.pmra)*u.mas/u.yr,
+        pm_dec=nparr(df.pmdec)*u.mas/u.yr,
+        radial_velocity=nparr(df[rvkey])*u.km/u.s
+    )
 
 
 def calc_dist(x0, y0, z0, x1, y1, z1):
