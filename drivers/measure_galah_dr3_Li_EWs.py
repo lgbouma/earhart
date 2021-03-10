@@ -75,6 +75,7 @@ for _, r in mdf.iterrows():
                        writecsvresults=True)
 
     else:
+        print(f'found {csv_outpath}')
         pass
 
 #
@@ -90,32 +91,36 @@ for csvpath in result_csvs:
 
 li_df = pd.concat(dfs)
 li_df['source_id'] = sourceids
-FUDGE = 65
-li_df['Fitted_Li_EW_mA_plus_fudge'] = li_df['Fitted_Li_EW_mA'] + FUDGE
 
 galah_li_path = os.path.join(
-    DATADIR, 'lithium', 'galahdr3_fullfaintkinematic_xmatch_20210211.csv'
+    DATADIR, 'lithium', 'galahdr3_fullfaintkinematic_xmatch_20210310.csv'
 )
 li_df.to_csv(galah_li_path, index=False)
 print(f'Saved {galah_li_path}')
 
 datapath = os.path.join(DATADIR, 'lithium',
-                        'randich_fullfaintkinematic_xmatch_20210128.csv')
+                        'randich_fullfaintkinematic_xmatch_20210310.csv')
 if not os.path.exists(datapath):
     from earhart.lithium import _make_Randich18_xmatch
     _make_Randich18_xmatch(datapath, vs_rotators=0)
 rdf = pd.read_csv(datapath)
 
 mdf = li_df.merge(rdf, how='inner', on='source_id')
+mdf = mdf.drop_duplicates(subset='source_id', keep='first')
+mdf = mdf[(~pd.isnull(mdf.EWLi))]
+print(f'Got {len(mdf)} calibration stars')
 
 plt.close('all')
-f,ax = plt.subplots(figsize=(4,3))
+f,ax = plt.subplots(figsize=(4,4))
 ax.scatter(mdf.EWLi, mdf.Fitted_Li_EW_mA)
-ax.scatter(mdf.EWLi, mdf.Fitted_Li_EW_mA+FUDGE)
 ax.plot(np.arange(-50,250,1), np.arange(-50,250,1), 'k--')
 ax.set_xlabel('Randich+18 EW Li from Gaia-ESO [mA]')
 ax.set_ylabel('My EW Li from GALAHDR3 [mA]')
 outpath = '../results/lithium/validate_my_GALAH_EWs_vs_Randich18.png'
 f.savefig(outpath, bbox_inches='tight', dpi=400)
+print(f'Made {outpath}')
 plt.close('all')
 
+print(42*'-')
+print('Check the following to ensure you understand differences...')
+print(mdf.sort_values(by='Fitted_Li_EW_mA')[['Fitted_Li_EW_mA','EWLi','source_id','Teff']])

@@ -6,6 +6,7 @@ Contents:
 """
 import os
 import numpy as np, pandas as pd
+from numpy import array as nparr
 from astropy.io import fits
 from astropy.table import Table
 from astropy import units as u, constants as const
@@ -16,7 +17,7 @@ from earhart.paths import DATADIR, RESULTSDIR
 def _get_lithium_EW_df(gaiaeso, galahdr3):
 
     datapath = os.path.join(DATADIR, 'lithium',
-                            'randich_fullfaintkinematic_xmatch_20210128.csv')
+                            'randich_fullfaintkinematic_xmatch_20210310.csv')
     if not os.path.exists(datapath):
         from earhart.lithium import _make_Randich18_xmatch
         _make_Randich18_xmatch(datapath, vs_rotators=0)
@@ -147,6 +148,7 @@ def _make_Randich18_xmatch(datapath, vs_rotators=1, RADIUS=0.5):
     rdf = get_Randich18_NGC2516()
 
     if vs_rotators:
+        raise DeprecationWarning
         rotdir = os.path.join(DATADIR, 'rotation')
         rot_df = pd.read_csv(
             os.path.join(rotdir, 'ngc2516_rotation_periods.csv')
@@ -156,11 +158,9 @@ def _make_Randich18_xmatch(datapath, vs_rotators=1, RADIUS=0.5):
     else:
 
         from earhart.helpers import _get_fullfaint_dataframes
-        nbhd_df, cg18_df, kc19_df, target_df = _get_fullfaint_dataframes()
-        cg18_df['subcluster'] = 'core'
-        kc19_df['subcluster'] = 'halo'
-        comp_df = pd.concat((cg18_df, kc19_df))
-        print('Comparing vs the "fullfaint" kinematic NGC2516 rotators sample (core + halo)...')
+        nbhd_df, core_df, halo_df, full_df, target_df = _get_fullfaint_dataframes()
+        comp_df = full_df
+        print(f'Comparing vs the {len(comp_df)} "fullfaint" kinematic NGC2516 rotators sample (core + halo)...')
 
     c_comp = SkyCoord(ra=nparr(comp_df.ra)*u.deg, dec=nparr(comp_df.dec)*u.deg)
     c_r18 = SkyCoord(ra=nparr(rdf._RA)*u.deg, dec=nparr(rdf._DE)*u.deg)
@@ -185,7 +185,8 @@ def _make_Randich18_xmatch(datapath, vs_rotators=1, RADIUS=0.5):
 
     right_df = pd.DataFrame(match_rows)
 
-    mdf = pd.concat((left_df.reset_index(), right_df.reset_index()), axis=1)
+    mdf = pd.concat((left_df.reset_index(drop=True),
+                     right_df.reset_index(drop=True)), axis=1)
 
     if vs_rotators:
         print(f'Got {len(mdf)} gold rot matches from {len(rdf)} Randich+18 shots.')
@@ -206,5 +207,7 @@ def _make_Randich18_xmatch(datapath, vs_rotators=1, RADIUS=0.5):
         )
         mdf = mdf[~badmatch]
         print(f'Got {len(mdf)} fullfaint kinematic matches from {len(rdf)} Randich+18 shots after cleaning "BADMATCHES".')
+        print(f'Got {len(mdf[mdf.subcluster=="core"])} in core.')
+        print(f'Got {len(mdf[mdf.subcluster=="halo"])} in halo.')
 
     mdf.to_csv(datapath, index=False)

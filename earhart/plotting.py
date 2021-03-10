@@ -1299,11 +1299,9 @@ def plot_galah_dr3_lithium_abundance(outdir, corehalosplit=0):
     g_df = pd.DataFrame(g_dict)
 
     basedata = 'fullfaint'
-    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
-    cg18_df['subcluster'] = 'core'
-    kc19_df['subcluster'] = 'halo'
-    comp_df = pd.concat((cg18_df, kc19_df))
-    print('Comparing vs the "fullfaint" kinematic NGC2516 rotators sample (core + halo)...')
+    nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
+    comp_df = full_df
+    print(f'Comparing vs the {len(comp_df)} "fullfaint" kinematic NGC2516 rotators sample (core + halo)...')
     assert type(comp_df.source_id.iloc[0]) == np.int64
 
     mdf = comp_df.merge(g_df, on='source_id', how='inner')
@@ -1633,7 +1631,7 @@ def plot_rotation_X_lithium(outdir, cmapname, gaiaeso=0, galahdr3=0):
     Plot Prot vs (Bp-Rp)_0, color points by Li EW.
     """
 
-    assert abs(AVG_EBpmRp - 0.1343) < 1e-4 # used by KC19
+    assert abs(AVG_EBpmRp - 0.1343) < 1e-4
 
     set_style()
 

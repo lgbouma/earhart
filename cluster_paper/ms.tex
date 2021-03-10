@@ -830,32 +830,34 @@ higher velocity separations.
   }
 \end{figure*}
 
-The third and final approach we took for age-dating the stellar
-population was using the lithium deplition technique (CITE, CITE,
-CITE).
-
-Reviewing the literature, two spectroscopic datasets for \cn\ seemed
-particularly important: Gaia-ESO 
-\citep{randich_gaiaeso_2018} and GALAH DR3 \citep{buder_galah_2020}.
-The target selection and results from each survey were as follows.
+The third and final approach we took for confirming the youth of the
+halo population of \cn\ was an analysis of the Li\,\textsc{I}
+6708\,\AA doublet.  The method is reviewed by
+\citet{soderblom_ages_2010}, and its connection to stellar rotation
+has recently been surveyed by \citet{bouvier_lithium-rotation_2020}.
+For \cn, two spectroscopic datasets  seemed particularly important:
+Gaia-ESO \citep{randich_gaiaeso_2018} and GALAH DR3
+\citep{buder_galah_2020}.  The target selection and results from each
+survey were as follows.
 
 Gaia-ESO selected {\it cluster candidates} to be observed with the
 GIRAFFE and UVES spectrographs based on previously reported literature
 members and publicly available optical and NIR photometry.  This
-target selection approach included many stars in the spatial proximity
-of previously known members.  Since the possible existence of the \cn\ 
-halo was not known at the time of targetting, very few ``halo'' stars
-are in their ultimate sample.  For \cn, \citet{randich_gaiaeso_2018}
-ultimately reported stellar parameters (including lithium equivalent
-widths and metallicities) for 796 candidate members.  Cross-matching
-against our kinematic list of \nkinematic candidate members by position and
-imposing a 0$\farcs$5 maximum separation limit yields 492 kinematic
-members for which a Gaia-ESO spectrum was acquired and stellar
-parameters were reported.  15 of these (all with $(Bp-Rp)_0 > 2.0$)
-are spurious matches based on the Gaia color and GES effective
-temperature, and we remove them.  This yields 477 stars, of which 436
-are in the core, and 41 are in the halo.  This ratio is primarily
-caused by the Gaia-ESO targetting selection function.
+target selection approach included some stars in the spatial proximity
+of previously known members.  Since the existence of the \cn\ halo was
+not known at the time of targetting, very few ``halo'' stars are in
+their sample.  For \cn, \citet{randich_gaiaeso_2018} ultimately
+reported stellar parameters (including lithium equivalent widths and
+metallicities) for 796 stars that they considered possible \cn\
+members.  Cross-matching against our kinematic list of \nkinematic
+candidate members by position and imposing a 0$\farcs$5 maximum
+separation limit yields 492 kinematic members for which a Gaia-ESO
+spectrum was acquired and stellar parameters were reported.  15 of
+these (all with $(Bp-Rp)_0 > 2.0$) are spurious matches based on the
+Gaia color and GES effective temperature, and we remove them.  This
+yields 477 stars, of which 436 are in the core, and 41 are in the
+halo.  The lop-sided ratio is primarily caused by the Gaia-ESO
+selection function.
 
 % GALAH DR3 selected XXX/YYY.  GALAH-DR3 = GALAH-main + GALAH-faint +
 % K2-HERMES + TESS-HERMES + HERMES other.  Data taken both with the 2dF
@@ -872,30 +874,33 @@ caused by the Gaia-ESO targetting selection function.
 The GALAH DR3 target selection process is discussed in detail by
 \citet{buder_galah_2020}.  The most relevant aspects for our project
 are that the ``main'' survey targeted $12.0<V<14.0$ stars at
-$\delta<+10^\circ$, provided the stars were at least ten degrees from the
-galactic plane.  The survey is spatially inhomogeneous\footnote{See
-the footprint at
+$\delta<+10^\circ$, provided the stars were at least ten degrees from
+the galactic plane.  The survey is spatially
+inhomogeneous\footnote{See the footprint at
 \url{https://www.galah-survey.org/news/announcing-galah-dr3}}. Special
 targeting for stars in the TESS southern continuous viewing zone, and
 for known open cluster members was also performed.  We identified the
-candidate \cn\ members
-for which spectra had been obtained by searching
-the \texttt{GALAH\_DR3\_main\_allstar\_v1} catalog, after excluding
-stars with the stellar parameter bit flags 1, 2, 3.  This excludes
-spectra with unreliable broadening, low S/N, and unreliable wavelength
-solutions (see Table~6 of \citealt{buder_galah_2020}).  Since our main
-focus is measuring equivalent widths for the Li\,6708\ \AA line, these
-were the most relevant bit flags for our purpose.  Of our \nkinematic
-candidate \cn\ members, 106 had spectra in GALAH DR3.  51 were in the
-``core''; 55 were in the ``halo''.
-77 had ``finite'' lithium, i.e., no lithium flag set.
+candidate \cn\ members for which spectra had been obtained by
+searching the \texttt{GALAH\_DR3\_main\_allstar\_v1} catalog, after
+excluding stars with the stellar parameter bit flags 1, 2, 3.  This
+excludes spectra with unreliable broadening, low S/N, and unreliable
+wavelength solutions (see Table~6 of \citealt{buder_galah_2020}).
+Since our main focus is measuring equivalent widths for the
+Li\,6708\,\AA doublet, these were the most relevant bit flags.  Of our
+\nkinematic candidate \cn\ members, 107 had spectra in GALAH DR3.  51
+were in the ``core''; 56 were in the ``halo''.  78 had ``finite''
+lithium, i.e., no lithium flag set.
 
+%FIXME FIXME FIXME FIXME
+%FIXME FIXME FIXME FIXME
 
+%
 %/Users/luke/Dropbox/proj/earhart/results/lithium/kinematic_X_galah_dr3.csv
+%
 % https://docs.datacentral.org.au/galah/dr3/catalogue-data-access/
 We downloaded\footnote{Via \url{datacentral.org.au/services/download},
-using the \texttt{sobject\_id} identifiers.}
-the GALAH DR3 spectra for all 106 entries.
+using the \texttt{sobject\_id} identifiers.} the GALAH DR3 spectra for
+all 107 entries.
 We then measured the lithium equivalent widths using PROCESS Y.
 We then concatenated the GALAH DR3 and Gaia-ESO results together.
 
