@@ -15,9 +15,9 @@ Contents:
         plot_physical_X_rotation (+ histogram_physical_X_rotation)
     Lithium:
         plot_lithium_EW_vs_color
-        plot_randich_lithium
-        plot_galah_dr3_lithium_abundance
         plot_rotation_X_lithium
+        plot_galah_dr3_lithium_abundance
+        plot_randich_lithium (deprecated)
     Other:
         plot_gaia_rv_scatter_vs_brightness
         plot_ruwe_vs_apparentmag
@@ -1563,10 +1563,8 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0, corehalosplit=0):
     df = _get_lithium_EW_df(gaiaeso, galahdr3)
 
     basedata = 'fullfaint'
-    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
-    cg18_df['subcluster'] = 'core'
-    kc19_df['subcluster'] = 'halo'
-    mdf = pd.concat((cg18_df, kc19_df))
+    nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
+    mdf = full_df
 
     df = df.merge(mdf, how='left', on='source_id')
 

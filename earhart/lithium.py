@@ -26,8 +26,8 @@ def _get_lithium_EW_df(gaiaeso, galahdr3):
 
     from earhart.lithium import get_GalahDR3_li_EWs
     galah_df = get_GalahDR3_li_EWs()
-    #FIXME: shouldn't require fudge
-    galah_li_col = 'Fitted_Li_EW_mA_plus_fudge'
+    # the gaussian fit, numerically integrated
+    galah_li_col = 'Fitted_Li_EW_mA'
 
     s_gaiaeso_df = gaiaeso_df[[gaiaeso_li_col, 'source_id']]
     s_gaiaeso_df = s_gaiaeso_df.rename({gaiaeso_li_col: 'Li_EW_mA'}, axis='columns')
@@ -52,9 +52,9 @@ def get_GalahDR3_li_EWs(verbose=1):
     """
 
     if verbose:
-        print("WRN! These GALAH DR3 EWs that I meausred have NOT YET BEEN VALIDATED.")
+        print("WRN! These GALAH DR3 EWs are janky for <50mA b/c of S/N.")
     galah_li_path = os.path.join(
-        DATADIR, 'lithium', 'galahdr3_fullfaintkinematic_xmatch_20210211.csv'
+        DATADIR, 'lithium', 'galahdr3_fullfaintkinematic_xmatch_20210310.csv'
     )
     li_df = pd.read_csv(galah_li_path)
 
