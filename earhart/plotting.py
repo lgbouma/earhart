@@ -1647,7 +1647,7 @@ def plot_rotation_X_lithium(outdir, cmapname, gaiaeso=0, galahdr3=0):
     # check crossmatch quality
     #
     plt.close('all')
-    f, ax = plt.subplots(figsize=(4.5,3))
+    f, ax = plt.subplots(figsize=(6,3))
 
     # color scheme
     if cmapname == 'nipy_spectral':
@@ -1661,7 +1661,7 @@ def plot_rotation_X_lithium(outdir, cmapname, gaiaeso=0, galahdr3=0):
     cax = ax.scatter(
         mdf[sel]['phot_bp_mean_mag'] - mdf[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
         mdf[sel]['period'],
-        c=nparr(mdf[sel]['Li_EW_mA']), alpha=1, zorder=2, s=10, edgecolors='k',
+        c=nparr(mdf[sel]['Li_EW_mA']), alpha=1, zorder=2, s=15, edgecolors='k',
         marker='o', cmap=cmap, norm=norm, linewidths=0.3
     )
 
@@ -1672,7 +1672,8 @@ def plot_rotation_X_lithium(outdir, cmapname, gaiaeso=0, galahdr3=0):
 
     ax.set_ylabel('Rotation Period [days]')
     ax.set_xlabel('(Bp-Rp)$_0$ [mag]')
-    ax.set_xlim((0.5, 1.5))
+    # ax.set_xlim((0.5, 1.5))
+    # ax.set_ylim((0.5, 1.5))
 
     format_ax(ax)
     outstr = '_' + cmapname

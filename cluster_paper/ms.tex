@@ -809,30 +809,49 @@ higher velocity separations.
 \subsection{Lithium from Gaia-ESO and GALAH}
 \label{subsec:lithium}
 
+\begin{figure}[t]
+	\begin{center}
+		\leavevmode
+		%\subfloat{
+			\includegraphics[width=0.49\textwidth]{f5a.pdf}
+		%	\includegraphics[width=0.59\textwidth]{f5b.pdf}
+		%}
+	\end{center}
+	\vspace{-0.7cm}
+  \caption{ {\bf Lithium in the core and halo of NGC\,2516.}
+  Equivalent width of the 6708\,\AA\ doublet is shown
+  versus extinction-corrected color for all kinematic \cn\ members
+  with Gaia-ESO ($N=452$) or GALAH ($N=107$) spectra available.
+  The GALAH spectra comprise slightly over half of the halo stars,
+  due to the non-targeted selection function of that survey.
+  Points with ${\rm EW}\approx0\,$m\AA\ are non-detections.
+  \label{fig:lithiumcorehalo}
+  }
+\end{figure}
 \begin{figure*}[t]
 	\begin{center}
 		\leavevmode
-		\subfloat{
-			\includegraphics[width=0.75\textwidth]{f5a.pdf}
-		}
-	
-		\subfloat{
-			\includegraphics[width=0.75\textwidth]{f5b.pdf}
-		}
+		%\subfloat{
+		\includegraphics[width=1\textwidth]{f5b.pdf}
+		%	\includegraphics[width=0.59\textwidth]{f5b.pdf}
+		%}
 	\end{center}
 	\vspace{-0.7cm}
-  \caption{ {\bf Lithium equivalent widths in NGC\,2516,}
-  plotted against extinction-corrected color ({\it top}), and the
-  combination of rotation period and extinction-corrected color ({\it
-  bottom}).
-  {\bf TODO: Do this against the autorot sample; Add the GALAH EWs}
-  \label{fig:lithium}
-  }
+	\caption{ {\bf Lithium and rotation in NGC\,2516.}
+		Points show all kinematic \cn\ members with TESS rotation
+		periods in the Gaia-ESO or GALAH surveys, and are colored by
+		equivalent width.
+	   Non-detections appear with ${\rm EW}\approx0\,$m\AA.
+	The K-dwarfs shows a similar lithium-rotation correlation
+		to what has been previously observed,
+		and is discussed in Section~\ref{subsec:lithium}.
+		\label{fig:lithium}
+	}
 \end{figure*}
 
 The third and final approach we took for confirming the youth of the
 halo population of \cn\ was an analysis of the Li\,\textsc{I}
-6708\,\AA doublet.  The method is reviewed by
+6708\,\AA\ doublet.  The method has been reviewed by
 \citet{soderblom_ages_2010}, and its connection to stellar rotation
 has recently been surveyed by \citet{bouvier_lithium-rotation_2020}.
 For \cn, two spectroscopic datasets  seemed particularly important:
@@ -845,8 +864,8 @@ GIRAFFE and UVES spectrographs based on previously reported literature
 members and publicly available optical and NIR photometry.  This
 target selection approach included some stars in the spatial proximity
 of previously known members.  Since the existence of the \cn\ halo was
-not known at the time of targetting, very few ``halo'' stars are in
-their sample.  For \cn, \citet{randich_gaiaeso_2018} ultimately
+not known at the time of target selection, very few ``halo'' stars are in
+the sample.  For \cn, \citet{randich_gaiaeso_2018} ultimately
 reported stellar parameters (including lithium equivalent widths and
 metallicities) for 796 stars that they considered possible \cn\
 members.  Cross-matching against our kinematic list of \nkinematic
@@ -858,6 +877,7 @@ Gaia color and GES effective temperature, and we remove them.  This
 yields 477 stars, of which 436 are in the core, and 41 are in the
 halo.  The lop-sided ratio is primarily caused by the Gaia-ESO
 selection function.
+%FIXME VERIFY THAT THESE NUMBERS DON'T INCLUDE THEIR NANS...
 
 % GALAH DR3 selected XXX/YYY.  GALAH-DR3 = GALAH-main + GALAH-faint +
 % K2-HERMES + TESS-HERMES + HERMES other.  Data taken both with the 2dF
@@ -1550,6 +1570,7 @@ Figure~\ref{fig:diffred}.
 
 
 \section{Kinematics $\otimes$ Rotation}
+\label{app:gaia6d_x_rotn}
 
 \begin{figure*}[t]
 	\begin{center}

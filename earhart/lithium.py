@@ -14,7 +14,7 @@ from astropy.coordinates import SkyCoord
 
 from earhart.paths import DATADIR, RESULTSDIR
 
-def _get_lithium_EW_df(gaiaeso, galahdr3):
+def _get_lithium_EW_df(gaiaeso, galahdr3, EW_CUTOFF_mA=-99):
 
     datapath = os.path.join(DATADIR, 'lithium',
                             'randich_fullfaintkinematic_xmatch_20210310.csv')
@@ -36,12 +36,18 @@ def _get_lithium_EW_df(gaiaeso, galahdr3):
 
     if gaiaeso and galahdr3:
         df = pd.concat((s_gaiaeso_df, s_galah_df))
+        df = df[df.Li_EW_mA > EW_CUTOFF_mA]
+        print(f'Gaia-ESO + GALAH: got {len(df[~pd.isnull(df.Li_EW_mA)])} finite Li EWs > {EW_CUTOFF_mA} mA')
     if gaiaeso and not galahdr3:
         df = s_gaiaeso_df
+        df = df[df.Li_EW_mA > EW_CUTOFF_mA]
+        print(f'Gaia-ESO: got {len(df[~pd.isnull(df.Li_EW_mA)])} finite Li EWs > {EW_CUTOFF_mA} mA')
     if not gaiaeso and galahdr3:
         df = s_galah_df
+        df = df[df.Li_EW_mA > EW_CUTOFF_mA]
+        print(f'GALAH: got {len(df[~pd.isnull(df.Li_EW_mA)])} finite Li EWs > {EW_CUTOFF_mA} mA')
 
-    return df
+    return df[df.Li_EW_mA > EW_CUTOFF_mA]
 
 def get_GalahDR3_li_EWs(verbose=1):
     """
