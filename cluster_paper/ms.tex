@@ -877,20 +877,8 @@ This yields 477 stars, of which 436 are in the core, and 41 are in the
 halo.  The lop-sided ratio is due to the Gaia-ESO selection function.
 We verified by directly querying the ESO archive that
 \citet{randich_gaiaeso_2018} indeed included $>99\%$ of the available
-spectra as part of their \cn\ sample, and so we opted to use their
-results rather than repeating their analysis.
-
-% GALAH DR3 selected XXX/YYY.  GALAH-DR3 = GALAH-main + GALAH-faint +
-% K2-HERMES + TESS-HERMES + HERMES other.  Data taken both with the 2dF
-% fiber positioner, and the HERMES spectrograph at the 3.9 AAT
-% (Lewis+02, Sheinis+15).  GALAH-main is 12<V<14, $\delta<+10^\circ$,
-% $|b|>10^\circ$, in regions of sky with at least 400 targets in $\pi$
-% square degrees (the 2dF FoV).  Fields with more than 400 targets were
-% targetted multiple times, with different fiber arrangements.
-% TESS-HERMES: 10.0 < V < 13.1. TESS Southern CVZ, within $12^\circ$ of
-% the southern ecliptic pole.  54354 in the ``HERMES other'' program are
-% from targeted observations of stars in open clusters, the GALAH Pilot
-% Survey (Martell et al. 2017),
+Gaia-ESO spectra as part of their \cn\ sample, and so we opted to use
+their results rather than repeating their analysis.
 
 The GALAH DR3 target selection is discussed in depth by
 \citet{buder_galah_2020}.  The relevant aspects for our analysis
@@ -919,19 +907,42 @@ lithium, i.e., no lithium flag set.
 We downloaded\footnote{Via \url{datacentral.org.au/services/download},
 using the \texttt{sobject\_id} identifiers.} the GALAH DR3 spectra for
 all 107 entries.  We then measured the lithium equivalent widths using
-the AstroPy-affiliated \texttt{specutils} package
-\citep{specutils_v1pt1}.
+the \texttt{specutils} package \citep{specutils_v1pt1}.  We did this
+by first focusing in on a 15\AA\ window centered on the 6707.835\AA
+lithium doublet.  We then continuum normalized the spectra using a
+third-degree Chebyshev series, while excluding any regions that showed
+absorption lines ({\it e.g.}, Fe\,\textsc{I} is present at
+6703.58\,\AA and 6705.10\,\AA).  We proceeding by fitting a Gaussian
+to the continuum normalized spectra, considering only a $\pm 1\,$\AA
+window centered on the Li doublet.  The equivalent widths were then
+evaluated by numerically integrating the fitted model over the same
+window.  Our approach therefore includes the Fe\,6707.44 blend in the
+reported Li equivalent widths---which leads to systematic
+overestimates of $\approx$10 to 15\,m\AA\ \citep[{\it
+e.g.},][]{bouvier_pleiades_lirot_2018}.  Finally, to derive
+uncertainties on the EWs, we repeated the procedure twenty times,
+but added noise to the spectra, drawn from a normal distribution with
+a scale set by the standard deviation of the continuum.
+The reported uncertainties are then drawn from the $84^{\rm th}$ and
+$16^{\rm th}$ percentiles of the resulting EW distribution.
+We verified the overall scale of our results by comparing the 21
+stars that overlapped between GALAH and Gaia-ESO.
+17 of the 21 measurements agreed within 1-$\sigma$.
+The remaining four were stars with $T_{\rm eff}>6200\,{\rm K}$, for
+which \citet{randich_gaiaeso_2018} reported Li EW detections
+ranging from $50$ to $75\,$m\AA, and for which we found 
+either null results or only slightly significant
+($\approx$30m\AA) detections.
 
-%FIXME TODO: put it into words
-% circa ~line 1224 from ~/Dropbox/proj/cdips_followup/cdips_followup/spectools.py
-Our procedure was as follow...
+% The outliers:
+%    Fitted_Li_EW_mA     EWLi            source_id  Teff
+%    24           -1.490   76.100  5290730488348194304  6786
+%    34           19.485   71.300  5290935341107132800  6702
+%    15           20.251   50.867  5290722310730727040  6197
+%    25           29.378   52.500  5290724681552584192  6511
 
-
-We then measured the lithium equivalent widths using PROCESS Y.
-We then concatenated the GALAH DR3 and Gaia-ESO results together.
-
-% TODO: fix the fact that the figure currently only shows Randich+18
-Figure~\ref{fig:lithium} shows the results.  At fixed stellar mass
+Figure~\ref{fig:lithium} shows the results.  
+At fixed stellar mass
 (and age), the rapid rotators tend to show elevated lithium equivalent
 widths. This effect is mostly apparent in the K dwarfs.  Similar
 trends in the Pleiades were noted nearly three decades ago by
@@ -1067,6 +1078,10 @@ Our main results are as follows.
 \raggedbottom
 
 The authors thank X and Y for fruitful discussions.
+
+B.~Tofflemire, % lithium suggestoins
+
+
 %
 L.G.B. and J.H. acknowledge support by the TESS GI Program, program
 NUMBER, through NASA grant NUMBER.
