@@ -1545,15 +1545,12 @@ def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
         savefig(f, outpath)
 
 
-def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0, corehalosplit=0):
+def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
+                             corehalosplit=0, showkepfield=0):
     """
-    Plot Li EW vs color for Randich+18's Gaia ESO lithium stars, crossmatched
-    against the "fullfaint kinematic" sample.
-
-    Relevant R+18 columns:
-        'CName', 'Cluster', 'Inst', 'Teff', 'e_Teff', 'logg', 'e_logg',
-        '__Fe_H_', 'e__Fe_H_', 'l_EWLi', 'EWLi', 'e_EWLi', 'f_EWLi'
-
+    Plot Li EW vs color for a) Randich+18's Gaia ESO lithium stars, b)
+    the GALAH DR3 EWs, or c) both, after crossmatching against the
+    "fullfaint kinematic" sample.
     """
 
     assert abs(AVG_EBpmRp - 0.1343) < 1e-4 # used by KC19
@@ -1572,7 +1569,18 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0, corehalosplit=0):
     # check crossmatch quality
     #
     plt.close('all')
-    f, ax = plt.subplots(figsize=(4,3))
+    f, ax = plt.subplots(figsize=(6,3))
+
+    if showkepfield:
+        from timmy.lithium import get_Berger18_lithium
+        bdf = get_Berger18_lithium()
+        bdf['BpmRp0'] = get_interp_BpmRp_from_Teff(bdf['Teff'])
+
+        ax.scatter(
+            bdf['BpmRp0'], bdf['EW_Li_'], c='gray', alpha=1,
+            zorder=-1, s=5, edgecolors='gray', marker='.',
+            linewidths=0, label='BHB18'
+        )
 
     if not corehalosplit:
         ax.scatter(
@@ -1618,6 +1626,8 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0, corehalosplit=0):
         outstr += '_galahdr3'
     if corehalosplit:
         outstr += '_corehalosplit'
+    if showkepfield:
+        outstr += '_showkepfield'
     xmstr = 'fullfaintkinematic'
     outpath = os.path.join(outdir,
                            f'lithiumEW_vs_BpmRp_xmatch_{xmstr}{outstr}.png')
@@ -1654,7 +1664,7 @@ def plot_rotation_X_lithium(outdir, cmapname, gaiaeso=0, galahdr3=0):
         cmap = mpl.cm.nipy_spectral
     elif cmapname == 'viridis':
         cmap = mpl.cm.viridis
-    bounds = np.arange(0,260,20)
+    bounds = np.arange(0,220,20)
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend='max')
 
     sel = (mdf['Li_EW_mA'] > 10)
@@ -1672,8 +1682,6 @@ def plot_rotation_X_lithium(outdir, cmapname, gaiaeso=0, galahdr3=0):
 
     ax.set_ylabel('Rotation Period [days]')
     ax.set_xlabel('(Bp-Rp)$_0$ [mag]')
-    # ax.set_xlim((0.5, 1.5))
-    # ax.set_ylim((0.5, 1.5))
 
     format_ax(ax)
     outstr = '_' + cmapname

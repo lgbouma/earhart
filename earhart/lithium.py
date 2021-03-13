@@ -1,5 +1,6 @@
 """
 Contents:
+    _get_lithium_EW_df
     get_Randich18_NGC2516
     get_GalahDR3_lithium
     get_GalahDR3_li_EWs
@@ -48,6 +49,7 @@ def _get_lithium_EW_df(gaiaeso, galahdr3, EW_CUTOFF_mA=-99):
         print(f'GALAH: got {len(df[~pd.isnull(df.Li_EW_mA)])} finite Li EWs > {EW_CUTOFF_mA} mA')
 
     return df[df.Li_EW_mA > EW_CUTOFF_mA]
+
 
 def get_GalahDR3_li_EWs(verbose=1):
     """

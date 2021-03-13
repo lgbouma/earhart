@@ -808,11 +808,11 @@ higher velocity separations.
 \subsection{Lithium from Gaia-ESO and GALAH}
 \label{subsec:lithium}
 
-\begin{figure}[t]
+\begin{figure*}[t]
 	\begin{center}
 		\leavevmode
 		%\subfloat{
-			\includegraphics[width=0.49\textwidth]{f5a.pdf}
+			\includegraphics[width=1\textwidth]{f5a.pdf}
 		%	\includegraphics[width=0.59\textwidth]{f5b.pdf}
 		%}
 	\end{center}
@@ -823,10 +823,13 @@ higher velocity separations.
   with Gaia-ESO ($N=452$) or GALAH ($N=107$) spectra available.
   The GALAH spectra comprise slightly over half of the halo stars,
   due to the non-targeted selection function of that survey.
+  The gray points are Keck-HIRES measurements of stars with detected
+  transiting planets from the Kepler mission
+  \citep{berger_identifying_2018}.
   Points with ${\rm EW}\approx0\,$m\AA\ are non-detections.
   \label{fig:lithiumcorehalo}
   }
-\end{figure}
+\end{figure*}
 \begin{figure*}[t]
 	\begin{center}
 		\leavevmode
@@ -844,7 +847,7 @@ higher velocity separations.
 	The K-dwarfs shows a similar lithium-rotation correlation
 		to what has been previously observed,
 		and is discussed in Section~\ref{subsec:lithium}.
-		\label{fig:lithium}
+		\label{fig:lithiumrot}
 	}
 \end{figure*}
 
@@ -941,7 +944,26 @@ either null results or only slightly significant
 %    15           20.251   50.867  5290722310730727040  6197
 %    25           29.378   52.500  5290724681552584192  6511
 
-Figure~\ref{fig:lithium} shows the results.  
+Figure~\ref{fig:lithiumcorehalo} shows the concatenation of the
+Gaia-ESO and GALAH results, with the points colored by whether the
+stars are in the core or the halo of the cluster.  The GALAH spectra
+span a color range of $0<(Bp-Rp)_0<1.5$, due to the $V<14$ brightness
+cutoff of the survey.  The overall depletion of stars redder than
+$(Bp-Rp)_0\gtrsim1.4$, {\it i.e.}, later than K4.5V (0.71\,$M_\odot$),
+is visible relative to the earlier K dwarfs.  For comparison, we have
+also plotted the Li EWs measured by \citet{berger_identifying_2018}
+for planet-hosting stars in the Kepler field (we interpolated from
+their effective temperatures using the \citet{pecaut_mamajek_2013}
+table\footnote{\url{http://www.pas.rochester.edu/~emamajek/EEM_dwarf_UBVIJHK_colors_Teff.txt},
+version 2019.3.22.}.
+The field star distribution peaks at late F-type stars.
+The majority of kinematically selected stars in the core and the halo
+show lithium equivalent widths substantially in excess of these field
+stars.
+
+We can go one step further, and match our sample of kinematically
+selected stars with spectra against the TESS rotators.
+The result is shown in Figure~\ref{fig:lithiumrot}
 At fixed stellar mass
 (and age), the rapid rotators tend to show elevated lithium equivalent
 widths. This effect is mostly apparent in the K dwarfs.  Similar
@@ -949,16 +971,44 @@ trends in the Pleiades were noted nearly three decades ago by
 \citet{soderblom_evolution_1993}.  More recent studies have found
 comparable results in the Pleiades, the Psc-Eri stream, and M\,35
 \citep{bouvier_pleiades_lirot_2018,arancibia_2020,jeffries_m35_li_2020}.
-The fact that we see the same trend across the core and halo of \cn\ 
-{\it a)} supports the conclusion that the halo is coeval with the
-core, and {\it b)} suggests that the lithium-rotation correlation is
-not explained by environmental effects such as the density of the cluster
-during its embedded phase, but is instead tied to physical processes
-acting on all low-mass pre-main-sequence stars.
+
+% The fact that we see the same trend across the core and halo of \cn\ 
+% {\it a)} supports the interpretation that the halo is coeval with the
+% core, and {\it b)} suggests that the lithium-rotation correlation is
+% not explained by environmental effects such as the density of the cluster
+% during its embedded phase, but is instead tied to physical processes
+% acting on all low-mass pre-main-sequence stars.
 
 % TODO: this paragraph more or less parrots the processes described by
 % Bouvier+20. are there others? is there a better way to describe
 % these?
+
+An important point regarding the lithium-rotation trend is that it has
+been shown to carry over beyond just equivalent widths, and to the
+actual abundance of lithium in the photosphere, A(Li).  A priori, one
+might worry that the trend is tautological: perhaps some feature the
+stellar equatorial velocity, or the microturbulent velocity at the
+stellar surface, are larger for faster rotators and this could affect
+the formation conditions of the lithium doublet.
+%FIXME improve these words
+Soderblom+1993 calculated the relevant LTE curves of growth for the
+lithium line, and argued that this could not be the case.
+Since then, LindAsplund+2009 have calculated the relevant non-LTE
+correction, and has shown that it affects the abundances by
+$<0.5\,{\rm dex}$.
+The order of magnitude of the rotation-abundance trend is 2-3\,dex.
+
+%     * OK, then to convert to an ABUNDANCE, follow Bouvier+2018. In other words,
+%       just interpolate against the LTE curve of growth tables from
+%       Soderblom+1993.
+% 
+%     * Nb. the Non-LTE correction has been shown to be <0.5 dex (but
+%       >0.1 dex, for sun-like stars with Li abundances above 2 dex,
+%       >which is the regime we're interested in for Pleaides and NGC
+%       >2516).
+%       CITE: Lind, Asplund, + 2009
+%       https://ui.adsabs.harvard.edu/abs/2009A%26A...503..541L/abstract
+
 Processes both internal and external to the star have been suggested to explain
 the lithium-rotation trend (CITE see the recent review by Bouvier+20).
 One explanation based in the stellar interior could be that the
@@ -984,6 +1034,7 @@ distinguishing them.
 
 \subsection{How did the halo form?}
 \label{subsec:origin}
+% Should we be calling the halo a tail?
 
 Differential rotation in the galaxy is clearly important. Meingast+21
 established this; in ten different cluster halos, nine showed leading
@@ -1016,8 +1067,6 @@ Another possibility is {\it triggered star formation}.
 One relevant connection may be to the ``Mamajek-2'' stellar group
 (see Jilinski+2009).
 
-
-
 \subsection{What is the contamination fraction in the halo? Does it change vs. location?}
 
 \subsection{Are the ``very slow rotators'' bonafide members?}
@@ -1025,7 +1074,7 @@ Unsure. They are not isotropically distributed around the
 cluster... so either triggered star formation (CITE, CITE), or they're
 actually field stars.
 
-\subsection{Mass differences between center and outer reaches?}
+% \subsection{Mass differences between center and outer reaches?}
 
 \subsection{Fast and blue rotators: are we going faster than other clusters?}
 
@@ -1041,13 +1090,13 @@ McCullough 2020)
 
 \subsection{Ways of doing this at different ages}
 Some final discussion is warranted on the applicability of our
-approach more generally.  This work starts with a kinematically
-identified population, and then uses photometry (Gaia HR diagrams;
+approach more generally.  Given a kinematically
+identified population, this study uses photometry (Gaia HR diagrams;
 TESS rotation) and spectroscopy (GALAH and Gaia-ESO lithium) to
 confirm youth in the stars.  Other approaches are also possible.
 
-One can start with photometric criteria (e.g., Gaia HR diagram of
-everything within some distance; Zari+18), or with spectroscopic
+One can use photometric criteria (e.g., Gaia HR diagram of
+everything within some distance; Zari+18), or spectroscopic
 criteria (CITE Berger+18), or with combinations thereof (e.g., CITE
 Zerjal 2019, 2020, Zhou's work).  
 It might even be possible to start using chemical abundance signatures
@@ -1056,8 +1105,6 @@ It might even be possible to start using chemical abundance signatures
 These paths might in certain cases succeed in identifying more
 complete samples of dispersed members of young populations, since they
 do not require kinematic proximity.
-
-
 
 
 \section{Conclusion}
