@@ -16,6 +16,7 @@ from astropy.coordinates import SkyCoord
 from earhart.paths import DATADIR, RESULTSDIR
 
 def _get_lithium_EW_df(gaiaeso, galahdr3, EW_CUTOFF_mA=-99):
+    # gaiaeso and galahdr3: booleans for whether to retrieve
 
     datapath = os.path.join(DATADIR, 'lithium',
                             'randich_fullfaintkinematic_xmatch_20210310.csv')
@@ -24,16 +25,30 @@ def _get_lithium_EW_df(gaiaeso, galahdr3, EW_CUTOFF_mA=-99):
         _make_Randich18_xmatch(datapath, vs_rotators=0)
     gaiaeso_df = pd.read_csv(datapath)
     gaiaeso_li_col = 'EWLi'
+    gaiaeso_li_errcol = 'e_EWLi'
+
+    # somewhat surprisingly, the kinematic X Randich+18 NGC2516 sample has no
+    # upper limits (and 477 reported detections).
+    assert len(np.unique(gaiaeso_df.f_EWLi)) == 1
 
     from earhart.lithium import get_GalahDR3_li_EWs
     galah_df = get_GalahDR3_li_EWs()
     # the gaussian fit, numerically integrated
     galah_li_col = 'Fitted_Li_EW_mA'
 
-    s_gaiaeso_df = gaiaeso_df[[gaiaeso_li_col, 'source_id']]
-    s_gaiaeso_df = s_gaiaeso_df.rename({gaiaeso_li_col: 'Li_EW_mA'}, axis='columns')
-    s_galah_df = galah_df[[galah_li_col, 'source_id']]
-    s_galah_df = s_galah_df.rename({galah_li_col: 'Li_EW_mA'}, axis='columns')
+    s_gaiaeso_df = gaiaeso_df[[gaiaeso_li_col, gaiaeso_li_errcol, 'source_id']]
+    s_gaiaeso_df = s_gaiaeso_df.rename({gaiaeso_li_col: 'Li_EW_mA',
+                                        gaiaeso_li_errcol:'Li_EW_mA_perr'}, axis='columns')
+    s_gaiaeso_df['Li_EW_mA_merr'] = s_gaiaeso_df['Li_EW_mA_perr']
+    #s_gaiaeso_df['Li_provenance'] = 'Randich+18'
+
+    s_galah_df = galah_df[[galah_li_col, galah_li_col+"_perr",
+                           galah_li_col+"_merr", 'source_id']]
+    s_galah_df = s_galah_df.rename({galah_li_col: 'Li_EW_mA',
+                                    galah_li_col+"_perr": 'Li_EW_mA_perr',
+                                    galah_li_col+"_merr": 'Li_EW_mA_merr'
+                                   }, axis='columns')
+    #s_galah_df['Li_provenance'] = 'GALAHDR3+ThisWork'
 
     if gaiaeso and galahdr3:
         df = pd.concat((s_gaiaeso_df, s_galah_df))
