@@ -774,11 +774,14 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0,
     runid = 'NGC_2516', for example
 
     Cleaning options:
+        'defaultcleaning' P<15d, LSP>0.08, Nequal==0, Nclose<=1.
         'periodogram_match' requires LS and SPDM periods to agree to within 10%
         'match234_alias': requires LS and SPDM periods to agree to within 10%
             (up to 1x,2x,3x,4x harmonic).
-        'nocleaning': ...
+        'nocleaning': P<99d.
     """
+
+    assert isinstance(cleaning, str)
 
     from earhart.paths import DATADIR
     rotdir = os.path.join(DATADIR, 'rotation')
@@ -787,74 +790,77 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0,
         os.path.join(rotdir, f'{runid}_rotation_periods.csv')
     )
 
-    # automatic selection criteria for viable rotation periods
-    NEQUAL_CUTOFF = 0 # could also do 1
-    NCLOSE_CUTOFF = 1
-    LSP_CUTOFF = 0.08 # 0.08 standard
-    sel = (
-        (df.period < 15)
-        &
-        (df.lspval > LSP_CUTOFF)
-        &
-        (df.nequal <= NEQUAL_CUTOFF)
-        &
-        (df.nclose <= NCLOSE_CUTOFF)
-    )
+    if cleaning in ['defaultcleaning', 'periodogram_match', 'match234_alias']:
+        # automatic selection criteria for viable rotation periods
+        NEQUAL_CUTOFF = 0 # could also do 1
+        NCLOSE_CUTOFF = 1
+        LSP_CUTOFF = 0.08 # 0.08 standard
+        sel = (
+            (df.period < 15)
+            &
+            (df.lspval > LSP_CUTOFF)
+            &
+            (df.nequal <= NEQUAL_CUTOFF)
+            &
+            (df.nclose <= NCLOSE_CUTOFF)
+        )
+    elif cleaning in ['nocleaning']:
+        NEQUAL_CUTOFF = 99999
+        NCLOSE_CUTOFF = 99999
+        LSP_CUTOFF = 0
+        sel = (
+            (df.period < 99)
+        )
+    else:
+        raise ValueError(f'Got cleaning == {cleaning}, not recognized.')
 
-    if isinstance(cleaning, str):
+    if cleaning == 'defaultcleaning':
+        pass
 
-        if cleaning == 'periodogram_match':
+    elif cleaning == 'nocleaning':
+        pass
 
-            sel_periodogram_match = (
-                (0.9 < (df.spdmperiod/df.period))
-                &
-                (1.1 > (df.spdmperiod/df.period))
-            )
-            sel &= sel_periodogram_match
+    elif cleaning == 'periodogram_match':
+        sel_periodogram_match = (
+            (0.9 < (df.spdmperiod/df.period))
+            &
+            (1.1 > (df.spdmperiod/df.period))
+        )
+        sel &= sel_periodogram_match
 
-        elif cleaning == 'match234_alias':
+    elif cleaning == 'match234_alias':
+        sel_match = (
+            (0.9 < (df.spdmperiod/df.period))
+            &
+            (1.1 > (df.spdmperiod/df.period))
+        )
+        sel_spdm2x = (
+            (1.9 < (df.spdmperiod/df.period))
+            &
+            (2.1 > (df.spdmperiod/df.period))
+        )
+        sel_spdm3x = (
+            (2.9 < (df.spdmperiod/df.period))
+            &
+            (3.1 > (df.spdmperiod/df.period))
+        )
+        sel_spdm4x = (
+            (3.9 < (df.spdmperiod/df.period))
+            &
+            (4.1 > (df.spdmperiod/df.period))
+        )
+        sel &= (
+            sel_match
+            |
+            sel_spdm2x
+            |
+            sel_spdm3x
+            |
+            sel_spdm4x
+        )
 
-            sel_match = (
-                (0.9 < (df.spdmperiod/df.period))
-                &
-                (1.1 > (df.spdmperiod/df.period))
-            )
-
-            sel_spdm2x = (
-                (1.9 < (df.spdmperiod/df.period))
-                &
-                (2.1 > (df.spdmperiod/df.period))
-            )
-
-            sel_spdm3x = (
-                (2.9 < (df.spdmperiod/df.period))
-                &
-                (3.1 > (df.spdmperiod/df.period))
-            )
-
-            sel_spdm4x = (
-                (3.9 < (df.spdmperiod/df.period))
-                &
-                (4.1 > (df.spdmperiod/df.period))
-            )
-
-            sel &= (
-                sel_match
-                |
-                sel_spdm2x
-                |
-                sel_spdm3x
-                |
-                sel_spdm4x
-            )
-
-        elif cleaning == 'nocleaning':
-
-            pass
-
-        else:
-
-            raise ValueError(f'Got cleaning == {cleaning}, not recognized.')
+    else:
+        raise ValueError(f'Got cleaning == {cleaning}, not recognized.')
 
     ref_sel = (
         (df.nequal <= NEQUAL_CUTOFF)

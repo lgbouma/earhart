@@ -4,30 +4,27 @@ import pandas as pd, numpy as np
 from functools import reduce
 from cdips.utils.pipelineutils import load_status
 
-def ls_to_df(classfile):
-
-    indf = pd.read_csv(classfile, names=['lsname'])
-
-    pdfpaths = np.array(indf['lsname'])
-    # e.g.,
-    # vet_hlsp_cdips_tess_ffi_gaiatwo0002890062263458259968-0006_tess_v01_llc[gold PC].pdf
-
-    classes = [p.split('[')[1].replace('].pdf','') for p in pdfpaths]
-
-    pdfnames = [p.split('[')[0]+'.pdf' for p in pdfpaths]
-
-    source_ids = [np.int64(p.split('_')[0]) for p in pdfpaths]
-
-    df = pd.DataFrame({'Name':pdfnames, 'Tags':classes, 'source_id': source_ids})
-
-    return df
-
 def get_auto_rotation_periods(
     runid='NGC_2516',
     get_spdm=True
 ):
     """
-    valid runids include:
+    Given a `runid` (an identifier string for a particular CDIPS
+    "allvariability" sub-pipeline processing run), retrieve the following
+    output and concatenate into a table, which is then saved to
+    '../../data/rotation/{runid}_rotation_periods.csv':
+
+        [
+        'source_id': source_ids,
+        'n_cdips_sector': nsectors,
+        'period': periods,
+        'lspval': lspvals,
+        'nequal': nequal,
+        'nclose': nclose,
+        'nfaint': nfaint
+        ]
+
+    Valid runids include:
         IC_2602, CrA, kc19group_113, Orion, NGC_2516, ScoOB2, compstar_NGC_2516
     """
 

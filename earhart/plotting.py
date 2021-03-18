@@ -1194,9 +1194,7 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     if core_halo:
         outstr += '_corehalosplit'
     outstr += f'_{yscale}'
-    if cleaning:
-        if cleaning != 'nocleaning':
-            outstr += f'_{cleaning}'
+    outstr += f'_{cleaning}'
     outpath = os.path.join(outdir, f'{runid}_rotation{outstr}.png')
     savefig(f, outpath)
 
