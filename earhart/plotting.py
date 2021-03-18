@@ -1235,7 +1235,7 @@ def plot_compstar_rotation(outdir, E_BpmRp=0.1343, yscale=None):
             df = pd.read_csv(os.path.join(rotdir, f'curtis19_{_cls}.csv'))
 
         else:
-            df = get_autorotation_dataframe(_cls)
+            df = get_autorotation_dataframe(_cls, cleaning='defaultcleaning')
             df = df[df.phot_rp_mean_mag < 13]
             print(42*'-')
             print(f'Applying E(Bp-Rp) = {E_BpmRp:.4f}')
@@ -1555,6 +1555,9 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
 
     set_style()
 
+    #
+    # get data
+    #
     df = _get_lithium_EW_df(gaiaeso, galahdr3)
 
     basedata = 'fullfaint'
@@ -1563,17 +1566,18 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
 
     df = df.merge(mdf, how='left', on='source_id')
 
-    #
-    # check crossmatch quality
-    #
-    plt.close('all')
-    f, ax = plt.subplots(figsize=(6,3))
-
     if showkepfield:
         from timmy.lithium import get_Berger18_lithium
         bdf = get_Berger18_lithium()
         bdf['BpmRp0'] = get_interp_BpmRp_from_Teff(bdf['Teff'])
 
+    #
+    # make plot
+    #
+    plt.close('all')
+    f, ax = plt.subplots(figsize=(6,3))
+
+    if showkepfield:
         ax.scatter(
             bdf['BpmRp0'], bdf['EW_Li_'], c='gray', alpha=1,
             zorder=-1, s=5, edgecolors='gray', marker='.',
@@ -1588,20 +1592,19 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
             linewidths=0.3
         )
     else:
-        sel = (df.subcluster == 'core')
-        ax.scatter(
-            df[sel]['phot_bp_mean_mag'] - df[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
-            df[sel]['Li_EW_mA'],
-            c='k', alpha=1, zorder=2, s=8, edgecolors='k', marker='o',
-            linewidths=0.3, label='Core'
-        )
-        sel = (df.subcluster == 'halo')
-        ax.scatter(
-            df[sel]['phot_bp_mean_mag'] - df[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
-            df[sel]['Li_EW_mA'],
-            c='lightskyblue', alpha=1, zorder=3, s=8, edgecolors='k', marker='o',
-            linewidths=0.3, label='Halo'
-        )
+        subclusters = ['core','halo']
+        colors = ['k', 'lightskyblue']
+        labels = ['Core', 'Halo']
+
+        for s, c, l in zip(subclusters, colors, labels):
+            sel = (df.subcluster == s)
+            ax.scatter(
+                df[sel]['phot_bp_mean_mag'] - df[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+                df[sel]['Li_EW_mA'],
+                c=c, alpha=1, zorder=2, s=8, edgecolors='k', marker='o',
+                linewidths=0.3, label=l
+            )
+
         ax.legend(loc='upper left', handletextpad=0.05)
 
     if gaiaeso and galahdr3:
@@ -1643,7 +1646,7 @@ def plot_rotation_X_lithium(outdir, cmapname, gaiaeso=0, galahdr3=0):
 
     # get the rotation and lithium dataframes
     runid = "NGC_2516"
-    rot_df = get_autorotation_dataframe(runid)
+    rot_df = get_autorotation_dataframe(runid, cleaning='defaultcleaning')
     li_df = _get_lithium_EW_df(gaiaeso, galahdr3)
     mdf = li_df.merge(rot_df, how='inner', on='source_id')
 
@@ -1662,15 +1665,21 @@ def plot_rotation_X_lithium(outdir, cmapname, gaiaeso=0, galahdr3=0):
         cmap = mpl.cm.nipy_spectral
     elif cmapname == 'viridis':
         cmap = mpl.cm.viridis
-    bounds = np.arange(0,220,20)
+    bounds = np.arange(20,220,20)
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend='max')
 
-    sel = (mdf['Li_EW_mA'] > 10)
+    sel = (mdf['Li_EW_mA'] > 20)
     cax = ax.scatter(
         mdf[sel]['phot_bp_mean_mag'] - mdf[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
         mdf[sel]['period'],
         c=nparr(mdf[sel]['Li_EW_mA']), alpha=1, zorder=2, s=15, edgecolors='k',
         marker='o', cmap=cmap, norm=norm, linewidths=0.3
+    )
+    ax.scatter(
+        mdf[~sel]['phot_bp_mean_mag'] - mdf[~sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+        mdf[~sel]['period'],
+        c='darkgray', alpha=1, zorder=1, s=15, edgecolors='gray',
+        marker='X', linewidths=0.3
     )
 
     cb = f.colorbar(cax, extend='max')
