@@ -48,13 +48,14 @@
 \newcommand{\nautofrac}{53.1\%} % plot_autorotation.py
 
 \newcommand{\kms}{\,km\,s$^{-1}$}
+\newcommand{\ms}{\,m\,s$^{-1}$}
 
 %% Reintroduced the \received and \accepted commands from AASTeX v5.2.
 %% Add "Submitted to " argument.
 \received{---}
 \revised{---}
 \accepted{---}
-\submitjournal{ApJL.}
+\submitjournal{AAS journals.}
 \shorttitle{Core \& Halo of NGC\,2516}
 
 \begin{document}
@@ -102,8 +103,7 @@
   A comparison sample of field stars shows no such trend.
   In addition, the lithium abundances of stars in the halo are
   elevated relative to the field, and are correlated with the stellar
-  rotation rate in a manner consistent with previous observations of the
-  Pleiades and Psc Eri.
+  rotation rate in a manner consistent with previous observations.
   This work expands the set of confirmed NGC 2516 members by a factor
   of two, and is consistent with a paradigm in which the halos of many
   open clusters are more populous than their cores.
@@ -282,9 +282,11 @@ Section~\ref{sec:conclusion} gives our conclusions.
   time intervals: the longest time window is visible in the $(Z,X)$
   projection.  The large blue arrows denote the median cluster
   velocity after subtracting the local standard of rest: $\{v_{\rm X},
-  v_{\rm Y}, v_{\rm Z}\} = \{-22.2, -25.3, -4.6\}$\kms.  The sizes of
-  the blue arrows are internally proportionate.  By comparison,
-  $\vec{v}_{\rm LSR} = \{12.9, 245.6, 7.78\}$\kms.
+  v_{\rm Y}, v_{\rm Z}\} = \{-22.2, -25.3, -4.6\}$\kms.   By comparison,
+  $\vec{v}_{\rm LSR} = \{12.9, 245.6, 7.78\}$\kms; in the inertial
+  frame of the Galaxy, \cn\ is moving mostly in the $\hat{Y}$
+  direction.
+  The sizes of the blue arrows are internally proportionate. 
   \label{fig:XYZ}
 	}
 \end{figure*}
@@ -644,10 +646,10 @@ aperture.  Beyond requiring that the target star be the brightest star
 in the aperture, we also required that at most one companion with
 brightness exceeding one tenth of the target star's brightness be
 present in the aperture according to the Gaia DR2 source catalog.  For
-set $\mathcal{A}$, this yielded \nautorotnumerator light curves,
-out of \nautorotdenominator stars for which rotation periods might
-plausibly have been detected.  For set $\mathcal{B}$, we
-then additionally required that the Lomb-Scargle and Stellingwerf
+set $\mathcal{A}$, this yielded \nautorotnumerator light curves, out
+of \nautorotdenominator stars for which rotation periods might
+plausibly have been detected.  For set $\mathcal{B}$, we then
+additionally required that the Lomb-Scargle and Stellingwerf
 phase-dispersion methods yielded identical periods to within 10\%.
 This yielded \nautorotnumeratormatching light curves. 
 
@@ -655,9 +657,10 @@ This yielded \nautorotnumeratormatching light curves.
 curation process.}
 
 The comparison to the Pleiades and Praesepe is made using the rotation
-periods and dereddened colors from Table~5 of \citet{curtis_rup147_2020}, which
-were based data from \citet{rebull_rotation_2016a} and
-\citet{douglas_k2_2019} respectively.
+periods and dereddened colors from Table~5 of
+\citet{curtis_rup147_2020}, which were based data from
+\citet{rebull_rotation_2016a} and \citet{douglas_k2_2019}
+respectively.
 
 A few conclusions can be drawn by comparing the \cn\ rotation periods
 with those of the Pleiades and Praesepe.  The first is that in both
@@ -684,13 +687,11 @@ longer rotation periods---extending up to $\approx$11 days, rather
 than the $\approx$8.5day limit for the Pleiades.  This is consistent
 with \cn\ being slightly older than the Pleiades.
 
-{\bf We explore this quantitatively by fitting
-interpolated models}[?].
-The resulting gyrochronology age we find for the core is XXX.
-For the halo, the claimed age from gyrochronology is YYY.
+{\bf We explore this quantitatively by fitting interpolated
+models}[?].  The resulting gyrochronology age we find for the core is
+XXX.  For the halo, the claimed age from gyrochronology is YYY.
 Applying the same procedure to the field star comparison sample (see
-Appendix~\ref{app:compstar}),
-we get an age of ZZZ+/-AAA.
+Appendix~\ref{app:compstar}), we get an age of ZZZ+/-AAA.
 
 \subsubsection{Kinematics $\otimes$ Rotation}
 
@@ -704,18 +705,22 @@ we get an age of ZZZ+/-AAA.
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ 
-  {\bf Members of NGC\,2516 exist hundreds of parsecs from the core,
+  {\bf Members of \cn\ exist hundreds of parsecs from the core,
   and up to $\approx$5\kms\ from the core in tangential velocity.}
-  Halo members
-  that meet both kinematic and rotational membership criteria are shown in
-  blue.  Halo members for which rotation periods should have been detectable,
-  but were not detected, are shown in orange.  Projections are shown in galactic coordinates and
-  (projection-corrected) 2D-tangential velocity space.  The histogram
-  on the right bins versus 3D separation from the core and
-  2D velocity difference. Bins have width 25\,pc
-  in position, and 1.0\,km\,s$^{-1}$ in velocity.  {\bf Uncertainties
-  in the fraction are taken as the quadrature sum of the rel unc of
-  the numerator and denominator (FIXME)}
+  Halo members that meet both kinematic and rotational membership
+  criteria (``Subset~$\mathcal{A}$'') are shown in blue.  Halo members for which rotation periods
+  should have been detectable, but were not detected, are shown in
+  orange.  
+  The plotted stars are restricted to $0.5<(Bp-Rp)_0<1.2$.
+  The {\it left panels} show galactic coordinates and
+  2D-tangential velocity space, after
+  correcting for projection effects
+  (Appendix~\ref{app:vproj}).
+  The histogram on the right bins versus 3D separation from the core
+  and 2D velocity difference.  Bins have width 25\,pc in position, and
+  1.0\,km\,s$^{-1}$ in velocity.  {\bf Uncertainties in the fraction
+  are taken as the quadrature sum of the rel unc of the numerator and
+  denominator (FIXME)}
   \label{fig:physical_x_rotn}
 	}
 \end{figure*}
@@ -784,24 +789,33 @@ suggests that the fraction of kinematic members with TESS-detected
 rotation periods may decrease with increasing distance from the halo
 core---both in position and in velocity space.  
 
+% some wide separation pairs and dist_pc:
+% 5263077805266480000  5506439929389838592  421.083675
+% 5506623616550497792  5273740456715689088  427.053947
+% 5506439929389838592  5213536216500903680  427.557268
+% 5273740456715689088  5488984598182200704  428.952934
+% 5506439929389838592  5273740456715689088  438.906581
+
 To quantify this, we compute the separation of the positions and 2D
 velocities from the median \citetalias{cantatgaudin_gaia_2018} core
 member.  The result is shown on the right side of
 Figure~\ref{fig:physical_x_rotn}.  The halo extends to separations of
-about 200\,pc in physical space from the cluster core.  This
-corresponds to total a length of $\approx$500\,pc, depending on which
-members of the halo are chosen as the ``tips'' on either end.  This
-agrees broadly speaking with the structure of the halo reported by
-\citetalias{kounkel_untangling_2019}.
+about 200\,pc in physical space from the cluster core.  The most
+widely separated F2V-K2V stars with rotation periods (blue points in
+Figure~\ref{fig:physical_x_rotn}) are separated by $\approx$430\,pc.
+The total length of the structure is therefore 400--500\,pc, depending
+on which members of the halo are chosen as the ``tips'' on either end.
+Broadly speaking, this agrees with the structure of the halo reported
+by \citetalias{kounkel_untangling_2019}.
 
 In projection-corrected tangential velocity space, the fraction of
 stars with rotation period detections remains high out to roughly
 5\kms.  \citet{meingast_2021} by comparison required a physically
-motivated cut in tangential velocity space of 1.5\kms.  
-Our results show that at the expense of higher field star
-contamination rates, bonafide members can be identified even out to
-higher velocity separations.
-{\bf todo: anything else to mention? e.g., the actual numbers?}
+motivated cut in tangential velocity space of 1.5\kms.  Our results
+show that at the expense of higher field star contamination rates,
+bonafide members can be identified even out to higher velocity
+separations.  {\bf todo: anything else to mention? e.g., the actual
+numbers?}
 
 
 \subsection{Lithium from Gaia-ESO and GALAH}
@@ -817,15 +831,14 @@ higher velocity separations.
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ {\bf Lithium in the core and halo of NGC\,2516.}
-  Equivalent width of the 6708\,\AA\ doublet is shown
-  versus extinction-corrected color for all kinematic \cn\ members
-  with Gaia-ESO ($N=452$) or GALAH ($N=107$) spectra available.
-  The GALAH spectra comprise slightly over half of the halo stars,
-  due to the non-targeted selection function of that survey.
-  The gray points are Keck-HIRES measurements of stars with detected
-  transiting planets from the Kepler mission
-  \citep{berger_identifying_2018}.
-  Points with ${\rm EW}\approx0\,$m\AA\ are non-detections.
+  Equivalent width of the 6708\,\AA\ doublet is shown versus
+  extinction-corrected color for all kinematic \cn\ members with
+  Gaia-ESO ($N=452$) or GALAH ($N=107$) spectra available.  The GALAH
+  spectra comprise slightly over half of the halo stars, due to the
+  non-targeted selection function of that survey.  The gray points are
+  Keck-HIRES measurements of stars with detected transiting planets
+  from the Kepler mission \citep{berger_identifying_2018}.  Points
+  with ${\rm EW}\approx0\,$m\AA\ are non-detections.
   \label{fig:lithiumcorehalo}
   }
 \end{figure*}
@@ -839,13 +852,12 @@ higher velocity separations.
 	\end{center}
 	\vspace{-0.7cm}
 	\caption{ {\bf Lithium and rotation in NGC\,2516.}
-		Points show all kinematic \cn\ members with TESS rotation
-		periods in the Gaia-ESO or GALAH surveys, and are colored by
-		equivalent width.
-    Points with reported equivalent widths below 20\,m\AA\ (including
-    non-detections) are shown with gray crosses.
-    The lithium-rotation correlation for the K-dwarfs
-    has been observed in other young clusters, and is discussed in
+    Points show all kinematic \cn\ members with TESS rotation periods
+    in the Gaia-ESO or GALAH surveys, and are colored by equivalent
+    width.  Points with reported equivalent widths below 20\,m\AA\
+    (including non-detections) are shown with gray crosses.  The
+    lithium-rotation correlation for the K-dwarfs has been observed in
+    other young clusters, and is discussed in
     Section~\ref{subsec:lithium}.
 		\label{fig:lithiumrot}
 	}
@@ -884,8 +896,8 @@ Gaia-ESO spectra as part of their \cn\ sample, and so we opted to use
 their results rather than repeating their analysis.
 
 The GALAH DR3 target selection is discussed in depth by
-\citet{buder_galah_2020}.  The relevant aspects for our analysis
-are that the ``main'' survey targeted $12<V<14$ stars at
+\citet{buder_galah_2020}.  The relevant aspects for our analysis are
+that the ``main'' survey targeted $12<V<14$ stars at
 $\delta<+10^\circ$, provided the stars were at least ten degrees from
 the galactic plane.  The survey is spatially
 inhomogeneous\footnote{See the footprint at
@@ -923,18 +935,17 @@ window.  Our approach therefore includes the Fe\,6707.44 blend in the
 reported Li equivalent widths---which leads to systematic
 overestimates of $\approx$10 to 15\,m\AA\ \citep[{\it
 e.g.},][]{bouvier_pleiades_lirot_2018}.  Finally, to derive
-uncertainties on the EWs, we repeated the procedure twenty times,
-but added noise to the spectra, drawn from a normal distribution with
-a scale set by the standard deviation of the continuum.
-The reported uncertainties are then drawn from the $84^{\rm th}$ and
-$16^{\rm th}$ percentiles of the resulting EW distribution.
-We verified the overall scale of our results by comparing the 21
-stars that overlapped between GALAH and Gaia-ESO.
-17 of the 21 measurements agreed within 1-$\sigma$.
-The remaining four were stars with $T_{\rm eff}>6200\,{\rm K}$, for
-which \citet{randich_gaiaeso_2018} reported Li EW detections
-ranging from $50$ to $75\,$m\AA, and for which we found 
-either null results or only slightly significant
+uncertainties on the EWs, we repeated the procedure twenty times, but
+added noise to the spectra, drawn from a normal distribution with a
+scale set by the standard deviation of the continuum.  The reported
+uncertainties are then drawn from the $84^{\rm th}$ and $16^{\rm th}$
+percentiles of the resulting EW distribution.  We verified the overall
+scale of our results by comparing the 21 stars that overlapped between
+GALAH and Gaia-ESO.  17 of the 21 measurements agreed within
+1-$\sigma$.  The remaining four were stars with $T_{\rm
+eff}>6200\,{\rm K}$, for which \citet{randich_gaiaeso_2018} reported
+Li EW detections ranging from $50$ to $75\,$m\AA, and for which we
+found either null results or only slightly significant
 ($\approx$30m\AA) detections.
 
 % The outliers:
@@ -948,89 +959,51 @@ Figure~\ref{fig:lithiumcorehalo} shows the concatenation of the
 Gaia-ESO and GALAH results, with the points colored by whether the
 stars are in the core or the halo of the cluster.  The GALAH spectra
 span a color range of $0<(Bp-Rp)_0<1.5$, due to the $V<14$ brightness
-cutoff of the survey.  The overall depletion of stars redder than
-$(Bp-Rp)_0\gtrsim1.4$, {\it i.e.}, later than K4.5V (0.71\,$M_\odot$),
-is visible relative to the earlier K dwarfs.  For comparison, we have
-also plotted the Li EWs measured by \citet{berger_identifying_2018}
-for planet-hosting stars in the Kepler field (we interpolated from
-their effective temperatures using the \citet{pecaut_mamajek_2013}
+cutoff of the survey.  The overall increase of Li EW from
+$0<(Bp-Rp)_0<1.0$ is thought to be driven by the temperatures in the
+stellar chromospheres: hotter stars fully ionize Li out of its ground
+state \citep[{\it e.g.},Figure~4 of][]{soderblom_evolution_1993}.  The
+depletion of stars redder than $(Bp-Rp)_0\gtrsim1.4$, {\it i.e.},
+later than K4.5V (0.71\,$M_\odot$), is visible relative to the earlier
+K dwarfs.  For comparison, we have also plotted the Li EWs measured by
+\citet{berger_identifying_2018} for planet-hosting stars in the Kepler
+field (we interpolated from their effective temperatures using the
+\citet{pecaut_mamajek_2013}
 table\footnote{\url{http://www.pas.rochester.edu/~emamajek/EEM_dwarf_UBVIJHK_colors_Teff.txt},
-version 2019.3.22.}.
-The field star distribution peaks at late F-type stars.
-The majority of kinematically selected stars in the core and the halo
-show lithium equivalent widths substantially in excess of these field
-stars.
+version 2019.3.22.}.  The field star distribution peaks at late F-type
+stars.  The majority of kinematically selected stars in the core and
+the halo show lithium equivalent widths substantially in excess of
+these field stars.
 
 We can go one step further, and match our sample of kinematically
-selected stars with spectra against the TESS rotators.
-The result is shown in Figure~\ref{fig:lithiumrot}
-At fixed stellar mass
-(and age), the rapid rotators tend to show elevated lithium equivalent
-widths. This effect is mostly apparent in the K dwarfs.  Similar
-trends in the Pleiades were noted nearly three decades ago by
-\citet{soderblom_evolution_1993}.  More recent studies have found
-comparable results in the Pleiades, the Psc-Eri stream, and M\,35
-\citep{bouvier_pleiades_lirot_2018,arancibia_2020,jeffries_m35_li_2020}.
+selected stars with spectra against the TESS rotators.  The result is
+shown in Figure~\ref{fig:lithiumrot}. At fixed stellar mass, the rapid
+rotators have lithium equivalent widths an order of magnitude larger
+than the slow rotators.  This effect is mostly apparent in the K
+dwarfs.  Similar trends were noted in the Pleiades over three decades
+ago \citep{butler_pleiades_1987}, and are most likely caused by
+intrinsic differences in lithium abundance
+\citep{soderblom_evolution_1993}.  Alternative explanations, such as
+differences in line-formation conditions ({\it e.g.,} chromospheric
+temperatures, microturbulent velocities, or the presence of starspots)
+are incompatible with the available data.  The lithium-rotation
+correlation is discussed further below
+(Section~\ref{discussion:lithium}).
 
-% The fact that we see the same trend across the core and halo of \cn\ 
-% {\it a)} supports the interpretation that the halo is coeval with the
-% core, and {\it b)} suggests that the lithium-rotation correlation is
-% not explained by environmental effects such as the density of the cluster
-% during its embedded phase, but is instead tied to physical processes
-% acting on all low-mass pre-main-sequence stars.
-
-% TODO: this paragraph more or less parrots the processes described by
-% Bouvier+20. are there others? is there a better way to describe
-% these?
-
-An important point regarding the lithium-rotation trend is that it has
-been shown to carry over beyond just equivalent widths, and to the
-actual abundance of lithium in the photosphere, A(Li).  A priori, one
-might worry that the trend is tautological: perhaps some feature the
-stellar equatorial velocity, or the microturbulent velocity at the
-stellar surface, are larger for faster rotators and this could affect
-the formation conditions of the lithium doublet.
-%FIXME improve these words
-Soderblom+1993 calculated the relevant LTE curves of growth for the
-lithium line, and argued that this could not be the case.
-Since then, LindAsplund+2009 have calculated the relevant non-LTE
-correction, and has shown that it affects the abundances by
-$<0.5\,{\rm dex}$.
-The order of magnitude of the rotation-abundance trend is 2-3\,dex.
-
-%     * OK, then to convert to an ABUNDANCE, follow Bouvier+2018. In other words,
-%       just interpolate against the LTE curve of growth tables from
-%       Soderblom+1993.
-% 
-%     * Nb. the Non-LTE correction has been shown to be <0.5 dex (but
-%       >0.1 dex, for sun-like stars with Li abundances above 2 dex,
-%       >which is the regime we're interested in for Pleaides and NGC
-%       >2516).
-%       CITE: Lind, Asplund, + 2009
-%       https://ui.adsabs.harvard.edu/abs/2009A%26A...503..541L/abstract
-
-Processes both internal and external to the star have been suggested to explain
-the lithium-rotation trend (CITE see the recent review by Bouvier+20).
-One explanation based in the stellar interior could be that the
-convective mixing efficiency is anticorrelated with the surface
-rotation (e.g., CITE Siess + Livio 1997, Baraffe+2017).  Another
-possibility could be that stronger magnetic fields in the star's
-interior inhibit convection (READ e.g., Ventura+98, Chabrier+07,
-Somers + Pinsonneault 2014).  An external process that might also be
-important is the effect of star-disk magnetic locking during the PMS
-phase (CITE: magnetic braking).  Longer disk lifetimes would lead to
-the star's outer convective zone being locked for longer while the
-radiative core contracts.  The resulting differential rotation and
-rotational mixing could drive the lithium depletion (CITE: Bouvier 08,
-Eggenberger+12).
-We have no preference between these possibilities---we simply note
-that the \cn\ sample could be another helpful data point in
-distinguishing them.
 
 
 
 \section{Discussion}
 \label{sec:discussion}
+
+%\subsection{Contamination fraction across the halo}
+%\subsection{How did the halo form?}
+%\subsection{Rotation in NGC\,2516}
+%\subsection{The lithium-rotation correlation}
+%\subsection{Age of NGC\,2516}
+
+\subsection{Contamination fraction across the halo}
+
 
 \subsection{How did the halo form?}
 \label{subsec:origin}
@@ -1094,18 +1067,89 @@ Another possibility is {\it triggered star formation}.
 One relevant connection may be to the ``Mamajek-2'' stellar group
 (see Jilinski+2009).
 
-\subsection{What is the contamination fraction in the halo? Does it change vs. location?}
+\subsection{Rotation in NGC\,2516}
 
-\subsection{Are the ``very slow rotators'' bonafide members?}
-Unsure. They are not isotropically distributed around the
-cluster... so either triggered star formation (CITE, CITE), or they're
-actually field stars.
+Gotta cite Fritzewski+2020.  (Maybe even do the Blanco1, Pleiades,
+NGC2516, PscEri concatenation?)
 
-% \subsection{Mass differences between center and outer reaches?}
+  \paragraph{Slow sequence and fast sequence}
+  %Why is there a slow and fast sequence?
+  Slow: Skumanich spindown, Weber and Davis magnetic braking.
+  This doesn't explain everything.
+  Core envelope decoupling handwaves away the fast rotators? (Irwin,
+  Aigrain, Monitor).
+  Another fast rotator explanation: Naoz's merging of giant planets
+  (could explain some fraction of the fast rotators -- not all of them).
 
-\subsection{Fast and blue rotators: are we going faster than other clusters?}
+  \paragraph{Stalling}
+  Curtis19 found NGC6811 was stalling in the K dwarfs, i.e., Skumanich
+  spindown is not monotonic in time.
+  We're seeing latest K dwarfs spin slowest, earlier FGKs don't show
+  much change.
 
-\subsection{Absolute age of NGC 2516}
+
+  \paragraph{Are the ``very slow rotators'' bonafide members?}
+  Unsure. They are not isotropically distributed around the
+  cluster... so either triggered star formation (CITE, CITE), or they're
+  actually field stars.
+
+
+\subsection{The lithium-rotation correlation}
+\label{discussion:lithium}
+
+An important point regarding the lithium-rotation trend is that it has
+been shown to carry over beyond just equivalent widths, and to the
+actual abundance of lithium in the photosphere, A(Li).
+\citet{soderblom_evolution_1993} calculated the relevant LTE curves of
+growth for the Li\,6708\,\AA\ doublet, which can in principle be used to
+convert our measured equivalent widths to abundances.  Non-LTE
+corrections affect the abundances by $<0.5\,{\rm dex}$ and do not
+siginificantly affect the global relation between Li abundance and
+stellar temperature or rotation
+\citep{carlsson_1994,lind_departures_2009}.
+
+More recent studies of lithium and rotation since 
+\citet{soderblom_evolution_1993} have expanded these results in the
+Pleiades, the Psc-Eri stream, and M\,35, among other clusters
+\citep{bouvier_pleiades_lirot_2018,arancibia_2020,jeffries_m35_li_2020}.
+In \cn\ specifically, \citet{jeffries_rotation_1998} observed a
+similar trend that that seen in Figure~\ref{fig:lithiumrot} when
+analyzing 24 stars in the core of \cn.  Our concatenation of the
+\citet{randich_gaiaeso_2018} Gaia-ESO results with the GALAH-DR3
+spectra represent a significant expanasion in volume and color range
+since these earlier studies.
+
+% The fact that we see the same trend across the core and halo of \cn\ 
+% {\it a)} supports the interpretation that the halo is coeval with the
+% core, and {\it b)} suggests that the lithium-rotation correlation is
+% not explained by environmental effects such as the density of the cluster
+% during its embedded phase, but is instead tied to physical processes
+% acting on all low-mass pre-main-sequence stars.
+
+What causes the correlation between lithium abundance and rotation at
+fixed stellar mass?
+{\bf FIXME: improve this paragraph}
+%FIXME IMPROVE THIS PARAGRAPH.
+Processes both internal and external to the star have been suggested to explain
+the lithium-rotation trend (CITE see the recent review by Bouvier+20).
+One explanation based in the stellar interior could be that the
+convective mixing efficiency is anticorrelated with the surface
+rotation (e.g., CITE Siess + Livio 1997, Baraffe+2017).  Another
+possibility could be that stronger magnetic fields in the star's
+interior inhibit convection (READ e.g., Ventura+98, Chabrier+07,
+Somers + Pinsonneault 2014).  An external process that might also be
+important is the effect of star-disk magnetic locking during the PMS
+phase (CITE: magnetic braking).  Longer disk lifetimes would lead to
+the star's outer convective zone being locked for longer while the
+radiative core contracts.  The resulting differential rotation and
+rotational mixing could drive the lithium depletion (CITE: Bouvier 08,
+Eggenberger+12).
+We have no preference between these possibilities---we simply note
+that the \cn\ sample could be another helpful data point in
+distinguishing them.
+
+
+\subsection{Age of NGC\,2516}
 Cummings \& Kalirai (2018) favor 150 Myr based on MSTO.
 Godoy-Rivera+2021 favor 150 Myr... based on ...? what?
 """
@@ -1115,68 +1159,99 @@ and Cummings et al. (2018) (see also Fritzewski et al. 2020 and Healy
 McCullough 2020)
 """
 
-\subsection{Ways of doing this at different ages}
-Some final discussion is warranted on the applicability of our
-approach more generally.  Given a kinematically
-identified population, this study uses photometry (Gaia HR diagrams;
-TESS rotation) and spectroscopy (GALAH and Gaia-ESO lithium) to
-confirm youth in the stars.  Other approaches are also possible.
 
-One can use photometric criteria (e.g., Gaia HR diagram of
-everything within some distance; Zari+18), or spectroscopic
-criteria (CITE Berger+18), or with combinations thereof (e.g., CITE
-Zerjal 2019, 2020, Zhou's work).  
-It might even be possible to start using chemical abundance signatures
-(CITE, GALAHDR3?).
 
-These paths might in certain cases succeed in identifying more
-complete samples of dispersed members of young populations, since they
-do not require kinematic proximity.
+% \subsection{Ways of doing this at different ages}
+% Some final discussion is warranted on the applicability of our
+% approach more generally.  Given a kinematically
+% identified population, this study uses photometry (Gaia HR diagrams;
+% TESS rotation) and spectroscopy (GALAH and Gaia-ESO lithium) to
+% confirm youth in the stars.  Other approaches are also possible.
+% 
+% One can use photometric criteria (e.g., Gaia HR diagram of
+% everything within some distance; Zari+18), or spectroscopic
+% criteria (CITE Berger+18), or with combinations thereof (e.g., CITE
+% Zerjal 2019, 2020, Zhou's work).  
+% It might even be possible to start using chemical abundance signatures
+% (CITE, GALAHDR3?).
+% 
+% These paths might in certain cases succeed in identifying more
+% complete samples of dispersed members of young populations, since they
+% do not require kinematic proximity.
 
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-The combination of Gaia, TESS, and the GALAH and Gaia-ESO
-spectroscopic surveys has clarified a few 
-things about \cn.
+The combination of astrometry from Gaia, photometry from TESS, and
+spectroscopy from GALAH and Gaia-ESO has clarified a few things about
+the structure of \cn.
 \begin{itemize}
-	\item {\it Overdensities observed by Gaia in five-dimensional (3-D position + 2-D velocity)
-		phase space
-		revealed a halo of stars spanning 500 parsecs in the plane of the galaxy.}
-	The earlier reference to the full structure that we can find is by CITE KOUNKEL.
-	The halo is more precisely described as a leading and trailing tail
-	(Figure~\ref{fig:XYZ}), with the leading end on the interior of the
-	cluster's
-	galactic orbit.
+  %
+  \item {\it Over-densities observed in the Gaia 3-D positions and 2-D
+    velocities revealed a halo of stars spanning $\approx$500 parsecs
+    in the plane of the galaxy.} The earliest reference to this halo
+    that we can find is by \citet{kounkel_untangling_2019}.  The halo
+    is more precisely described as a leading and trailing tail
+    (Figure~\ref{fig:XYZ}), with the leading edge angled toward the
+    galactic center, relative to the cluster's orbit in the Galaxy.
+    This is consistent with the direction and amplitude of the Milky
+    Way's differential rotation
+    ($\approx$-0.2\,deg\,Myr$^{-1}$\,kpc$^{-1}$), and similar
+    halos/tails have been observed around $\approx$10 other nearby
+    open clusters \citep{meingast_2021}.
 	%
-	\item {\it Isochronal, rotational, and lithium age-dating show that the halo is real and coeval with the core of \cn.}
-    The Gaia EDR3 photometry and astrometry show a main-sequence turnoff consistent with
-    an isochronal age of 150\,Myr for both the core and halo.
-    The faintest M dwarfs in the core and halo are also elevated relative to a field star comparison sample, but using
-    this to isochronally measure the age is challenging due to uncertainties in M dwarf atmospheric opacities.
-    Gyrochronally, FIXME FIXME FIXME
-    %
-    \item {\it The identified halo extends to $\approx$250\,pc in separate from the cluster center, and out to $\approx$5\kms\ in velocity separation.}
-    Figure~\ref{fig:physical_x_rotn} shows the overlap between kinematic
-    and rotational cluster members. 
-    %
-    \item {\it The field star contamination rate increases at larger physical and 
-    velocity separations from the cluster core.}
-	Figure~\ref{fig:physical_x_rotn} 
-
-    The stars further from the c
-    As a reminder, a star with a 1\kms\ velocity difference moves 1\,pc per Myr.
-    
-     
-	More specifically, ``two thirds of kinematically selected halo members out to 250 pc from the cluster center have rotation periods consistent with a gyrochronological age of 150 Myr''.
-	
-	\item {\it Differential rotation in the Milky Way likely plays an important role in shaping the halos of nearby open clusters.}
-	The Milky Way's differential rotation rate has a comparable
-	order of magnitude ($\approx$-0.2\,deg\,Myr$^{-1}$\,kpc$^{-1}$) to that measured across the halo \citep{meingast_2021}.
-	It therefore likely plays an important role in understanding the halo's formation.
-	
+  \item {\it Isochronal, rotational, and lithium age-dating show that
+    the halo of \cn\ is coeval with its core.} In other words, all
+    the data are consistent with the halo being real.  The Gaia EDR3
+    photometry and astrometry show a main-sequence turnoff consistent
+    with an isochronal age of 150\,Myr for both the core and halo
+    (Figure~\ref{fig:hr}).  The faintest M dwarfs in the core and halo
+    are also brighter than comparison field stars of the same color.
+    Gyrochronally, stars in \cn\ spanning $0.5<(Bp-Rp)_0<1.2$
+    (spectral types F2V-K3V) overlap with the slow sequence of the
+    Pleaides (Figure~\ref{fig:rot}).  At slightly redder
+    colors, from $1.2<(Bp-Rp)_0<1.7$ (spectral types K3V-K6V,
+    $M_\star$$\approx$ 0.6-0.7\,$M_\odot$), there is a larger
+    dispersion in rotation period.  The upper envelope of the rotation
+    period distribution at these redder colors extends to
+    longer rotation periods than in the Pleiades (11 {\it
+    vs.}\ 8 day rotation periods).
+    This also supports our {\bf age determination of $XXX$\,Myr for
+    the cluster}.
+  %
+  \item {\it Bonafide members exist out to $\approx$250\,pc in
+    separation from the cluster center, and out to $\approx$5\kms\ in
+    velocity separation.} Figure~\ref{fig:physical_x_rotn} shows the
+    overlap between kinematic and rotational cluster members used to
+    make this assessment.
+  %
+  \item {\it The field star contamination rate increases at larger
+    physical and velocity separations from the cluster core.} The
+    right panel of Figure~\ref{fig:physical_x_rotn} quantifies the
+    statement: $\approx$75\% of the ``inner-most'' members show
+    rotation periods consistent with the age of the cluster.  This
+    fraction decreases to $\approx$60\% at physical separations of
+    $\approx$200\,pc.  Given the number density ratios of cluster to
+    field stars at these wide separations ($\approx 10^{-3}$,
+    \citealt{meingast_2021}), the implied contamination fractions are
+    not as bad as one might fear.
 \end{itemize}
+
+Broadly speaking, the existence of the halo is perhaps not very
+surprising.  A star with a 1\kms\ velocity difference from the cluster
+average will move away from the center at a rate of 1\,pc\,Myr$^{-1}$.
+For a $\sim$100\,Myr old cluster, a halo with characteristic size
+$\sim$100\,pc is therefore expected, given that the typical velocity
+dispersions of open clusters are of the order of kilometers per
+second.
+
+On the other hand, our ability to reliably identify members of these
+halos is rather surprising.  These stars have
+remained hidden in the background of the Galaxy throughout centuries
+of modern astronomy.  The consequences that these halo stars will have
+in expanding our understanding of planetary and stellar origins are
+only just beginning to be understood.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

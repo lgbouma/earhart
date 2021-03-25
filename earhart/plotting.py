@@ -2431,7 +2431,9 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
     """
 
     nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
-    rot_df, lc_df = get_autorotation_dataframe(runid='NGC_2516', returnbase=True)
+    rot_df, lc_df = get_autorotation_dataframe(
+        runid='NGC_2516', returnbase=True, cleaning='defaultcleaning'
+    )
     med_df, _ = _get_median_ngc2516_core_params(core_df, basedata)
 
     from earhart.physicalpositions import append_physicalpositions
