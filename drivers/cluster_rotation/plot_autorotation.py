@@ -23,10 +23,14 @@ for runid, _ in RUNID_EXTINCTION_DICT.items():
         os.mkdir(PLOTDIR)
 
     for yscale in ['linear', 'log']:
-        for cleaning in ['defaultcleaning', 'periodogram_match', 'nocleaning', 'match234_alias']:
-            ep.plot_auto_rotation(
-                PLOTDIR, runid, E_BpmRp, core_halo=0, yscale=yscale, cleaning=cleaning
-            )
-            ep.plot_auto_rotation(
-                PLOTDIR, runid, E_BpmRp, core_halo=1, yscale=yscale, cleaning=cleaning
-            )
+        for cleaning in ['defaultcleaning', 'periodogram_match',
+                         'nocleaning', 'match234_alias']:
+            for core_halo in [0,1]:
+                ep.plot_auto_rotation(
+                    PLOTDIR, runid, E_BpmRp, core_halo=core_halo,
+                    yscale=yscale, cleaning=cleaning, emph_binaries=0
+                )
+                ep.plot_auto_rotation(
+                    PLOTDIR, runid, E_BpmRp, core_halo=core_halo,
+                    yscale=yscale, cleaning=cleaning, emph_binaries=1
+                )

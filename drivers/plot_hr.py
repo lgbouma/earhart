@@ -28,7 +28,6 @@ for basedata in basedatas:
                     ep.plot_hr(PLOTDIR, color0=c,
                                highlight_companion=0, basedata=basedata, colorhalobyglat=1)
 
-
         else:
 
             # base HR diagrams
