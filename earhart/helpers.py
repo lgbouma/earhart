@@ -12,6 +12,7 @@ get_gaia_basedata
     _get_extinction_dataframes
     _get_median_ngc2516_core_params
 get_denis_xmatch
+append_phot_binary_column
 """
 import os, collections, pickle
 import numpy as np, pandas as pd
@@ -216,6 +217,8 @@ def get_gaia_basedata(basedata):
         nbhd_df, core_df, halo_df, full_df, target_df = _get_nbhd_dataframes()
     else:
         raise NotImplementedError
+
+    full_df = append_phot_binary_column(full_df)
 
     return nbhd_df, core_df, halo_df, full_df, target_df
 
@@ -789,6 +792,7 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0,
     df = pd.read_csv(
         os.path.join(rotdir, f'{runid}_rotation_periods.csv')
     )
+    df = append_phot_binary_column(df)
 
     if cleaning in ['defaultcleaning', 'periodogram_match', 'match234_alias']:
         # automatic selection criteria for viable rotation periods
@@ -918,3 +922,35 @@ def _get_median_ngc2516_core_params(core_df, basedata, CUTOFF_PROB=0.7):
     std_df = pd.DataFrame(s_core_df[getcols].std()).T
 
     return med_df, std_df
+
+
+def append_phot_binary_column(df, DIFFERENCE_CUTOFF=0.3):
+
+    from scipy.interpolate import interp1d
+
+    csvpath = os.path.join(DATADIR, 'gaia',
+                           'ngc2516_AbsG_BpmRp_empirical_locus_webplotdigitzed.csv')
+    ldf = pd.read_csv(csvpath)
+
+    fn_BpmRp_to_AbsG = interp1d(ldf.BpmRp, ldf.AbsG, kind='quadratic',
+                                bounds_error=False, fill_value=np.nan)
+
+    get_yval = (
+        lambda _df: np.array(
+            _df['phot_g_mean_mag'] + 5*np.log10(_df['parallax']/1e3) + 5
+        )
+    )
+    get_xval = (
+        lambda _df: np.array(
+            _df['phot_bp_mean_mag'] - _df['phot_rp_mean_mag']
+        )
+    )
+
+    sel_photbin = (
+        get_yval(df) <
+        ( fn_BpmRp_to_AbsG(get_xval(df)) - DIFFERENCE_CUTOFF)
+    )
+
+    df['is_phot_binary'] = sel_photbin
+
+    return df

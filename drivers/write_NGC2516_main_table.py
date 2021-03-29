@@ -11,7 +11,9 @@ populates results.tables with the table containing:
 import os
 import numpy as np, pandas as pd
 from earhart.paths import DATADIR, RESULTSDIR
-from earhart.helpers import get_autorotation_dataframe
+from earhart.helpers import (
+    get_autorotation_dataframe, append_phot_binary_column, get_gaia_basedata
+)
 from earhart.lithium import _get_lithium_EW_df
 
 include_lithium = False
@@ -46,6 +48,27 @@ dropcols = ['level_0', 'source_id_2', 'index', 'datalink_url',
             'lum_percentile_upper']
 
 df = df.drop(dropcols, axis=1)
+
+# photometric binarity column
+df = append_phot_binary_column(df)
+
+# astrometric binarity column
+basedata = 'fullfaint_edr3'
+_, _, _, full_df, _ = get_gaia_basedata(basedata)
+
+# merge, noting that the "ngc2516_rotation_periods.csv" measurements were
+# done based on the DR2 source_id list, and in this plot the basedata are
+# from EDR3 (so we use the DR2<->EDR3 crossmatch from
+# _get_fullfaint_edr3_dataframes)
+mdf = df.merge(full_df, left_on='source_id',
+               right_on='dr2_source_id', how='left',
+               suffixes=('_dr2', '_edr3'))
+
+assert len(mdf) == len(df)
+
+is_astrometric_binary = (mdf.ruwe > 1.2)
+df['is_astrometric_binary'] = is_astrometric_binary
+
 
 
 # by default, release all columns. it's machine-readable...

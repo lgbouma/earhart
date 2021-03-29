@@ -32,6 +32,7 @@ from glob import glob
 from datetime import datetime
 import numpy as np, matplotlib.pyplot as plt, pandas as pd, pymc3 as pm
 from numpy import array as nparr
+from scipy.interpolate import interp1d
 
 import matplotlib as mpl
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -58,7 +59,7 @@ from cdips.utils.mamajek import get_interp_BpmRp_from_Teff
 from earhart.paths import DATADIR, RESULTSDIR
 from earhart.helpers import (
     get_gaia_basedata, get_autorotation_dataframe,
-    _get_median_ngc2516_core_params
+    _get_median_ngc2516_core_params, append_phot_binary_column
 )
 from earhart.physicalpositions import (
     given_gaia_df_get_icrs_arr, calc_dist
@@ -1080,7 +1081,7 @@ def plot_skypositions_x_rotn(outdir):
 
 
 def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
-                       cleaning=None):
+                       cleaning=None, emph_binaries=False):
     """
     Plot rotation periods that satisfy the automated selection criteria
     (specified in helpers.get_autorotation_dataframe)
@@ -1174,6 +1175,47 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
                 marker=m, linewidths=_lw, label=f"{l.replace('_','')}"
             )
 
+        if emph_binaries and f'{runid}' in _cls:
+
+            #
+            # photometric binaries
+            #
+            ax.scatter(
+                xval[df.is_phot_binary],
+                df[df.is_phot_binary][ykey],
+                c='orange', alpha=1, zorder=10, s=7, edgecolors='k',
+                marker='o', linewidths=_lw, label="Photometric binary"
+            )
+
+            #
+            # astrometric binaries
+            #
+
+            basedata = 'fullfaint_edr3'
+            _, _, _, full_df, _ = get_gaia_basedata(basedata)
+
+            # merge, noting that the "ngc2516_rotation_periods.csv" measurements were
+            # done based on the DR2 source_id list, and in this plot the basedata are
+            # from EDR3 (so we use the DR2<->EDR3 crossmatch from
+            # _get_fullfaint_edr3_dataframes)
+            mdf = df.merge(full_df, left_on='source_id',
+                           right_on='dr2_source_id', how='left',
+                           suffixes=('_dr2', '_edr3'))
+
+            assert len(mdf) == len(df)
+
+            is_astrometric_binary = (mdf.ruwe > 1.2)
+            mdf['is_astrometric_binary'] = is_astrometric_binary
+
+            ax.scatter(
+                nparr(xval)[nparr(mdf.is_astrometric_binary)],
+                df[nparr(mdf.is_astrometric_binary)][ykey],
+                c='red', alpha=1, zorder=9, s=7, edgecolors='k',
+                marker='o', linewidths=_lw, label="Astrometric binary"
+            )
+
+
+
     loc = 'best' if yscale == 'linear' else 'lower right'
     ax.legend(loc=loc, handletextpad=0.1, fontsize='x-small', framealpha=1.0)
     ax.set_ylabel('Rotation Period [days]', fontsize='large')
@@ -1193,6 +1235,8 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     outstr = '_vs_BpmRp'
     if core_halo:
         outstr += '_corehalosplit'
+    if emph_binaries:
+        outstr += '_emphbinaries'
     outstr += f'_{yscale}'
     outstr += f'_{cleaning}'
     outpath = os.path.join(outdir, f'{runid}_rotation{outstr}.png')
@@ -2953,3 +2997,121 @@ def plot_vtangential_projection(outdir, basedata='fullfaint'):
     savefig(fig, outpath)
 
 
+
+def plot_phot_binaries(outdir, isochrone=None, color0='phot_bp_mean_mag',
+                       basedata='fullfaint', rasterized=False):
+    """
+    HR diagram with photometric binaries obvious
+    """
+
+    set_style()
+
+    nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
+    full_df = append_phot_binary_column(full_df)
+
+    csvpath = os.path.join(DATADIR, 'gaia',
+                           'ngc2516_AbsG_BpmRp_empirical_locus_webplotdigitzed.csv')
+    ldf = pd.read_csv(csvpath)
+
+    fn_BpmRp_to_AbsG = interp1d(ldf.BpmRp, ldf.AbsG, kind='quadratic',
+                                bounds_error=False, fill_value=np.nan)
+
+    BpmRp_mod = np.linspace(0, 3.5, 500)
+    AbsG_mod = fn_BpmRp_to_AbsG(BpmRp_mod)
+
+    get_yval = (
+        lambda _df: np.array(
+            _df['phot_g_mean_mag'] + 5*np.log10(_df['parallax']/1e3) + 5
+        )
+    )
+    get_xval = (
+        lambda _df: np.array(
+            _df[color0] - _df['phot_rp_mean_mag']
+        )
+    )
+
+    ##########
+
+    plt.close('all')
+
+    f, ax = plt.subplots(figsize=(1.5*2,1.5*3))
+
+    ax.plot(BpmRp_mod, AbsG_mod, c='cyan', lw=0.5, ls='--', zorder=5, label='Emp. fit')
+    ax.plot(BpmRp_mod, AbsG_mod-0.3, c='fuchsia', lw=0.5, ls='-', zorder=5,
+            label='Emp. fit - 0.3 mag')
+
+    ax.scatter(
+        get_xval(full_df[~full_df.is_phot_binary]), get_yval(full_df[~full_df.is_phot_binary]),
+        c='C0', label='Not phot binary', zorder=1, s=2
+    )
+    ax.scatter(
+        get_xval(full_df[full_df.is_phot_binary]), get_yval(full_df[full_df.is_phot_binary]), c='C1',
+        label='Phot binary',
+        zorder=2, s=2
+    )
+
+
+
+
+
+    # l0,l1 = 'Field', 'Halo'
+
+    # # mixed rasterizing along layers b/c we keep the loading times nice
+    # ax.scatter(
+    #     get_xval(nbhd_df), get_yval(nbhd_df), c='gray', alpha=0.5, zorder=2,
+    #     s=6, rasterized=False, linewidths=0, label=l0, marker='.'
+    # )
+    # _s = 6
+
+    # # wonky way to get output lines...
+    # ax.scatter(
+    #     get_xval(halo_df), get_yval(halo_df), c='lightskyblue', alpha=1,
+    #     zorder=4, s=_s, rasterized=rasterized, linewidths=0, label=None,
+    #     marker='.', edgecolors='k'
+    # )
+    # ax.scatter(
+    #     get_xval(halo_df), get_yval(halo_df), c='k', alpha=1,
+    #     zorder=3, s=_s+1, rasterized=rasterized, linewidths=0, label=None,
+    #     marker='.', edgecolors='k'
+    # )
+    # ax.scatter(
+    #     -99, -99, c='lightskyblue', alpha=1,
+    #     zorder=4, s=_s, rasterized=rasterized, linewidths=0.2, label=l1,
+    #     marker='.', edgecolors='k'
+    # )
+
+
+    # _l = 'Core'
+    # ax.scatter(
+    #     get_xval(core_df), get_yval(core_df), c='k', alpha=0.9,
+    #     zorder=5, s=6, rasterized=rasterized, linewidths=0, label=_l, marker='.'
+    # )
+
+    leg = ax.legend(loc='lower left', handletextpad=0.1, fontsize='x-small',
+                    framealpha=0.9)
+
+    # leg.legendHandles[0]._sizes = [1.3*25]
+    # leg.legendHandles[1]._sizes = [1.3*25]
+    # leg.legendHandles[2]._sizes = [1.3*25]
+
+
+    ax.set_ylabel('Absolute G [mag]', fontsize='large')
+    if color0 == 'phot_bp_mean_mag':
+        ax.set_xlabel('Bp - Rp [mag]', fontsize='large')
+        c0s = '_Bp_m_Rp'
+    else:
+        raise NotImplementedError
+
+    ylim = ax.get_ylim()
+    ax.set_ylim((max(ylim),min(ylim)))
+
+    if basedata == 'fullfaint_edr3' and color0 == 'phot_bp_mean_mag':
+        ax.set_xlim([-0.46, 3.54])
+        ax.set_ylim([13.7, -4.8])
+
+    format_ax(ax)
+    s = ''
+    c0s += f'_{basedata}'
+    outpath = os.path.join(outdir, f'hr_phot_binaries{s}{c0s}.png')
+
+    savefig(f, outpath, dpi=400)
