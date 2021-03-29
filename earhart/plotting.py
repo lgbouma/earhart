@@ -379,7 +379,7 @@ def plot_ruwe_vs_apparentmag(outdir, basedata='fullfaint', smallylim=False):
 
     if not basedata == 'fullfaint_edr3':
         raise NotImplementedError('only EDR3 has ruwe built in')
-    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
+    nbhd_df, cg18_df, kc19_df, full_df, trgt_df = get_gaia_basedata(basedata)
 
     plt.close('all')
 

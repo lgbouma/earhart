@@ -7,6 +7,9 @@ cp ../results/hr/hr_colorhalobyglat_Bp_m_Rp_show1937_fullfaint_edr3.pdf f2c.pdf
 
 cp ../results/rotation/NGC_2516/NGC_2516_rotation_vs_BpmRp_corehalosplit_linear_defaultcleaning.pdf f3a.pdf
 cp ../results/rotation/NGC_2516/NGC_2516_rotation_vs_BpmRp_corehalosplit_linear_periodogram_match.pdf f3b.pdf
+cp ../results/rotation/NGC_2516/NGC_2516_rotation_vs_BpmRp_emphbinaries_linear_defaultcleaning.pdf f3c.pdf
+cp ../results/rotation/NGC_2516/NGC_2516_rotation_vs_BpmRp_emphbinaries_linear_periodogram_match.pdf f3d.pdf
+
 
 #cp ../results/skypositions/skypositions_x_rotn.pdf f4.pdf
 cp ../results/full_kinematics_X_rotation/full_kinematics_X_rotation_fullfaint_galactic.pdf f4.pdf
