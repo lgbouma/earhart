@@ -1588,7 +1588,7 @@ def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
 
 
 def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
-                             corehalosplit=0, showkepfield=0):
+                             corehalosplit=0, showkepfield=0, trimx=0):
     """
     Plot Li EW vs color for a) Randich+18's Gaia ESO lithium stars, b)
     the GALAH DR3 EWs, or c) both, after crossmatching against the
@@ -1619,7 +1619,10 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
     # make plot
     #
     plt.close('all')
-    f, ax = plt.subplots(figsize=(6,3))
+    if not trimx:
+        f, ax = plt.subplots(figsize=(6,3))
+    else:
+        f, ax = plt.subplots(figsize=(3,3))
 
     if showkepfield:
         ax.scatter(
@@ -1651,16 +1654,20 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
 
         ax.legend(loc='upper left', handletextpad=0.05)
 
-    if gaiaeso and galahdr3:
-        ax.set_title('Kinematic $\otimes$ Lithium')
-    if gaiaeso and not galahdr3:
-        ax.set_title('Kinematic $\otimes$ Gaia-ESO')
-    if not gaiaeso and galahdr3:
-        ax.set_title('Kinematic $\otimes$ GALAH-DR3')
+    if not trimx:
+        if gaiaeso and galahdr3:
+            ax.set_title('Kinematic $\otimes$ Lithium')
+        if gaiaeso and not galahdr3:
+            ax.set_title('Kinematic $\otimes$ Gaia-ESO')
+        if not gaiaeso and galahdr3:
+            ax.set_title('Kinematic $\otimes$ GALAH-DR3')
 
     ax.set_ylabel('Li$_{6708}$ EW [m$\mathrm{\AA}$]')
     ax.set_xlabel('(Bp-Rp)$_0$ [mag]')
-    ax.set_xlim([-0.2, 2.8])
+    if not trimx:
+        ax.set_xlim([-0.2, 2.8])
+    else:
+        ax.set_xlim([0.5, 1.5])
     ax.set_ylim([-50, 350])
 
     format_ax(ax)
@@ -1673,6 +1680,8 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
         outstr += '_corehalosplit'
     if showkepfield:
         outstr += '_showkepfield'
+    if trimx:
+        outstr += '_trimx'
     xmstr = 'fullfaintkinematic'
     outpath = os.path.join(outdir,
                            f'lithiumEW_vs_BpmRp_xmatch_{xmstr}{outstr}.png')

@@ -10,6 +10,9 @@ ep.plot_lithium_EW_vs_color(
     PLOTDIR, gaiaeso=1, galahdr3=1, corehalosplit=1, showkepfield=1
 )
 ep.plot_lithium_EW_vs_color(
+    PLOTDIR, gaiaeso=1, galahdr3=1, corehalosplit=1, showkepfield=1, trimx=1
+)
+ep.plot_lithium_EW_vs_color(
     PLOTDIR, gaiaeso=1, galahdr3=1, corehalosplit=1
 )
 ep.plot_lithium_EW_vs_color(
