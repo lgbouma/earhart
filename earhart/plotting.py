@@ -2144,7 +2144,7 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
     rotation selection for the right-most plot.
     """
 
-    nbhd_df, cg18_df, kc19_df, trgt_df = get_gaia_basedata(basedata)
+    nbhd_df, cg18_df, kc19_df, full_df, trgt_df = get_gaia_basedata(basedata)
 
     set_style()
 
@@ -2227,7 +2227,7 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
     )
 
     # automatic selection criteria for viable rotation periods
-    df = get_autorotation_dataframe(runid)
+    df = get_autorotation_dataframe(runid, cleaning='defaultcleaning')
 
     xval = (
         df['phot_bp_mean_mag'] - df['phot_rp_mean_mag']
