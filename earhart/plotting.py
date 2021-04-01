@@ -759,7 +759,9 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
             ages = [100, 178, 316]
             logages = [8, 8.25, 8.5]
             N_ages = len(ages)
-            colors = plt.cm.cool(np.linspace(0,1,N_ages))[::-1]
+            #colors = plt.cm.cividis(np.linspace(0,1,N_ages))
+            colors = plt.cm.spring(np.linspace(0,1,N_ages))
+            colors = ['red','gold','lime']
 
             for i, (a, la, c) in enumerate(zip(ages, logages, colors)):
 
@@ -790,9 +792,19 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
                     iso_df[sel][sel2][_c0]-iso_df[sel][sel2]['G_RPmag']
                 )
 
+                # ax.plot(
+                #     _xval, _yval,
+                #     c=c, alpha=1., zorder=7, label=f'{a} Myr', lw=0.5
+                # )
+
+                late_mdwarfs = (_xval > 2.2) & (_yval > 5)
+                ax.plot(
+                    _xval[~late_mdwarfs], _yval[~late_mdwarfs],
+                    c=c, ls='-', alpha=1., zorder=7, label=f'{a} Myr', lw=0.5
+                )
                 ax.plot(
                     _xval, _yval,
-                    c=c, alpha=1., zorder=7, label=f'{a} Myr', lw=0.5
+                    c=c, ls='--', alpha=1., zorder=6, lw=0.5
                 )
 
                 nored_y = (
@@ -1104,7 +1116,7 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     lws = [0., 0.3, 0.2]
     mews= [0.5, 0.5, 0.5]
     _s = 3 if runid != 'VelaOB2' else 1.2
-    ss = [3, 4.5, _s]
+    ss = [3, 4.5, 9]
     labels = ['Pleaides', 'Praesepe', f'{runid}']
 
     # plot vals
@@ -1155,23 +1167,23 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
             ax.scatter(
                 xval[sel],
                 df[sel][ykey],
-                c='k', alpha=1, zorder=z, s=7, edgecolors='k',
-                marker=m, linewidths=_lw, label=f"{runid.replace('_','')} core"
+                c='k', alpha=1, zorder=z, s=s, edgecolors='k',
+                marker=m, linewidths=_lw, label=f"{runid.replace('_',' ')} core"
             )
 
             sel = (df.subcluster == 'halo')
             ax.scatter(
                 xval[sel],
                 df[sel][ykey],
-                c='lightskyblue', alpha=1, zorder=z, s=7, edgecolors='k',
-                marker=m, linewidths=_lw, label=f"{runid.replace('_','')} halo"
+                c='lightskyblue', alpha=1, zorder=z, s=s, edgecolors='k',
+                marker=m, linewidths=_lw, label=f"{runid.replace('_',' ')} halo"
             )
 
         else:
             ax.scatter(
                 xval,
                 df[ykey],
-                c=_col, alpha=1, zorder=z, s=7, edgecolors='k',
+                c=_col, alpha=1, zorder=z, s=s, edgecolors='k',
                 marker=m, linewidths=_lw, label=f"{l.replace('_','')}"
             )
 
@@ -1183,7 +1195,7 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
             ax.scatter(
                 xval[df.is_phot_binary],
                 df[df.is_phot_binary][ykey],
-                c='orange', alpha=1, zorder=10, s=7, edgecolors='k',
+                c='orange', alpha=1, zorder=10, s=s, edgecolors='k',
                 marker='o', linewidths=_lw, label="Photometric binary"
             )
 
@@ -1210,7 +1222,7 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
             ax.scatter(
                 nparr(xval)[nparr(mdf.is_astrometric_binary)],
                 df[nparr(mdf.is_astrometric_binary)][ykey],
-                c='red', alpha=1, zorder=9, s=7, edgecolors='k',
+                c='red', alpha=1, zorder=9, s=s, edgecolors='k',
                 marker='o', linewidths=_lw, label="Astrometric binary"
             )
 
