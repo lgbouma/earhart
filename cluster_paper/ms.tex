@@ -19,32 +19,32 @@
 \newcommand{\cn}{NGC\,2516} % cluster name
 
 % gaia target sample numbers
-\newcommand{\nkinematic}{3{,}298\ } % "fullfaint" kinematic sample, core+halo (CG18+KC19+M21). from any call of earhat.helpers._get_fullfaint_dataframes
-\newcommand{\nnbhd}{13{,}843\ } % make_compstar_NGC_2516_sourcelist.py
+\newcommand{\nkinematic}{3{,}298} % "fullfaint" kinematic sample, core+halo (CG18+KC19+M21). from any call of earhat.helpers._get_fullfaint_dataframes
+\newcommand{\nnbhd}{13{,}843} % make_compstar_NGC_2516_sourcelist.py
 \newcommand{\ncore}{1{,}106}  % "fullfaint" kinematic sample, CG18. from any call of earhat.helpers._get_fullfaint_dataframes
 \newcommand{\nhalo}{2{,}2192} % "fullfaint" kinematic sample, KC19+M21. from any call of earhat.helpers._get_fullfaint_dataframes
 
 % from drivers.cluster_rotation.get_auto_rotation_periods.py;  checked with plot_target_vs_actual_list_sanity_checks.py
-\newcommand{\ncdips}{2{,}205\ }
-\newcommand{\nkinematicrpltsixteen}{2{,}270\ }
-\newcommand{\nkinematicCGandKC}{2{,}236\ }
+\newcommand{\ncdips}{2{,}205}
+\newcommand{\nkinematicrpltsixteen}{2{,}270}
+\newcommand{\nkinematicCGandKC}{2{,}236}
 
 % cdips results numbers
-\newcommand{\numcdipslcs}{671{,}901\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
-\newcommand{\numsouthernuniqlcs}{483{,}407\ } % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
+\newcommand{\numcdipslcs}{671{,}901} % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
+\newcommand{\numsouthernuniqlcs}{483{,}407} % drivers.yield_calculation.count_cdips_lcs.py; 2021.01.13
 
-\newcommand{\ncalibration}{9{,}619{,}784\ } % /nfs/phtess2/ar0/TESS/PROJ/lbouma/CDIPS_LCS/counts/check_sum, 2021.02.02
-\newcommand{\nnbhdcaliblc}{9{,}790\ } % get_auto_rotation_periods.py
-\newcommand{\nnbhdcalibstar}{1{,}987\ } % get_auto_rotation_periods.py
+\newcommand{\ncalibration}{9{,}619{,}784} % /nfs/phtess2/ar0/TESS/PROJ/lbouma/CDIPS_LCS/counts/check_sum, 2021.02.02
+\newcommand{\nnbhdcaliblc}{9{,}790} % get_auto_rotation_periods.py
+\newcommand{\nnbhdcalibstar}{1{,}987} % get_auto_rotation_periods.py
 
-\newcommand{\nautorotdenominator}{1{,}641\ } % plot_autorotation.py, w/ runid=NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
-\newcommand{\nautorotnumerator}{987\ } % plot_autorotation.py, For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
-\newcommand{\nautorotnumeratormatching}{507\ } % plot_autorotation.py, LSP=SPDM period
-\newcommand{\ncompstardenominator}{820\ } % plot_autorotation.py, w/ runid=compstar_NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. 
-\newcommand{\ncompstarnumerator}{365\ } % plot_autorotation.py
+\newcommand{\nautorotdenominator}{1{,}641} % plot_autorotation.py, w/ runid=NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
+\newcommand{\nautorotnumerator}{987} % plot_autorotation.py, For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
+\newcommand{\nautorotnumeratormatching}{507} % plot_autorotation.py, LSP=SPDM period
+\newcommand{\ncompstardenominator}{820} % plot_autorotation.py, w/ runid=compstar_NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. 
+\newcommand{\ncompstarnumerator}{365} % plot_autorotation.py
 \newcommand{\ncompfrac}{44.5\%} % plot_autorotation.py
-\newcommand{\nautovscompstardenominator}{705\ } % plot_autorotation.py, w/ runid=compstar_NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. 
-\newcommand{\nautovscompstarnumerator}{374\ } % plot_autorotation.py
+\newcommand{\nautovscompstardenominator}{705} % plot_autorotation.py, w/ runid=compstar_NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. 
+\newcommand{\nautovscompstarnumerator}{374} % plot_autorotation.py
 \newcommand{\nautofrac}{53.1\%} % plot_autorotation.py
 
 \newcommand{\kms}{\,km\,s$^{-1}$}
@@ -200,7 +200,7 @@ the reported structures are truly coeval stellar populations at all.
 We have recently been making TESS light curves of stars reported to be
 members of coeval populations (CDIPS, \citealt{bouma_cdipsI_2019}).
 Our analysis of TESS Sectors 1-13 yielded light curves of
-\numsouthernuniqlcs candidate cluster members in the Southern Ecliptic
+\numsouthernuniqlcs\ candidate cluster members in the Southern Ecliptic
 hemisphere, which are available on
 MAST\footnote{\url{https://archive.stsci.edu/hlsp/cdips}}.
 
@@ -293,11 +293,11 @@ Section~\ref{sec:conclusion} gives our conclusions.
 \end{figure*}
 
 We selected candidate \cn\ members based on those reported in the
-literature.  While some pre-Gaia analyses were available,
-the purity and accuracy of the Gaia-derived results are the current
-state of the art \citep{jeffries_ngc2516_2001,Kharchenko_et_al_2013}.
-We therefore adopted what we viewed as the most interesting clustering
-samples to compare: those of \citet{cantatgaudin_gaia_2018},
+literature.  While some pre-Gaia analyses were available, the purity
+and accuracy of the Gaia-derived results are the current state of the
+art \citep{jeffries_ngc2516_2001,Kharchenko_et_al_2013}.  We therefore
+adopted what we viewed as the most interesting clustering samples to
+compare: those of \citet{cantatgaudin_gaia_2018},
 \citet{kounkel_untangling_2019} and \citet{meingast_2021}.  We refer
 to these studies in the following as
 \citetalias{cantatgaudin_gaia_2018},
@@ -396,7 +396,6 @@ Section~\ref{subsec:origin}.
 \begin{figure*}[t]
 	\begin{center}
 		\leavevmode
-			%\includegraphics[width=0.85\textwidth]{f2a.pdf}
 		\subfloat{
 			\includegraphics[width=0.49\textwidth]{f2a.pdf}
 			\includegraphics[width=0.49\textwidth]{f2b.pdf}
@@ -572,7 +571,7 @@ reports since \citet{mermilliod_comparative_1981}.
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ {\bf TESS rotations periods and dereddened Gaia colors for \cn.}
-    {\it Top row}: \cn\ split into its core and halo.  Subset
+    {\it Top row}: \cn\ split into its core and halo.  Sets
     $\mathcal{A}$ ({\it left columns}) and $\mathcal{B}$ ({\it right
     columns}) undergo successive degrees of automated cleaning,
     described in Section~\ref{subsubsec:cluster}.  The Pleiades
@@ -582,140 +581,104 @@ reports since \citet{mermilliod_comparative_1981}.
     gyrochronologically coeval with the Pleiades at $(Bp-Rp)_0$$<$1.2.
     There is a narrow range of color, from $1.2<(Bp-Rp)_0<1.7$, in
     which some NGC\,2516 members appear slightly elevated with respect
-    to the Pleiades, suggesting an older age.
-    {\it Bottom row}: \cn\ colored by binarity indicators.  Sources
-    with $\mathrm{RUWE}>1.2$ appear in red (astrometric binaries; 11\%
-    of stars).
-    Overplotted in orange are sources at least 0.3\,mag above an
-    empirically fit cluster isochrone (photometric binaries; 20\% of stars).
+    to the Pleiades, suggesting an older age.  
+    Stars redder than $(Bp-Rp)_0\gtrsim 2.2$ (later than M2V) 
+    are fainter than the magnitude limit of our survey.
+    {\it Bottom row}: \cn\
+    colored by binarity indicators.  Sources with $\mathrm{RUWE}>1.2$
+    appear in red (astrometric binaries; 11\% of stars).  Overplotted
+    in orange are sources at least 0.3\,mag above an empirically fit
+    cluster isochrone (photometric binaries; 20\% of stars).
 		\label{fig:rot}
 	}
 \end{figure*}
 
 We began our rotation analysis by considering all \nkinematic\
-candidate members of \cn.  For each source, we first retrieved all
-available CDIPS light curves, on a per-sector basis.  This yielded
-\ncdips stars with at least one sector from a CDIPS light curve, all
-brighter than $Rp=16$\,mag.  \nkinematicrpltsixteen\ of the stars from
-the source list have $Rp<16$.  The difference is comprised of 34 stars
-unique to \citet{meingast_2021} which were not available at the time
-of the CDIPS reductions and stars falling on the TESS chip gaps.  The
+candidate members of \cn.  For each source, we retrieved all available
+CDIPS light curves, on a per-sector basis.  This yielded \ncdips\
+stars with at least one sector from a CDIPS light curve.  Each of
+these stars is brighter than the CDIPS magnitude limit of
+$Rp=16$\,mag.  \nkinematicrpltsixteen\ of the stars from the \cn\
+source list had $Rp<16$.  The difference is due to 34 stars unique to
+\citet{meingast_2021} which were not available at the time of the
+CDIPS reductions, and a few stars falling on the TESS chip gaps.  The
 $Rp=16$\,mag cutoff imposed during the CDIPS processing corresponds
 roughly to $(Bp-Rp)_0$ of 2.2, or a spectral type of $\approx$M2V, at
-the distance of NGC\,2516.
+the distance of \cn.
 
 We removed systematic trends shared between all light curves on each
 CCD in each sector individually, and stitched together the resulting
-light curves before searching for the periodicity.  Details regarding
-our detrending approach are discussed in
-Appendix~\ref{app:detrending}.  After applying the initial detrending
+light curves before searching for rotation-induced periodicity.
+Details regarding our detrending approach are presented in
+Appendix~\ref{app:detrending}.  After applying an initial detrending
 step aimed at removing systematic trends, we proceeding with a few
-small cleaning steps aimed at improving the purity of the rotation
-period measurements: we masked 0.7 days at the beginning and end of
-each spacecraft orbit, and ran a sliding standard-deviation rejection
+small cleaning steps to improve the purity of the rotation period
+measurements: we masked 0.7 days at the beginning and end of each
+spacecraft orbit, and ran a sliding standard-deviation rejection
 window over the light curve, which removed any outlying points within
 $\pm3\times$MAD of the median in each window.
 
-We then measured the rotation period from the resulting light curve.
+We then measured the rotation period from the resulting light curve
+using the periodogram implementations in \texttt{astrobase}, in
+particular the Stellingwerf phase-dispersion minimization periodogram,
+along with the more traditional Lomb-Scargle
+\citep{lomb_1976,stellingwerf_period_1978,scargle_studies_1982,stellingwerf_period_2011,bhatti_astrobase_2018}.
 We used the CDIPS aperture radius that, based on theoretical
 expectations, was expected to give the optimal balance between light
 from the target and background-light \citep{Sullivan_2015}.  This
 typically resulted in an aperture radius of either 1 or 1.5 pixels.
-To measure the periods, we used the periodogram implementations in
-\texttt{astrobase}, in particular the Stellingwerf phase-dispersion
-minimization periodogram, along with the more traditional Lomb-Scargle
-\citep{lomb_1976,stellingwerf_period_1978,scargle_studies_1982,stellingwerf_period_2011,bhatti_astrobase_2018}.
 We recorded the top five periodogram peaks from each method, and their
-corresponding powers.  Finally, as a check on crowding, we also
-recorded the number of stars within the aperture of equal brightness
-to the target stars, and of brightness with 1.25 and 2.5 TESS
-magnitudes of the target star.
+corresponding powers.  Finally, as a check on crowding, we recorded
+the number of stars within the aperture with equal or greater
+brightness than the target star, and with brightness within 1.25 and
+2.5 TESS magnitudes of the target star.
+
+To clean the resulting rotation period measurements, we devised a set
+of automated cleaning criteria, which yielded sets we denote
+$\mathcal{A}$ and $\mathcal{B}$.  For both sets, we considered
+light curves for which the peak Lomb-Scargle periodogram period was
+below 15 days, the normalized Lomb-Scargle power exceeded 0.08, and
+for which no equal-brightness or greater companions were within the
+aperture.  Beyond requiring that the target star be the brightest star
+in the aperture, we also required that at most one companion with
+brightness exceeding one tenth of the target star's brightness be
+present in the aperture according to the Gaia DR2 source catalog.  For
+set $\mathcal{A}$, this yielded \nautorotnumerator\ light curves, out
+of \nautorotdenominator\ stars for which rotation periods might
+plausibly have been detected.  For set $\mathcal{B}$, we additionally
+required that the Lomb-Scargle and Stellingwerf phase-dispersion
+methods yielded identical periods to within 10\%.  This yielded
+\nautorotnumeratormatching\ light curves. 
 
 The top row of Figure~\ref{fig:rot} shows the resulting rotation
-periods, following three different sets of cleaning criteria.  The
-first and second sets of criteria were entirely automated, and yielded
-subsets we denote $\mathcal{A}$ and $\mathcal{B}$.  For both subsets,
-we considered light curves for which the peak Lomb-Scargle periodogram
-period was below 15 days, the normalized Lomb-Scargle power exceeded
-0.08, and for which no equal-brightness or greater companions were
-within the aperture.  Beyond requiring that the target star be the
-brightest star in the aperture, we also required that at most one
-companion with brightness exceeding one tenth of the target star's
-brightness be present in the aperture according to the Gaia DR2 source
-catalog.  For set $\mathcal{A}$, this yielded \nautorotnumerator light
-curves, out of \nautorotdenominator stars for which rotation periods
-might plausibly have been detected.  For set $\mathcal{B}$, we 
-additionally required that the Lomb-Scargle and Stellingwerf
-phase-dispersion methods yielded identical periods to within 10\%.
-This yielded \nautorotnumeratormatching light curves. 
-While subset $\mathcal{A}$ is more complete than subset $\mathcal{B}$,
-this completeness comes at the expense of greater contamination.
-% For instance, stars above the slow sequence (possible field
-% contaminants) for the most part disappear in subset $\mathcal{B}$
-
-The comparison to the Pleiades and Praesepe is made using the rotation
-periods and dereddened colors from Table~5 of
-\citet{curtis_rup147_2020}, which used data from
-\citet{rebull_rotation_2016a} and \citet{douglas_k2_2019}
-respectively.
-A few conclusions can be drawn by comparing the \cn\ rotation periods
-with those of the Pleiades and Praesepe.  The first is that in both
-stages of cleaning, the core and halo of \cn\ each show
-gyrochronological ``slow sequences''.  These sequences appear to be
-coeval with each other, and at first order appear to overlap
-with the Pleiades sequence.
-
-% Second, subset $\mathcal{A}$ is more complete than subset
-% $\mathcal{B}$.  This completeness comes at the expense of greater
-% contamination.  The slow sequence has a factor of $\sim$twice as many
-% stars in subset $\mathcal{A}$ than $\mathcal{B}$.  However stars above
-% the slow sequence, which could be field contaminants, for the
-% most part disappear in subset $\mathcal{B}$.  The ``void'' underneath
-% the slow sequence is also more pronounced in the cleaner subset,
-% though it seems to not be as empty as in the Pleiades.
-
-%FIXME this belongs in the DISCUSSION!!
-%FIXME this belongs in the DISCUSSION!!
-%FIXME this belongs in the DISCUSSION!!
-%FIXME this belongs in the DISCUSSION!!
-Comparing the slow sequence of the Pleiades and \cn\ 
-more closely, the top row of Figure~\ref{fig:rot} shows that the two
-sequences
-overlap from roughly $0.5<(Bp-Rp)_0<1.2$.  At redder colors
-($1.2<(Bp-Rp)_0<1.7$) the dispersion in rotation periods increases.
-The maximum rotation periods seen in \cn, in both subsets
-$\mathcal{A}$ and $\mathcal{B}$ extend up to $\approx$11 days, rather
-than the $\approx$8.5day limit seen in the Pleiades.  This is
-consistent with \cn\ being slightly older than the Pleiades.  Fitting
-a model to substantiate this statement \citep[{\it e.g.}, any
-of][]{mamajek_improved_2008,angus_toward_2019,spada_competing_2020} is
-an exercise in tautology, since the aforementioned models are empirically fit using
-the Pleiades and Praesepe.  In other words, at $(Bp-Rp)_0=1.35$, we
-see rotation periods in \cn\ ranging from 7 to 10 days.  The 7 day
-periods overlap with the Pleiades; the 10 day periods do not.  Fitting
-formulae from the previously cited studies give ages for
-a star with $(Bp-Rp)_0=1.35, (B-V)_0=1.10, P=7\,{\rm day}$ of 204 Myr,
-316 Myr, and 107 Myr respectively.  Therefore, only the
-\citet{spada_competing_2020} model is well-calibrated at these ages
-and colors.  For an 8 day rotation period of a star with the same
-color, this model quotes a 193 Myr age; at 9 days, 388 Myr.
-Given the model uncertainty, we prefer the relative statements that
-\cn\ appears slightly gyrochronologically older than the Pleaides, and
-much younger than Praesepe.
+periods, with set $\mathcal{A}$ shown the left and $\mathcal{B}$ on
+the right.  While set $\mathcal{A}$ is more complete than set
+$\mathcal{B}$, this completeness comes at the expense of greater
+contamination.  For instance, stars above the slow sequence (possible
+field contaminants) for the most part disappear in set $\mathcal{B}$.
+The ``void'' or ``gap'' underneath the slow sequence is also more
+pronounced in set $\mathcal{B}$.  To facilitate a comparison against
+the Pleiades and Praesepe, we used the rotation periods and dereddened
+colors from Table~5 of \citet{curtis_rup147_2020}, which drew on data
+from \citet{rebull_rotation_2016a} and \citet{douglas_k2_2019}
+respectively.  The first order conclusion is that the Pleiades and
+\cn\ appear gyrochronologically coeval for colors spanning
+$0.5<(Bp-Rp)_0<1.2$.  The implications of this comparison for the age
+of \cn\ are assessed in greater detail in Section~\ref{disc:absage}.
 
 The bottom row of Figure~\ref{fig:rot} shows the same data, with the
-points colored by indicators of binarity.  To assess astrometric
+points colored with indicators of binarity.  To assess astrometric
 binarity, we used the renormalized unit weight error (RUWE) from Gaia
 EDR3.  For plotting purposes, we labeled anything with RUWE exceeding
-1.2 as an astrometric binary (11\% of the overall cluster sample).  A
-cautionary point is that poor astrometric fits can also be caused by
-photometric variability.  To assess photometric binarity, we fitted a
-spline to Figure~\ref{fig:hr} by hand, and labelled any points
-brighter than 0.3\,mag above the cluster sequence as photometric
-binaries.  This included 20\% of the overall cluster sample.  Many of
-the resulting candidate binaries, though not all of them, appear
-underneath the ``slow sequence''.  We speculate on possible
-explanations in Section~\ref{disc:rotn}.
+1.2 as an astrometric binary (11\% of the overall cluster sample; see
+{\it e.g.}, \citealt{belokurov_unresolved_2020}).  To assess
+photometric binarity, we fitted a spline to Figure~\ref{fig:hr} by
+hand, and labelled any points brighter than 0.3\,mag above the cluster
+sequence as photometric binaries.  This included 20\% of the overall
+cluster sample.  Many of the resulting candidate binaries, though not
+all of them, appear underneath the ``slow sequence''.  We speculate on
+possible explanations in Section~\ref{disc:rotn}.
+
 
 
 
@@ -727,7 +690,6 @@ explanations in Section~\ref{disc:rotn}.
 			\includegraphics[width=0.5\textwidth]{f8a.pdf}
 			\includegraphics[width=0.5\textwidth]{f8b.pdf}
 		}
-	%		\includegraphics[width=0.7\textwidth]{f8a.pdf}
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ 
@@ -770,7 +732,7 @@ explanations in Section~\ref{disc:rotn}.
 How far away from the core, in position and velocity space, does the
 halo extend?  We can explore this by crossmatching the stars with
 detected rotation periods against our original target list of
-\nkinematic Gaia DR2 kinematic candidate members.  For a fair
+\nkinematic\ Gaia DR2 kinematic candidate members.  For a fair
 comparison, we consider only the stars with $0.5<(Bp-Rp)_0<1.2$ for
 which our TESS pipeline successfully made detrended light curves.  In
 other words---the base sample is the stars for which we could have
@@ -909,7 +871,7 @@ stars are in the sample.  For \cn, \citet{randich_gaiaeso_2018}
 ultimately reported stellar parameters (including lithium equivalent
 widths and metallicities) for 796 stars that they considered possible
 \cn\ members.  Cross-matching against our kinematic list of
-\nkinematic candidate members by position and imposing a 0$\farcs$5
+\nkinematic\ candidate members by position and imposing a 0$\farcs$5
 maximum separation limit yields 492 kinematic members for which a
 Gaia-ESO spectrum was acquired and stellar parameters were reported.
 15 of these (all with $(Bp-Rp)_0 > 2.0$) are spurious matches based on
@@ -937,7 +899,7 @@ excludes spectra with unreliable broadening, low S/N, and unreliable
 wavelength solutions (see Table~6 of \citealt{buder_galah_2020}).
 Since our main focus is measuring equivalent widths for the
 Li\,6708\,\AA doublet, these were the most relevant bit flags.  Of our
-\nkinematic candidate \cn\ members, 107 had spectra in GALAH DR3.  51
+\nkinematic\ candidate \cn\ members, 107 had spectra in GALAH DR3.  51
 were in the ``core''; 56 were in the ``halo''.  78 had ``finite''
 lithium, i.e., no lithium flag set.
 
@@ -1093,28 +1055,80 @@ Another possibility is {\it triggered star formation}.
 One relevant connection may be to the ``Mamajek-2'' stellar group
 (see Jilinski+2009).
 
-\subsection{Rotation in NGC\,2516}
+\subsection{Rotation at 100-200\,Myr}
 \label{disc:rotn}
 
-Gotta cite Fritzewski+2020.  (Maybe even do the Blanco1, Pleiades,
-NGC2516, PscEri concatenation?)
+From their rotation period analysis of \cn,
+\citet{fritzewski_rotation_2020} have recently solidified our
+understanding that at ages between 100 and 200\,Myr, young open
+clusters ({Blanco\,1, the Pleiades, Psc\,Eri, M\,35, and M\,50) all
+seem to show similar rotation period distributions.  The FGK stars
+show a ``slow sequence'', a population of ``rapid rotators'', and
+in some cases stars in the ``void'' between the two
+populations ({\it e.g.,}, Psc\,Eri and \cn\ show such populations).
+The late M dwarfs with detected rotation periods tend to rotate very
+rapidly ($<3$\,days) --- these are unfortunately beyond the magnitude
+limit of the present analysis.  In this section, we briefly discuss
+these features, and focus on the main difference between \cn\
+and the Pleiades: the longer maximum rotation periods seen in the
+K-dwarfs.
 
-  \paragraph{Slow sequence and fast sequence}
-  %Why is there a slow and fast sequence?
-  Slow: Skumanich spindown, Weber and Davis magnetic braking.
-  This doesn't explain everything.
-  Originally described as ``interface / convective'' dynamo for each.
-  Now disfavored (but why?).
-  Core envelope decoupling handwaves away the fast rotators? (Irwin,
-  Aigrain, Monitor).
-  Another fast rotator explanation: Naoz's merging of giant planets
-  (could explain some fraction of the fast rotators -- not all of them).
-  Tim Brown, ``metastable dynamo''?
+\subsubsection{The slow and fast sequences}
+The existence of a slow sequence is the main premise of gyrochronology
+\citep[{\it e.g.},][]{barnes_rotational_2003}.  While the initial
+spindown relation ($P_{\rm rot}\sim t^{1/2}$) proposed by
+\citet{skumanich_time_1972} has not worked in detail, the fact that it
+is simple and can be understood to first order through magnetic
+breaking \citep{weber_angular_1967} has led to more systematic efforts
+at age-dating stars through their rotation periods.
 
-  Perhaps most compelling: some kind of binary related explanation.
-  Gillen+20 in Blanco-1 found most of them to be photometric binaries.
-  Simonian+19 in the Kepler field found most rapid rotators to have
-  photometric excesses.
+The other features of the rotation-color diagram are in some sense
+affronts to the magnetic breaking model, and the general question of
+what produces the rapid rotators has not yet been definitively
+answered.  Models that introduces variable core-envelope decoupling
+timescales can reproduce each type of population
+\citep{Irwin_NGC2516_2007}, but the question then shifts to why these
+decoupling timescales should be differ for stars that are otherwise
+identical.  Another possible explanation invokes a spontaneous and
+random change of magnetic field topology that cause the dynamo to
+couple more strongly with the stellar wind
+\citep{brown_metastable_2014}.  Other processes could be external the
+star entirely: \citet{qureshi_signature_2018} for instance have
+reported that mergers between giant planets and the star could explain
+a non-neglible fraction of the rapid rotators.
+
+A separate hypothesis that we can test from the existing data is the
+idea that 
+the rapid rotators are somehow linked to binarity.
+Analyses by {\it e.g.}, \citet{gillen_ngts_2020} and
+\citet{simonian_rapid_2019} have reported that
+rapid rotators in young clusters and in the field are correlated
+with binarity.
+Related effects could include tidal synchronization for the shortest
+period binaries,
+or some form of disk truncation that when combined with magnetic locking
+(CITE)
+could produce the rotation period anomaly.
+The lower panels of Figure~\ref{fig:rot} show our best attempt to
+identify unresolved binaries in the \cn\ rotation sample.
+Binaries resolved by Gaia were already excluded in our initial
+definitions of the samples.
+WHAT IS THE FRACTION OF FAST ROTATORS THAT ARE BINARY?
+WHAT CONCLUSION CAN BE MADE?
+%FIXME CALCULATE!!!!
+%FIXME CALCULATE!!!!
+%FIXME CALCULATE!!!!
+%FIXME CALCULATE!!!!
+
+\subsubsection{The slowest K dwarfs of NGC\,2516}
+%FIXME need to rewrite this paragraph? (Or maybe not, because it's
+%already in the absolute age section...
+A few conclusions can be drawn by comparing the \cn\ rotation periods
+with those of the Pleiades and Praesepe.  The first is that in both
+stages of cleaning, the core and halo of \cn\ each show
+gyrochronological ``slow sequences''.  These sequences appear to be
+coeval with each other, and at first order appear to overlap
+with the Pleiades sequence.
 
 
   \paragraph{Stalling}
@@ -1123,11 +1137,10 @@ NGC2516, PscEri concatenation?)
   We're seeing latest K dwarfs spin slowest, earlier FGKs don't show
   much change.
 
-
-  \paragraph{Are the ``very slow rotators'' bonafide members?}
-  Unsure. They are not isotropically distributed around the
-  cluster... so either triggered star formation (CITE, CITE), or they're
-  actually field stars.
+%   \paragraph{Are the ``very slow rotators'' bonafide members?}
+%   Unsure. They are not isotropically distributed around the
+%   cluster... so either triggered star formation (CITE, CITE), or they're
+%   actually field stars.
 
 
 \subsection{The lithium-rotation correlation}
@@ -1186,6 +1199,7 @@ distinguishing them.
 
 
 \subsection{Age of NGC\,2516}
+\label{disc:absage}
 Cummings \& Kalirai (2018) favor 150 Myr based on MSTO.
 Godoy-Rivera+2021 favor 150 Myr... based on ...? what?
 """
@@ -1195,25 +1209,41 @@ and Cummings et al. (2018) (see also Fritzewski et al. 2020 and Healy
 McCullough 2020)
 """
 
+\paragraph{Gyrochronological Age}
+Comparing the slow sequence of the Pleiades and \cn\ more closely, the
+top row of Figure~\ref{fig:rot} shows that the two sequences overlap
+from roughly $0.5<(Bp-Rp)_0<1.2$.  At redder colors
+($1.2<(Bp-Rp)_0<1.7$) the dispersion in rotation periods increases.
+The maximum rotation periods seen in \cn across both sets
+$\mathcal{A}$ and $\mathcal{B}$ extend up to $\approx$11 days, rather
+than the $\approx$8.5day upper limit seen in the Pleiades.  This is
+consistent with \cn\ being slightly older than the Pleiades.
+
+Fitting a model to substantiate the claim that \cn\ is
+gyrochronologically older than the Pleiades \citep[{\it e.g.}, any
+of][]{mamajek_improved_2008,angus_toward_2019,spada_competing_2020}
+is, unfortunately, an exercise in tautology.  The aforementioned
+models are empirically calibrated using the Pleiades and Praesepe.  In
+other words, at $(Bp-Rp)_0=1.35$, we observe rotation periods in \cn\
+ranging from 7 to 10 days.  The 7 day rotation periods are consistent
+with those observed in the Pleiades; the 10 day rotation periods are
+not.  Fitting formulae from the previously cited studies give ages for
+a star with $\{(Bp-Rp)_0=1.35, (B-V)_0=1.10, P=7\,{\rm day}\}$ of 204
+Myr, 316 Myr, and 107 Myr respectively.  Therefore, only the
+\citet{spada_competing_2020} model has an absolute scale that is
+well-calibrated at these ages and colors.  For an 8 day rotation
+period of a star with the same color, this model quotes a 193 Myr age;
+at 9 days, 388 Myr.  Given this degree of model uncertainty, we prefer
+the relative statement that \cn\ appears slightly gyrochronologically
+older than the Pleaides, and much younger than Praesepe.  Given a
+Pleiades age of $130\pm15$\,Myr (an average of MSTO and
+rotation-corrected lithium-depletion results;
+\citealt{cummings_2018}), a gyrochronology-derived age estimate for \cn\
+between 150 and 200\,Myr would therefore appear reasonable.  Much
+older, and the issue of why the F and G dwarfs do not spin down
+becomes pressing.
 
 
-% \subsection{Ways of doing this at different ages}
-% Some final discussion is warranted on the applicability of our
-% approach more generally.  Given a kinematically
-% identified population, this study uses photometry (Gaia HR diagrams;
-% TESS rotation) and spectroscopy (GALAH and Gaia-ESO lithium) to
-% confirm youth in the stars.  Other approaches are also possible.
-% 
-% One can use photometric criteria (e.g., Gaia HR diagram of
-% everything within some distance; Zari+18), or spectroscopic
-% criteria (CITE Berger+18), or with combinations thereof (e.g., CITE
-% Zerjal 2019, 2020, Zhou's work).  
-% It might even be possible to start using chemical abundance signatures
-% (CITE, GALAHDR3?).
-% 
-% These paths might in certain cases succeed in identifying more
-% complete samples of dispersed members of young populations, since they
-% do not require kinematic proximity.
 
 
 \section{Conclusion}
@@ -1501,7 +1531,7 @@ members for their efforts to make the mission a continued success.
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ {\bf Different clustering techniques yield different
-  outcomes.} \nkinematic unique candidate cluster members found
+  outcomes.} \nkinematic\ unique candidate cluster members found
   using three different techniques are considered in this study.
   \citetalias{cantatgaudin_gaia_2018}: \citet{cantatgaudin_gaia_2018},
   \citetalias{kounkel_untangling_2019}:
@@ -1734,9 +1764,10 @@ using a linear model with ordinary least squares.
 To provide a basis for comparison, we also opted to search the
 ``calibration'' light curves ($Rp<13$) that were created as a part of
 the CDIPS project.  Over the southern sky (Sectors 1-13 of TESS), this
-corresponded to a sample of \ncalibration stars.  Cross-matching these
-against the \nnbhd randomly drawn stars in the neighborhood of \cn yielded
-\nnbhdcalibstar unique stars, with a cumulative total of \nnbhdcaliblc TESS
+corresponded to a sample of \ncalibration\ stars.  Cross-matching these
+against the \nnbhd\ randomly drawn stars in the neighborhood of \cn yielded
+\nnbhdcalibstar\ unique stars, with a cumulative total of
+\nnbhdcaliblc\ TESS
 sectors observed.
 The magnitude cut of $Rp<13$ at the distances of the neighborhood sample
 corresponds to an extinction-corrected color cutoff of $(Bp-Rp)_0
@@ -1747,12 +1778,12 @@ comparison to the cluster star sample.
 We performed the same light curve stitching and period-search
 procedure on the field comparison stars.
 Imposing the same requirements for crowding resulted in
-\ncompstardenominator stars for which rotation periods could have been
+\ncompstardenominator\ stars for which rotation periods could have been
 detected.
 Imposing the same Lomb Scargle power cutoff, and period upper limit,
-yielded \ncompstarnumerator period detections (\ncompfrac).
+yielded \ncompstarnumerator\ period detections (\ncompfrac).
 Within the same brightness cutoff, 
-\nautovscompstarnumerator of \nautovscompstardenominator cluster stars
+\nautovscompstarnumerator\ of \nautovscompstardenominator\ cluster stars
 yielded period detections (\nautofrac).
 Though the detection fractions are frankly not very different
 (likely because of the brightness cutoff), the period {\it

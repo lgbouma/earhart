@@ -1116,7 +1116,7 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     lws = [0., 0.3, 0.2]
     mews= [0.5, 0.5, 0.5]
     _s = 3 if runid != 'VelaOB2' else 1.2
-    ss = [3, 4.5, 9]
+    ss = [5, 6, 10]
     labels = ['Pleaides', 'Praesepe', f'{runid}']
 
     # plot vals
@@ -1233,7 +1233,8 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     ax.set_ylabel('Rotation Period [days]', fontsize='large')
 
     ax.set_xlabel('(Bp-Rp)$_0$ [mag]', fontsize='large')
-    ax.set_xlim((0.25, 2.0))
+    ax.set_xlim((0.2, 2.4))
+    #ax.set_xlim((0.25, 2.0))
 
     if yscale == 'linear':
         ax.set_ylim((0,15))
