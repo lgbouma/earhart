@@ -278,7 +278,8 @@ Section~\ref{sec:conclusion} gives our conclusions.
   Points denote halo members with $\pi/\sigma_\pi>20$.  In our
   galactic coordinate system, the Sun is at $\{X,Y,Z\} = \{ -8122, 0,
   +20.8\}\,{\rm pc}$.  The gray line traces the past and future
-  cluster orbit.  In different projections, the line spans different
+  cluster orbit.
+  In different projections, the gray line spans different
   time intervals: the longest time window is visible in the $(Z,X)$
   projection.  The large blue arrows denote the median cluster
   velocity after subtracting the local standard of rest: $\{v_{\rm X},
@@ -403,42 +404,42 @@ Section~\ref{subsec:origin}.
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ {\bf HR diagrams of NGC\,2516.}
-    {\it Left}: Photometric data from Gaia EDR3; no reddening correction
-    has been applied.  The core (black) shows a main-sequence and
-    turnoff consistent with stars of a fixed age and metallicity.  The
-    halo (blue) is similar, though the binary sequence is less
-    defined.  At fixed color, the faintest M dwarfs in the core and
-    halo are brighter than in the field star comparison sample (gray),
-    consistent with these stars not having yet reached the
-    main-sequence.
-    {\it Right}: PARSEC isochrones ([Fe/H]=+0.06) are overplotted
-    at intervals of $\log_{10}(t/\mathrm{yr})=\{8, 8.25, 8.5\}$.
-    The arrow represents the average reddening correction applied
-    to the models.
-     The models diverge
-    from the data for $M_\star \lesssim 0.45M_\odot$ ($\approx$M2V;
-    $Bp-Rp\approx$2.2).
+    {\it Left}: Photometric data from Gaia EDR3; no reddening
+    correction has been applied.  The core (black) shows a
+    main-sequence and turnoff consistent with stars of a fixed age and
+    metallicity.  The halo (blue) is similar, though the binary
+    sequence is less defined.  The faintest M dwarfs in the core and
+    halo are brighter than field stars (gray) with the same color,
+    consistent with the cluster M dwarfs not having yet reached the
+    main-sequence.  {\it Right}: PARSEC isochrones ([Fe/H]=+0.06) are
+    overplotted at intervals of $\log_{10}(t/\mathrm{yr})=\{8, 8.25,
+    8.5\}$.  The arrow represents the average reddening correction
+    applied to the models.  The opacity of the M-dwarf model
+    atmospheres is less well-calibrated for $M_\star \lesssim
+    0.45M_\odot$ ($\approx$M2V; $Bp-Rp\approx$2.2); these model values
+    are shown with dashed lines.
     \label{fig:hr}
   }
 \end{figure*}
 
 The first check on the plausibility of the candidate cluster members
-being coeval is to analyze the Gaia Hertzsprung-Russell (HR) diagrams.  Comparable analyses
-have already been performed by \citetalias{cantatgaudin_gaia_2018},
+being coeval is to analyze the Gaia Hertzsprung-Russell (HR) diagrams.
+Comparable analyses have already been performed by
+\citetalias{cantatgaudin_gaia_2018},
 \citetalias{kounkel_untangling_2019}, and \citetalias{meingast_2021}.
 
 Figure~\ref{fig:hr} shows the HR diagram in the space of absolute Gaia
 $G$ magnitude as a function of observed $Bp-Rp$ color.  The core
 members of the cluster show a clean sequence consistent with stars
 with a fixed age and metallicity, and varying mass.  The halo members
-mostly show a consistent main-sequence that has somewhat greater
-scatter.  One possible explanation for the additional scatter could be
-that the halo is more contaminated by field stars.  For instance,
-$\approx5$ evolved halo stars are visible in the field-star portion of
-the red giant branch (RGB).  Given the age of the system, these stars
-must be field interlopers.
+show a consistent sequence, though with greater scatter.  One possible
+explanation for the additional scatter could be that the halo is more
+contaminated by field stars.  For instance, $\approx5$ halo
+stars are present in portions of the red giant branch
+(RGB) that imply stellar ages inconsistent with that of the cluster.
+These stars must be field interlopers.
 
-A separate possible explanation for scatter in the halo's HR diagram
+A second possible explanation for scatter in the halo's HR diagram
 could be differential reddening across different sightlines.  The
 reported halo spans 20$^\circ$ on-sky, and varies in position from
 about $b=-12^\circ$ to $b=-20^\circ$, with the stars closest to the
@@ -499,19 +500,23 @@ cluster, we prefer super-solar based on the goodness of fit from the
 photometry.
 
 Overall, the data and models agree for masses above approximately
-0.45\,$M_\odot$.  However below this mass, the data and models diverge
-at colors redder than $Bp-Rp\approx2.2$, in the sense that the model
+0.45\,$M_\odot$.  Below this mass, the data and models diverge at
+colors redder than $Bp-Rp\approx2.2$, in the sense that the model
 isochrones have lower luminosities and bluer colors than the
-observations.  The MIST isochrones showed a comparable disagreement
-\citep{choi_mesa_2016}.  Explanations invoking both starspots and
-incomplete molecular line lists have been proposed \citep[{\it
+observations.\footnote{The 100 Myr isochrone does overlap well with the
+lower main sequence, but it fails to fit the upper main sequence and
+red giants.}  The MIST isochrones showed a comparable disagreement
+\citep{choi_mesa_2016}.  Proposed explanations for the discrepancy
+between the models and observations have include starspots and
+incomplete molecular line lists\citep[{\it
 e.g.},][]{stauffer_why_2003,feiden_magnetic_2013,rajpurohit_effective_2013,mann_spectrothermometry_2013,choi_mesa_2016}.
-We adopt the PARSEC isochrones since they diverge at slightly lower
-mass than the MIST models, due to the temperature-opacity calibration
-implemented by \citet{chen_improving_2014}.  For purposes of
-age-dating the cluster, we prefer to focus on the main-sequence
-turn-off (MSTO), since this is where the models have maximal predictive
-power.
+Ultimately, we adopted the PARSEC isochrones because
+\citet{chen_improving_2014} implemented an empirical
+temperature-opacity calibration, which leads the PARSEC isochrones to
+diverge at slightly lower mass than the MIST models.  Regardless, for
+purposes of age-dating the cluster we focus on the main-sequence
+turn-off (MSTO), since this is where the models have maximal
+predictive power.
 
 \citet{cummings_2018} presented techniques for mitigating some of the
 complexities of MSTO age-dating ({\it e.g.}, sparse turnoffs, stellar
@@ -519,45 +524,29 @@ rotation, high binarity fractions, and the presence of blue
 stragglers).  Combining a $UBV$ color-color analysis with Gaia DR2
 cluster memberships, they found MSTO ages for NGC\,2516 ranging from
 165 to 195\,Myr, depending on the choice of model isochrone (Y$^2$,
-PARSEC, MIST, or SYCLIST).  The statistical uncertainties ($\approx
+PARSEC, MIST, or SYCLIST).  Their statistical uncertainties ($\approx
 25$\,Myr) were comparable to the systematic uncertainties.
 
 Our primary goal is to determine whether the ages of the core and halo
-are consistent.  The left panel of Figure~\ref{fig:hr} suggests that
-they are: stars past the turnoff in both the halo and core are on a
-consistent locus.  The right panel of Figure~\ref{fig:hr} demonstrates
-the precision with which the claim can be made.  The MSTO stars are
-consistent with the 178 and 316 Myr models, but are bluer than the 100
-Myr model.  The RGB stars are consistent only with the 178 Myr
-($\log_{10} t/{\rm yr} = 8.25$) model.  Based on the assumption that
-the width of the MSTO can be attributed to binary stars, we are most
-interested in the blue edge. This appears most compatible with the 178
-Myr model.  These results are consistent with the MSTO age range of
-165 to 195\,Myr found by \citet{cummings_2018}, and we refer to their
-work for a more precise model-dependent comparison.
-This implies an absolute age slightly older than the Pleiades
-\citep[cf.][]{mermilliod_comparative_1981}.
-
-% FIXME: do you want to do the procedure below? Seems like overkill
-% given the Cummings study.
-
-% Our photometric age-dating procedure is as follows.  We selected all
-% stars in the cluster with absolute magnitudes $M_{\rm G}>5$.  We
-% excluded the six\footnote{{\bf NAMES???}} halo stars that are clear
-% outliers from the rest of the cluster.  Using an isochrone grid
-% spanning $\log_{10}(t/\mathrm{yr})=\{7.75 -- 8.75\}$ with 0.01\,dex
-% spacing, we then numerically evaluated the $\chi^2$ fit for each
-% possible age.  The resulting median, 16$^{\rm th}$, and 84$^{\rm th}$
-% percentiles are used as summary statstics.
-% 
-% % NOTE: probably asymmetric.
-% The resulting MSTO photometric age for the core is $XXX\pm YYY$\,Myr.
-% For the halo, it is $XXX\pm YYY$\,Myr.  Combining the two samples
-% yields $XXX\pm YYY$\,Myr.  Finally, applying the same procedure to
-% the field star comparison sample gives an age of $XXX\pm YYY$\,Myr.
-% [nb. the procedure should be simple and general enough that you can
-% apply it to the field sample, and it'll just give a broad
-% distribution...]
+are consistent.  The left panel of Figure~\ref{fig:hr} shows that
+isochronally, they are: stars past the turnoff in both the halo and
+core are on a consistent locus.  The right panel of
+Figure~\ref{fig:hr} demonstrates the precision with which the claim
+can be made.  The MSTO stars are consistent with the 178 and 316 Myr
+models, but are bluer than the 100 Myr model.  The RGB stars are
+consistent only with the 178 Myr ($\log_{10} t/{\rm yr} = 8.25$)
+model.  Based on the assumption that the width of the MSTO can be
+attributed to binary stars, we are most interested in the blue edge
+(blue stragglers are, however, a concern).  The blue edge appears most
+compatible with the 178 Myr model.  These results are consistent with
+the MSTO age range of 165 to 195\,Myr found by \citet{cummings_2018},
+and we refer to their work for a more precise model-dependent
+comparison.  Based on Table~3 of \citet{cummings_2018}, we therefore
+adopt an PARSEC-based isochrone age for \cn\ of $165\pm35$\,Myr, where
+our quoted uncertainty is a quadrature sum of their quoted statistical
+and systematic components.  The relative age of ``slightly older than
+the Pleiades'' is likely the more robust statement, consistent with
+reports since \citet{mermilliod_comparative_1981}.
 
 
 
@@ -575,7 +564,7 @@ This implies an absolute age slightly older than the Pleiades
 			\includegraphics[width=0.49\textwidth]{f3b.pdf}
 		}
 
-        \vspace{-0.1cm}
+        \vspace{-0.5cm}
 		\subfloat{
 			\includegraphics[width=0.49\textwidth]{f3c.pdf}
 			\includegraphics[width=0.49\textwidth]{f3d.pdf}
@@ -584,21 +573,21 @@ This implies an absolute age slightly older than the Pleiades
 	\vspace{-0.7cm}
   \caption{ {\bf TESS rotations periods and dereddened Gaia colors for \cn.}
     {\it Top row}: \cn\ split into its core and halo.  Subset
-    $\mathcal{A}$ ({\it left columns}) and $\mathcal{B}$ ({\it right columns}) undergo
-    successive degrees of automated cleaning, described in
-    Section~\ref{subsubsec:cluster}.  The Pleiades
+    $\mathcal{A}$ ({\it left columns}) and $\mathcal{B}$ ({\it right
+    columns}) undergo successive degrees of automated cleaning,
+    described in Section~\ref{subsubsec:cluster}.  The Pleiades
     \citep[120\,Myr;][]{rebull_rotation_2016a} and Praesepe
     \citep[650\,Myr;][]{douglas_poking_2017} are shown for reference.
     Stars in the core and the halo of NGC\,2516 appear
     gyrochronologically coeval with the Pleiades at $(Bp-Rp)_0$$<$1.2.
-    There is a narrow range of color, from $1.2<(Bp-Rp)_0<1.7$,
-    in which some NGC\,2516 members appear slightly elevated with respect to
-    the Pleiades, suggesting an older age.
-    {\it Bottom row}: \cn\ colored by binarity indicators.
-    Sources with $\mathrm{RUWE}>1.2$ appear in red (astrometric
-    binaries).
+    There is a narrow range of color, from $1.2<(Bp-Rp)_0<1.7$, in
+    which some NGC\,2516 members appear slightly elevated with respect
+    to the Pleiades, suggesting an older age.
+    {\it Bottom row}: \cn\ colored by binarity indicators.  Sources
+    with $\mathrm{RUWE}>1.2$ appear in red (astrometric binaries; 11\%
+    of stars).
     Overplotted in orange are sources at least 0.3\,mag above an
-    empirically fit cluster isochrone (photometric binaries).
+    empirically fit cluster isochrone (photometric binaries; 20\% of stars).
 		\label{fig:rot}
 	}
 \end{figure*}
@@ -659,6 +648,10 @@ might plausibly have been detected.  For set $\mathcal{B}$, we
 additionally required that the Lomb-Scargle and Stellingwerf
 phase-dispersion methods yielded identical periods to within 10\%.
 This yielded \nautorotnumeratormatching light curves. 
+While subset $\mathcal{A}$ is more complete than subset $\mathcal{B}$,
+this completeness comes at the expense of greater contamination.
+% For instance, stars above the slow sequence (possible field
+% contaminants) for the most part disappear in subset $\mathcal{B}$
 
 The comparison to the Pleiades and Praesepe is made using the rotation
 periods and dereddened colors from Table~5 of
@@ -667,50 +660,62 @@ periods and dereddened colors from Table~5 of
 respectively.
 A few conclusions can be drawn by comparing the \cn\ rotation periods
 with those of the Pleiades and Praesepe.  The first is that in both
-stages of cleaning, the core and halo of \cn\ both show
+stages of cleaning, the core and halo of \cn\ each show
 gyrochronological ``slow sequences''.  These sequences appear to be
-coeval with each other, and at least to first order appear to overlap
+coeval with each other, and at first order appear to overlap
 with the Pleiades sequence.
 
-Second, subset $\mathcal{A}$ is more complete than subset
-$\mathcal{B}$.  This completeness comes at the expense of greater
-contamination.  The slow sequence has a factor of $\sim$twice as many
-stars in subset $\mathcal{A}$ than $\mathcal{B}$.  However stars above
-the slow sequence, which could well be field contaminants, for the
-most part disappear in subset $\mathcal{B}$.  The ``void'' underneath
-the slow sequence is also more pronounced in the cleaner subset,
-though it seems to not be as empty as in the Pleiades.
+% Second, subset $\mathcal{A}$ is more complete than subset
+% $\mathcal{B}$.  This completeness comes at the expense of greater
+% contamination.  The slow sequence has a factor of $\sim$twice as many
+% stars in subset $\mathcal{A}$ than $\mathcal{B}$.  However stars above
+% the slow sequence, which could be field contaminants, for the
+% most part disappear in subset $\mathcal{B}$.  The ``void'' underneath
+% the slow sequence is also more pronounced in the cleaner subset,
+% though it seems to not be as empty as in the Pleiades.
 
-Finally, comparing the slow sequences of the Pleaides and \cn, they
-appear to overlap from roughly $0.5<(Bp-Rp)_0<1.2$.  For stars that
-are redder, the dispersion in rotation periods increases.  From
-$1.2<(Bp-Rp)_0<1.7$, subset $\mathcal{B}$ of \cn\ has stars that
-overlap with the Pleiades.  However, it also has about ten stars at
-longer rotation periods---extending up to $\approx$11 days, rather
-than the $\approx$8.5day limit for the Pleiades.  This is consistent
-with \cn\ being slightly older than the Pleiades.
-{\bf We explore this quantitatively by fitting interpolated
-models}[?].  The resulting gyrochronology age we find for the core is
-XXX.  For the halo, the claimed age from gyrochronology is YYY.
-Applying the same procedure to the field star comparison sample (see
-Appendix~\ref{app:compstar}), we get an age of ZZZ+/-AAA.
+%FIXME this belongs in the DISCUSSION!!
+%FIXME this belongs in the DISCUSSION!!
+%FIXME this belongs in the DISCUSSION!!
+%FIXME this belongs in the DISCUSSION!!
+Comparing the slow sequence of the Pleiades and \cn\ 
+more closely, the top row of Figure~\ref{fig:rot} shows that the two
+sequences
+overlap from roughly $0.5<(Bp-Rp)_0<1.2$.  At redder colors
+($1.2<(Bp-Rp)_0<1.7$) the dispersion in rotation periods increases.
+The maximum rotation periods seen in \cn, in both subsets
+$\mathcal{A}$ and $\mathcal{B}$ extend up to $\approx$11 days, rather
+than the $\approx$8.5day limit seen in the Pleiades.  This is
+consistent with \cn\ being slightly older than the Pleiades.  Fitting
+a model to substantiate this statement \citep[{\it e.g.}, any
+of][]{mamajek_improved_2008,angus_toward_2019,spada_competing_2020} is
+an exercise in tautology, since the aforementioned models are empirically fit using
+the Pleiades and Praesepe.  In other words, at $(Bp-Rp)_0=1.35$, we
+see rotation periods in \cn\ ranging from 7 to 10 days.  The 7 day
+periods overlap with the Pleiades; the 10 day periods do not.  Fitting
+formulae from the previously cited studies give ages for
+a star with $(Bp-Rp)_0=1.35, (B-V)_0=1.10, P=7\,{\rm day}$ of 204 Myr,
+316 Myr, and 107 Myr respectively.  Therefore, only the
+\citet{spada_competing_2020} model is well-calibrated at these ages
+and colors.  For an 8 day rotation period of a star with the same
+color, this model quotes a 193 Myr age; at 9 days, 388 Myr.
+Given the model uncertainty, we prefer the relative statements that
+\cn\ appears slightly gyrochronologically older than the Pleaides, and
+much younger than Praesepe.
 
 The bottom row of Figure~\ref{fig:rot} shows the same data, with the
-points colored by indicators of binarity.
-To assess astrometric binarity, we used the renormalized unit weight
-error (RUWE) from Gaia EDR3.
-For plotting purposes, we labeled anything with RUWE exceeding 1.2 as
-an astrometric binary (11\% of the overall cluster
-sample).
-A cautionary point is that poor astrometric fits can also be caused by
-photometric variability.
-To assess photometric binarity, we fitted a spline to
-Figure~\ref{fig:hr} by hand, and labelled any points brighter than
-0.3\,mag above the cluster sequence as photometric binaries.
-This included 20\% of the overall cluster sample.
-Many of the resulting candidate binaries, though not all of them,
-appear underneath the ``slow sequence''.
-We speculate on possible explanations in Section~\ref{disc:rotn}.
+points colored by indicators of binarity.  To assess astrometric
+binarity, we used the renormalized unit weight error (RUWE) from Gaia
+EDR3.  For plotting purposes, we labeled anything with RUWE exceeding
+1.2 as an astrometric binary (11\% of the overall cluster sample).  A
+cautionary point is that poor astrometric fits can also be caused by
+photometric variability.  To assess photometric binarity, we fitted a
+spline to Figure~\ref{fig:hr} by hand, and labelled any points
+brighter than 0.3\,mag above the cluster sequence as photometric
+binaries.  This included 20\% of the overall cluster sample.  Many of
+the resulting candidate binaries, though not all of them, appear
+underneath the ``slow sequence''.  We speculate on possible
+explanations in Section~\ref{disc:rotn}.
 
 
 
