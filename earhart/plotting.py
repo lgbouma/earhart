@@ -13,6 +13,7 @@ Contents:
         plot_rotation_X_RUWE
         plot_full_kinematics_X_rotation
         plot_physical_X_rotation (+ histogram_physical_X_rotation)
+        plot_slowfast_photbinarity_comparison
     Lithium:
         plot_lithium_EW_vs_color
         plot_rotation_X_lithium
@@ -3137,3 +3138,52 @@ def plot_phot_binaries(outdir, isochrone=None, color0='phot_bp_mean_mag',
     outpath = os.path.join(outdir, f'hr_phot_binaries{s}{c0s}.png')
 
     savefig(f, outpath, dpi=400)
+
+
+def plot_slowfast_photbinarity_comparison(outdir):
+    """
+    We selected stars in set $\mathcal{B}$ in the color range where the slow and fast sequence are present ($0.5<(Bp-Rp)_0<1.3$).  This yielded 281 stars, of which 103 (37\%) were flagged as photometrically binary, astrometrically binary, or both.  We divided these 281 stars into ``fast'' and ``slow'' sequences by eye.  This yielded 75\% of stars being in the slow sequence, with the remainder in the fast.  The fraction of stars showing signs of binarity in the slow and fast rotation subsamples are 30\% (63/210) and 56\% (40/71), respectively.  This correlation is in line with the earlier findings noted above, though we emphasize that many of our rapid rotators (34\%) do not show any signs of binarity.
+
+    Comparing the explanations of disk-locking against tidal synchronization, the population statistics do seem to strain the possibility of tidal synchronization.  Roughly a quarter of the \cn\ members are rapidly rotating.  In comparison, in the field half of Sun-like stars are binaries, and $\approx$9\% have periods below 100\,days (CITE Raghavan et al).  If we assume (generously) that all such binaries with sub-100\,day periods become tidally synchronized, we could still only explain a rapid rotator occurrence rate of $\approx$5\%.
+
+    A separate effect is that on the slow rotation sequence, the binary stars appear to be either preferentially redder, or to have faster rotation periods than the single stars.  One likely explanation for this could be that the unresolved binaries have a component contributing additional red light to the system, skewing the color measurement of the primary.  Whether any physical effects could be at play remains a question for future exploration.
+    """
+
+    inpath= os.path.join(RESULTSDIR, 'glue_fast_slow_rotator_viz_frac',
+                         'NGC_2516_Prot_cleaned_BpmRp0_btwn_0pt5_and_1pt3.csv')
+    df = pd.read_csv(inpath)
+
+    # misnomer; these are actually the slow ones.
+    inpath= os.path.join(RESULTSDIR, 'glue_fast_slow_rotator_viz_frac',
+                         'subsetB_fastrotators.csv')
+    fdf = pd.read_csv(inpath)
+
+    assert len(df) == 281
+
+    binary = (
+        (df.is_phot_binary) | (df.is_astrometric_binary)
+    )
+    print(f'{len(df)} stars in subset B with 0.5<BpmRp0<1.3')
+    print(f'{len(df[binary])} of them with (phot binary)|(astrom binary)')
+    print(f'{100*len(df[binary])/len(df):.1f}% of them with (phot binary)|(astrom binary)')
+
+    df['is_slow'] = df.source_id.isin(fdf.source_id)
+    df['is_fast'] = ~(df.source_id.isin(fdf.source_id))
+
+    sel = df.is_slow
+    print(f'{len(df[sel])} ({100*len(df[sel])/len(df):.1f}%) stars in "slow sequence"')
+    print(f'{len(df[sel&binary])} ({100*len(df[sel&binary])/len(df[sel]):.1f}%) stars in "slow sequence" and binary')
+    print(f'{len(df[sel&(~binary)])} ({100*len(df[sel&(~binary)])/len(df[sel]):.1f}%) stars in "slow sequence" and not binary')
+
+    sel = df.is_fast
+    print(f'{len(df[sel])} ({100*len(df[sel])/len(df):.1f}%) stars in "fast sequence"')
+    print(f'{len(df[sel&binary])} ({100*len(df[sel&binary])/len(df[sel]):.1f}%) stars in "fast sequence" and binary')
+    print(f'{len(df[sel&(~binary)])} ({100*len(df[sel&(~binary)])/len(df[sel]):.1f}%) stars in "fast sequence" and not binary')
+
+    assert 0
+
+
+
+    outpath = os.path.join(outdir, f'slowfast_photbinarity_comparison.png')
+    savefig(f, outpath, dpi=400)
+    pass
