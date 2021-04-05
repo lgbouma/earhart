@@ -576,7 +576,7 @@ reports since \citet{mermilliod_comparative_1981}.
     columns}) undergo successive degrees of automated cleaning,
     described in Section~\ref{subsubsec:cluster}.  The Pleiades
     \citep[120\,Myr;][]{rebull_rotation_2016a} and Praesepe
-    \citep[650\,Myr;][]{douglas_poking_2017} are shown for reference.
+    \citep[650\,Myr;][]{douglas_poking_2017} are shown.
     Stars in the core and the halo of NGC\,2516 appear
     gyrochronologically coeval with the Pleiades at $(Bp-Rp)_0$$<$1.2.
     There is a narrow range of color, from $1.2<(Bp-Rp)_0<1.7$, in
@@ -676,9 +676,14 @@ photometric binarity, we fitted a spline to Figure~\ref{fig:hr} by
 hand, and labelled any points brighter than 0.3\,mag above the cluster
 sequence as photometric binaries.  This included 20\% of the overall
 cluster sample.  Many of the resulting candidate binaries, though not
-all of them, appear underneath the ``slow sequence''.  We speculate on
-possible explanations in Section~\ref{disc:rotn}.
-
+all of them, appear underneath the slow rotation sequence.  In set
+$\mathcal{B}$, over the color range where the slow and fast sequence
+are present ($0.5<(Bp-Rp)_0<1.3$), there are 281 stars, of which 103
+(37\%) show signs of binarity.  Dividing these 281 stars into ``fast''
+and ``slow'' sequences by eye,  the fraction of stars showing signs of
+binarity in the slow and fast rotation subsamples are 30\% (63/210)
+and 56\% (40/71), respectively.  We speculate on possible explanations
+in Section~\ref{disc:rotn}.
 
 
 
@@ -1077,65 +1082,83 @@ K-dwarfs.
 The existence of a slow sequence is the main premise of gyrochronology
 \citep[{\it e.g.},][]{barnes_rotational_2003}.  While the initial
 spindown relation ($P_{\rm rot}\sim t^{1/2}$) proposed by
-\citet{skumanich_time_1972} has not worked in detail, the fact that it
-is simple and can be understood to first order through magnetic
-breaking \citep{weber_angular_1967} has led to more systematic efforts
-at age-dating stars through their rotation periods.
+\citet{skumanich_time_1972} has not worked in detail, the 
+general idea is correct, and the first-order effect can be understood through magnetic
+breaking \citep{weber_angular_1967}.
+%More systematic efforts at age-dating stars through their rotation periods.
 
 The other features of the rotation-color diagram are in some sense
 affronts to the magnetic breaking model, and the general question of
 what produces the rapid rotators has not yet been definitively
-answered.  Models that introduces variable core-envelope decoupling
+answered.  Models that introduce variable core-envelope decoupling
 timescales can reproduce each type of population
 \citep{Irwin_NGC2516_2007}, but the question then shifts to why these
 decoupling timescales should be differ for stars that are otherwise
 identical.  Another possible explanation invokes a spontaneous and
-random change of magnetic field topology that cause the dynamo to
+random change of magnetic field topology that causes the dynamo to
 couple more strongly with the stellar wind
 \citep{brown_metastable_2014}.  Other processes could be external the
 star entirely: \citet{qureshi_signature_2018} for instance have
 reported that mergers between giant planets and the star could explain
 a non-neglible fraction of the rapid rotators.
 
-A separate hypothesis that we can test from the existing data is the
-idea that 
-the rapid rotators are somehow linked to binarity.
-Analyses by {\it e.g.}, \citet{gillen_ngts_2020} and
-\citet{simonian_rapid_2019} have reported that
-rapid rotators in young clusters and in the field are correlated
-with binarity.
-Related effects could include tidal synchronization for the shortest
-period binaries,
-or some form of disk truncation that when combined with magnetic locking
-(CITE)
-could produce the rotation period anomaly.
-The lower panels of Figure~\ref{fig:rot} show our best attempt to
-identify unresolved binaries in the \cn\ rotation sample.
+A separate hypothesis that we can test using the existing data is the
+idea that rapid rotation can be explained through binarity.  Analyses
+by {\it e.g.}, \citet{gillen_ngts_2020} and
+\citet{simonian_rapid_2019} have reported that rapid
+rotation in young clusters and in the field is correlated with
+binarity.  Related effects could include tidal synchronization for the
+shortest period binaries, or alternatively disk truncation that when
+combined with magnetic locking {\bf (CITE)} could produce the rotation
+period bimodality.
+
+The lower panels of Figure~\ref{fig:rot} show our attempt at
+identifying unresolved binaries in the \cn\ rotation sample.
 Binaries resolved by Gaia were already excluded in our initial
 definitions of the samples.
-WHAT IS THE FRACTION OF FAST ROTATORS THAT ARE BINARY?
-WHAT CONCLUSION CAN BE MADE?
-%FIXME CALCULATE!!!!
-%FIXME CALCULATE!!!!
-%FIXME CALCULATE!!!!
-%FIXME CALCULATE!!!!
+In \cn\, we see that
+the fraction of stars showing signs of binarity in the slow and fast
+rotation subsamples are 30\% (63/210) and 56\% (40/71); the fast
+rotators show a preference for binarity.
+This correlation is in line with the earlier findings noted above,
+though we emphasize many rapid rotators in \cn\ (34\%) have no 
+evidence for being binary.
 
-\subsubsection{The slowest K dwarfs of NGC\,2516}
-%FIXME need to rewrite this paragraph? (Or maybe not, because it's
-%already in the absolute age section...
-A few conclusions can be drawn by comparing the \cn\ rotation periods
-with those of the Pleiades and Praesepe.  The first is that in both
-stages of cleaning, the core and halo of \cn\ each show
-gyrochronological ``slow sequences''.  These sequences appear to be
-coeval with each other, and at first order appear to overlap
-with the Pleiades sequence.
+Comparing the explanations of disk-locking against tidal
+synchronization, the population statistics do seem to strain the
+possibility of tidal synchronization.  A quarter of the \cn\ members
+are rapidly rotating.  In comparison, in the field half of Sun-like
+stars are binaries, and $\approx$9\% have periods below 100\,days
+\citep{raghavan_survey_2010}.  If we assume  that all
+binaries with sub-100\,day periods become tidally synchronized, we
+can only explain a rapid rotator occurrence rate of
+$\approx$5\%.
 
+A separate effect is that on the slow rotation sequence, 
+Figure~\ref{fig:rot}} shows that the
+binary stars appear to be either preferentially redder, or to have
+faster rotation periods than the single stars.  One likely
+explanation for this could be that the unresolved binaries have a
+component contributing additional red light to the system, skewing
+the color measurement of the primary.  Whether any physical
+effects could be at play remains a question for future
+work.
 
-  \paragraph{Stalling}
-  Curtis19 found NGC6811 was stalling in the K dwarfs, i.e., Skumanich
-  spindown is not monotonic in time.
-  We're seeing latest K dwarfs spin slowest, earlier FGKs don't show
-  much change.
+% \subsubsection{The slowest K dwarfs of NGC\,2516}
+% %FIXME need to rewrite this paragraph? (Or maybe not, because it's
+% %already in the absolute age section...
+% A few conclusions can be drawn by comparing the \cn\ rotation periods
+% with those of the Pleiades and Praesepe.  The first is that in both
+% stages of cleaning, the core and halo of \cn\ each show
+% gyrochronological ``slow sequences''.  These sequences appear to be
+% coeval with each other, and at first order appear to overlap
+% with the Pleiades sequence.
+% 
+%   \paragraph{Stalling}
+%   Curtis19 found NGC6811 was stalling in the K dwarfs, i.e., Skumanich
+%   spindown is not monotonic in time.
+%   We're seeing latest K dwarfs spin slowest, earlier FGKs don't show
+%   much change.
 
 %   \paragraph{Are the ``very slow rotators'' bonafide members?}
 %   Unsure. They are not isotropically distributed around the
