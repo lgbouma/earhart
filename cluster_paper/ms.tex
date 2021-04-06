@@ -559,7 +559,7 @@ and systematic components from \cite{cummings_2018}.
 \subsection{Rotation from TESS}
 \label{subsec:tess}
 
-\subsubsection{Cluster Star Sample}
+\subsubsection{Methodology}
 \label{subsubsec:cluster}
 
 \begin{figure*}[t]
@@ -652,6 +652,8 @@ required that the Lomb-Scargle and Stellingwerf phase-dispersion
 methods yielded identical periods to within 10\%.  This yielded
 \nautorotnumeratormatching\ light curves. 
 
+\subsubsection{Rotation-Color Diagrams}
+
 The top row of Figure~\ref{fig:rot} shows the resulting rotation
 periods, with set $\mathcal{A}$ shown the left and $\mathcal{B}$ on
 the right.  While set $\mathcal{A}$ is more complete than set
@@ -690,8 +692,7 @@ and 56\% (40/71), respectively.  We speculate on possible explanations
 in Section~\ref{disc:rotn}.
 
 
-
-\subsubsection{Kinematics $\otimes$ Rotation}
+\subsubsection{Comparing Kinematics and Rotation}
 
 \begin{figure*}[t]
 	\begin{center}
@@ -708,99 +709,83 @@ in Section~\ref{disc:rotn}.
 	\vspace{-0.7cm}
   \caption{ 
   {\bf Members of \cn\ exist hundreds of parsecs from the core, and up
-  to $\approx$5\kms\ from the core in tangential velocity.}
-  {\it Top left}: Cartesian positions (as in Figure~\ref{fig:XYZ}) and
+  to $\approx$5\kms\ from the core in tangential velocity.} {\it Top
+  left}: Cartesian positions (as in Figure~\ref{fig:XYZ}) and
   2D-tangential velocities for halo members that meet kinematic
   membership criteria (Subset~$\mathcal{A}$).  Stars with detected
   rotation periods are shown in blue;  halo members for which rotation
   periods should have been detectable, but were not detected, are
   shown in orange.  Stars in the core are shown as black points.
   Computing the 2D-tangential velocity requires a correction for
-  projection effects (Appendix~\ref{app:vproj}).
-  In the {\it top right}, the histograms on bin versus 3D separation
-  from the core and 2D tangential velocity difference.  Bin widths are
-  chosen to enforce the same number of stars in the denominator (54)
-  per bin.
-  In the {\it bottom panels}, the innermost and outermost 100 stars in
+  projection effects (Appendix~\ref{app:vproj}).  In the {\it top
+  right}, the histograms on bin versus 3D separation from the core and
+  2D tangential velocity difference.  Bin widths are chosen to enforce
+  the same number of stars in the denominator (54) per bin.  In the
+  {\it bottom panels}, the innermost and outermost 100 stars in
   position and velocity space are displayed in the space of rotation
   periods and dereddened colors.
   \label{fig:physical_x_rotn}
 	}
 \end{figure*}
 
-Given the rotation periods from TESS, we can explore how far away from
-the core we observe cluster members from the core in position and
-velocity space.  To do this, we cross-matched the stars with detected
-rotation periods against our original target list of \nkinematic\ Gaia
-DR2 kinematic candidate members.  For a fair comparison, we considered
-only the stars with $0.5<(Bp-Rp)_0<1.2$ for which our TESS pipeline
-successfully made detrended light curves.  In other words---the base
-sample is the stars for which we could have plausibly detected a
-rotation period.  Faint stars with $Rp>16$ were beyond our light curve
-selection limit, and stars not meeting the crowding requirements
-previously described are omitted.  We selected the color range above
-based on Figure~\ref{fig:rot}, since the density of period detections
-seems to decrease once $(Bp-Rp)_0 \gtrsim 1.25$, {\it i.e.}, for
-spectral types later than $\approx$K4V.
+The TESS rotation periods can provide an independent check on the
+Gaia-derived kinematic cluster memberships.  We explored this by
+cross-matching the stars with detected TESS rotation periods against
+our original target list of \nkinematic\ Gaia DR2 members.  
 
-% IN POSITION
-% Bin width: 25
-% Rotators: [361  82  43  30  16  18  14   8   6   2   4   0   0   0   0
-% 0   0   0 0   0]
-% Comparison: [495 116  65  46  28  20  22  12  11   8   5   1   0   1
-% 0   2   0   0 0   0]
-% Rotators < 25pc : 0.72929 +/- 0.00013
-% Rotators > 25pc : 0.66172 +/- 0.00023
-%
+To visualize the results, we again opted for Cartesian coordinates,
+and supplemented them by calculating the tangential stellar velocities
+relative to the cluster center.  Appendix~\ref{app:vproj} discusses
+the projection effect correction required for calculating the
+tangential velocities: for a star at position $(\alpha, \delta)$, we
+compare the observed proper motion $(\mu_{\alpha'}, \mu_\delta)$ with
+what the proper motion at the star's position would have been if the
+star were comoving with the core of \cn.  This yields a quantity we
+denote $\Delta v^{*}$, per \citetalias{meingast_2021}.  We convert
+these proper motion differences to physical units by dividing by the
+distance to each star, taken as the inverse parallax.  
 
-The results are shown in Figure~\ref{fig:physical_x_rotn}.
-Appendix~\ref{app:gaia6d_x_rotn} includes a supplemental visualization
-in the observed space of Gaia measurements, rather than Cartesian
-coordinates and tangential velocities.  The observed proper motions
-however suffer from projection effects, discussed in
-Appendix~\ref{app:vproj} {\bf TODO: merge these appendices}.  These
-effects are important in the equatorial coordinate system due to the
-proximity of some \cn\ members to the southern ecliptic pole.  For a
-star at position $(\alpha, \delta)$, we correct for the projection
-effect by comparing the observed proper motion $(\mu_{\alpha'},
-\mu_\delta)$ to what the proper motion at the star's position would
-have been if the star were comoving with the core of \cn.  This yields
-a quantity we denote $\Delta \mu^{*}$, following
-\citetalias{meingast_2021}.  We then convert these proper motion
-differences to physical units by dividing by the distance to each
-star, taken as the inverse parallax.  
+The results are shown in the top two rows of
+Figure~\ref{fig:physical_x_rotn}.  In these figures, to ensure a fair
+comparison, we only show stars with $0.5<(Bp-Rp)_0<1.2$ for which our
+TESS pipeline succeeding in making light curves.  In other words---the
+base sample is the stars for which we could have plausibly detected a
+rotation period.  This color range is preferred since the the slow
+sequence becomes less defined for spectral types later than
+$\approx$K4V.  The bins in the histograms (top-right) were chosen to
+ensure that the same number of stars were in each bin.  Rotation
+periods are detected for 66\% of stars at least 25\,pc from the
+cluster core.  The average detection rate inside of 25\,pc, 73\%, is
+slightly higher.
 
-{\bf FIXME FIXME FIXME} 
-The results suggest that the
-fraction of kinematic members with TESS-detected rotation periods may
-decrease with increasing distance from the halo core---both in
-position and in velocity space.  
+The lower panels of Figure~\ref{fig:physical_x_rotn} give a second
+view of how field star contamination affects the outskirts of the
+cluster.  Of the outermost 100 stars in position space with detected
+rotation periods, $\approx$8 appear as outliers above the slow
+sequence, compared to just a few for the innermost 100 stars.  For the
+outermost 100 stars in velocity space, $\approx$13 appear as outliers.
+After accounting for the stars that were expected to show rotation
+periods and did not, this suggests field contaminant rates of
+$\approx$40-50\% for the outermost cluster members in our target list.
 
-%The inverse parallax approximation does not introduce significant
-%biases for this sample, since the mean $\pi/\sigma_\pi$ and its
-%standard deviation are 122 and 40 respectively; the minimum is 19.5.
-
-We quantified this by computing the separation of the positions and 2D
-velocities from the median \citetalias{cantatgaudin_gaia_2018} core
-member {\bf TODO: clarify binning choice}.  The result is shown on the right side of
-Figure~\ref{fig:physical_x_rotn}.  The halo extends to separations of
-about 200\,pc in physical space from the cluster core.  The most
-widely separated F2V-K2V stars with rotation periods (blue points in
+Speaking in the positive though, our rotation period measurements show
+that the halo extends to separations of $\approx$250\,pc in physical
+space from the cluster core.  The most widely separated F2V-K2V stars
+with rotation periods (blue points in
 Figure~\ref{fig:physical_x_rotn}) are separated by $\approx$430\,pc.
 The total length of the structure is therefore 400--500\,pc, depending
 on which members of the halo are chosen as the ``tips'' on either end.
-Broadly speaking, this agrees with the structure of the halo reported
-by \citetalias{kounkel_untangling_2019}.
+This agrees with the overall structure of the halo reported by
+\citetalias{kounkel_untangling_2019}, with some minor caveats visible
+in the top-left panels of Figure~\ref{fig:physical_x_rotn}.
 
-{\bf FIXME update this text, make it less crappy... ditto the figure}
 In projection-corrected tangential velocity space, the fraction of
 stars with rotation period detections remains high out to roughly
 5\kms.  \citet{meingast_2021} by comparison required a physically
 motivated cut in tangential velocity space of 1.5\kms.  Our results
 show that at the expense of higher field star contamination rates,
-bonafide members can be identified even out to higher velocity
-separations.  {\bf todo: anything else to mention? e.g., the actual
-numbers?}
+bonafide members can be identified even out at higher velocity
+separations.
 
 
 \subsection{Lithium from Gaia-ESO and GALAH}
@@ -1886,39 +1871,39 @@ position of the star being considered.
 Figure~\ref{fig:diffred}.
 
 
-\section{Kinematics $\otimes$ Rotation}
-\label{app:gaia6d_x_rotn}
-
-\begin{figure*}[t]
-	\begin{center}
-		\leavevmode
-		\includegraphics[width=0.95\textwidth]{f4.pdf}
-	\end{center}
-	\vspace{-0.7cm}
-  \caption{ {\bf Gaia-based components of NGC\,2516 in position and
-  velocity space, cross-matched against the rotators.} The plotted
-  stars are those with $0.5<(Bp-Rp)_0<1.2$ that meet the crowding
-  restrictions described in Section~\ref{subsec:tess}: they should
-  have been sufficiently bright and non-crowded to enable rotation
-  period detection.  We caution that the appearance of fewer
-  non-rotators being present toward the core is due the layering of
-  the plot: quantitatively, stars toward the cluster center do not all
-  show rotation periods in our analysis (see
-  Figure~\ref{fig:hist_physical_x_rotn}).
-  \label{fig:gaia6d_x_rotn}
-	}
-\end{figure*}
-
-Figure~\ref{fig:gaia6d_x_rotn} is an alternative visualization of the
-data shown in Figure~\ref{fig:physical_x_rotn}.  The rotation periods
-in this diagram correspond to ``Set $\mathcal{A}$'' as described in
-Section~\ref{subsec:tess}.  Many stars in the outer region of the
-cluster show rotation periods consistent with a young age.  One issue
-with the visualization as displayed however is that it hides the
-amount of non-rotators toward the cluster center: we did not detect
-rotation periods for roughly one in four stars at the cluster
-center (see Figures~\ref{fig:physical_x_rotn}
-and~\ref{fig:hist_physical_x_rotn}).
+% \section{Kinematics $\otimes$ Rotation}
+% \label{app:gaia6d_x_rotn}
+% 
+% \begin{figure*}[t]
+% 	\begin{center}
+% 		\leavevmode
+% 		\includegraphics[width=0.95\textwidth]{f4.pdf}
+% 	\end{center}
+% 	\vspace{-0.7cm}
+%   \caption{ {\bf Gaia-based components of NGC\,2516 in position and
+%   velocity space, cross-matched against the rotators.} The plotted
+%   stars are those with $0.5<(Bp-Rp)_0<1.2$ that meet the crowding
+%   restrictions described in Section~\ref{subsec:tess}: they should
+%   have been sufficiently bright and non-crowded to enable rotation
+%   period detection.  We caution that the appearance of fewer
+%   non-rotators being present toward the core is due the layering of
+%   the plot: quantitatively, stars toward the cluster center do not all
+%   show rotation periods in our analysis (see
+%   Figure~\ref{fig:hist_physical_x_rotn}).
+%   \label{fig:gaia6d_x_rotn}
+% 	}
+% \end{figure*}
+% 
+% Figure~\ref{fig:gaia6d_x_rotn} is an alternative visualization of the
+% data shown in Figure~\ref{fig:physical_x_rotn}.  The rotation periods
+% in this diagram correspond to ``Set $\mathcal{A}$'' as described in
+% Section~\ref{subsec:tess}.  Many stars in the outer region of the
+% cluster show rotation periods consistent with a young age.  One issue
+% with the visualization as displayed however is that it hides the
+% amount of non-rotators toward the cluster center: we did not detect
+% rotation periods for roughly one in four stars at the cluster
+% center (see Figures~\ref{fig:physical_x_rotn}
+% and~\ref{fig:hist_physical_x_rotn}).
 % 
 % 
 % 
