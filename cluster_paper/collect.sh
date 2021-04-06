@@ -24,6 +24,8 @@ cp ../results/vtangential_projection/XYZ_with_orbit.pdf f11.pdf
 cp ../results/vtangential_projection/skymap_tangential_velocity_pmdec.pdf f12a.pdf
 cp ../results/vtangential_projection/skymap_tangential_velocity_pmra_cosdec.pdf f12b.pdf
 
+cp ../results/rotation_X_positions/rotation_X_positions_approach2_defaultcleaning.pdf f13.pdf
+
 # supplementary
 cp ../results/rotation_X_RUWE/rotation_vs_BpmRp_X_RUWE_viridis_linear.pdf f6.pdf
 

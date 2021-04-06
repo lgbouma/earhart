@@ -14,6 +14,7 @@ Contents:
         plot_full_kinematics_X_rotation
         plot_physical_X_rotation (+ histogram_physical_X_rotation)
         plot_slowfast_photbinarity_comparison
+        plot_rotation_X_positions
     Lithium:
         plot_lithium_EW_vs_color
         plot_rotation_X_lithium
@@ -36,6 +37,10 @@ from numpy import array as nparr
 from scipy.interpolate import interp1d
 
 import matplotlib as mpl
+from matplotlib.ticker import (
+    MultipleLocator, AutoMinorLocator, LogLocator
+)
+
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from astropy import units as u, constants as const
@@ -1114,7 +1119,7 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     colors = ['gray', 'gray', 'k']
     zorders = [-2, -3, -1]
     markers = ['s', 'x', 'o']
-    lws = [0., 0.3, 0.2]
+    lws = [0., 0.1, 0.1]
     mews= [0.5, 0.5, 0.5]
     _s = 3 if runid != 'VelaOB2' else 1.2
     ss = [5, 6, 10]
@@ -2487,6 +2492,207 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
     savefig(f, outpath)
 
 
+def plot_rotation_X_positions(outdir, basedata='fullfaint', cmapname=None,
+                              approach=None, cleaning='defaultcleaning'):
+    """
+    Prot vs (Bp-Rp)_0, colored by position in the cluster.
+    """
+
+    if approach == 1:
+        assert isinstance(cmapname, str)
+    assert isinstance(approach, int)
+
+    _, core_df, _, full_df, trgt_df = get_gaia_basedata(basedata)
+    rot_df, lc_df = get_autorotation_dataframe(
+        runid='NGC_2516', returnbase=True, cleaning=cleaning
+    )
+    med_df, _ = _get_median_ngc2516_core_params(core_df, basedata)
+
+    from earhart.physicalpositions import append_physicalpositions
+    full_df = append_physicalpositions(full_df, med_df)
+    trgt_df = append_physicalpositions(trgt_df, med_df)
+
+    get_BpmRp0 = lambda df: (df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - AVG_EBpmRp)
+    sel_color = lambda df: (get_BpmRp0(df) > 0.5) & (get_BpmRp0(df) < 1.2)
+    sel_autorot = lambda df: df.source_id.isin(rot_df.source_id)
+    sel_haslc = lambda df: df.source_id.isin(lc_df.source_id)
+    sel_comp = lambda df: (sel_color(df)) & (sel_haslc(df))
+    sel_rotn =  lambda df: (sel_color(df)) & (sel_autorot(df))
+
+    # make plot
+    set_style()
+    plt.close('all')
+    f, axs = plt.subplots(figsize=(1.2*5,1.2*3.8), nrows=2, sharex=True, sharey=True)
+
+    # figure out the coloring...
+    comp_df = full_df[sel_comp(full_df)]
+
+    # points: will be halo stars with rotation. only need the source_ids and
+    # periods.
+    _rot_df = rot_df[['source_id','period']]
+    mdf = full_df.merge(_rot_df, on="source_id", how='left')
+    mdf = mdf[~pd.isnull(mdf.period)]
+
+    # plot points
+
+    if cmapname == 'plasma':
+        cmap = mpl.cm.plasma
+    elif cmapname == 'viridis':
+        cmap = mpl.cm.viridis
+    elif cmapname == 'cividis':
+        cmap = mpl.cm.cividis
+    elif cmapname == 'magma':
+        cmap = mpl.cm.magma
+    else:
+        pass
+
+    #
+    # approach #1: use colorbars
+    #
+    if approach == 1:
+        # ax0
+        bins = get_bin_sizes(nparr(comp_df.delta_r_pc))
+        bounds = bins
+        norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend='max')
+        cset0 = axs[0].scatter(
+            mdf['phot_bp_mean_mag'] - mdf['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf['period'],
+            c=nparr(mdf['delta_r_pc']), alpha=1, zorder=2, s=10, edgecolors='k',
+            marker='o', cmap=cmap, norm=norm, linewidths=0.
+        )
+
+        # ax1
+        bins = get_bin_sizes(nparr(comp_df.delta_mu_prime_km_s))
+        bounds = bins
+        norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend='max')
+        cset1 = axs[1].scatter(
+            mdf['phot_bp_mean_mag'] - mdf['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf['period'],
+            c=nparr(mdf['delta_mu_prime_km_s']), alpha=1, zorder=2, s=10, edgecolors='k',
+            marker='o', cmap=cmap, norm=norm, linewidths=0.
+        )
+
+        # color bars
+        divider0 = make_axes_locatable(axs[0])
+        divider1 = make_axes_locatable(axs[1])
+
+        cax0 = divider0.append_axes('right', size='5%', pad=0.05)
+        cax1 = divider1.append_axes('right', size='5%', pad=0.05)
+
+        cb0 = f.colorbar(cset0, ax=axs[0], cax=cax0, extend='neither')
+        cb1 = f.colorbar(cset1, ax=axs[1], cax=cax1, extend='neither')
+
+        cb0.set_label("$\Delta r_{\mathrm{3D}}$ [pc]")
+        cb1.set_label('$\Delta v_{\mathrm{2D}}^{*}$ [km$\,$s$^{-1}$]')
+
+    elif approach == 2:
+        # bin it!
+
+        sort_df = mdf.sort_values(by='delta_r_pc')
+
+        N_to_plot = 100
+
+        mdf0 = sort_df[:N_to_plot]
+        mdf1 = sort_df[-N_to_plot:]
+        print(mdf0.delta_r_pc.describe())
+        print(mdf1.delta_r_pc.describe())
+
+        axs[0].scatter(
+            mdf0['phot_bp_mean_mag'] - mdf0['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf0['period'],
+            alpha=1, s=15, edgecolors='k',
+            marker='o', c='k', linewidths=0.2, zorder=1
+        )
+        axs[0].scatter(
+            mdf1['phot_bp_mean_mag'] - mdf1['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf1['period'],
+            alpha=1, s=15, edgecolors='k',
+            marker='o', c='lime', linewidths=0.2, zorder=2
+        )
+
+        bbox = dict(facecolor='white', alpha=0.9, pad=0, edgecolor='white')
+
+        axs[0].text(0.03, 0.96, '$\Delta r_{\mathrm{3D}}$: '+f'{mdf0.delta_r_pc.min():.1f}-{mdf0.delta_r_pc.max():.1f} pc', va='top',
+                    ha='left', transform=axs[0].transAxes, color='k', bbox=bbox)
+        axs[0].text(0.03, 0.88, '$\Delta r_{\mathrm{3D}}$: '+f'{mdf1.delta_r_pc.min():.1f}-{mdf1.delta_r_pc.max():.1f} pc', va='top',
+                    ha='left', transform=axs[0].transAxes, color='lime', bbox=bbox)
+
+        # now the v_tang...
+        sort_df = mdf.sort_values(by='delta_mu_prime_km_s')
+
+        mdf0 = sort_df[:N_to_plot]
+        mdf1 = sort_df[-N_to_plot:]
+        print(mdf0.delta_mu_prime_km_s.describe())
+        print(mdf1.delta_mu_prime_km_s.describe())
+
+        axs[1].scatter(
+            mdf0['phot_bp_mean_mag'] - mdf0['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf0['period'],
+            alpha=1, s=15, edgecolors='k',
+            marker='o', c='k', linewidths=0.2, zorder=1
+        )
+        axs[1].scatter(
+            mdf1['phot_bp_mean_mag'] - mdf1['phot_rp_mean_mag'] - AVG_EBpmRp,
+            mdf1['period'],
+            alpha=1, s=15, edgecolors='k',
+            marker='o', c='lime', linewidths=0.2, zorder=2
+        )
+
+        txt0 = '$\Delta v_{\mathrm{2D}}^{*}$: '+f'{mdf0.delta_mu_prime_km_s.min():.1f}-{mdf0.delta_mu_prime_km_s.max():.1f}'+' km$\,$s$^{-1}$'
+        axs[1].text(0.03, 0.96, txt0, va='top', ha='left',
+                    transform=axs[1].transAxes, color='k', bbox=bbox)
+        txt1 = '$\Delta v_{\mathrm{2D}}^{*}$: '+f'{mdf1.delta_mu_prime_km_s.min():.1f}-{mdf1.delta_mu_prime_km_s.max():.1f}'+' km$\,$s$^{-1}$'
+        axs[1].text(0.03, 0.86, txt1, va='top', ha='left',
+                    transform=axs[1].transAxes, color='lime', bbox=bbox)
+
+
+    # axes labels
+    f.text(-0.03,0.5, 'Rotation Period [days]', va='center',
+             rotation=90)
+
+    axs[1].set_xlabel('(Bp-Rp)$_0$ [mag]')
+
+    for a in axs:
+        a.set_xlim([0.2, 2.6])
+
+    f.tight_layout(h_pad=0.1)
+
+    s = ''
+    if isinstance(cmapname, str):
+        s+= f"_{cmapname}"
+    s += f"_approach{approach}"
+    s += f"_{cleaning}"
+    outpath = os.path.join(outdir,
+                           f'rotation_X_positions{s}.png')
+    savefig(f, outpath)
+
+
+
+def get_bin_sizes(r_pc, N_bins=12+1):
+    """
+    split bins to contain even numbers of members...
+    """
+    N_stars = len(r_pc)
+
+    stars_per_bin = int(np.ceil(N_stars/N_bins))
+
+    r = sorted(r_pc)[::-1]
+
+    bins = []
+
+    # have the rounding error be for the innermost bin
+    eps = 1e-5
+    for n in range(N_bins):
+        ind = n*stars_per_bin
+        if ind < len(r):
+            bins.append(r[ind]+eps)
+        else:
+            bins.append(r[-1]-eps)
+
+    return np.array(bins)[::-1]
+
+
+
 def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
                              do_histogram=1):
     """
@@ -2532,7 +2738,8 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
 
     # make it!
     plt.close('all')
-    f, axs = plt.subplots(figsize=(4,4), nrows=2, ncols=2)
+    set_style()
+    f, axs = plt.subplots(figsize=(3.5,3.5), nrows=2, ncols=2)
     axs = axs.flatten()
 
     xytuples = [
@@ -2635,15 +2842,21 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
         rot_df = mdf[sel_rotn(mdf)]
 
         plt.close('all')
-        fig, axs = plt.subplots(figsize=(4,4), nrows=1, ncols=2, sharey=True)
+        fig, axs = plt.subplots(figsize=(3.5,3.5), nrows=2, ncols=1, sharey=True)
         axs = axs.flatten()
 
         #
         # first: delta_r_pc
         #
-        delta_pc = 25
-        bins = np.arange(0, 500+delta_pc, delta_pc)
-        xvals = bins[:-1] + delta_pc/2
+
+        ## default approach: linear binning, yields very few stars on the outer
+        ## bins.
+        # delta_pc = 25
+        # bins = np.arange(0, 500+delta_pc, delta_pc)
+        # xvals = bins[:-1] + delta_pc/2
+
+        bins = get_bin_sizes(nparr(comp_df.delta_r_pc))
+        xvals = bins[:-1] + np.diff(bins)/2
 
         h_comp, bins_comp = np.histogram(nparr(comp_df.delta_r_pc), bins=bins)
         h_rot, bins_rot = np.histogram(nparr(rot_df.delta_r_pc), bins=bins)
@@ -2653,20 +2866,29 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
         # and if poisson, then sigma_n = sqrt(n)
         n, m = h_rot, h_comp
         f = n / m
-        sigma_f = f * np.sqrt( (( 1 / np.sqrt(m) ) / m)**2 +  (( 1 / np.sqrt(n) ) / n)**2 )
+        sigma_n = 1/np.sqrt(n)
+        sigma_m = 1/np.sqrt(m)
+        sigma_f = f * np.sqrt( ( sigma_m / m)**2 +  ( sigma_n / n)**2 )
 
         sel = np.isnan(f)
         f[sel] = 0
         sigma_f[sel] = 0
 
+        # yerr=sigma_f, 
         axs[0].errorbar(
-            xvals, f, yerr=sigma_f, xerr=0.40*delta_pc,
-            ls='none', color='k', elinewidth=1, capsize=1
+            xvals, f, xerr=0.42*np.diff(bins),
+            ls='none', color='k', elinewidth=1, capsize=1,
+            marker='o', markersize=2
         )
 
-        axs[0].set_xlabel('$\Delta r$ [pc]')
-        axs[0].set_ylabel('Fraction in bin with P$_\mathrm{rot}$')
-        axs[0].set_xlim([-delta_pc, 400+delta_pc])
+        axs[0].set_xlabel('$\Delta r_{\mathrm{3D}}$ [pc]')
+        # axs[0].set_ylabel('Fraction in bin with P$_\mathrm{rot}$')
+        fig.text(-0.02,0.5, 'Fraction in bin with P$_\mathrm{rot}$', va='center',
+                 rotation=90)
+
+        # axs[0].set_xlim([-10, 410])
+        axs[0].set_xlim([1, 1e3])
+        axs[0].set_xscale('log')
 
         # calculate the >25 pc thing...
         n, m = np.sum(h_rot[1:]), np.sum(h_comp[1:])
@@ -2675,21 +2897,25 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
 
         print(42*'-')
         print('IN POSITION')
-        print(f'Bin width: {delta_pc}')
+        print(f'Bin width: {np.diff(bins)}')
         print(f'Rotators: {h_rot}')
         print(f'Comparison: {h_comp}')
-        print(f'Rotators < {delta_pc}pc : {f[0]:.5f} +/- {sigma_f[0]:.5f}')
-        print(f'Rotators > {delta_pc}pc : {_f:.5f} +/- {_sigma_f:.5f}')
-        print(f'... where numerator and denom are {n}/{m}')
+        # print(f'Rotators < {delta_pc}pc : {f[0]:.5f} +/- {sigma_f[0]:.5f}')
+        # print(f'Rotators > {delta_pc}pc : {_f:.5f} +/- {_sigma_f:.5f}')
+        # print(f'... where numerator and denom are {n}/{m}')
 
         print(42*'-')
 
         #
         # then: delta_mu_prime_km_s
         #
-        delta_kms = 1.0
-        bins = np.arange(0, 20+delta_kms, delta_kms)
-        xvals = bins[:-1] + delta_kms/2
+
+        # delta_kms = 1.0
+        # bins = np.arange(0, 20+delta_kms, delta_kms)
+        # xvals = bins[:-1] + delta_kms/2
+
+        bins = get_bin_sizes(nparr(comp_df.delta_mu_prime_km_s))
+        xvals = bins[:-1] + np.diff(bins)/2
 
         h_comp, bins_comp = np.histogram(nparr(comp_df.delta_mu_prime_km_s), bins=bins)
         h_rot, bins_rot = np.histogram(nparr(rot_df.delta_mu_prime_km_s), bins=bins)
@@ -2702,22 +2928,37 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
         f[sel] = 0
         sigma_f[sel] = 0
 
-
+        # yerr=sigma_f, 
         axs[1].errorbar(
-            xvals, f, yerr=sigma_f, xerr=0.40*delta_kms,
-            ls='none', color='k', elinewidth=1, capsize=1
+            xvals, f, xerr=0.42*np.diff(bins),
+            ls='none', color='k', elinewidth=1, capsize=1,
+            marker='o', markersize=2
         )
 
         axs[1].set_xlabel('$\Delta v_{\mathrm{2D}}^{*}$ [km$\,$s$^{-1}$]')
-        axs[1].set_xlim([-delta_kms, 14])
+        axs[1].set_xlim([-1, 8])
 
         print(h_rot)
         print(h_comp)
 
         for ax in axs.flatten():
             format_ax(ax)
+            ax.set_ylim([0,1])
+            ax.yaxis.set_minor_locator(MultipleLocator(0.05))
 
-        fig.tight_layout(h_pad=0.2, w_pad=0.2)
+        axs[1].xaxis.set_minor_locator(MultipleLocator(1))
+        axs[0].set_xticks([1,10,100,1000])
+        axs[0].set_xticklabels(['$10^0$','$10^1$','$10^2$','$10^3$'])
+
+        # these x axes are messed up!
+        ax2 = axs[0].twiny()
+        ax2.set_xlim([1,1e3])
+        ax2.set_xscale('log')
+        ax2.set_xticks([1,10,100,1000])
+        ax2.get_xaxis().set_tick_params(direction='in', which='both')
+        ax2.set_xticklabels([])
+
+        fig.tight_layout(h_pad=0.2, w_pad=0.)
 
         s = ''
         s += f'_{basedata}'
@@ -3142,6 +3383,8 @@ def plot_phot_binaries(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
 def plot_slowfast_photbinarity_comparison(outdir):
     """
+    [nb. this is, in fact, just a script that calculates some numbers]
+
     We selected stars in set $\mathcal{B}$ in the color range where the slow and fast sequence are present ($0.5<(Bp-Rp)_0<1.3$).  This yielded 281 stars, of which 103 (37\%) were flagged as photometrically binary, astrometrically binary, or both.  We divided these 281 stars into ``fast'' and ``slow'' sequences by eye.  This yielded 75\% of stars being in the slow sequence, with the remainder in the fast.  The fraction of stars showing signs of binarity in the slow and fast rotation subsamples are 30\% (63/210) and 56\% (40/71), respectively.  This correlation is in line with the earlier findings noted above, though we emphasize that many of our rapid rotators (34\%) do not show any signs of binarity.
 
     Comparing the explanations of disk-locking against tidal synchronization, the population statistics do seem to strain the possibility of tidal synchronization.  Roughly a quarter of the \cn\ members are rapidly rotating.  In comparison, in the field half of Sun-like stars are binaries, and $\approx$9\% have periods below 100\,days (CITE Raghavan et al).  If we assume (generously) that all such binaries with sub-100\,day periods become tidally synchronized, we could still only explain a rapid rotator occurrence rate of $\approx$5\%.
@@ -3180,10 +3423,3 @@ def plot_slowfast_photbinarity_comparison(outdir):
     print(f'{len(df[sel&binary])} ({100*len(df[sel&binary])/len(df[sel]):.1f}%) stars in "fast sequence" and binary')
     print(f'{len(df[sel&(~binary)])} ({100*len(df[sel&(~binary)])/len(df[sel]):.1f}%) stars in "fast sequence" and not binary')
 
-    assert 0
-
-
-
-    outpath = os.path.join(outdir, f'slowfast_photbinarity_comparison.png')
-    savefig(f, outpath, dpi=400)
-    pass

@@ -59,7 +59,6 @@ rot_df, lc_df = get_autorotation_dataframe(
 )
 med_df, _ = _get_median_ngc2516_core_params(core_df, basedata)
 
-
 full_df = append_physicalpositions(full_df, med_df)
 
 from earhart.priors import TEFF, P_ROT, AVG_EBpmRp
@@ -75,8 +74,12 @@ sel_rotn =  lambda df: (sel_color(df)) & (sel_autorot(df))
 fdf = full_df[sel_rotn(full_df)]
 cdf = full_df[sel_comp(full_df)]
 
+full_df['source_id'] = full_df.source_id.astype(str)
 fdf['source_id'] = fdf.source_id.astype(str)
 cdf['source_id'] = cdf.source_id.astype(str)
+
+outpath = '../results/maximal_cluster_distance/full_cache.csv'
+full_dist_df = get_distances(outpath, full_df)
 
 outpath = '../results/maximal_cluster_distance/rot_cache.csv'
 rot_dist_df = get_distances(outpath, fdf)
@@ -90,4 +93,10 @@ rot_dist_df = rot_dist_df.sort_values(by='dist_pc')
 comp_dist_df['dist_pc'] = comp_dist_df.dist_pc.astype(float)
 comp_dist_df = comp_dist_df.sort_values(by='dist_pc')
 
+full_dist_df['dist_pc'] = full_dist_df.dist_pc.astype(float)
+full_dist_df = full_dist_df.sort_values(by='dist_pc')
+
+
 print(rot_dist_df.drop_duplicates('dist_pc'))
+
+print(full_dist_df.drop_duplicates('dist_pc'))
