@@ -7,7 +7,18 @@ if not os.path.exists(PLOTDIR):
     os.mkdir(PLOTDIR)
 
 ep.plot_lithium_EW_vs_color(
+    PLOTDIR, gaiaeso=1, galahdr3=1, corehalosplit=1, showkepfield=1,
+    showpraesepe=1, showpleiades=1
+)
+ep.plot_lithium_EW_vs_color(
+    PLOTDIR, gaiaeso=1, galahdr3=1, corehalosplit=1, showkepfield=1,
+    showpleiades=1
+)
+ep.plot_lithium_EW_vs_color(
     PLOTDIR, gaiaeso=1, galahdr3=1, corehalosplit=1, showkepfield=1
+)
+ep.plot_lithium_EW_vs_color(
+    PLOTDIR, gaiaeso=1, galahdr3=1, corehalosplit=1, showpleiades=1
 )
 ep.plot_lithium_EW_vs_color(
     PLOTDIR, gaiaeso=1, galahdr3=1, corehalosplit=1, showkepfield=1, trimx=1

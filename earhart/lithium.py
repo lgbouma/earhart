@@ -4,6 +4,7 @@ Contents:
     get_Randich18_NGC2516
     get_GalahDR3_lithium
     get_GalahDR3_li_EWs
+    get_Bouvier18_pleiades_li_EWs
 """
 import os
 import numpy as np, pandas as pd
@@ -234,3 +235,49 @@ def _make_Randich18_xmatch(datapath, vs_rotators=1, RADIUS=0.5):
         print(f'Got {len(mdf[mdf.subcluster=="halo"])} in halo.')
 
     mdf.to_csv(datapath, index=False)
+
+
+def get_Bouvier18_pleiades_li_EWs():
+
+    hl = fits.open(
+        os.path.join(DATADIR, 'lithium',
+                     'Bouvier_2018_vizier_all148pleiads.fits')
+    )
+
+    t_df = Table(hl[1].data).to_pandas()
+
+    return t_df
+
+
+def get_Barrado01_m35_li_EWs():
+    """
+    https://ui.adsabs.harvard.edu/abs/2001ApJ...549..452B/abstract
+    https://iopscience.iop.org/article/10.1086/319045/fulltext/datafile2.txt?doi=10.1086/319045
+    ascii ApJ MRT
+    """
+    B01_path = os.path.join(DATADIR, 'lithium',
+                            'BarradoNavascues_2001_M35_table2.txt')
+    t = Table.read(B01_path, format='cds')
+
+    df = t.to_pandas()
+
+    return df
+
+
+def get_Soderblom93_praesepe_li_EWs():
+    """
+    http://cdsarc.unistra.fr/viz-bin/cat/J/AJ/106/1080
+    https://ui.adsabs.harvard.edu/?#abs/1993AJ....106.1080S
+    vizier fits binary
+    """
+
+    hl = fits.open(
+        os.path.join(DATADIR, 'lithium',
+                     'Soderblom_1993_praesepe_table2_vizier.fits')
+    )
+
+    t_df = Table(hl[1].data).to_pandas()
+
+    return t_df
+
+

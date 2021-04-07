@@ -1118,7 +1118,7 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     classes = ['pleiades', 'praesepe', f'{runid}']
     colors = ['gray', 'gray', 'k']
     zorders = [-2, -3, -1]
-    markers = ['s', 'x', 'o']
+    markers = ['s', 'p', 'o']
     lws = [0., 0.1, 0.1]
     mews= [0.5, 0.5, 0.5]
     _s = 3 if runid != 'VelaOB2' else 1.2
@@ -1607,7 +1607,9 @@ def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
 
 
 def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
-                             corehalosplit=0, showkepfield=0, trimx=0):
+                             corehalosplit=0, showkepfield=0,
+                             showpleiades=0, showpraesepe=0,
+                             showm35=0, trimx=0):
     """
     Plot Li EW vs color for a) Randich+18's Gaia ESO lithium stars, b)
     the GALAH DR3 EWs, or c) both, after crossmatching against the
@@ -1634,6 +1636,21 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
         bdf = get_Berger18_lithium()
         bdf['BpmRp0'] = get_interp_BpmRp_from_Teff(bdf['Teff'])
 
+    if showpleiades:
+        from earhart.lithium import get_Bouvier18_pleiades_li_EWs
+        bouvier18_df = get_Bouvier18_pleiades_li_EWs()
+        bouvier18_df['BpmRp0'] = get_interp_BpmRp_from_Teff(bouvier18_df['Teff'])
+
+    if showm35:
+        from earhart.lithium import get_Barrado01_m35_li_EWs
+        b01_df = get_Barrado01_m35_li_EWs()
+        b01_df['BpmRp0'] = get_interp_BpmRp_from_Teff(b01_df['Teff'])
+
+    if showpraesepe:
+        from earhart.lithium import get_Soderblom93_praesepe_li_EWs
+        s93_df = get_Soderblom93_praesepe_li_EWs()
+        s93_df['BpmRp0'] = get_interp_BpmRp_from_Teff(s93_df['Teff'])
+
     #
     # make plot
     #
@@ -1646,9 +1663,40 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
     if showkepfield:
         ax.scatter(
             bdf['BpmRp0'], bdf['EW_Li_'], c='gray', alpha=1,
-            zorder=-1, s=5, edgecolors='gray', marker='.',
-            linewidths=0, label='BHB18'
+            zorder=-1, s=4, edgecolors='gray', marker='.',
+            linewidths=0, label='Field'
         )
+
+    if showpleiades:
+        dets = (bouvier18_df.l_WLi != "<")
+        ax.scatter(
+            bouvier18_df[dets]['BpmRp0'], bouvier18_df[dets]['WLi'], c='gray', alpha=1,
+            zorder=-1, s=7, edgecolors='k', marker='s',
+            linewidths=0.1, label='Pleiades'
+        )
+        # ax.scatter(
+        #     bouvier18_df[~dets]['BpmRp0'], bouvier18_df[~dets]['WLi'], c='gray', alpha=0.8,
+        #     zorder=-1, s=7, edgecolors='k', marker='v',
+        #     linewidths=0.1
+        # )
+
+    if showm35:
+        dets = (b01_df.f_Li != "{<=}")
+        ax.scatter(
+            b01_df[dets]['BpmRp0'], b01_df[dets]['Li+Fe'], c='violet', alpha=1,
+            zorder=0, s=7, edgecolors='k', marker='s',
+            linewidths=0.1, label='M35'
+        )
+
+    if showpraesepe:
+        dets = (s93_df.l_WLi != "<")
+        # vizier randomly decided to divide by 10
+        ax.scatter(
+            s93_df[dets]['BpmRp0'], 10*s93_df[dets]['WLi'], c='violet', alpha=1,
+            zorder=0, s=7, edgecolors='k', marker='P',
+            linewidths=0.1, label='Praesepe'
+        )
+
 
     if not corehalosplit:
         ax.scatter(
@@ -1699,6 +1747,12 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
         outstr += '_corehalosplit'
     if showkepfield:
         outstr += '_showkepfield'
+    if showpleiades:
+        outstr += '_showpleiades'
+    if showm35:
+        outstr += '_showm35'
+    if showpraesepe:
+        outstr += '_showpraesepe'
     if trimx:
         outstr += '_trimx'
     xmstr = 'fullfaintkinematic'
