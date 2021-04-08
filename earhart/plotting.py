@@ -1118,7 +1118,7 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     classes = ['pleiades', 'praesepe', f'{runid}']
     colors = ['gray', 'gray', 'k']
     zorders = [-2, -3, -1]
-    markers = ['s', 'p', 'o']
+    markers = ['s', '+', 'o']
     lws = [0., 0.1, 0.1]
     mews= [0.5, 0.5, 0.5]
     _s = 3 if runid != 'VelaOB2' else 1.2
@@ -1693,7 +1693,7 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
         # vizier randomly decided to divide by 10
         ax.scatter(
             s93_df[dets]['BpmRp0'], 10*s93_df[dets]['WLi'], c='violet', alpha=1,
-            zorder=0, s=7, edgecolors='k', marker='P',
+            zorder=0, s=9, edgecolors='k', marker='P',
             linewidths=0.1, label='Praesepe'
         )
 
