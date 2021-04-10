@@ -1099,7 +1099,7 @@ def plot_skypositions_x_rotn(outdir):
 
 
 def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
-                       cleaning=None, emph_binaries=False):
+                       cleaning=None, emph_binaries=False, talk_aspect=0):
     """
     Plot rotation periods that satisfy the automated selection criteria
     (specified in helpers.get_autorotation_dataframe)
@@ -1113,7 +1113,10 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     # make plot
     plt.close('all')
 
-    f, ax = plt.subplots(figsize=(4,5))
+    if not talk_aspect:
+        f, ax = plt.subplots(figsize=(4,5))
+    else:
+        f, ax = plt.subplots(figsize=(4,3))
 
     classes = ['pleiades', 'praesepe', f'{runid}']
     colors = ['gray', 'gray', 'k']
@@ -1256,6 +1259,8 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
         outstr += '_corehalosplit'
     if emph_binaries:
         outstr += '_emphbinaries'
+    if talk_aspect:
+        outstr += '_talkaspect'
     outstr += f'_{yscale}'
     outstr += f'_{cleaning}'
     outpath = os.path.join(outdir, f'{runid}_rotation{outstr}.png')

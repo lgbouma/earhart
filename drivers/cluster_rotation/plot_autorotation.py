@@ -22,6 +22,11 @@ for runid, _ in RUNID_EXTINCTION_DICT.items():
     if not os.path.exists(PLOTDIR):
         os.mkdir(PLOTDIR)
 
+    ep.plot_auto_rotation(
+        PLOTDIR, runid, E_BpmRp, core_halo=1, yscale='linear',
+        cleaning='periodogram_match', emph_binaries=0, talk_aspect=1
+    )
+
     for yscale in ['linear', 'log']:
         for cleaning in ['defaultcleaning', 'periodogram_match',
                          'nocleaning', 'match234_alias']:
