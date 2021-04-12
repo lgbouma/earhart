@@ -977,7 +977,10 @@ evidence that the core of \cn\ may be undergoing contraction has
 recently been presented by \citet{healy_stellar_2020}, and might
 support this interpretation.  Whether the exact rate of contraction,
 and the corresponding ``evaporation rate'' of the core is sufficient
-to explain the formation of the halo has yet to be assessed.
+to explain the formation of the halo has yet to be assessed.  The
+presence or lack of epicyclic overdensities in the tails might also
+help clarify whether this scenario is happening
+\citep{kupper_more_2012}.
 
 A second possibility is that the clusters form in larger and more
 dispersed star formation complexes: the stars in the halo need not
@@ -1528,121 +1531,103 @@ members for their efforts to make the mission a continued success.
 \bibliography{bibliography} 
 
 \appendix
-\section{Clustering methods and outcomes}
+\section{Clustering Methods and Outcomes}
 \label{app:clustering}
 
-\begin{figure*}[h]
+\begin{figure}[h]
 	\begin{center}
 		\leavevmode
-		\includegraphics[width=0.4\textwidth]{f10.pdf}
+		\includegraphics[width=0.3\textwidth]{f10.pdf}
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ {\bf Different clustering techniques yield different
-  outcomes.} \nkinematic\ unique candidate cluster members found
-  using three different techniques are considered in this study.
-  \citetalias{cantatgaudin_gaia_2018}: \citet{cantatgaudin_gaia_2018},
+  candidate members of \cn.} \nkinematic\ unique candidate cluster
+  members found using three different techniques are considered in
+  this study.  \citetalias{cantatgaudin_gaia_2018}:
+  \citet{cantatgaudin_gaia_2018},
   \citetalias{kounkel_untangling_2019}:
   \citet{kounkel_untangling_2019}, \citetalias{meingast_2021}:
   \citet{meingast_2021}.
   \label{fig:venn}
 	}
-\end{figure*}
+\end{figure}
 
-Figure~\ref{fig:venn} is a Venn diagram showing the overlap between
+Figure~\ref{fig:venn} is a Venn diagram of
 the three membership catalogs concatenated in this study.  99\% of the
 \citetalias{cantatgaudin_gaia_2018} sample overlaps with
 \citetalias{kounkel_untangling_2019}, \citetalias{meingast_2021}, or
 both.  By comparison, 36\% of the \citetalias{kounkel_untangling_2019}
-sample, and 15\% of the \citetalias{meingast_2021} sample are
-non-overlapping.
-The data---Gaia DR2---used by all the studies was the same.
-What are the differences in methodology that produce these different
-outcomes?
+sample, and 15\% of the \citetalias{meingast_2021} sample do not
+overlap with any of the other catalogs.  The data---Gaia DR2---used by
+all the studies was the same.  What are the differences in methodology
+that produce these different outcomes?
 
-%
-% TODO: the following two paragraphs, WHEN QUOTED, are ENTIRELY FROM
-% the relevant papers. they should probably be nixed in favor of
-% concision.
-%
-\citetalias{cantatgaudin_gaia_2018} applied a procedure that 
-yielded what we call ``the core''.  Their procedure was to first query
-a Gaia DR2 cone around the previously reported RA and dec of the
-cluster, and within $\pm 0.5$\,mas of its previously reported
-distance. 
-% TODO: which was it?
-The outer radius of their cone was either r2 from MWSC (CITE
-Kharchenko 2013), or twice the ``cluster radius'' listed by DAML/Dias (CITE).  No
-proper motion cut was applied.  They then applied an unsupervised
-classification scheme called UPMASK to $G<18$\,mag stars within this
-cone (CITE).  The steps of UPMASK are first to perform a k-means
-clustering in the ``astrometric space'' ($\mu_{\alpha'}, \mu_\delta,
-\pi$).  Then, a ``veto'' step is applied to assess whether the groups
-of stars output from the k-means clustering are or are not more
-concentrated than a random distribution.  This is implemented by
-``comparing the total branch length of the minimum spanning tree
-connecting the stars with the expected branch length for a random
-uniform distribution covering the investigated field of view''.  ``To
-turn this yes/no flag to a membership probability,
-\citet{cantatgaudin_gaia_2018} then redraw new values of
-($\mu_{\alpha'}, \mu_\delta, \pi$) for each source based on the listed
-value, uncertainty, and covariance.  After a certain number of
-redrawings, the final probability is the frequency with which a given
-star passes the veto".  In the case of \cn, this yielded a reported
-``\texttt{r50}'' within which half of the cluster members were found
-to be within 0.496$^\circ$.
-When we selected candidate \cn\ members from the results of
-\citetalias{cantatgaudin_gaia_2018}, we opted to include all candidate members
-with reported membership probability exceeding 10\%.
-While this seems {\it a priori} low, our results ({\bf SECTION XXX})
-show that this ``membership probabilty'' severely underestimates the
-purity of the \citetalias{cantatgaudin_gaia_2018} sample for \cn. 
-%TODO: quantify
-Their false positive rate across the sample is more like 1-5\%.
+\citetalias{cantatgaudin_gaia_2018} applied a procedure that yielded
+what we colloquially call ``the core''.  Their membership assignment
+algorithm was to first query a Gaia DR2 cone around the previously
+reported $\{\alpha,\delta\}$ of the cluster center, and within $\pm
+0.5$\,mas of its previously reported parallax.  The outer radius of
+their cone was the previously reported angular radius of the cluster
+(0.71$^\circ$; \citealt{Kharchenko_et_al_2013}).  No proper motion cut
+was applied.  \citetalias{cantatgaudin_gaia_2018} then applied an
+unsupervised classification scheme to $G<18$\,mag stars within this
+cone (UPMASK; \citealt{kronemartins_upmask_2014}).  The UPMASK
+algorithm first performs a $k$-means clustering on the astrometric
+parameters, $\{\mu_{\alpha'}, \mu_\delta, \pi\}$.  A ``veto''
+step is then applied to assess whether the groups of stars output from the
+$k$-means clustering are more concentrated than a uniform
+distribution, by comparing the total branch lengths of their
+respective minimum spanning trees.  This binary flag is converted to a
+membership probability by redrawing values for $\{\mu_{\alpha'},
+\mu_\delta, \pi\}$ using the reported uncertainties and
+covariances.  The final membership probability for any given star is
+then the fraction of draws for which the star passes the veto step.
+In the case of \cn, the resulting radius within which half of the
+cluster members were found was 0.50$^\circ$.  We included all
+\citetalias{cantatgaudin_gaia_2018} \cn\ members with reported
+membership probability exceeding 10\% in our list of candidate cluster
+members.
 
-\citetalias{kounkel_untangling_2019}
-applied a different unsupervised
-clustering method to the 5-dimensional Gaia DR2 data (omitting radial
-velocities, due to their sparsity).  Their selection function (see
-their Section~2) yielded $\approx 2\times 10^7$ stars, mostly within
-$\approx 1$\,kpc and typically with $G<18$\,mag.  Their clustering
-algorithm, which was run on this entire  stellar sample,
- was the ``hierarchical density-based spatial clustering of
-applications with noise'' (HDBSCAN, CITE McInnes17).  The classical
-DBSCAN algorithm ``identifies clusters as overdensities in a
-multi-dimensional space in which the number of sources exceeds the
-required minimum number of points within a neighborhood of a
-particular linking length $\epsilon$.  HDBSCAN does not depend on
-$\epsilon$; instead it condenses the minimum spanning tree by pruning
-off the nodes that do not meet the minimum number of sources in a
-cluster and reanalyzing the nodes that do. Depending on the chosen
-algorithm, it would then either find the most persistent structure
-(through the excess of mass method), or return clusters as the leaves
-of the tree (which results in somewhat more homogeneous clusters). In
-both cases it is more effective at finding structures of varying
-densities in a given data set than DBSCAN.''
-`` The two main parameters that control HDBSCAN are the number of
-sources in a cluster and the number of samples. The former is the
-parameter that rejects groupings that are too small; the latter sets
-the threshold of how conservative the algorithm is in its
-considerations of the background noise (even if the resulting noisy
-groupings do meet the minimum cluster size).  By default, the sample
-size is set to the same value as the cluster size, but it is possible
-to adjust them separately.''
-Regarding membership proabilities,
-\citetalias{kounkel_untangling_2019} did not report continuous membership
-probabilities, instead opting for the binary ``member'' or ``not''.
+\citetalias{kounkel_untangling_2019} applied a different unsupervised
+clustering method to the 5-D Gaia DR2 positions and proper motions.
+\citetalias{kounkel_untangling_2019} began with a sample of
+$\approx$$2\times 10^7$ stars, mostly within $\approx 1$\,kpc and with
+$G\lesssim18$\,mag.  They then applied the hierarchical density-based
+spatial clustering of applications with noise algorithm (HDBSCAN;
+\citealt{campello_hierarchical_2015}, \citealt{mcinnes_hdbscan_2017})
+on the entire sample,  setting the minimum number of stars per cluster
+to be 40.  \citetalias{kounkel_untangling_2019} then iterated over a
+few different cutoff parallaxes to improve sensitivity to structures
+with distances from the Sun ranging between $\approx$100\,pc and
+$\approx$1000\,pc.  They then fitted ages to the resulting clusters
+using two different methods: isochronal, and a convolutional neural
+network.  Regarding membership proabilities,
+\citetalias{kounkel_untangling_2019} reported the binary ``member'' or
+``not'' from HDBSCAN.
+We included all \citetalias{kounkel_untangling_2019} \cn\ members in
+our list of candidate cluster members.
 
-\citetalias{meingast_2021} did the same as
-\citetalias{kounkel_untangling_2019}, but required A) the tangential
-velocity dispersions to be smaller, and B) deconvolved the distances.
-{\bf FIXME FIXME FIXME}
-{\bf FIXME FIXME FIXME}
-{\bf FIXME FIXME FIXME}
-
-\citet{meingast_2021} reported a 
-Finally, 1577 of the 1860 \citet{meingast_2021} sources (85\%)
-were included in the \citet{kounkel_untangling_2019} sample.  
-
+Finally, \citetalias{meingast_2021} considered ten known open clusters
+within the nearest kiloparsec. One of these clusters was \cn.  Their
+initial  list of $\approx$$3\times10^7$ was similar to that of
+\citetalias{kounkel_untangling_2019}, mainly requiring well-behaved
+astrometry and photometry from Gaia.  Given the mean positions and
+velocities of the clusters determined by
+\citetalias{cantatgaudin_gaia_2018}, \citetalias{meingast_2021} then
+selected all stars with proper-motion correct tangential velocities
+within 1.5\,\kms\ of the cluster mean.  They then applied DBSCAN
+\citep{ester_density-based_1996} on both the observed galactic
+$\{X,Y,Z\}$ coordinates, as well as to a separate deconvolved spatial
+coordinate distribution discussed in their Section~3.3.  The results
+of their procedure, as well as those of
+\citetalias{cantatgaudin_gaia_2018} and
+\citetalias{kounkel_untangling_2019}, are visible at the website of
+S.~Meingast:
+\url{https://homepage.univie.ac.at/stefan.meingast/coronae.html}.
+Their reported membership proabilities were binary, similar to those
+of \citetalias{kounkel_untangling_2019}.  All of the
+\citetalias{meingast_2021} \cn\ members were included in our list of
+candidate cluster members.
 
 
 
