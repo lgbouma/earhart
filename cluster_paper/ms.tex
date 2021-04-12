@@ -589,10 +589,10 @@ these stars is brighter than the CDIPS magnitude limit of
 $Rp=16$\,mag.  \nkinematicrpltsixteen\ of the stars from the \cn\
 source list had $Rp<16$.  The difference (65 stars) is due to 35 stars
 from \citet{meingast_2021} which were not available at the time of the
-CDIPS reductions, and 30 stars falling on the TESS chip gaps.  The
-$Rp=16$\,mag cutoff imposed during the CDIPS processing corresponds
-roughly to $\bpmrp$ of 2.2, or a spectral type of $\approx$M2V, at the
-distance of \cn.
+CDIPS reductions, and 30 stars falling on the TESS chip gaps.  At the
+distance of \cn, the $Rp=16$\,mag cutoff imposed during the CDIPS
+processing corresponds roughly to $\bpmrp$ of 2.2, or a spectral type
+of $\approx$M2V.
 
 We removed systematic trends shared between all light curves on each
 CCD in each sector individually, and stitched together the resulting
@@ -1477,7 +1477,7 @@ members for their efforts to make the mission a continued success.
   %\texttt{pyGAM} \citep{serven_pygam_2018_1476122},
   %\texttt{PyMC3} \citep{salvatier_2016_PyMC3},
   %\texttt{radvel} \citep{fulton_radvel_2018},
-  %\texttt{scikit-learn} \citep{scikit-learn},
+  \texttt{scikit-learn} \citep{scikit-learn},
   \texttt{scipy} \citep{jones_scipy_2001},
   %\texttt{tesscut} \citep{brasseur_astrocut_2019},
 	%\texttt{VESPA} \citep{morton_efficient_2012,vespa_2015},
@@ -1632,107 +1632,105 @@ candidate cluster members.
 
 
 
-\section{Detrending details}
+\section{Considerations for Removing Systemic Variability from TESS Light Curves}
 \label{app:detrending}
 
-In ``detrending'' for our general variability search, our goal was to
-preserve astrophysical variability, while removing systematic
-variability.  One particular concern for the TESS light curves is
-systematic variability at the timescale of the 14-day satellite orbit,
-mostly induced by scattered light from the Earth and Moon.
+In ``detrending'' before searching for stellar rotation signals in the
+TESS, our goal was to preserve astrophysical variability, while
+removing systematic variability.  One particular concern for the TESS
+light curves is systematic variability at the timescale of the 14-day
+satellite orbit, mostly induced by scattered light from the Earth and
+Moon.
 
-We therefore turned to the principal components (i.e., the
-eigenvectors) calculated following the procedure described by
-\citet{bouma_cdipsI_2019}. In brief, these vectors are computed using
-a set of ``trend stars'' selected from across each CCD according to
-ad-hoc heuristics that (hopefully) lead them to be dominated by {\it
-systematic} variability (Sec~3.7.2).
-
-The principal component vectors, also referred to as the eigenvectors,
-are rank-ordered by the degree of variance that they predict in the
-training set (of ``trend stars'').
+We opted to use a variant of the principal component analysis approach 
+described by
+\citet{bouma_cdipsI_2019}. This
+principal component analysis focuses on a set of ``trend stars'' selected from
+across each CCD according using ad-hoc heuristics that on average lead
+the light curves to be dominated by systematic variability.  The
+resulting principal component vectors, also referred to as the
+eigenvectors, are rank-ordered by the degree of variance that they
+predict in the training set of trend stars.
 
 We then posit that any given target star's light curve is described as
-a linear combination of the eigenvectors.  Optionally, we also
-considered the inclusion of additional systematic vectors that could
-affect the light curve, such as the CCD temperature, the flux level
-measured in the background annulus, and the centroid positions of the
-stars on the CCDs.  These can be treated as additional ``features'' in
-the linear model.
-
-To determine the coefficients of the linear
-model after the full set of eigenvectors (plus optionally
-``sytematic'' vectors) had been asssembled,  we explored two possible
-methods: ordinary
-least squares, and ridge regression. Ridge regression is the same as
-ordinary least squares, except it includes an L2 norm with a regularization
-coefficient. The regularization coefficient that best applied for any
-given target light curve was solved for using a cross-validation grid
-search, using \texttt{sklearn.linear\_modelRidgeCV} (CITE). 
-
+a linear combination of the eigenvectors.  We also considered the
+inclusion of additional systematic vectors that could affect the light
+curve, discussed below.  These can be treated as additional ``features'' in the linear
+model.  To determine the coefficients of the linear model after the
+full set of eigenvectors (plus optional ``sytematic'' vectors) had
+been asssembled,  we explored two possible methods: ordinary least
+squares, and ridge regression. Ridge regression is the same as
+ordinary least squares, except it includes an $\ell^2$ norm with a
+regularization coefficient. The regularization coefficient that best
+applied for any given target light curve was determined using a
+cross-validation grid search, through
+\texttt{sklearn.linear\_modelRidgeCV} \citep{scikit-learn}.
 Each target light curve was mean-subtracted and normalized by its
 standard deviation, as were the eigenvectors. The linear problem was
-then solved numerically, and the light curve was reconstructed by re-adding the
-original mean, and re-multiplying by the standard deviation to ensure
-that the variance of the light curve did not change.
+then solved numerically, and the light curve was reconstructed by
+re-adding the original mean, and re-multiplying by the standard
+deviation to ensure that the variance of the light curve did not
+change.
 
-We found that the choice of using ordinary
-least squares versus ridge regression did not seem to significantly
-affect the resulting light curves. In other words, the inclusion (or
-lack thereof) of a regularization term did not strongly alter the
-best-fitting coefficients.
-In the spirit of ``KISS'', we opted to use ordinary least squares.
-
-A few other choices seemed to be more important:
+We found that the choice of using ordinary least squares versus ridge
+regression did not seem to significantly affect the resulting light
+curves. In other words, the inclusion (or lack thereof) of a
+regularization term did not strongly alter the best-fitting
+coefficients.  In the spirit of keeping it simple, we opted to use
+ordinary least squares.  A few other choices seemed to be more
+important:
 
 \begin{itemize}
-
+  %
   \item {\it To smooth, or to not smooth the eigenvectors}.
-  Ideally, the eigenvectors should be smooth in time. They should not contain
-    residuals from {\it e.g.}, eclipsing binaries that snuck their way
-    into the template set, and they should also not be intrinsically noisier
-    than the target star. If either of these is the case (and we found that
-    it sometimes was), it can
-    induce extra variability into the PCA ``detrended'' light curves.
-    To address this problem, we opted to smooth the eigenvectors using
-    a time-windowed filter (with a "biweight" weight scheme, implemented in
-    \texttt{wotan} by \citet{hippke_wotan_2019}; window length 1 day, cval 6).
-  One issue with this is that systematic sharp features (captured e.g., in
-  "spike vectors") no longer are captured, so they end up in the "PCA
-  detrended" light curves. They can then be filtered out
-  ({\it e.g.}, using rolling outlier rejection), and we prefer this approach to having
-  systematic features being {\it injected by} the PCA detrending.
-
+    If the systematic trends are smooth in time, the eigenvectors should be as well. They should not
+    contain residuals from {\it e.g.}, eclipsing binaries 
+    in the template set, and they should also not be
+    intrinsically noisier than the target star. If either of these is
+    the case, extra
+    variability can be introduced into the ``detrended'' light curves.  To address
+    this problem, we opted to smooth the eigenvectors using a
+    sliding time-windowed filter (with a "biweight" weight scheme, implemented
+    in \texttt{wotan} by \citealt{hippke_wotan_2019}).
+    %; window length 1 day, cval 6).
+    One issue with this is that systematic sharp features (captured
+    e.g., in ``spike vectors'') are no longer captured, so they are present
+    in the detrended light curves. Since they can be filtered out in postprocessing
+    ({\it e.g.}, using rolling outlier rejection), we prefer this
+    approach to having systematic features being injected by the
+    PCA detrending.
+  %
   \item {\it How many eigenvectors to use}.
     A larger number always leads to greater whitening.  In
-    \citet{bouma_cdipsI_2019}, we performed a Factor Analysis
+    \citet{bouma_cdipsI_2019}, we performed a factor analysis
     cross-validation to determine the number of eigenvectors to use.
-    The typical number adopted based on this analysis was 10--15.
-    While this approach should in theory prevent over-fitting, in
-    our experience, for stellar rotation it still often lead to
-    distorts the signals, especially for rotation signals with small amplitudes
-    and periodicities of
-    $\gtrsim 3$ days.  (Shorter signals typically are not distorted,
-    since the eigenvectors do not contain the high-frequency
-    content that leads to the distortions).  For the present analysis, we
-    therefore impose the maximum number of eigenvectors to be 5.
-
-  \item {\it Which supplementary systematics vectors to use}.
-    We considered using the \texttt{BGV}, \texttt{CCDTEMP},
-    \texttt{XIC}, \texttt{YIC}, and \texttt{BGV} vectors, packaged
-    with the CDIPS light curves. We found that the background value
-    measured in an annulus centered on the aperture, \texttt{BGV},
-    tended to produce the best independent information from the PCA
-    eigenvectors, and so we adopted it as our only ``supplementary''
-    trend vector.  We opted to not smooth it (in hopes that it would
-    provide direct complement to the smoothed PCA vectors; 1 sharp
-    vector containing literally the background information, plus 5
-    smooth vectors).
+    The typical number adopted based on this analysis was 10 to 15.
+    While this approach should in theory prevent over-fitting, in our
+    experience, for stellar rotation it still often lead to distorts
+    the signals, especially for rotation signals with small amplitudes
+    and periodicities of $\gtrsim 3$ days.  Shorter signals typically
+    are not distorted, since the eigenvectors do not contain the
+    high-frequency content that leads to the distortions.  For the
+    present analysis, we therefore set the maximum number of
+    eigenvectors to be 5.
+%
+  \item {\it Which supplementary systematics vectors to use}.  We
+    considered using the \texttt{BGV}, \texttt{CCDTEMP}, \texttt{XIC},
+    \texttt{YIC}, and \texttt{BGV} vectors, packaged with the CDIPS
+    light curves. We found that the background value measured in an
+    annulus centered on the aperture, \texttt{BGV}, tended to produce
+    the best independent information from the PCA eigenvectors, and so
+    we adopted it as our only ``supplementary'' trend vector.  We
+    opted to not smooth it, assuming that it would provide direct
+    complement to the smoothed PCA vectors.
 \end{itemize}
 
-For every ``target star'', we then decorrelated the raw
-(image-subtracted and background-subtracted) light curve
-using a linear model with ordinary least squares.
+After all these considerations, for every ``target star'', we
+ultimately decorrelated the raw (image-subtracted and
+background-subtracted) light curve using a linear model with ordinary
+least squares.  The vectors considered in the model were the 1
+unsmoothed background flux vector, and 5 smoothed PCA eigenvectors.
+
 
 \section{Comparison Star Rotation Periods}
 \label{app:compstar}
@@ -1745,10 +1743,10 @@ using a linear model with ordinary least squares.
 	\vspace{-0.7cm}
 	\caption{ {\bf Rotation in NGC\,2516 compared to the field.}
   Stars with Gaia $Rp<13$\,mag in the cluster and field samples were
-  considered. (Fainter stars in the field sample were not studied as part
-  of the broader CDIPS project).
-  The field stars show a different rotation period distribution than
-  the kinematically selected NGC\,2516 members.
+  considered. (Fainter stars in the field sample were not studied as
+  part of the broader CDIPS project).  The field stars show a
+  different rotation period distribution than the kinematically
+  selected NGC\,2516 members.
   {\bf LGB TODO: Rerun the field measurements with a better grid to fix the aliasing issue.}
   \label{fig:compstar}
 	}
