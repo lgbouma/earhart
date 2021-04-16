@@ -82,27 +82,26 @@
 % 7.70pc.
 %
 \begin{abstract}
-  Recent analyses of the Gaia data have reported the existence of
-  diffuse stellar populations surrounding nearby open clusters.  It is
-  important to verify that these ``halos'', ``tails'', and ``strings''
-  are of similar ages and compositions as stars in the denser part of
-  the cluster.  We present an analysis of NGC\,2516
-  ($\approx$150\,Myr), which has a classical tidal radius of 10\,pc
-  and an apparent halo of stars spanning 500\,pc.  Combining
-  photometry from Gaia, rotation periods from TESS, and lithium
-  measurements from Gaia-ESO and GALAH, we find that the halo of
-  NGC\,2516 is real and coeval with the cluster's core.  Two thirds of
-  kinematically selected halo members out to 250\,pc from the cluster
-  center have rotation periods consistent with a gyrochronological age
-  of 150\,Myr.  A comparison sample of field stars shows no such
-  trend.  In addition, the lithium abundances of stars in the halo are
-  elevated relative to the field, and are correlated with the stellar
-  rotation rate in a manner consistent with previous observations of
-  similar clusters.  Broadly speaking, this work advances a paradigm
-  in which the halos of open clusters are often more populous than
-  their cores.  There are significant implications for spectroscopic
-  survey targeting, open cluster dispersal, and planet searches around
-  young stars.
+  Recent analyses of the Gaia data have identified diffuse stellar
+  populations surrounding nearby open clusters.  It is important to
+  verify that these ``halos'', ``tails'', and ``strings'' are of
+  similar ages and compositions as stars in the denser part of the
+  cluster.  We present an analysis of NGC\,2516 ($\approx$150\,Myr),
+  which has a classical tidal radius of 10\,pc and an apparent halo of
+  stars spanning 500\,pc.  Combining photometry from Gaia, rotation
+  periods from TESS, and lithium measurements from Gaia-ESO and GALAH,
+  we find that the halo of NGC\,2516 is the same age as the cluster's
+  core.  Two thirds of kinematically selected halo members out to
+  250\,pc from the cluster center have rotation periods consistent
+  with a gyrochronological age of 150\,Myr.  A comparison sample of
+  field stars shows no such trend.  In addition, the lithium
+  abundances of stars in the halo are elevated relative to the field,
+  and are correlated with the stellar rotation rate in a manner
+  consistent with previous observations of similar clusters.  This
+  work supports a new paradigm wherein the halos of open clusters are
+  often more populous than their cores.  We discuss implications for
+  spectroscopic survey targeting, open cluster dispersal, and planet
+  searches around young stars.
 \end{abstract}
 
 \keywords{
@@ -122,23 +121,22 @@ Star clusters form when dense filaments in hierarchically structured
 molecular clouds collide and collapse \citep{shu_star_1987}.  Over the
 first 10\,Myr, feedback effects including protostellar outflows,
 photoionization, radiation pressure, and supernova shocks disperse the
-gas out of the cloud \citep{krumholz_star_2019}.  Since only
-$\sim$$1\%$ of the cloud mass is converted into stars, gas dispersal
-enables the majority ($\sim$90\%) of stars in the cluster to escape
-the cluster's gravitational well \citep{lada_embedded_2003}.
+gas \citep{krumholz_star_2019}.  Since the gas represents about 99\%
+of the mass of the original cloud, gas dispersal enables the majority
+($\sim$90\%) of stars in the cluster to escape the cluster's
+gravitational well \citep{lada_embedded_2003}.
 
 From 10 to 1000\,Myr, the cluster remnants that survive gas dispersal
-suffer an onslaught that almost always leads to dissolution.  Inside
-the cluster supernovae, AGB winds, and close stellar encounters lead
-to additional mass loss \citep{lamers_mass_loss_2010}.  Extrinsic to
-the cluster, collisions with giant molecular clouds
-\citep{spitzer_disruption_1958}, and perturbations from the galactic
-tide in both the radial and vertical dimensions further promote
-stellar escape \citep[{\it
+suffer an onslaught of supernovae, AGB winds, and close stellar
+encounters that almost always leads to dissolution
+\citep{lamers_mass_loss_2010}.  Extrinsic to the cluster, collisions
+with giant molecular clouds \citep{spitzer_disruption_1958}, and
+perturbations from the galactic tide in both the radial and vertical
+dimensions further promote stellar escape \citep[{\it
 e.g.},][]{fukushige_timescale_2000,bergond_gravitational_2001}.
 
-Finding the stars that have dispersed from their natal clusters into
-the galactic field is a pressing topic for a few reasons.  One is to
+Finding the stars that have dispersed from their clusters into the
+galactic field is a pressing topic for a few reasons.  One is to
 understand the spatial extent and duration of star formation events
 \citep[{\it e.g.},][]{wright_kinematics_2018}.  Another is to
 understand the Sun's birth environment \citep{adams_birth_2010}.  Did
@@ -160,57 +158,59 @@ this could expand the census of nearby young stars by up to a factor
 of $10$, based on the expected fraction of stars thought to be lost
 during gas dispersal.
 
-The detection of dispersed stellar associations, although possible
-before Gaia, has now reached a breakthrough pace \citep[{\it
+Although it has been possible to detect dispersed stellar associations
+for a long time, Gaia is now enabling major advances \citep[{\it
 e.g.},][]{de_zeeuw_hipparcos_1999,bergond_gravitational_2001,zuckerman_young_2004,oh_comoving_2017,cantatgaudin_gaia_2018,gagne_banyan_XII_2018,gagne_banyan_XIII_2018,kounkel_apogee2_2018,zari_3d_2018,kounkel_untangling_2019,furnkranz_comabernbhr_2019}.
-The populations found by these studies can be summarized as follows.
-On one end are coeval groups with no discernable cores ({\it e.g.},
-Psc Eri and $\mu$ Tau,
+The populations found by the most recent studies can be summarized as
+follows.  On one end are coeval groups with no discernable cores ({\it
+e.g.}, Psc Eri and $\mu$ Tau,
 \citealt{meingast_psceri_2019,curtis_tess_2019,gagne_mutau_2020}).  On
 the other are hierarchically structured associations with many over
 and under-densities  \citep[{\it e.g.} the Sco-Cen and Vela
-associations,][]{pecaut_star_2016,cantatgaudin_velaOB2_2019}.  Here, we
-focus on an intermediate regime: low-density halos associated with a
-single overdensity, typically an open cluster that was known before
+associations,][]{pecaut_star_2016,cantatgaudin_velaOB2_2019}.  Here,
+we focus on an intermediate regime: low-density halos associated with
+a single overdensity, typically an open cluster that was known before
 Gaia
 \citep[see][]{kounkel_untangling_2019,kounkel_untanglingII_2020,meingast_2021}.
-In some cases, these halos could correspond to tidal tails, as have
-been reported in the Hyades
-\citep{meingast_hyades_2019,roser_hyades_2019}, the Ursa Major moving
-group \citep{gagne_lowmassUMA_2020}, and in Coma Berenices
-\citep{tang_comaber_2019}. 
+In some cases, these halos may actually be tidal tails, as have been
+reported in the Hyades \citep{meingast_hyades_2019,roser_hyades_2019},
+the Ursa Major moving group \citep{gagne_lowmassUMA_2020}, and in Coma
+Berenices \citep{tang_comaber_2019}. 
 
-One point of difficulty however is that different clustering methods
-yield differing levels of sensitivity and precision
-\citep{hunt_clustering_2020}.  Using say a Gaussian Mixture Model
-tautologically yields open clusters that are elliptical \citep[{\it
-e.g.},][]{wallace_m4_2018}.  Some unsupervised methods yield dispersed
-and asymmetric structures with number densities down to 100 times less
-than the field around the same regions (see {\it e.g.},
-\citealt{kounkel_untangling_2019} and \citealt{meingast_2021}).
-Differences between different clustering methods raise the issue of
-how contaminated the resulting samples are, and in some cases whether
-the reported structures are truly coeval stellar populations at all.
+One point of difficulty however is that different algorithms for
+identifying clusters yield differing levels of sensitivity and
+precision \citep{hunt_clustering_2020}.  For example, using a Gaussian
+Mixture Model tautologically yields open clusters that are elliptical
+\citep[{\it e.g.},][]{wallace_m4_2018}.  Some unsupervised methods
+yield dispersed and asymmetric structures with number densities down
+to 100 times lower than the field around the same regions ({\it
+e.g.}, \citealt{kounkel_untangling_2019} and \citealt{meingast_2021}).
+Since different techniques yield quantitatively and
+qualitatively different outcomes, the purity of kinematically selected
+samples is important to verify through independent lines of evidence,
+such as rotation periods and spectroscopic indicators.
 
-We have recently been making TESS light curves of stars reported to be
-members of coeval populations (CDIPS, \citealt{bouma_cdipsI_2019}) and
-searching them for planets \citep{bouma_cluster_2020}.
-Our analysis of TESS Sectors 1-13 yielded light curves of
-\numsouthernuniqlcs\ candidate cluster members in the Southern
-Ecliptic hemisphere, which are available on
+As part of a Cluster Difference Imaging Photometric Survey (CDIPS,
+\citealt{bouma_cdipsI_2019}), we have recently been making TESS light
+curves of stars reported to be members of coeval populations and
+searching them for planets \citep{bouma_cluster_2020}.  Our analysis
+of TESS Sectors 1-13 yielded light curves of \numsouthernuniqlcs\
+candidate cluster members in the Southern Ecliptic hemisphere, which
+are available on
 MAST\footnote{\url{https://archive.stsci.edu/hlsp/cdips}}.
 
-As part of this broader project, we focus here on a modest question:
-in just a single southern open cluster, is the cluster halo truly
-coeval with the core?  We chose NGC\,2516 for this analysis since it
-is young (100--200\,Myr) and sufficiently nearby ($d\approx400$\,pc)
-to facilitate photometric rotation measurements using TESS.  Its halo
-was recently reported by \citet{kounkel_untangling_2019} to span
-$\approx20\times10\times350$\,pc.  We want to know: is this halo real?
-To what extent can we use Gaia alone to reliably identify age-dated
-needles in the haystack of field stars?  What are the implications,
-observationally and theoretically, if we can identify the dispersed
-halos of open clusters?
+As part of this project, we focus here on a single southern open
+cluster, and ask: is the cluster halo truly coeval with the core?  We
+chose \cn\ for this analysis because it is young (100--200\,Myr) and
+sufficiently nearby ($d\approx400$\,pc) to facilitate photometric
+rotation measurements using TESS.  Its halo was recently reported by
+\citet{kounkel_untangling_2019} to span
+$\approx20\times10\times350$\,pc.  We want to know: is this halo real
+or is it just a collection of interlopers, foreground and background
+stars?  To what extent can we use Gaia alone to reliably identify
+age-dated needles in the haystack of field stars?  What are the
+implications, observationally and theoretically, if we can identify
+the dispersed halos of open clusters?
 
 A brief note on terminology.  Low-density stellar associations
 connected to a dense population (a ``core'') have been described as
@@ -218,13 +218,11 @@ being in ``halos'', ``strings'', ``coronae'', ``snakes'',
 ``outskirts'', and ``tidal tails'' \citep[{\it
 e.g.},][]{davenport_death_2010,kounkel_untangling_2019,roser_hyades_2019,tian_discovery_2020,meingast_2021}.
 The latter term implies a particular model for the formation of the
-dispersed group.  ``Halo'' is concise and model agnostic, but suffers
-from the suggestion of spherical symmetry.  The halo of NGC\,2516 is
-most accurately described as consisting of a leading and trailing
-tail. However, the goal of this study is to clarify whether the stars
-in these tails are the same age as stars in the core, and not to make
-a ruling on the origin of the overall structure.  For this reason, we
-adopt the model-agnostic ``halo''.
+dispersed group.  ``Halo'' is concise and model agnostic, but is not
+an ideal term because it connotes spherical symmetry, which is usually
+not the case.  The halo of \cn\ is most accurately described as
+consisting of a leading and trailing tail.  We call it a halo for
+simplicity.
 
 Section~\ref{sec:gaia} summarizes the astrometric analyses of the Gaia
 data that led to our interest in \cn.  Section~\ref{sec:agedate}
@@ -233,8 +231,8 @@ measures the age of the cluster's halo and core using Gaia photometry
 (Section~\ref{subsec:tess}), and relative lithium abundances
 (Section~\ref{subsec:lithium}).  In Section~\ref{sec:discussion} we
 discuss the implications of our analysis for NGC\,2516 specifically
-and stellar spin-down more generally.
-Section~\ref{sec:conclusion} gives our conclusions.
+and stellar spin-down more generally.  Section~\ref{sec:conclusion}
+gives our conclusions.
 
 
 \section{A Dispersed Halo and a Core?}
@@ -288,7 +286,7 @@ We selected candidate \cn\ members based on those reported in the
 literature.  While some pre-Gaia analyses were available
 \citep{jeffries_ngc2516_2001,Kharchenko_et_al_2013}, the purity and
 accuracy of the Gaia-derived results are the current state of the art.
-We therefore adopted what we viewed as the most important clustering
+We therefore adopted what we viewed as the most important Gaia-based
 samples to compare: those of \citet{cantatgaudin_gaia_2018},
 \citet{kounkel_untangling_2019} and \citet{meingast_2021}.  We refer
 to these studies in the following as
@@ -298,10 +296,10 @@ respectively.  A useful visualization of these samples is
 available online\footnote{
   \url{https://homepage.univie.ac.at/stefan.meingast/coronae.html},
   made by \citet{meingast_2021}, last accessed \texttt{2021/04/05}.}.
-While we considered performing our own clustering analysis on the
-Gaia data, such an effort would in effect only replicate the work of
-these investigators.  We opt to instead use their studies as a starting
-point.
+%While we considered performing our own clustering analysis on the
+%Gaia data, such an effort would in effect only replicate the work of
+%these investigators.  We opt to instead use their studies as a starting
+%point.
 
 The Gaia clustering studies each used different selection functions,
 which yielded different results.  \citetalias{cantatgaudin_gaia_2018}
@@ -1340,8 +1338,9 @@ to be understood.
 \acknowledgements
 \raggedbottom
 
-The authors thank L.~Hillenbrand, B.~Tofflemire, G.~Zhou, E.~Newton, A.~Mann, and A.~Kraus for fruitful discussions.
-
+The authors thank L.~Hillenbrand, B.~Tofflemire, G.~Zhou, E.~Newton,
+K.~Hawkins, A.~Mann, and A.~Kraus for the discussions on young stars,
+rotation, and lithium that encouraged this line of study.
 %
 L.G.B. and J.H. acknowledge support by the TESS GI Program, program
 NUMBER, through NASA grant NUMBER.
