@@ -22,7 +22,7 @@
 \newcommand{\nkinematic}{3{,}298} % "fullfaint" kinematic sample, core+halo (CG18+KC19+M21). from any call of earhat.helpers._get_fullfaint_dataframes
 \newcommand{\nnbhd}{13{,}843} % make_compstar_NGC_2516_sourcelist.py
 \newcommand{\ncore}{1{,}106}  % "fullfaint" kinematic sample, CG18. from any call of earhat.helpers._get_fullfaint_dataframes
-\newcommand{\nhalo}{2{,}2192} % "fullfaint" kinematic sample, KC19+M21. from any call of earhat.helpers._get_fullfaint_dataframes
+\newcommand{\nhalo}{2{,}192} % "fullfaint" kinematic sample, KC19+M21. from any call of earhat.helpers._get_fullfaint_dataframes
 
 % from drivers.cluster_rotation.get_auto_rotation_periods.py;  checked with plot_target_vs_actual_list_sanity_checks.py
 \newcommand{\ncdips}{2{,}205}
@@ -426,13 +426,13 @@ $G$ magnitude as a function of observed $\mathrm{Bp}-\mathrm{Rp}$
 color.  Stars in the core appear consistent with having a fixed age
 and metallicity, and varying mass.  The halo stars show a similar
 sequence, though with greater scatter.  One possible explanation for
-the additional scatter could be that the halo is more contaminated by
+the additional scatter is that the halo is more contaminated by
 field stars.  For instance, $\approx5$ red giants in the halo must be
 field interlopers, because their isochronally implied ages would be
 inconsistent with that of the cluster.
 
 Another possible explanation for scatter in the halo's HR diagram
-could be differential reddening across different sightlines.  The
+is differential reddening across different sightlines.  The
 reported halo spans 20$^\circ$ on-sky, and varies in position from
 about $b=-12^\circ$ to $b=-20^\circ$, with the stars closest to the
 galactic plane also being further from the Sun by up to 300\,pc
@@ -507,8 +507,8 @@ Ultimately, we adopted the PARSEC isochrones because
 temperature-opacity calibration, which leads the PARSEC isochrones to
 diverge at slightly lower mass than the MIST models.  Regardless, for
 purposes of age-dating the cluster we focus on the main-sequence
-turn-off (MSTO), since this is where the models have maximal
-predictive power.
+turn-off (MSTO), since this is where the models have maximum
+sensitivity to age.
 
 \citet{cummings_2018} presented techniques for mitigating some of the
 complexities of MSTO age-dating ({\it e.g.}, sparse turnoffs, stellar
@@ -520,8 +520,8 @@ PARSEC, MIST, or SYCLIST).
 
 Our goal is to determine whether the ages of the core and halo are
 consistent.  The left panel of Figure~\ref{fig:hr} suggests that
-isochronally, they are: stars past the turnoff in both the halo and
-core are on a consistent locus.  The right panel of
+isochronally, they are consistent: stars past the turnoff in both the
+halo and core are on the same locus.  The right panel of
 Figure~\ref{fig:hr} demonstrates the precision with which the claim
 can be made.  The MSTO stars are consistent with the 178 and 316 Myr
 models, but are bluer than the 100 Myr model.  The red-giant-branch
@@ -596,10 +596,9 @@ We removed systematic trends shared between all light curves on each
 CCD in each sector individually, and stitched together the resulting
 light curves before searching for rotation-induced periodicity.
 Details regarding our detrending approach are presented in
-Appendix~\ref{app:detrending}.  After applying the initial ensemble
-decorrelation to remove systematic trends, we proceeded with a few
-cleaning steps: we masked 0.7 days at the beginning and end of each
-spacecraft orbit, and ran a sliding standard-deviation rejection
+Appendix~\ref{app:detrending}.  After detrending, we proceeded with a
+few cleaning steps: we masked 0.7 days at the beginning and end of
+each spacecraft orbit, and ran a sliding standard-deviation rejection
 window over the light curve, which removed any outlying points within
 $\pm3\times$MAD of the median in each window.
 
@@ -611,7 +610,7 @@ minimization algorithm
 We used the CDIPS aperture radius that, based on theoretical
 expectations, was expected to give the optimal balance between light
 from the target star and background-light \citep{Sullivan_2015}.  This
-typically resulted in an aperture radius of either 1 or 1.5 pixels.
+typically resulted in a circular aperture radius of either 1 or 1.5 pixels.
 We recorded the top five periodogram peaks from each method, and their
 corresponding powers.  Finally, as a check on crowding, we recorded
 the number of stars within the aperture with equal or greater
@@ -703,16 +702,16 @@ possible explanations in Section~\ref{disc:rotn}.
   2D tangential velocity difference.  Bin widths are chosen to enforce
   the same number of stars in the denominator ($N=54$) per bin.  In the
   {\it bottom panels}, the innermost and outermost 100 stars in
-  position and velocity space are displayed in the space of rotation
-  periods and dereddened colors.
+  position and velocity space (black and green) are shown in the
+  space of rotation periods and dereddened colors.
   \label{fig:physical_x_rotn}
 	}
 \end{figure*}
 
-The TESS rotation periods can provide an independent check on the
+The TESS rotation periods provide an independent check on the
 Gaia-derived kinematic cluster memberships.  We explored this by
 cross-matching the stars with detected TESS rotation periods against
-our original target list of \nkinematic\ Gaia DR2 members.  
+our original target list of \nkinematic\ Gaia members.  
 
 To visualize the results, we again opted for Cartesian coordinates,
 and supplemented them by calculating the tangential stellar velocities
@@ -723,16 +722,16 @@ compare the observed proper motion $(\mu_{\alpha'}, \mu_\delta)$ with
 what the proper motion at the star's position would have been if the
 star were comoving with the core of \cn.  This yields a quantity we
 denote $\Delta v^{*}$, per \citetalias{meingast_2021}.  We convert
-these proper motion differences to physical units by dividing by the
-distance to each star, taken as the inverse parallax.  
+these proper motion differences to physical units by multiplying by
+the measured parallax.  
 
 The results are shown in the top two rows of
 Figure~\ref{fig:physical_x_rotn}.  In these figures, to ensure a fair
 comparison, we only show stars with $0.5<\bpmrp<1.2$ for which our
-TESS pipeline succeeding in making light curves.  In other words---the
-base sample is the stars for which we could have plausibly detected a
-rotation period.  This color range is preferred since the the slow
-sequence becomes less defined for spectral types later than
+TESS pipeline succeeding in making light curves.  In other words, the
+stars in the base sample are those for which we could have plausibly
+detected a rotation period.  This color range is preferred because the
+the slow sequence becomes less defined for spectral types later than
 $\approx$K4V.  The bins in the histograms (top-right) were chosen to
 ensure that the same number of stars were in each bin.  Rotation
 periods are detected for 66\% of stars at least 25\,pc from the
@@ -749,14 +748,14 @@ After accounting for the stars that were expected to show rotation
 periods and did not, this suggests field contaminant rates of
 $\approx$40-50\% for the outermost cluster members in our target list.
 
-Even with contaminants, our rotation period measurements show that the
-halo extends to separations of $\approx$250\,pc in physical space from
-the cluster core.  The most widely separated F2V-K2V stars with
-rotation periods (blue points in Figure~\ref{fig:physical_x_rotn}) are
-separated by $\approx$430\,pc.  The total length of the structure is
-therefore 400--500\,pc, depending on which members of the halo are
-chosen as the ``tips'' on either end.  This agrees with the overall
-structure of the halo reported by
+Even with this level of contamination, our rotation period
+measurements show that the halo extends to separations of
+$\approx$250\,pc in physical space from the cluster core.  The most
+widely separated F2V-K2V stars with rotation periods (blue points in
+Figure~\ref{fig:physical_x_rotn}) are separated by $\approx$430\,pc.
+The total length of the structure is therefore 400--500\,pc, depending
+on which members of the halo are chosen as the ``tips'' on either end.
+This agrees with the overall structure of the halo reported by
 \citetalias{kounkel_untangling_2019}, with some minor caveats visible
 in the top-left panels of Figure~\ref{fig:physical_x_rotn}.
 
@@ -817,7 +816,7 @@ halo population of \cn\ was an analysis of the Li\,\textsc{I}
 6708\,\AA\ doublet.  This type of age measurement has been reviewed by
 \citet{soderblom_ages_2010}, and its connection to stellar rotation
 has recently been surveyed by \citet{bouvier_lithium-rotation_2020}.
-For \cn, two spectroscopic datasets seemed particularly important:
+For \cn, two spectroscopic datasets seemed important:
 Gaia-ESO \citep{gilmore_gaiaeso_2012} and GALAH
 \citep{silva_galah_2015}.  At the time of analysis, Gaia-ESO DR4 and
 GALAH DR3 were the most relevant, respectively \citep[{\it
@@ -827,9 +826,9 @@ selection and results from each survey were as follows.
 Gaia-ESO selected candidate \cn\ members to observe with the GIRAFFE
 and UVES spectrographs based on previously reported literature members
 and publicly available photometry.  Since the existence of the \cn\
-halo was not known at the time of target selection, very few ``halo''
+halo was not known at the time of target selection, very few halo
 stars are in the sample.  For \cn, \citet{randich_gaiaeso_2018}
-ultimately reported stellar parameters (including lithium equivalent
+reported stellar parameters (including lithium equivalent
 widths and metallicities) for 796 stars that they considered possible
 \cn\ members.  Cross-matching against our kinematic list of
 \nkinematic\ candidate members by position and imposing a 0$\farcs$5
@@ -878,7 +877,7 @@ lithium doublet.  We then continuum normalized the spectra using a
 third-degree Chebyshev series, while excluding any regions that showed
 absorption lines ({\it e.g.}, Fe\,\textsc{I} is present at
 6703.58\,\AA and 6705.10\,\AA).  We proceeding by fitting a Gaussian
-to the continuum normalized spectra, considering only a $\pm 1\,$\AA
+to the continuum normalized spectra, considering only a $\pm 1\,$\AA\ 
 window centered on the Li doublet.  The equivalent widths were then
 evaluated by numerically integrating the fitted model over the same
 window.  Our approach therefore includes the Fe\,6707.44 blend in the
@@ -906,7 +905,7 @@ found either null results or only slightly significant
 %    25           29.378   52.500  5290724681552584192  6511
 
 Figure~\ref{fig:lithiumcorehalo} shows the concatenation of the
-Gaia-ESO and GALAH results, with the points colored by whether the
+Gaia-ESO and GALAH results, with the points colored according to whether the
 stars are in the core or the halo of the cluster.  The GALAH spectra
 span a color range of $0<\bpmrp<1.5$, due to the $V<14$ brightness
 cutoff of the survey.  The overall increase of Li EW from
@@ -934,8 +933,8 @@ shown in Figure~\ref{fig:lithiumrot}. At fixed stellar mass, the rapid
 rotators have lithium equivalent widths an order of magnitude larger
 than the slow rotators.  This effect is mostly apparent in the K
 dwarfs.  Similar trends were noted in the Pleiades over three decades
-ago \citep{butler_pleiades_1987}, and are most likely caused by
-intrinsic differences in lithium abundance
+ago \citep{butler_pleiades_1987}, and are thought to be caused by
+differences in lithium abundance
 \citep{soderblom_evolution_1993}.  Alternative explanations, such as
 differences in line-formation conditions ({\it e.g.,} chromospheric
 temperatures, microturbulent velocities, or the presence of starspots)
@@ -967,15 +966,15 @@ Coma Ber by \citet{tang_comaber_2019}; the other halos may show
 similar trends.
 
 One possible explanation is that the observed halo structures are
-tidal tails \citep[{\it e.g.},][]{krumholz_star_2019}. The idea would
-be that as the cluster contracts, stars escape out of the Lagrange
-points imposed by the Milky Way's potential, and form leading and
-lagging arms due to differential rotation in the Galaxy.  Kinematic
-evidence that the core of \cn\ may be undergoing contraction has
-recently been presented by \citet{healy_stellar_2020}, and might
-support this interpretation.  Whether the exact rate of contraction,
-and the corresponding ``evaporation rate'' of the core is sufficient
-to explain the formation of the halo has yet to be assessed.  The
+tidal tails \citep[{\it e.g.},][]{krumholz_star_2019}. The idea is
+that as the cluster contracts, stars escape out of the Lagrange points
+imposed by the Milky Way's potential, and form leading and lagging
+arms due to differential rotation in the Galaxy.  Kinematic evidence
+that the core of \cn\ may be undergoing contraction has recently been
+presented by \citet{healy_stellar_2020}, which might increase the rate
+at which stars escape.  Whether the exact contraction rate, and the
+corresponding evaporation rate of the core are sufficient to
+explain the formation of the halo has yet to be assessed.  The
 presence or lack of epicyclic overdensities in the tails might also
 help clarify whether this scenario is happening
 \citep{kupper_more_2012}.
@@ -1019,15 +1018,15 @@ periods tend to rotate very rapidly ($<3$\,days), although these are
 beyond the magnitude limit of our analysis.  This section briefly
 discusses the origins of these features in the rotation-color diagram.
 
-The existence of a slow sequence is the main premise of gyrochronology
+The existence of a slow sequence is the main basis of gyrochronology
 \citep[{\it e.g.},][]{barnes_rotational_2003}.  While the initial
 spindown relation ($P_{\rm rot}\sim t^{1/2}$) proposed by
-\citet{skumanich_time_1972} has not worked in detail, the general idea
-is correct, and the first-order effect can be understood through
-magnetic breaking \citep{weber_angular_1967}.
+\citet{skumanich_time_1972} is not an accurate enough description, the
+general idea is correct, and the first-order effect can be understood
+through magnetic braking \citep{weber_angular_1967}.
 
 The other features of the rotation-color diagram are indications that
-magnetic breaking is not always the most important effect.  The
+magnetic braking is not always the most important effect.  The
 question of why the rapid rotators exist, for instance, has not yet
 been definitively answered.  Models that introduce variable
 core-envelope decoupling timescales can reproduce each type of
@@ -1036,7 +1035,7 @@ why these decoupling timescales should be differ for stars that are
 otherwise identical.  Another possible explanation invokes a
 spontaneous and random change of magnetic field topology that causes
 the dynamo to couple more strongly with the stellar wind
-\citep{brown_metastable_2014}.  Other processes could be external the
+\citep{brown_metastable_2014}.  Other processes could be external to the
 star entirely: \citet{qureshi_signature_2018} for instance have
 reported that mergers between giant planets and the star could explain
 a non-neglible fraction of the rapid rotators.
@@ -1060,22 +1059,23 @@ of binarity in the slow and fast rotation subsamples are 30\% (63/210)
 and 56\% (40/71); the fast rotators show a preference for binarity.
 This correlation is in line with the earlier findings noted above.
 While many rapid rotators in \cn\ (34\%) have no evidence for being
-binary, we emphasize that the cuts we used to select binaries (${\rm
+binaries, we emphasize that the cuts we used to select binaries (${\rm
 RUWE}>1.2$; photometric excess exceeding 0.3\,mag) leave open a
 significant fraction of parameter space.  A 0.3\,mag flux excess, for
 instance, corresponds to mass ratios $M_2/M_1 \gtrsim 0.72$, assuming
 the luminosity $L$ scales as $M^{3.5}$. 
 
 Comparing the explanations of disk-locking against tidal
-synchronization, the population statistics seem to strain the
+synchronization, the population statistics seem to rule out the
 possibility of tidal synchronization.  A quarter of the \cn\ members
 are rapidly rotating.  In comparison, in the field half of Sun-like
-stars are binaries, and $\approx$9\% of these binaries have periods below 100\,days
-\citep{raghavan_survey_2010}.  If we assume that all binaries with
-sub-100\,day periods become tidally synchronized, then we can only explain
-a rapid rotator occurrence rate of $\approx$5\%.  Elevated binarity
-fractions in pre-MS stars likely do not change this picture \citep[see
-Sec.~4.4 of][]{duchene_stellar_2013}.
+stars are binaries, and only $\approx$9\% of these binaries have
+periods below 100\,days \citep{raghavan_survey_2010}.  If we assume
+that all binaries with sub-100\,day periods become tidally
+synchronized, then we can only explain a rapid rotator occurrence rate
+of $\approx$5\%.  Elevated binarity fractions in pre-MS stars likely
+do not change this picture \citep[see Section~4.4
+of][]{duchene_stellar_2013}.
 
 A separate effect is that on the slow rotation sequence,
 Figure~\ref{fig:rot} shows that the binary stars appear to be either
@@ -1123,14 +1123,14 @@ efficient convective penetration, which then lowers the mixing
 efficiency at the convective-radiative boundary
 \citep{baraffe_lithium_2017}.  The magnetic field itself may even be
 sufficient to inhibit the convection \citep{ventura_Li_B_1998}.
-Alternatively, the star's structure could be at fault: rapid rotators
+Alternatively, the star's temperature and density profiles could be at fault: rapid rotators
 have the strongest magnetic fields and the most spotted surfaces.
 These spots lower the photospheric flux, and drive the stellar radius
 to expand while lowering the core temperatures, which in turn slows
 the rate of lithium-destroying proton capture reactions
 \citep{feiden_magnetic_2013,somers_rotation_2015}.  
 
-None of the internal processes noted above explain the initial
+None of the internal processes noted above answer the initial
 question of why some of the G and K dwarfs rotate rapidly to begin
 with.  One clue noted above is that the rapid rotators tend to be in
 photometric or astrometric binaries.  The majority of such binaries
@@ -1226,15 +1226,15 @@ As noted in Section~\ref{subsec:hr}, a color-color analysis of the
 main sequence turn-off (MSTO) by \citet{cummings_2018} found that \cn\
 is 40-60\,Myr older than the Pleiades.  Given a Pleiades age of
 $125\pm20$\,Myr, this yields a MSTO age for \cn\ of $175\pm35$\,Myr.
-The gyrochronological age we have argued is likely super-Pleiades,
-{\it i.e.}, in the range of 150 to 200\,Myr.  The lithium age based on
-the depletion of the G and K dwarfs is more uncertain, but is
-consistent with the Pleiades and could be a bit older ($\approx$100 to
-200\,Myr).  Averaging these three different indicators gives an age
-for \cn\ of $167\pm20$\,Myr, if we set the uncertainties to match the
-absolute Pleiades age uncertainty of $\pm 20\,$Myr
-\citep{soderblom_ages_2014}.  Whether this absolute age is at all
-meaningful, we leave the reader to judge.
+The gyrochronological age we have argued is likely older than the
+Pleiades, {\it i.e.}, in the range of 150 to 200\,Myr.  The lithium
+age based on the depletion of the G and K dwarfs is more uncertain,
+but is consistent with the Pleiades and could be a bit older
+($\approx$100 to 200\,Myr).  Averaging these three different
+indicators gives an age for \cn\ of $167\pm20$\,Myr, if we set the
+uncertainties to match the absolute Pleiades age uncertainty of $\pm
+20\,$Myr \citep{soderblom_ages_2014}.  Whether this absolute age is at
+all meaningful, we leave the reader to judge.
 
 
 
@@ -1316,7 +1316,7 @@ the structure of \cn.
    %
 \end{itemize}
 
-The existence of the halo itself should not be not very surprising.  A
+The existence of the halo itself is physically plausible.  A
 star with a 1\kms\ velocity difference from the cluster average will
 move away from the center at a rate of 1\,pc\,Myr$^{-1}$.  For a
 $\sim$100\,Myr cluster, a halo with characteristic size $\sim$100\,pc
@@ -1363,7 +1363,7 @@ Funding for the TESS mission is provided by NASA's Science Mission
 directorate.
 %
 We thank the TESS Architects (George Ricker, Roland Vanderspek, Dave
-Latham, Sara Seager, Josh Winn, Jon Jenkins) and the many TESS team
+Latham, Sara Seager, Jon Jenkins) and the many TESS team
 members for their efforts to make the mission a continued success.
 %
 
@@ -1631,7 +1631,7 @@ candidate cluster members.
 
 
 
-\section{Considerations for Removing Systemic Variability from TESS Light Curves}
+\section{Considerations for Removing Systematic Variability from TESS Light Curves}
 \label{app:detrending}
 
 In ``detrending'' before searching for stellar rotation signals in the

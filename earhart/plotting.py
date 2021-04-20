@@ -2673,8 +2673,14 @@ def plot_rotation_X_positions(outdir, basedata='fullfaint', cmapname=None,
 
         axs[0].text(0.03, 0.96, '$\Delta r_{\mathrm{3D}}$: '+f'{mdf0.delta_r_pc.min():.1f}-{mdf0.delta_r_pc.max():.1f} pc', va='top',
                     ha='left', transform=axs[0].transAxes, color='k', bbox=bbox)
-        axs[0].text(0.03, 0.88, '$\Delta r_{\mathrm{3D}}$: '+f'{mdf1.delta_r_pc.min():.1f}-{mdf1.delta_r_pc.max():.1f} pc', va='top',
-                    ha='left', transform=axs[0].transAxes, color='lime', bbox=bbox)
+        _txt = axs[0].text(0.03, 0.88, '$\Delta r_{\mathrm{3D}}$: '+f'{mdf1.delta_r_pc.min():.1f}-{mdf1.delta_r_pc.max():.1f} pc', va='top',
+                    ha='left', transform=axs[0].transAxes, color='forestgreen', bbox=bbox)
+
+        _txt.set_path_effects([
+            pe.Stroke(linewidth=0., foreground='black'),
+            pe.Normal()]
+        )
+
 
         # now the v_tang...
         sort_df = mdf.sort_values(by='delta_mu_prime_km_s')
@@ -2701,8 +2707,14 @@ def plot_rotation_X_positions(outdir, basedata='fullfaint', cmapname=None,
         axs[1].text(0.03, 0.96, txt0, va='top', ha='left',
                     transform=axs[1].transAxes, color='k', bbox=bbox)
         txt1 = '$\Delta v_{\mathrm{2D}}^{*}$: '+f'{mdf1.delta_mu_prime_km_s.min():.1f}-{mdf1.delta_mu_prime_km_s.max():.1f}'+' km$\,$s$^{-1}$'
-        axs[1].text(0.03, 0.86, txt1, va='top', ha='left',
-                    transform=axs[1].transAxes, color='lime', bbox=bbox)
+        _txt = axs[1].text(0.03, 0.86, txt1, va='top', ha='left',
+                    transform=axs[1].transAxes, color='forestgreen', bbox=bbox)
+
+        _txt.set_path_effects([
+            pe.Stroke(linewidth=0., foreground='black'),
+            pe.Normal()]
+        )
+
 
 
     # axes labels
@@ -2942,7 +2954,7 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
 
         axs[0].set_xlabel('$\Delta r_{\mathrm{3D}}$ [pc]')
         # axs[0].set_ylabel('Fraction in bin with P$_\mathrm{rot}$')
-        fig.text(-0.02,0.5, 'Fraction in bin with P$_\mathrm{rot}$', va='center',
+        fig.text(-0.02,0.5, 'Fraction in bin with measured P$_\mathrm{rot}$', va='center',
                  rotation=90)
 
         # axs[0].set_xlim([-10, 410])
