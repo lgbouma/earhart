@@ -53,6 +53,7 @@ from astropy.table import Table
 
 import matplotlib.patheffects as pe
 from matplotlib.ticker import MaxNLocator
+import matplotlib.transforms as transforms
 
 from aesthetic.plot import savefig, format_ax, set_style
 
@@ -3609,7 +3610,7 @@ def plot_lumfunction_vs_position(outdir):
     savefig(f, outpath)
 
 
-def plot_lightcurves_rotators(outdir, cleaning='periodogram_match'):
+def plot_lightcurves_rotators(outdir, cleaning='periodogram_match', color=0):
 
     set_style()
 
@@ -3617,27 +3618,71 @@ def plot_lightcurves_rotators(outdir, cleaning='periodogram_match'):
         "NGC_2516", cleaning=cleaning
     )
 
-    datadir = "/Users/luke/Dropbox/proj/cdips/results/allvariability_reports/NGC_2516/data"
+    from earhart.paths import ALLVARDATADIR
 
-    N_show = 100
-    np.random.seed(42)
+    N_show = 50
+    np.random.seed(123)
     sdf = df.sample(n=N_show, replace=False)
 
-    for ix, r in sdf.iterrows():
+    BpmRp0 = sdf['phot_bp_mean_mag'] - sdf['phot_rp_mean_mag'] - AVG_EBpmRp
+
+    sdf['(Bp-Rp)0'] = BpmRp0
+    sdf = sdf.sort_values(by='(Bp-Rp)0', ascending=False)
+
+
+    plt.close('all')
+    factor = 0.5
+    # 8.5 x 9 inches, since 8.5 x 11 is full page and we need caption space.
+    fig, ax = plt.subplots(figsize=(factor*8.5, factor*9))
+
+    # plot the observed ticks. x coords are axes, y coords are data
+    trans = transforms.blended_transform_factory(ax.transAxes, ax.transData)
+
+    colors = mpl.cm.plasma(np.linspace(0.,0.8,len(sdf)))
+
+    ix = 0
+    for _, r in sdf.iterrows():
+
+        dflux = ix*0.075
 
         source_id = r["source_id"]
-        pklpath = os.path.join(datadir, f"{source_id}_allvar.pkl")
+        pklpath = os.path.join(ALLVARDATADIR, f"{source_id}_allvar.pkl")
         if not os.path.exists(pklpath):
-            raise NotImplementedError
+            raise NotImplementedError("are you on phtess2? you should be.")
 
         with open(pklpath, 'rb') as f:
             d = pickle.load(f)
 
-        import IPython; IPython.embed()
-        assert 0
+        fluxkey = [k for k in d.keys() if "SPCA" in k and "SPCAE" not in k][0]
+        time = d['STIME']
+        flux = d[fluxkey]
 
-    # make plot
-    plt.close('all')
+        if not color:
+            ax.scatter(time-2457000, flux+dflux, c='black', alpha=0.9, zorder=2, s=0.1,
+                       rasterized=True, linewidths=0)
+        else:
+            ax.scatter(time-2457000, flux+dflux, color=colors[ix], alpha=0.9, zorder=2, s=0.1,
+                       rasterized=True, linewidths=0)
 
-    f, ax = plt.subplots(figsize=(4,3))
+            if ix % 7 == 0:
+                bbox = dict(facecolor='white', alpha=1, pad=0, edgecolor='white')
+                txt = '(Bp-Rp)$_0$='+f'{r["(Bp-Rp)0"]:.2f}'
+                ax.text(0.96, np.nanmedian(flux+dflux), txt, va='center',
+                        ha='right', transform=trans, color=colors[ix], bbox=bbox,
+                        fontsize=6)
 
+        ix += 1
+
+    ax.set_xlabel('Time [BTJD]')
+    ax.set_ylabel('Relative flux')
+
+    ylim = ax.get_ylim()
+    ax.set_ylim([0.9, ylim[1]])
+
+    format_ax(ax)
+
+    outstr = ''
+    if color:
+        outstr += '_color'
+    outpath = os.path.join(outdir, f'lightcurves_rotators{outstr}.png')
+    savefig(fig, outpath)
