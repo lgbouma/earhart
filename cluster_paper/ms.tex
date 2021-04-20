@@ -472,7 +472,7 @@ $E(\mathrm{B}-\mathrm{V})_{\rm S}=0.206\pm0.039$.
 the color excess exceeds about 0.10\,mag. We therefore applied the
 correction proposed by \citet{bonifacio_search_2000}, and additionally
 corrected for the mean cluster distance by a factor
-$\exp(-\abs{d\sin(b)}/h)$ where $d$ is the average cluster distance,
+$\exp(-|d\sin(b)|/h)$ where $d$ is the average cluster distance,
 $b$ is the average galactic latitude, and $h$ is the scale height of
 the galactic disk, assumed to be 125\,pc.  This yielded our adopted
 $E(\mathrm{B}-\mathrm{V})=0.102\pm0.019$, where the uncertainty
@@ -1569,7 +1569,7 @@ members for their efforts to make the mission a continued success.
 \section{Clustering Methods and Outcomes}
 \label{app:clustering}
 
-\begin{figure}[h]
+\begin{figure}[t]
 	\begin{center}
 		\leavevmode
 		\includegraphics[width=0.3\textwidth]{f10.pdf}
@@ -1670,42 +1670,57 @@ candidate cluster members.
 \section{Considerations for Removing Systematic Variability from TESS Light Curves}
 \label{app:detrending}
 
-In ``detrending'' before searching for stellar rotation signals in the
+\begin{figure}[t]
+	\begin{center}
+		\leavevmode
+		\includegraphics[width=\textwidth]{f14.pdf}
+	\end{center}
+	\vspace{-1cm}
+  \caption{ {\bf \cn\ light curves sorted in order
+  of stellar color.} Fifty stars are randomly selected from Set
+  $\mathcal{B}$ (see Section~\ref{subsubsec:cluster}), and the light
+  curves are detrended and cleaned as discussed in
+  Appendix~\ref{app:detrending}.  Each light curve is separated by
+  7.5\% in relative flux.  \label{fig:lightcurves}
+	}
+\end{figure}
+
+
+
+In detrending before searching for stellar rotation signals in the
 TESS, our goal was to preserve astrophysical variability, while
 removing systematic variability.  One particular concern for the TESS
 light curves is systematic variability at the timescale of the 14-day
 satellite orbit, mostly induced by scattered light from the Earth and
 Moon.
 
-We opted to use a variant of the principal component analysis approach 
-described by
-\citet{bouma_cdipsI_2019}. This
-principal component analysis focuses on a set of ``trend stars'' selected from
-across each CCD according using ad-hoc heuristics that on average lead
-the light curves to be dominated by systematic variability.  The
-resulting principal component vectors, also referred to as the
-eigenvectors, are rank-ordered by the degree of variance that they
-predict in the training set of trend stars.
+We opted to use a variant of the principal component analysis (PCA)
+approach discussed by \citet{bouma_cdipsI_2019}. This PCA approach
+uses a set of ``trend stars'' selected from across each CCD according
+using ad-hoc heuristics that on average lead the trend star light
+curves to be dominated by systematic variability.  The resulting
+principal component vectors, also referred to as the eigenvectors, are
+rank-ordered by the degree of variance that they predict in the
+training set of trend stars.
 
 We then posit that any given target star's light curve is described as
 a linear combination of the eigenvectors.  We also considered the
 inclusion of additional systematic vectors that could affect the light
-curve, discussed below.  These can be treated as additional ``features'' in the linear
-model.  To determine the coefficients of the linear model after the
-full set of eigenvectors (plus optional ``sytematic'' vectors) had
-been asssembled,  we explored two possible methods: ordinary least
-squares, and ridge regression. Ridge regression is the same as
-ordinary least squares, except it includes an $\ell^2$ norm with a
-regularization coefficient. The regularization coefficient that best
-applied for any given target light curve was determined using a
-cross-validation grid search, through
-\texttt{sklearn.linear\_modelRidgeCV} \citep{scikit-learn}.
-Each target light curve was mean-subtracted and normalized by its
-standard deviation, as were the eigenvectors. The linear problem was
-then solved numerically, and the light curve was reconstructed by
-re-adding the original mean, and re-multiplying by the standard
-deviation to ensure that the variance of the light curve did not
-change.
+curve, discussed below.  These can be treated as additional
+``features'' in the linear model.  To determine the coefficients of
+the linear model after the full set of eigenvectors (plus optional
+``sytematic'' vectors) had been asssembled,  we explored two possible
+methods: ordinary least squares, and ridge regression. Ridge
+regression is the same as ordinary least squares, except it includes
+an $\ell^2$ norm with a regularization coefficient. The regularization
+coefficient that best applied for any given target light curve was
+determined using a cross-validation grid search, through
+\texttt{sklearn.linear\_modelRidgeCV} \citep{scikit-learn}.  Each
+target light curve was mean-subtracted and normalized by its standard
+deviation, as were the eigenvectors. The linear problem was then
+solved numerically, and the light curve was reconstructed by re-adding
+the original mean, and re-multiplying by the standard deviation to
+ensure that the variance of the light curve did not change.
 
 We found that the choice of using ordinary least squares versus ridge
 regression did not seem to significantly affect the resulting light
@@ -1763,21 +1778,10 @@ important:
 After all these considerations, for every ``target star'', we
 ultimately decorrelated the raw (image-subtracted and
 background-subtracted) light curve using a linear model with ordinary
-least squares.  The vectors considered in the model were the 1
+least squares.  The vectors used in the model were the 1
 unsmoothed background flux vector, and 5 smoothed PCA eigenvectors.
-
-\begin{figure}[h]
-	\begin{center}
-		\leavevmode
-		\includegraphics[width=0.9\textwidth]{f14.pdf}
-	\end{center}
-	\vspace{-0.7cm}
-  \caption{ {\bf Fifty random-drawn \cn\ light curves sorted in order
-  of stellar color.} Stars are from Set $\mathcal{A}$ (see Section
-  {\bf TODO}.
-  \label{fig:lightcurves}
-	}
-\end{figure}
+Figure~\ref{fig:lightcurves} shows fifty light curves
+randomly drawn from the resulting ``Set $\mathcal{B}$''.
 
 
 
