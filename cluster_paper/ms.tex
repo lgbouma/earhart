@@ -66,9 +66,12 @@
 \defcitealias{kounkel_untangling_2019}{KC19}
 \defcitealias{meingast_2021}{M21}
 
+% Cluster Difference Imaging Photometric Survey. III.
+% Rotation and Lithium in an Open Cluster Spanning 500\,Parsecs
 \title{
-  Cluster Difference Imaging Photometric Survey. III.
-  Rotation and Lithium in an Open Cluster Spanning 500\,Parsecs
+  Rotation and Lithium Confirmation of a 500 Parsec Halo for the Open
+  Cluster NGC\,2516\footnote{This is paper 3 of the Cluster Difference
+  Imaging Photometric Survey.}
 }
 
 %\suppressAffiliations
@@ -457,17 +460,24 @@ To determine the reddening correction across \cn, we queried the 2MASS
 DUST service\footnote{
   \url{http://irsa.ipac.caltech.edu/applications/DUST}; query
   performed using the \texttt{astrobase.services.dust} module
-  \citep{bhatti_astrobase_2018}.  } and retrieved the extinction
-parameters at the positions of each NGC\,2516 member.  The mean and
-standard deviation of the $E(\mathrm{B}-\mathrm{V})$ values for the
-\citet{schlegel_maps_1998} and \citet{schlafly_measuring_2011} maps
-were consistent, so we adopted the average from
-\citet{schlegel_maps_1998}: $E(\mathrm{B}-\mathrm{V})_{\rm
-S}=0.206\pm0.039$.  \citet{bonifacio_search_2000} found however that
-the \citet{schlegel_maps_1998} maps overestimate the reddening values
-when the color excess exceeds about 0.10\,mag. Applying the correction
-proposed by \citet{bonifacio_search_2000} leads to our adopted
-$E(\mathrm{B}-\mathrm{V})=0.102\pm0.019$.  Finally, to convert to Gaia
+  \citep{bhatti_astrobase_2018}.  } and retrieved the total
+line-of-sight extinction parameters at the positions of each \cn\ 
+member.  The mean and standard deviation of the
+$E(\mathrm{B}-\mathrm{V})$ values for the \citet{schlegel_maps_1998}
+and \citet{schlafly_measuring_2011} maps were consistent, so we
+adopted the average from \citet{schlegel_maps_1998}:
+$E(\mathrm{B}-\mathrm{V})_{\rm S}=0.206\pm0.039$.
+\citet{bonifacio_search_2000} found however that the
+\citet{schlegel_maps_1998} maps overestimate the reddening values when
+the color excess exceeds about 0.10\,mag. We therefore applied the
+correction proposed by \citet{bonifacio_search_2000}, and additionally
+corrected for the mean cluster distance by a factor
+$\exp(-\abs{d\sin(b)}/h)$ where $d$ is the average cluster distance,
+$b$ is the average galactic latitude, and $h$ is the scale height of
+the galactic disk, assumed to be 125\,pc.  This yielded our adopted
+$E(\mathrm{B}-\mathrm{V})=0.102\pm0.019$, where the uncertainty
+reflects the standard deviation of the individual
+\citet{schlegel_maps_1998} values.  Finally, to convert to Gaia
 colors we used the calibration of \citet{stassun_TIC8_2019}, namely
 $E(\mathrm{Bp}-\mathrm{Rp})=1.31 E(\mathrm{B}-\mathrm{V})$ and
 $A_G=2.72 E(\mathrm{B}-\mathrm{V})$.  This yielded
@@ -486,10 +496,14 @@ with the spectroscopic metallicity from
 \citet[][Sec~4.4.4]{cummings_2011_li_iron}, and with the iron
 abundance recently determined by the Gaia-ESO team
 \citep{baratella_gaiaeso_2020}, which represented an up-revision from
-an earlier sub-solar metallicity \citep{randich_gaiaeso_2018}.  While
-\citet{bailey_rv_2018} report a slightly sub-solar metallicity for the
-cluster, we prefer super-solar based on the goodness of fit from the
-photometry.
+an earlier sub-solar metallicity \citep{randich_gaiaeso_2018}.  We
+caution though that other sub-solar metallicities have been reported
+\citep{bailey_rv_2018}, and note that the cluster metallicity and
+reddening are degenerate; if the reddening is lowered, the implied
+metallicity will increase.  While a detailed redetermination of
+these parameters from the Gaia photometry is beyond our scope, our
+adopted values for both the reddening and metallicity are within the
+range of previously reported values in the literature.
 
 Overall, the data and models agree for masses above
 $\approx$0.45\,$M_\odot$.  Below this mass, the data and models
@@ -575,6 +589,8 @@ the statistical and systematic components from \cite{cummings_2018}.
   stars).  Overplotted in orange are sources at least 0.3\,mag above
   an empirically fit cluster isochrone (photometric binaries; 20\% of
   stars).
+  Rotation periods for comparison field stars are shown in
+  Appendix~\ref{app:compstar}.
   \label{fig:rot}
 	}
 \end{figure*}
@@ -617,22 +633,27 @@ the number of stars within the aperture with equal or greater
 brightness than the target star, and with brightness within 1.25 and
 2.5 TESS magnitudes of the target star.
 
+The resulting rotation periods and periodogram powers are reported,
+regardless of detection significance, in Table~\ref{tab:maintable}.
 To clean the resulting rotation period measurements, we designed a set
 of automated cleaning criteria, which yielded sets we denote
 $\mathcal{A}$ and $\mathcal{B}$.  For both sets, we considered light
 curves for which the peak Lomb-Scargle periodogram period was below 15
 days, the normalized Lomb-Scargle power exceeded 0.08, and for which
 no equal-brightness or greater companions were within the aperture.
-Beyond requiring that the target star be the brightest star in the
-aperture, we also required that at most one companion with brightness
-exceeding one tenth of the target star's brightness be present in the
-aperture according to the Gaia DR2 source catalog.  For set
-$\mathcal{A}$, this yielded \nautorotnumerator\ light curves, out of
-\nautorotdenominator\ stars for which rotation periods might plausibly
-have been detected.  For set $\mathcal{B}$, we additionally required
-that the Lomb-Scargle and Stellingwerf phase-dispersion methods
-yielded identical periods to within 10\%.  This yielded
-\nautorotnumeratormatching\ light curves. 
+These limits were chosen after inspecting the light curves visually,
+to eliminate low-quality rotation periods while retaining high
+completeness.  Beyond requiring that the target star be the brightest
+star in the aperture, we also required that at most one companion with
+brightness exceeding one tenth of the target star's brightness be
+present in the aperture according to the Gaia DR2 source catalog.  For
+set $\mathcal{A}$, this yielded \nautorotnumerator\ light curves, out
+of \nautorotdenominator\ stars for which rotation periods might
+plausibly have been detected.  For set $\mathcal{B}$, we additionally
+required that the Lomb-Scargle and Stellingwerf phase-dispersion
+methods yielded identical periods to within 10\%.  This yielded
+\nautorotnumeratormatching\ light curves.  Boolean flags for each set
+are included in Table~\ref{tab:maintable}.
 
 \subsubsection{Rotation-Color Diagrams}
 
@@ -736,7 +757,9 @@ $\approx$K4V.  The bins in the histograms (top-right) were chosen to
 ensure that the same number of stars were in each bin.  Rotation
 periods are detected for 66\% of stars at least 25\,pc from the
 cluster core.  The average detection rate inside of 25\,pc, 73\%, is
-slightly higher.
+slightly higher.  With $\approx$3.5\,pc, the period detection rate of
+61\% is relatively low, due to the combined effects of crowding and
+saturation.
 
 The lower panels of Figure~\ref{fig:physical_x_rotn} give a second
 view of how field star contamination affects the outskirts of the
@@ -790,6 +813,8 @@ separations.
   Praesepe detections (650\,Myr) are shown in violet
   \citep{soderblom_praesepe_1993}.  Points with ${\rm
   EW}\approx0\,$m\AA\ are non-detections.
+  The Li measurements for both Core and Halo stars in \cn\ are
+  consistent with a near-Pleiades age.
   {\bf LGB TODO: the increasing EWs for the Gaia-ESO M dwarfs must be erroneous. What's happening there?}
   \label{fig:lithiumcorehalo}
   }
@@ -1014,9 +1039,20 @@ distributions.  The FGK stars show a ``slow sequence'', a population
 of ``rapid rotators'', and in some cases stars in the ``void'' between
 the two populations ({\it e.g.,}, Psc\,Eri and \cn\ show more stars in
 the void than the Pleiades).  The late M dwarfs with detected rotation
-periods tend to rotate very rapidly ($<3$\,days), although these are
-beyond the magnitude limit of our analysis.  This section briefly
-discusses the origins of these features in the rotation-color diagram.
+periods tend to rotate rapidly ($<3$\,days), though there may also be
+late M dwarfs with slow ($>20$\,days) rotation periods.  Although
+these late M dwarfs are beyond the magnitude limit of our analysis,
+they have been explored in depth for \cn\ by both
+\citet{Irwin_NGC2516_2007} and \citet{fritzewski_rotation_2020}.
+While a detailed comparison of our results with theirs is beyond the
+scope of this work, we emphasize that the main contribution of our
+study beyond these previous analyses is not our sensitivity to new
+ranges of spectral type or rotation period, but rather our sensitivity
+to rotation periods across both the core and halo of \cn, and a
+corresponding expansion in the number of stars for which we can derive
+rotation periods.  In the following section, we therefore focus on
+the origins of the features in the rotation-color diagram, and whether
+our expanded rotation sample can provide any new insights.
 
 The existence of a slow sequence is the main basis of gyrochronology
 \citep[{\it e.g.},][]{barnes_rotational_2003}.  While the initial
@@ -1031,7 +1067,7 @@ question of why the rapid rotators exist, for instance, has not yet
 been definitively answered.  Models that introduce variable
 core-envelope decoupling timescales can reproduce each type of
 population \citep{Irwin_NGC2516_2007}, but the question then shifts to
-why these decoupling timescales should be differ for stars that are
+why these decoupling timescales should differ for stars that are
 otherwise identical.  Another possible explanation invokes a
 spontaneous and random change of magnetic field topology that causes
 the dynamo to couple more strongly with the stellar wind

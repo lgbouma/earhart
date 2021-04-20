@@ -15,12 +15,14 @@ Contents:
         plot_physical_X_rotation (+ histogram_physical_X_rotation)
         plot_slowfast_photbinarity_comparison
         plot_rotation_X_positions
+        plot_lightcurves_rotators
     Lithium:
         plot_lithium_EW_vs_color
         plot_rotation_X_lithium
         plot_galah_dr3_lithium_abundance
         plot_randich_lithium (deprecated)
     Other:
+        plot_lumfunction_vs_position
         plot_gaia_rv_scatter_vs_brightness
         plot_ruwe_vs_apparentmag
         plot_edr3_blending_vs_apparentmag
@@ -1099,7 +1101,8 @@ def plot_skypositions_x_rotn(outdir):
 
 
 def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
-                       cleaning=None, emph_binaries=False, talk_aspect=0):
+                       cleaning=None, emph_binaries=False,
+                       talk_aspect=0, xval_absmag=0):
     """
     Plot rotation periods that satisfy the automated selection criteria
     (specified in helpers.get_autorotation_dataframe)
@@ -1155,7 +1158,8 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
             print(42*'-')
 
         if f'{runid}' not in _cls:
-            xval = df['(BP-RP)0']
+            key = '(BP-RP)0' if not xval_absmag else 'MGmag'
+            xval = df[key]
 
             # NOTE: deprecated; based on the webplotdigitzing approach
             # xval = get_interp_BpmRp_from_Teff(df['teff'])
@@ -1165,9 +1169,15 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
             #     index=False
             # )
         else:
-            xval = (
-                df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - E_BpmRp
-            )
+            if not xval_absmag:
+                xval = (
+                    df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - E_BpmRp
+                )
+            else:
+                get_xval = lambda _df: np.array(
+                    _df['phot_g_mean_mag'] + 5*np.log10(_df['parallax']/1e3) + 5
+                )
+                xval = get_xval(df)
 
         ykey = 'Prot' if f'{runid}' not in _cls else 'period'
 
@@ -1241,9 +1251,12 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     ax.legend(loc=loc, handletextpad=0.1, fontsize='x-small', framealpha=1.0)
     ax.set_ylabel('Rotation Period [days]', fontsize='large')
 
-    ax.set_xlabel('(Bp-Rp)$_0$ [mag]', fontsize='large')
-    ax.set_xlim((0.2, 2.4))
-    #ax.set_xlim((0.25, 2.0))
+    if not xval_absmag:
+        ax.set_xlabel('(Bp-Rp)$_0$ [mag]', fontsize='large')
+        ax.set_xlim((0.2, 2.4))
+    else:
+        ax.set_xlabel('Absolute G [mag]', fontsize='large')
+        ax.set_xlim((1.5, 10))
 
     if yscale == 'linear':
         ax.set_ylim((0,15))
@@ -1261,6 +1274,8 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
         outstr += '_emphbinaries'
     if talk_aspect:
         outstr += '_talkaspect'
+    if xval_absmag:
+        outstr += '_xvalAbsG'
     outstr += f'_{yscale}'
     outstr += f'_{cleaning}'
     outpath = os.path.join(outdir, f'{runid}_rotation{outstr}.png')
@@ -2753,7 +2768,7 @@ def get_bin_sizes(r_pc, N_bins=12+1):
 
     # have the rounding error be for the innermost bin
     eps = 1e-5
-    for n in range(N_bins):
+    for n in range(N_bins+1):
         ind = n*stars_per_bin
         if ind < len(r):
             bins.append(r[ind]+eps)
@@ -3493,4 +3508,136 @@ def plot_slowfast_photbinarity_comparison(outdir):
     print(f'{len(df[sel])} ({100*len(df[sel])/len(df):.1f}%) stars in "fast sequence"')
     print(f'{len(df[sel&binary])} ({100*len(df[sel&binary])/len(df[sel]):.1f}%) stars in "fast sequence" and binary')
     print(f'{len(df[sel&(~binary)])} ({100*len(df[sel&(~binary)])/len(df[sel]):.1f}%) stars in "fast sequence" and not binary')
+
+
+def plot_lumfunction_vs_position(outdir):
+
+    basedata = 'fullfaint'
+
+    nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
+    rot_df, lc_df = get_autorotation_dataframe(
+        runid='NGC_2516', returnbase=True, cleaning='defaultcleaning'
+    )
+    med_df, _ = _get_median_ngc2516_core_params(core_df, basedata)
+
+    from earhart.physicalpositions import append_physicalpositions
+    full_df = append_physicalpositions(full_df, med_df)
+    core_df = append_physicalpositions(core_df, med_df)
+    halo_df = append_physicalpositions(halo_df, med_df)
+    nbhd_df = append_physicalpositions(nbhd_df, med_df)
+    trgt_df = append_physicalpositions(trgt_df, med_df)
+
+    # this plot is for (Bp-Rp)_0 from 0.5-1.2, and will highlight which
+    # kinematic members (for which we made light curves) are and are not rotators.
+    get_BpmRp0 = lambda df: (df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - AVG_EBpmRp)
+    sel_color = lambda df: (get_BpmRp0(df) > 0.5) & (get_BpmRp0(df) < 1.2)
+    sel_autorot = lambda df: df.source_id.isin(rot_df.source_id)
+    sel_haslc = lambda df: df.source_id.isin(lc_df.source_id)
+
+    sel_comp = lambda df: (sel_color(df)) & (sel_haslc(df))
+    sel_rotn =  lambda df: (sel_color(df)) & (sel_autorot(df))
+
+    # make it!
+    plt.close('all')
+    set_style()
+    f, ax = plt.subplots(figsize=(4,3))
+
+    #
+    # first: delta_r_pc
+    #
+
+    ## default approach: linear binning, yields very few stars on the outer
+    ## bins.
+    # delta_pc = 25
+    # bins = np.arange(0, 500+delta_pc, delta_pc)
+    # xvals = bins[:-1] + delta_pc/2
+
+    bins = get_bin_sizes(nparr(full_df.delta_r_pc), N_bins=6)
+    xvals = bins[:-1] + np.diff(bins)/2
+
+    n_in_bin, _ = np.histogram(nparr(full_df.delta_r_pc), bins=bins)
+    print(f'Bins are {bins}')
+    print(f'gives N stars in each bin: {n_in_bin}')
+
+    get_MG = (
+        lambda _df: np.array(
+            _df['phot_g_mean_mag'] + 5*np.log10(_df['parallax']/1e3) + 5
+        )
+    )
+
+
+    delta = 1.5
+    MG_bins = np.arange(-3.0, 10+delta, delta)
+    colors = mpl.cm.viridis(np.linspace(0,1,len(bins)))
+
+    for i in range(len(bins)-1):
+
+        bin_start = bins[i]
+        bin_end = bins[i+1]
+
+        sel = (
+            (full_df.delta_r_pc >= bin_start)
+            &
+            (full_df.delta_r_pc < bin_end)
+        )
+
+        sdf = full_df[sel]
+
+        MG_arr = get_MG(sdf)
+
+        l = "$\Delta r_{\mathrm{3D}}$:" + f'{bin_start:.1f} - {bin_end:.1f} pc'
+        ax.hist(MG_arr, bins=MG_bins, cumulative=False,
+                color=colors[i], fill=False,  histtype='step',
+                linewidth=0.5, label=l)
+
+    ax.set_yscale('log')
+
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),
+              handletextpad=0.1, fontsize='small')
+
+    ax.set_xlabel('Absolute G [mag]')
+    ax.set_ylabel('Number in bin')
+
+    format_ax(ax)
+
+    outpath = os.path.join(outdir, f'lumfunction_vs_position.png')
+    savefig(f, outpath)
+
+
+def plot_lightcurves_rotators(outdir, cleaning='periodogram_match'):
+
+    set_style()
+
+    df = get_autorotation_dataframe(
+        "NGC_2516", cleaning=cleaning
+    )
+
+    datadir = "/Users/luke/Dropbox/proj/cdips/results/allvariability_reports/NGC_2516/data"
+
+    N_show = 100
+    np.random.seed(42)
+    sdf = df.sample(n=N_show, replace=False)
+
+    for ix, r in sdf.iterrows():
+
+        source_id = r["source_id"]
+        pklpath = os.path.join(datadir, f"{source_id}_allvar.pkl")
+        if not os.path.exists(pklpath):
+            raise NotImplementedError
+
+        with open(pklpath, 'rb') as f:
+            d = pickle.load(f)
+
+        import IPython; IPython.embed()
+        assert 0
+
+    # make plot
+    plt.close('all')
+
+    f, ax = plt.subplots(figsize=(4,3))
 
