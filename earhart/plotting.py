@@ -147,8 +147,8 @@ def plot_TIC268_nbhd_small(outdir=RESULTSDIR):
 
     axs[1].set_ylim(axs[1].get_ylim()[::-1])
 
-    axs[1].set_xlabel('Bp - Rp [mag]')
-    axs[1].set_ylabel('Absolute G [mag]', labelpad=-6)
+    axs[1].set_xlabel('$G_{\mathrm{BP}}-G_{\mathrm{RP}}$ [mag]')
+    axs[1].set_ylabel('Absolute $\mathrm{M}_{G}$ [mag]', labelpad=-6)
 
     ##########
 
@@ -867,9 +867,9 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
                 leg.legendHandles[2]._sizes = [1.3*25]
 
 
-    ax.set_ylabel('Absolute G [mag]', fontsize='large')
+    ax.set_ylabel('Absolute $\mathrm{M}_{G}$ [mag]', fontsize='large')
     if color0 == 'phot_bp_mean_mag':
-        ax.set_xlabel('Bp - Rp [mag]', fontsize='large')
+        ax.set_xlabel('$G_{\mathrm{BP}}-G_{\mathrm{RP}}$ [mag]', fontsize='large')
         c0s = '_Bp_m_Rp'
     elif color0 == 'phot_g_mean_mag':
         ax.set_xlabel('G - Rp [mag]', fontsize='large')
@@ -1020,7 +1020,7 @@ def plot_rotation(outdir, BpmRp=0, include_ngc2516=0, ngc_core_halo=0):
         ax.set_xlabel('Effective Temperature [K]', fontsize='large')
         ax.set_xlim((4900, 6600))
     else:
-        ax.set_xlabel('(Bp-Rp)$_0$ [mag]', fontsize='large')
+        ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]', fontsize='large')
         ax.set_xlim((0.5, 1.5))
 
     ax.set_ylim((0,14))
@@ -1253,10 +1253,10 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     ax.set_ylabel('Rotation Period [days]', fontsize='large')
 
     if not xval_absmag:
-        ax.set_xlabel('(Bp-Rp)$_0$ [mag]', fontsize='large')
+        ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]', fontsize='large')
         ax.set_xlim((0.2, 2.4))
     else:
-        ax.set_xlabel('Absolute G [mag]', fontsize='large')
+        ax.set_xlabel('Absolute $\mathrm{M}_{G}$ [mag]', fontsize='large')
         ax.set_xlim((1.5, 10))
 
     if yscale == 'linear':
@@ -1351,7 +1351,7 @@ def plot_compstar_rotation(outdir, E_BpmRp=0.1343, yscale=None):
     ax.legend(loc=loc, handletextpad=0.1, fontsize='x-small', framealpha=0.7)
     ax.set_ylabel('Rotation Period [days]', fontsize='large')
 
-    ax.set_xlabel('(Bp-Rp)$_0$ [mag]', fontsize='large')
+    ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]', fontsize='large')
     ax.set_xlim((0.25, 1.05))
 
     if yscale == 'linear':
@@ -1460,7 +1460,7 @@ def plot_galah_dr3_lithium_abundance(outdir, corehalosplit=0):
 
     ax.legend(loc='best', handletextpad=0.1, fontsize='x-small', framealpha=0.7)
     ax.set_ylabel('[Li/Fe]', fontsize='large')
-    ax.set_xlabel('(Bp-Rp)$_0$ [mag]', fontsize='large')
+    ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]', fontsize='large')
 
     ax.set_title('fullfaint kinematics, x GALAH DR3')
 
@@ -1604,7 +1604,7 @@ def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
         ax.set_title('Kinematic $\otimes$ R+18 Lithium')
 
     ax.set_ylabel('Li$_{6708}$ EW [m$\mathrm{\AA}$]')
-    ax.set_xlabel('(Bp-Rp)$_0$ [mag]')
+    ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]')
 
     format_ax(ax)
     outstr = '_corehalosplit' if corehalosplit else ''
@@ -1751,7 +1751,7 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
             ax.set_title('Kinematic $\otimes$ GALAH-DR3')
 
     ax.set_ylabel('Li$_{6708}$ EW [m$\mathrm{\AA}$]')
-    ax.set_xlabel('(Bp-Rp)$_0$ [mag]')
+    ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]')
     if not trimx:
         ax.set_xlim([-0.2, 2.8])
     else:
@@ -1835,7 +1835,7 @@ def plot_rotation_X_lithium(outdir, cmapname, gaiaeso=0, galahdr3=0):
     ax.set_title('Kinematic $\otimes$ Rotation $\otimes$ Lithium')
 
     ax.set_ylabel('Rotation Period [days]')
-    ax.set_xlabel('(Bp-Rp)$_0$ [mag]')
+    ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]')
 
     format_ax(ax)
     outstr = '_' + cmapname
@@ -1948,7 +1948,7 @@ def plot_rotation_X_RUWE(outdir, cmapname, vs_auto=1,
     ax.set_title('Kinematic $\otimes$ Rotation')
 
     ax.set_ylabel('Rotation Period [days]')
-    ax.set_xlabel('(Bp-Rp)$_0$ [mag]')
+    ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]')
     ax.set_xlim((0.5, 1.5))
     ax.set_yscale(yscale)
 
@@ -2316,8 +2316,8 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
 
     axs[1].set_ylim(axs[1].get_ylim()[::-1])
 
-    axs[1].set_xlabel('Bp - Rp [mag]')
-    axs[1].set_ylabel('Absolute G [mag]')
+    axs[1].set_xlabel('$G_{\mathrm{BP}}-G_{\mathrm{RP}}$ [mag]')
+    axs[1].set_ylabel('Absolute $\mathrm{M}_{G}$ [mag]')
 
     ##########
 
@@ -2362,7 +2362,7 @@ def plot_ngc2516_corehalo_3panel(outdir=RESULTSDIR, emph_1937=0, basedata=None,
     axs[2].yaxis.set_major_locator(MaxNLocator(integer=True))
 
     axs[2].set_ylabel('Rotation Period [days]')
-    axs[2].set_xlabel('Bp-Rp [mag]')
+    axs[2].set_xlabel('$G_{\mathrm{BP}}-G_{\mathrm{RP}}$ [mag]')
     axs[2].set_xlim((0.21, 2.04))
     axs[2].set_ylim((0,14.2)) # linear
 
@@ -2737,7 +2737,7 @@ def plot_rotation_X_positions(outdir, basedata='fullfaint', cmapname=None,
     f.text(-0.03,0.5, 'Rotation Period [days]', va='center',
              rotation=90)
 
-    axs[1].set_xlabel('(Bp-Rp)$_0$ [mag]')
+    axs[1].set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]')
 
     for a in axs:
         a.set_xlim([0.2, 2.6])
@@ -3446,9 +3446,9 @@ def plot_phot_binaries(outdir, isochrone=None, color0='phot_bp_mean_mag',
     # leg.legendHandles[2]._sizes = [1.3*25]
 
 
-    ax.set_ylabel('Absolute G [mag]', fontsize='large')
+    ax.set_ylabel('Absolute $\mathrm{M}_{G}$ [mag]', fontsize='large')
     if color0 == 'phot_bp_mean_mag':
-        ax.set_xlabel('Bp - Rp [mag]', fontsize='large')
+        ax.set_xlabel('$G_{\mathrm{BP}}-G_{\mathrm{RP}}$ [mag]', fontsize='large')
         c0s = '_Bp_m_Rp'
     else:
         raise NotImplementedError
@@ -3601,7 +3601,7 @@ def plot_lumfunction_vs_position(outdir):
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),
               handletextpad=0.1, fontsize='small')
 
-    ax.set_xlabel('Absolute G [mag]')
+    ax.set_xlabel('Absolute $\mathrm{M}_{G}$ [mag]')
     ax.set_ylabel('Number in bin')
 
     format_ax(ax)
@@ -3666,7 +3666,7 @@ def plot_lightcurves_rotators(outdir, cleaning='periodogram_match', color=0):
 
             if ix % 7 == 0:
                 bbox = dict(facecolor='white', alpha=1, pad=0, edgecolor='white')
-                txt = '(Bp-Rp)$_0$='+f'{r["(Bp-Rp)0"]:.2f}'
+                txt = '($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$='+f'{r["(Bp-Rp)0"]:.2f}'
                 ax.text(0.96, np.nanmedian(flux+dflux), txt, va='center',
                         ha='right', transform=trans, color=colors[ix], bbox=bbox,
                         fontsize=6)
