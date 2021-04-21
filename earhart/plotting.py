@@ -63,7 +63,9 @@ from cdips.utils.gaiaqueries import (
 )
 from cdips.utils.tapqueries import given_source_ids_get_tic8_data
 from cdips.utils.plotutils import rainbow_text
-from cdips.utils.mamajek import get_interp_BpmRp_from_Teff
+from cdips.utils.mamajek import (
+    get_interp_BpmRp_from_Teff, get_SpType_BpmRp_correspondence
+)
 
 from earhart.paths import DATADIR, RESULTSDIR
 from earhart.helpers import (
@@ -867,9 +869,10 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
                 leg.legendHandles[2]._sizes = [1.3*25]
 
 
-    ax.set_ylabel('Absolute $\mathrm{M}_{G}$ [mag]', fontsize='large')
+    ax.set_ylabel('Absolute $\mathrm{M}_{G}$ [mag]', fontsize='medium')
     if color0 == 'phot_bp_mean_mag':
-        ax.set_xlabel('$G_{\mathrm{BP}}-G_{\mathrm{RP}}$ [mag]', fontsize='large')
+        ax.set_xlabel('$G_{\mathrm{BP}}-G_{\mathrm{RP}}$ [mag]',
+                      fontsize='medium')
         c0s = '_Bp_m_Rp'
     elif color0 == 'phot_g_mean_mag':
         ax.set_xlabel('G - Rp [mag]', fontsize='large')
@@ -891,6 +894,36 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         ax.set_ylim([13.7, -4.8])
 
     format_ax(ax)
+    ax.tick_params(axis='x', which='both', top=False)
+
+    #
+    # append SpTypes (ignoring reddening)
+    #
+    if color0 == 'phot_bp_mean_mag':
+        tax = ax.twiny()
+        tax.set_xlabel('Spectral Type')
+
+        xlim = ax.get_xlim()
+        sptypes, BpmRps = get_SpType_BpmRp_correspondence(
+            ['A0V','F0V','G0V','K2V','K5V','M0V','M2V','M4V']
+        )
+        print(sptypes)
+        print(BpmRps)
+
+        xvals = np.linspace(min(xlim), max(xlim), 100)
+        tax.plot(xvals, np.ones_like(xvals), c='k', lw=0) # hidden, but fixes axis.
+        tax.set_xlim(xlim)
+        ax.set_xlim(xlim)
+
+        from earhart.priors import AVG_EBpmRp
+        tax.set_xticks(BpmRps+AVG_EBpmRp)
+        tax.set_xticklabels(sptypes, fontsize='x-small')
+
+        tax.xaxis.set_ticks_position('top')
+        tax.tick_params(axis='x', which='minor', top=False)
+        tax.get_yaxis().set_tick_params(which='both', direction='in')
+
+
     if not isochrone:
         s = ''
     else:
@@ -1015,12 +1048,13 @@ def plot_rotation(outdir, BpmRp=0, include_ngc2516=0, ngc_core_halo=0):
     )
 
     ax.legend(loc='best', handletextpad=0.1, fontsize='x-small', framealpha=0.7)
-    ax.set_ylabel('Rotation Period [days]', fontsize='large')
+    ax.set_ylabel('Rotation Period [days]', fontsize='medium')
     if not BpmRp:
-        ax.set_xlabel('Effective Temperature [K]', fontsize='large')
+        ax.set_xlabel('Effective Temperature [K]', fontsize='medium')
         ax.set_xlim((4900, 6600))
     else:
-        ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]', fontsize='large')
+        ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]',
+                      fontsize='medium')
         ax.set_xlim((0.5, 1.5))
 
     ax.set_ylim((0,14))
@@ -1246,17 +1280,14 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
                 marker='o', linewidths=_lw, label="Astrometric binary"
             )
 
-
-
-    loc = 'best' if yscale == 'linear' else 'lower right'
-    ax.legend(loc=loc, handletextpad=0.1, fontsize='x-small', framealpha=1.0)
-    ax.set_ylabel('Rotation Period [days]', fontsize='large')
+    ax.set_ylabel('Rotation Period [days]', fontsize='medium')
 
     if not xval_absmag:
-        ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]', fontsize='large')
+        ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]',
+                      fontsize='medium')
         ax.set_xlim((0.2, 2.4))
     else:
-        ax.set_xlabel('Absolute $\mathrm{M}_{G}$ [mag]', fontsize='large')
+        ax.set_xlabel('Absolute $\mathrm{M}_{G}$ [mag]', fontsize='medium')
         ax.set_xlim((1.5, 10))
 
     if yscale == 'linear':
@@ -1268,6 +1299,38 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     ax.set_yscale(yscale)
 
     format_ax(ax)
+
+    #
+    # twiny for the SpTypes
+    #
+    tax = ax.twiny()
+    tax.set_xlabel('Spectral Type')
+
+    xlim = ax.get_xlim()
+    sptypes, BpmRps = get_SpType_BpmRp_correspondence(
+        ['F0V','F5V','G0V','K0V','K3V','K5V','K7V','M0V','M1V','M2V']
+    )
+    print(sptypes)
+    print(BpmRps)
+
+    xvals = np.linspace(min(xlim), max(xlim), 100)
+    tax.plot(xvals, np.ones_like(xvals), c='k', lw=0) # hidden, but fixes axis.
+    tax.set_xlim(xlim)
+    ax.set_xlim(xlim)
+
+    tax.set_xticks(BpmRps)
+    tax.set_xticklabels(sptypes, fontsize='x-small')
+
+    tax.xaxis.set_ticks_position('top')
+    tax.tick_params(axis='x', which='minor', top=False)
+    tax.get_yaxis().set_tick_params(which='both', direction='in')
+
+    # fix legend zorder
+    loc = 'best' if yscale == 'linear' else 'lower right'
+    leg = ax.legend(loc=loc, handletextpad=0.1, fontsize='x-small',
+                    framealpha=1.0)
+
+
     outstr = '_vs_BpmRp'
     if core_halo:
         outstr += '_corehalosplit'
@@ -1283,7 +1346,7 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     savefig(f, outpath)
 
 
-def plot_compstar_rotation(outdir, E_BpmRp=0.1343, yscale=None):
+def plot_compstar_rotation(outdir, E_BpmRp=AVG_EBpmRp, yscale=None):
     """
     Plot rotation periods that satisfy the automated selection criteria
     (specified in helpers.get_autorotation_dataframe)
@@ -1316,7 +1379,16 @@ def plot_compstar_rotation(outdir, E_BpmRp=0.1343, yscale=None):
     ):
 
         if f'{runid}' not in _cls:
-            df = pd.read_csv(os.path.join(rotdir, f'curtis19_{_cls}.csv'))
+            t = Table.read(
+                os.path.join(rotdir, 'Curtis_2020_apjabbf58t5_mrt.txt'),
+                format='cds'
+            )
+            if _cls == 'pleiades':
+                df = t[t['Cluster'] == 'Pleiades'].to_pandas()
+            elif _cls == 'praesepe':
+                df = t[t['Cluster'] == 'Praesepe'].to_pandas()
+            else:
+                raise NotImplementedError
 
         else:
             df = get_autorotation_dataframe(_cls, cleaning='defaultcleaning')
@@ -1327,31 +1399,31 @@ def plot_compstar_rotation(outdir, E_BpmRp=0.1343, yscale=None):
 
 
         if f'{runid}' not in _cls:
-            xval = get_interp_BpmRp_from_Teff(df['teff'])
-            df['BpmRp_interp'] = xval
-            df.to_csv(
-                os.path.join(rotdir, f'curtis19_{_cls}_BpmRpinterp.csv'),
-                index=False
-            )
+            key = '(BP-RP)0'
+            xval = df[key]
+
         else:
             xval = (
                 df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - E_BpmRp
             )
 
-        ykey = 'prot' if f'{runid}' not in _cls else 'period'
+        ykey = 'Prot' if f'{runid}' not in _cls else 'period'
+
+        yval = df[ykey]
 
         ax.scatter(
             xval,
-            df[ykey],
+            yval,
             c=_col, alpha=0.8, zorder=z, s=8, edgecolors='k',
             marker=m, linewidths=_lw, label=l
         )
 
     loc = 'best' if yscale == 'linear' else 'lower right'
     ax.legend(loc=loc, handletextpad=0.1, fontsize='x-small', framealpha=0.7)
-    ax.set_ylabel('Rotation Period [days]', fontsize='large')
+    ax.set_ylabel('Rotation Period [days]', fontsize='medium')
 
-    ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]', fontsize='large')
+    ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]',
+                  fontsize='medium')
     ax.set_xlim((0.25, 1.05))
 
     if yscale == 'linear':
@@ -1713,8 +1785,8 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
         dets = (s93_df.l_WLi != "<")
         # vizier randomly decided to divide by 10
         ax.scatter(
-            s93_df[dets]['BpmRp0'], 10*s93_df[dets]['WLi'], c='violet', alpha=1,
-            zorder=0, s=9, edgecolors='k', marker='P',
+            s93_df[dets]['BpmRp0'], 10*s93_df[dets]['WLi'], c='hotpink', alpha=1,
+            zorder=0, s=9, edgecolors='k', marker='s',
             linewidths=0.1, label='Praesepe'
         )
 

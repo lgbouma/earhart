@@ -14,7 +14,6 @@ RUNID_EXTINCTION_DICT = {
 #     'ScoOB2': 0.161, # KC19 ratio
 }
 
-
 for runid, _ in RUNID_EXTINCTION_DICT.items():
 
     E_BpmRp = RUNID_EXTINCTION_DICT[runid]
@@ -23,39 +22,18 @@ for runid, _ in RUNID_EXTINCTION_DICT.items():
     if not os.path.exists(PLOTDIR):
         os.mkdir(PLOTDIR)
 
-    ep.plot_auto_rotation(
-        PLOTDIR, runid, E_BpmRp, core_halo=0,
-        yscale='linear', cleaning='periodogram_match', emph_binaries=1,
-        talk_aspect=1, xval_absmag=1
-    )
-
-    ep.plot_auto_rotation(
-        PLOTDIR, runid, E_BpmRp, core_halo=1, yscale='linear',
-        cleaning='periodogram_match', emph_binaries=0, talk_aspect=1
-    )
-
-    ep.plot_auto_rotation(
-        PLOTDIR, runid, E_BpmRp, core_halo=0, yscale='linear',
-        cleaning='periodogram_match', emph_binaries=0, talk_aspect=1
-    )
-
-    ep.plot_auto_rotation(
-        PLOTDIR, runid, E_BpmRp, core_halo=0,
-        yscale='linear', cleaning='periodogram_match', emph_binaries=1,
-        talk_aspect=1
-    )
-
-    assert 0
-
-    for yscale in ['linear', 'log']:
-        for cleaning in ['defaultcleaning', 'periodogram_match',
-                         'nocleaning', 'match234_alias']:
-            for core_halo in [0,1]:
-                ep.plot_auto_rotation(
-                    PLOTDIR, runid, E_BpmRp, core_halo=core_halo,
-                    yscale=yscale, cleaning=cleaning, emph_binaries=0
-                )
-                ep.plot_auto_rotation(
-                    PLOTDIR, runid, E_BpmRp, core_halo=core_halo,
-                    yscale=yscale, cleaning=cleaning, emph_binaries=1
-                )
+    for talk_aspect in [0, 1]:
+        for yscale in ['linear', 'log']:
+            for cleaning in ['defaultcleaning', 'periodogram_match',
+                             'nocleaning', 'match234_alias']:
+                for core_halo in [0,1]:
+                    ep.plot_auto_rotation(
+                        PLOTDIR, runid, E_BpmRp, core_halo=core_halo,
+                        yscale=yscale, cleaning=cleaning, emph_binaries=0,
+                        talk_aspect=talk_aspect
+                    )
+                    ep.plot_auto_rotation(
+                        PLOTDIR, runid, E_BpmRp, core_halo=core_halo,
+                        yscale=yscale, cleaning=cleaning, emph_binaries=1,
+                        talk_aspect=talk_aspect
+                    )
