@@ -99,14 +99,14 @@
   core.  Two thirds of kinematically selected halo members out to
   250\,pc from the cluster center have rotation periods consistent
   with a gyrochronological age of 150\,Myr.  A comparison sample of
-  field stars shows no such trend.  In addition, the lithium
-  abundances of stars in the halo are elevated relative to the field,
-  and are correlated with the stellar rotation rate in a manner
-  consistent with previous observations of similar clusters.  This
-  work supports a new paradigm wherein the halos of open clusters are
-  often more populous than their cores.  We discuss implications for
-  spectroscopic survey targeting, open cluster dispersal, and planet
-  searches around young stars.
+  field stars shows no such trend.  The lithium abundances of stars in
+  the halo are higher than in the field, and are correlated with the
+  stellar rotation rate and binarity fraction, as has been
+  noted in other young open clusters.  Broadly speaking,
+  this work supports a new paradigm wherein the halos of open clusters
+  are often more populous than their cores.  We discuss implications
+  for spectroscopic survey targeting, open cluster dispersal, and
+  planet searches around young stars.
 \end{abstract}
 
 \keywords{
@@ -196,7 +196,7 @@ samples is important to verify through independent lines of evidence,
 such as rotation periods and spectroscopic indicators.
 
 As part of a Cluster Difference Imaging Photometric Survey (CDIPS,
-\citealt{bouma_cdipsI_2019}), we have recently been making TESS light
+\citealt{bouma_cdipsI_2019}), we have been making TESS light
 curves of stars reported to be members of coeval populations and
 searching them for planets \citep{bouma_cluster_2020}.  Our analysis
 of TESS Sectors 1-13 yielded light curves of \numsouthernuniqlcs\
@@ -207,8 +207,8 @@ MAST.\footnote{\url{https://archive.stsci.edu/hlsp/cdips}}
 As part of this project, we focus here on a single southern open
 cluster, and ask: is the cluster halo truly coeval with the core?  We
 chose \cn\ for this analysis because it is young (100-200\,Myr) and
-sufficiently nearby ($d\approx400$\,pc) to facilitate photometric
-rotation measurements using TESS.  Its halo was recently reported by
+close enough ($d\approx400$\,pc) to facilitate photometric
+rotation measurements using TESS.  Its halo was reported by
 \citet{kounkel_untangling_2019} to span
 $\approx20\times10\times350$\,pc.  We want to know: is this halo real
 or is it just a collection of interlopers, foreground and background
@@ -224,10 +224,9 @@ being in ``halos'', ``strings'', ``coronae'', ``snakes'',
 e.g.},][]{davenport_death_2010,kounkel_untangling_2019,roser_hyades_2019,tian_discovery_2020,meingast_2021}.
 The latter term implies a particular model for the formation of the
 dispersed group.  ``Halo'' is concise and model agnostic, but is not
-an ideal term because it connotes spherical symmetry, which is usually
-not the case.  The halo of \cn\ is most accurately described as
-consisting of a leading and trailing tail.  We call it a halo for
-simplicity.
+an ideal term because it connotes spherical symmetry, which is rarely
+the case.  The halo of \cn\ is most accurately described as consisting
+of a leading and trailing tail.  We call it a halo for simplicity.
 
 Section~\ref{sec:gaia} summarizes the astrometric analyses of the Gaia
 data that led to our interest in \cn.  Section~\ref{sec:agedate}
@@ -596,6 +595,7 @@ the statistical and systematic components from \cite{cummings_2018}.
 % 	}
 % \end{figure*}
 
+\input{maintable_header.tex}
 \begin{figure*}[t]
 	\begin{center}
 		\leavevmode
@@ -1378,12 +1378,12 @@ the structure of \cn.
   \item {\it The field star contamination rate increases at larger
     physical and velocity separations from the cluster core.} The
     right and lower panels of Figure~\ref{fig:physical_x_rotn}
-    quantify the statement: $\approx$75\% of the ``inner-most''
+    quantify the statement: $\approx$70\% of the ``inner-most''
     members have detected rotation periods consistent with a
-    gyrochronological age near that of the Pleiades.  The false
-    positive rate increases to $\approx$50\% at physical separations
-    of $\approx$200\,pc.  Given the number density ratios of cluster
-    to field stars at these wide separations ($\approx 10^{-3}$,
+    gyrochronological age near that of the Pleiades. At physical
+    separations of $\approx$200\,pc, this fraction decreases to
+    $\approx$50\%.  Given the number density ratios of cluster to
+    field stars at these wide separations ($\approx 10^{-3}$,
     \citealt{meingast_2021}), these contamination fractions are not as
     bad as one might fear.
    %
@@ -1391,16 +1391,18 @@ the structure of \cn.
      elevated binarity fractions}.  Each trend has been noted in
      comparable stellar populations ({\it e.g.,}
      \citealt{soderblom_evolution_1993};
+     \citealt{meibom_effect_2007};
      \citealt{jeffries_m35_li_2020}; \citealt{gillen_ngts_2020}).  The
      rough orders of magnitude of the effects are $\approx$1\,dex in
      lithium abundance for a factor of 10 in rotation period, and a
      factor of $\gtrsim2$ enhancement in binarity fraction for fast
-     {\it vs.} slowly rotating G and early K dwarfs.  We have pointed
+     {\it vs{.}} slowly rotating G and early K dwarfs.  We have pointed
      out in Section~\ref{discussion:lithium} that one plausible
      connection between the two observations is that the disk-locking
      phase may be truncated in binary systems, which could free the
-     stars to spin up on the pre-MS, producing less efficient internal
-     mixing and a longer-lasting presence of photospheric lithium
+     stars to spin up as they contract on the pre-MS.  This spin up
+     would be expected to produce less efficient internal mixing and a
+     longer-lasting presence of photospheric lithium
      \citep{eggenberger_impact_2012}.
    %
 \end{itemize}
@@ -1432,8 +1434,10 @@ B.~Tofflemire, A.~McWilliam, E.~Newton, L.~Hillenbrand, A.~Kraus, and
 K.~Hawkins for the discussions on young stars, rotation, and lithium
 that encouraged this analysis.
 %
-L.G.B. and J.H. acknowledge support by the TESS GI Program, {\bf program
-NUMBER, through NASA grant NUMBER}.
+L.G.B. and J.H. acknowledge support by the TESS GI Program, programs
+G011103 and G022117, through NASA grants 80NSSC19K0386 and {\bf
+XXXXXXXXXXXXX}.
+%
 L.G.B. was also supported by a Charlotte Elizabeth Procter Fellowship
 from Princeton University.
 %
@@ -1577,10 +1581,10 @@ efforts to make the mission a continued success.
 
 \facilities{
  	{\it Astrometry}:
- 	Gaia \citep{gaia_collaboration_gaia_2016,gaia_collaboration_gaia_2018}.
+ 	Gaia \citep{gaia_collaboration_gaia_2018,gaia_collaboration_2020_edr3}.
  	{\it Imaging}:
-    Second Generation Digitized Sky Survey,
-    SOAR~(HRCam; \citealt{tokovinin_ten_2018}).
+    Second Generation Digitized Sky Survey.%,
+    %SOAR~(HRCam; \citealt{tokovinin_ten_2018}).
  	%Keck:II~(NIRC2; \url{www2.keck.hawaii.edu/inst/nirc2}).
  	%Gemini:South~(Zorro; \citealt{scott_nessi_2018}.
  	{\it Spectroscopy}:
@@ -1588,8 +1592,9 @@ efforts to make the mission a continued success.
   %PFS ({\bf CITE}),
   %  MPG2.2$\,$m~(FEROS; \citealt{kaufer_commissioning_1999}),
 	%AAT~(Veloce; \citealt{gilbert_veloce_2018}).
+	AAT~(HERMES; \citealt{lewis_2002_hermers_2df,sheinis_2015_hermes}),
  	%Keck:I~(HIRES; \citealt{vogt_hires_1994}).
- 	%{\bf VLT (number), UVES and GIRAFFE} (CITE: Pasquini et al 2002)
+ 	VLT:Kueyen~(FLAMES; \citealt{pasquini_2002}).
 % 	Euler1.2m~(CORALIE),
 % 	ESO:3.6m~(HARPS; \citealt{mayor_setting_2003}).
  	{\it Photometry}:
@@ -1732,8 +1737,8 @@ candidate cluster members.
 	\vspace{-1cm}
   \caption{ {\bf \cn\ light curves sorted in order
   of stellar color.} Fifty stars are randomly selected from Set
-  $\mathcal{B}$ (see Section~\ref{subsubsec:cluster}), and the light
-  curves are detrended and cleaned as discussed in
+  $\mathcal{B}$ (see Section~\ref{subsubsec:cluster}). The light
+  curves were detrended and cleaned as discussed in
   Appendix~\ref{app:detrending}.  Each light curve is separated by
   7.5\% in relative flux.  \label{fig:lightcurves}
 	}
@@ -1853,8 +1858,8 @@ randomly drawn from the resulting ``Set $\mathcal{B}$''.
   Stars with Gaia $Rp<13$\,mag in the cluster and field samples are
   displayed; fainter field stars were not analyzed.  Field
   stars (orange) show a different rotation period distribution than
-  the kinematically selected \cn\ members (black).  Field and \cn\
-  stars are subject to the same ``Set $\mathcal{A}$''
+  the kinematically selected \cn\ members (black).  The field and \cn\
+  stars are both subject to the same ``Set $\mathcal{A}$''
   period-measurement and cleaning procedures.
   \label{fig:compstar}
 	}
@@ -1893,7 +1898,7 @@ not biased in any way that could produce the features we observe in
 \cn.
 
 
-\section{Projection effects for 2D velocities}
+\section{Projection Effects for Tangential Velocities}
 \label{app:vproj}
 
 \begin{figure}[t]
