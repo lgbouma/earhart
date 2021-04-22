@@ -1,3 +1,4 @@
+# Usage: change `runid` below.
 import os, shutil, socket, pickle
 from glob import glob
 import pandas as pd, numpy as np

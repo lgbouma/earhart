@@ -40,9 +40,9 @@
 \newcommand{\nautorotdenominator}{1{,}641} % plot_autorotation.py, w/ runid=NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
 \newcommand{\nautorotnumerator}{987} % plot_autorotation.py, For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
 \newcommand{\nautorotnumeratormatching}{507} % plot_autorotation.py, LSP=SPDM period
-\newcommand{\ncompstardenominator}{820} % plot_autorotation.py, w/ runid=compstar_NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. 
-\newcommand{\ncompstarnumerator}{365} % plot_autorotation.py
-\newcommand{\ncompfrac}{44.5\%} % plot_autorotation.py
+\newcommand{\ncompstardenominator}{820} % plot_compstar_rotation.py
+\newcommand{\ncompstarnumerator}{312} % plot_compstar_rotation.py
+\newcommand{\ncompfrac}{38.0\%} % plot_compstar_rotation.py, based on plot_autorotation
 \newcommand{\nautovscompstardenominator}{705} % plot_autorotation.py, w/ runid=compstar_NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. 
 \newcommand{\nautovscompstarnumerator}{374} % plot_autorotation.py
 \newcommand{\nautofrac}{53.1\%} % plot_autorotation.py
@@ -681,7 +681,7 @@ from the target star and background-light \citep{Sullivan_2015}.  This
 typically resulted in a circular aperture radius of either 1 or 1.5 pixels.
 We recorded the top five periodogram peaks from each method, and their
 corresponding powers.  Finally, as a check on crowding, we recorded
-the number of stars within the aperture with equal or greater
+the number of stars within the aperture with greater
 brightness than the target star, and with brightness within 1.25 and
 2.5 TESS magnitudes of the target star.
 
@@ -692,20 +692,20 @@ of automated cleaning criteria, which yielded sets we denote
 $\mathcal{A}$ and $\mathcal{B}$.  For both sets, we considered light
 curves for which the peak Lomb-Scargle periodogram period was below 15
 days, the normalized Lomb-Scargle power exceeded 0.08, and for which
-no equal-brightness or greater companions were within the aperture.
+no companions with brightness exceeding one-tenth of the target star
+were in the aperture ({\it i.e.}, excluding visual binaries
+with $\Delta T < 1.25$, according to the Gaia DR2 source catalog).
 These limits were chosen after inspecting the light curves visually,
 to eliminate low-quality rotation periods while retaining high
-completeness.  Beyond requiring that the target star be the brightest
-star in the aperture, we also required that at most one companion with
-brightness exceeding one tenth of the target star's brightness be
-present in the aperture according to the Gaia DR2 source catalog.  For
-set $\mathcal{A}$, this yielded \nautorotnumerator\ light curves, out
-of \nautorotdenominator\ stars for which rotation periods might
-plausibly have been detected.  For set $\mathcal{B}$, we additionally
-required that the Lomb-Scargle and Stellingwerf phase-dispersion
-methods yielded identical periods to within 10\%.  This yielded
-\nautorotnumeratormatching\ light curves.  Boolean flags for each set
-are included in Table~\ref{tab:maintable}.
+completeness.  For set $\mathcal{A}$, this yielded \nautorotnumerator\
+light curves, out of \nautorotdenominator\ stars for which rotation
+periods might plausibly have been detected.  For set $\mathcal{B}$, we
+additionally required that the Lomb-Scargle and Stellingwerf
+phase-dispersion methods yielded identical periods to within 10\%.
+This yielded \nautorotnumeratormatching\ light curves.  Boolean flags
+for each set are included in Table~\ref{tab:maintable}.
+A set of field stars was also analyzed for comparison.
+The results are discussed in Appendix~\ref{app:compstar}.
 
 \subsubsection{Rotation-Color Diagrams}
 
@@ -858,8 +858,8 @@ separations.
   ($N=452$) or GALAH ($N=107$) spectra available.  The GALAH spectra
   comprise slightly over half of the halo stars, due to the
   non-targeted selection function of that survey.  Field stars (gray
-  points) are Keck-HIRES measurements of stars with detected
-  transiting planets from the Kepler mission
+  points) are stars with detected
+  transiting planets from Kepler 
   \citep{berger_identifying_2018}.  Stars in the Pleiades (125\,Myr)
   with Li detections are from \citet{bouvier_pleiades_lirot_2018};
   Praesepe detections (650\,Myr) are shown in violet
@@ -1623,7 +1623,7 @@ efforts to make the mission a continued success.
 \section{Clustering Methods and Outcomes}
 \label{app:clustering}
 
-\begin{figure}[t]
+\begin{figure}[b]
 	\begin{center}
 		\leavevmode
 		\includegraphics[width=0.3\textwidth]{f10.pdf}
@@ -1724,10 +1724,10 @@ candidate cluster members.
 \section{Considerations for Removing Systematic Variability from TESS Light Curves}
 \label{app:detrending}
 
-\begin{figure}[t]
+\begin{figure}[b]
 	\begin{center}
 		\leavevmode
-		\includegraphics[width=\textwidth]{f14.pdf}
+		\includegraphics[width=0.8\textwidth]{f14.pdf}
 	\end{center}
 	\vspace{-1cm}
   \caption{ {\bf \cn\ light curves sorted in order
@@ -1840,56 +1840,57 @@ randomly drawn from the resulting ``Set $\mathcal{B}$''.
 
 
 
-\section{Comparison Star Rotation Periods}
+\section{Rotation Periods for Comparison Field Stars}
 \label{app:compstar}
 
 \begin{figure}[t]
 	\begin{center}
 		\leavevmode
-    \includegraphics[width=0.49\textwidth]{f9.pdf}
+    \includegraphics[width=0.69\textwidth]{f9.pdf}
 	\end{center}
 	\vspace{-0.7cm}
-	\caption{ {\bf Rotation in NGC\,2516 compared to the field.}
-  Stars with Gaia $Rp<13$\,mag in the cluster and field samples were
-  considered. (Fainter field stars were not reduced during
-  the initial CDIPS reductions).  The field stars (orange) show a
-  different rotation period distribution than the kinematically
-  selected \cn\ members.
-  Both field and \cn\ stars are subject to the same ``Set $\mathcal{A}$''
-  cleaning procedures.
-  {\bf LGB TODO: Rerun the field measurements with a better grid to fix the aliasing issue.}
+	\caption{ {\bf Rotation in \cn\ compared to the field.}
+  Stars with Gaia $Rp<13$\,mag in the cluster and field samples are
+  displayed; fainter field stars were not analyzed.  Field
+  stars (orange) show a different rotation period distribution than
+  the kinematically selected \cn\ members (black).  Field and \cn\
+  stars are subject to the same ``Set $\mathcal{A}$''
+  period-measurement and cleaning procedures.
   \label{fig:compstar}
 	}
 \end{figure}
 
-To provide a basis for comparison, we also opted to search the
-``calibration'' light curves ($Rp<13$) that were created as a part of
-the CDIPS project.  Over the southern sky (Sectors 1-13 of TESS), this
-corresponded to a sample of \ncalibration\ stars.  Cross-matching these
-against the \nnbhd\ randomly drawn stars in the neighborhood of \cn yielded
-\nnbhdcalibstar\ unique stars, with a cumulative total of
-\nnbhdcaliblc\ TESS
-sectors observed.
-The magnitude cut of $Rp<13$ at the distances of the neighborhood sample
+To verify the significance of the trends seen in Figures~\ref{fig:rot}
+and~\ref{fig:binarity}, we searched the CDIPS calibration light curves
+for rotation periods.  This light curve database comprises all $Rp<13$
+stars that fell on TESS silicon. The need to distinguish field and
+cluster stars is based on our processing capabilities and is discussed
+by \citet{bouma_cdipsI_2019}.  Over the southern sky (Sectors 1-13 of
+TESS), this corresponded to a sample of \ncalibration\ stars.
+Cross-matching these against the \nnbhd\ randomly drawn stars in the
+neighborhood of \cn\ yielded \nnbhdcalibstar\ unique stars.  The
+magnitude cut of $Rp<13$ at the distances of the neighborhood sample
 corresponds to an extinction-corrected color cutoff of $\bpmrpo
-\approx 0.80$, or spectral types of $\approx$G1V.
-This reaches sufficiently far down the main-sequence to enable a
-comparison to the cluster star sample.
+\lesssim 0.80$, or spectral types of $\lesssim$G1V.  This reaches
+sufficiently far down the slow sequence to enable a comparison against
+the cluster star sample.
 
 We performed the same light curve stitching and period-search
-procedure on the field comparison stars.
+procedure discussed in the text on the field stars.
 Imposing the same requirements for crowding resulted in
-\ncompstardenominator\ stars for which rotation periods could have been
-detected.
-Imposing the same Lomb Scargle power cutoff, and period upper limit,
-yielded \ncompstarnumerator\ period detections (\ncompfrac).
-Within the same brightness cutoff, 
-\nautovscompstarnumerator\ of \nautovscompstardenominator\ cluster stars
-yielded period detections (\nautofrac).
-Though the detection fractions are frankly not very different
-(likely because of the brightness cutoff), the period {\it
-vs} color distributions are quite different
+\ncompstardenominator\ stars for which rotation periods could have
+been detected.  Imposing the same Lomb Scargle power cutoff (${\rm
+LSP}>0.08$) and period upper limit ($P<15\,{\rm days}$) yielded
+\ncompstarnumerator\ period detections (\ncompfrac).  Within the same
+brightness cutoff, \nautovscompstarnumerator\ of
+\nautovscompstardenominator\ cluster stars yielded period detections
+(\nautofrac).  While the detection fractions are only mildly
+different (likely due to the brightness cutoff), the period--color
+distributions are extremely different
 (Figure~\ref{fig:compstar}).
+This confirms our expectation that our period measurement procedure is
+not biased in any way that could produce the features we observe in
+\cn.
 
 
 \section{Projection effects for 2D velocities}
@@ -1900,25 +1901,28 @@ vs} color distributions are quite different
 		\leavevmode
 		\subfloat{
 			\includegraphics[width=0.49\textwidth]{f12a.pdf}
-		}
-
-		\subfloat{
 			\includegraphics[width=0.49\textwidth]{f12b.pdf}
 		}
 	\end{center}
-	\vspace{-0.7cm}
+	\vspace{-0.5cm}
   \caption{ {\bf Projection effects for co-moving populations across
-  the sky.} The map is colored by the velocity difference a star
+  the sky.} The maps are colored by the proper motion difference a star
   co-moving with \cn\ would exhibit across the equatorial sphere.
   Actual positions of candidate \cn\ members are shown with points;
   the star denotes the cluster center.
+  The {\it left} and {\it right} panels show the proper motion correction in
+  the declination and right ascension directions.
 	\label{fig:vproj}
 	}
 \end{figure}
 
-Figure~\ref{fig:vproj} shows why the correct approach for comparing
-any star's proper motions against the cluster's mean depends on the
-position of the star being considered.
+To compare any given star's proper motion against the cluster's mean,
+one must consider the position of the star on the sky.  This is
+because two stars sharing identical cartesian velocities will have
+different velocities when projected on the sky, and was emphasized by
+\citet{meingast_2021}.
+Figure~\ref{fig:vproj} shows the magnitude of the correction in
+equatorial tangential velocities.
 
 
 % \section{Differential Reddening}

@@ -1411,15 +1411,35 @@ def plot_compstar_rotation(outdir, E_BpmRp=AVG_EBpmRp, yscale=None):
 
         yval = df[ykey]
 
+        if _cls == 'compstar_NGC_2516':
+            #
+            # note: field star Prot distribution shows a systematic
+            # overdensity. the reason is that an EB injected into some S7 light
+            # curves -- an example is at
+            # /Users/luke/Dropbox/proj/cdips/results/allvariability_reports/compstar_NGC_2516/reports/5295945025321419520_allvar_report.pdf
+            #
+            BADPERIOD = 0.437757 # 
+            eps = 1e-3 # the interval to clean. 0.1% a bit too narrow.
+            window0 = [BADPERIOD - BADPERIOD*eps, BADPERIOD + BADPERIOD*eps]
+            BADPERIOD = 0.85088 # eccentric, so not exactly x2
+            window1 = [0.848, 0.853]
+            sel = ~(
+                ( (df.period > window0[0]) & (df.period < window0[1]) )
+                |
+                ( (df.period > window1[0]) & (df.period < window1[1]) )
+            )
+            print(f'Before adhoc window puring, N={len(df)} field rot')
+            print(f'After adhoc window puring, N={len(df[sel])} field rot')
+            xval = xval[sel]
+            yval = yval[sel]
+
         ax.scatter(
             xval,
             yval,
-            c=_col, alpha=0.8, zorder=z, s=8, edgecolors='k',
+            c=_col, alpha=0.9, zorder=z, s=8, edgecolors='k',
             marker=m, linewidths=_lw, label=l
         )
 
-    loc = 'best' if yscale == 'linear' else 'lower right'
-    ax.legend(loc=loc, handletextpad=0.1, fontsize='x-small', framealpha=0.7)
     ax.set_ylabel('Rotation Period [days]', fontsize='medium')
 
     ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]',
@@ -1435,6 +1455,36 @@ def plot_compstar_rotation(outdir, E_BpmRp=AVG_EBpmRp, yscale=None):
     ax.set_yscale(yscale)
 
     format_ax(ax)
+
+    tax = ax.twiny()
+    tax.set_xlabel('Spectral Type')
+
+    xlim = ax.get_xlim()
+    sptypes, BpmRps = get_SpType_BpmRp_correspondence(
+        ['F0V','F2V','F5V','F8V','G1V','G7V']
+    )
+    print(sptypes)
+    print(BpmRps)
+
+    xvals = np.linspace(min(xlim), max(xlim), 100)
+    tax.plot(xvals, np.ones_like(xvals), c='k', lw=0) # hidden, but fixes axis.
+    tax.set_xlim(xlim)
+    ax.set_xlim(xlim)
+
+    tax.set_xticks(BpmRps)
+    tax.set_xticklabels(sptypes, fontsize='x-small')
+
+    tax.xaxis.set_ticks_position('top')
+    tax.tick_params(axis='x', which='minor', top=False)
+    tax.get_yaxis().set_tick_params(which='both', direction='in')
+
+    # fix legend zorder
+    loc = 'best' if yscale == 'linear' else 'lower right'
+    leg = ax.legend(loc=loc, handletextpad=0.1, fontsize='x-small',
+                    framealpha=1.0)
+
+
+
     outstr = '_vs_BpmRp'
     outstr += f'_{yscale}'
     outpath = os.path.join(outdir, f'compstar_rotation_{runid}{outstr}.png')
@@ -1671,7 +1721,8 @@ def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), handletextpad=0.1)
 
     if vs_rotators:
-        ax.set_title('Kinematic $\otimes$ Rotation $\otimes$ Lithium')
+        pass
+        #ax.set_title('Kinematic $\otimes$ Rotation $\otimes$ Lithium')
     else:
         ax.set_title('Kinematic $\otimes$ R+18 Lithium')
 
@@ -1798,6 +1849,7 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
             c='k', alpha=1, zorder=2, s=8, edgecolors='k', marker='o',
             linewidths=0.3
         )
+
     else:
         subclusters = ['core','halo']
         colors = ['k', 'lightskyblue']
@@ -1812,11 +1864,25 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
                 linewidths=0.3, label=l
             )
 
+            # yerr = nparr([
+            #     nparr(df[sel]['Li_EW_mA_merr']),
+            #     nparr(df[sel]['Li_EW_mA_perr'])
+            # ])
+            # ax.errorbar(
+            #     df[sel]['phot_bp_mean_mag'] - df[sel]['phot_rp_mean_mag'] -
+            #     AVG_EBpmRp, df[sel]['Li_EW_mA'], yerr=yerr,
+            #     ls='none', color='k', elinewidth=1, capsize=0,
+            #     marker=None, markersize=2
+            # )
+
+
+
         ax.legend(loc='upper left', handletextpad=0.05)
 
     if not trimx:
         if gaiaeso and galahdr3:
-            ax.set_title('Kinematic $\otimes$ Lithium')
+            pass
+            #ax.set_title('Kinematic $\otimes$ Lithium')
         if gaiaeso and not galahdr3:
             ax.set_title('Kinematic $\otimes$ Gaia-ESO')
         if not gaiaeso and galahdr3:
@@ -1904,7 +1970,7 @@ def plot_rotation_X_lithium(outdir, cmapname, gaiaeso=0, galahdr3=0):
     cb = f.colorbar(cax, extend='max')
     cb.set_label("Li$_{6708}$ EW [m$\mathrm{\AA}$]")
 
-    ax.set_title('Kinematic $\otimes$ Rotation $\otimes$ Lithium')
+    #ax.set_title('Kinematic $\otimes$ Rotation $\otimes$ Lithium')
 
     ax.set_ylabel('Rotation Period [days]')
     ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]')
@@ -3172,7 +3238,9 @@ def plot_vtangential_projection(outdir, basedata='fullfaint'):
     """
 
     nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
-    rot_df, lc_df = get_autorotation_dataframe(runid='NGC_2516', returnbase=True)
+    rot_df, lc_df = get_autorotation_dataframe(
+        runid='NGC_2516', returnbase=True, cleaning='defaultcleaning'
+    )
     med_df, _ = _get_median_ngc2516_core_params(core_df, basedata)
 
     from earhart.physicalpositions import append_physicalpositions
@@ -3373,7 +3441,7 @@ def plot_vtangential_projection(outdir, basedata='fullfaint'):
     ax.set_xticklabels(xticklabels)
 
     cb0 = plt.colorbar(im, fraction=0.025, pad=0.04)
-    cb0.set_label('$\Delta v_{\delta}^{*}$ [mas/yr]')
+    cb0.set_label('$\Delta \mu_{\delta}^{*}$ [mas/yr]')
 
     outpath = os.path.join(
         outdir, f'skymap_tangential_velocity_pmdec.png'
@@ -3411,7 +3479,7 @@ def plot_vtangential_projection(outdir, basedata='fullfaint'):
     ax.set_xticklabels(xticklabels)
 
     cb0 = plt.colorbar(im, fraction=0.025, pad=0.04)
-    cb0.set_label(r"$\Delta v_{\alpha'}^{*}$ [mas/yr]")
+    cb0.set_label(r"$\Delta \mu_{\alpha'}^{*}$ [mas/yr]")
 
     outpath = os.path.join(
         outdir, f'skymap_tangential_velocity_pmra_cosdec.png'
