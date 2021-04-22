@@ -1816,7 +1816,7 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
         ax.scatter(
             bouvier18_df[dets]['BpmRp0'], bouvier18_df[dets]['WLi'], c='gray', alpha=1,
             zorder=-1, s=7, edgecolors='k', marker='s',
-            linewidths=0.1, label='Pleiades'
+            linewidths=0.2, label='Pleiades'
         )
         # ax.scatter(
         #     bouvier18_df[~dets]['BpmRp0'], bouvier18_df[~dets]['WLi'], c='gray', alpha=0.8,
@@ -1836,9 +1836,9 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
         dets = (s93_df.l_WLi != "<")
         # vizier randomly decided to divide by 10
         ax.scatter(
-            s93_df[dets]['BpmRp0'], 10*s93_df[dets]['WLi'], c='hotpink', alpha=1,
-            zorder=0, s=9, edgecolors='k', marker='s',
-            linewidths=0.1, label='Praesepe'
+            s93_df[dets]['BpmRp0'], 10*s93_df[dets]['WLi'], c='yellow', alpha=1,
+            zorder=0, s=8, edgecolors='k', marker='o',
+            linewidths=0.2, label='Praesepe'
         )
 
 
@@ -1875,8 +1875,6 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
             #     marker=None, markersize=2
             # )
 
-
-
         ax.legend(loc='upper left', handletextpad=0.05)
 
     if not trimx:
@@ -1897,6 +1895,40 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
     ax.set_ylim([-50, 350])
 
     format_ax(ax)
+
+    #
+    # twiny for the SpTypes
+    #
+    tax = ax.twiny()
+    tax.set_xlabel('Spectral Type')
+
+    xlim = ax.get_xlim()
+    sptypes, BpmRps = get_SpType_BpmRp_correspondence(
+        ['A5V','F0V','F5V','G0V','K0V','K3V','K5V','K7V','M0V','M1V','M3V']
+    )
+    print(sptypes)
+    print(BpmRps)
+
+    xvals = np.linspace(min(xlim), max(xlim), 100)
+    tax.plot(xvals, np.ones_like(xvals), c='k', lw=0) # hidden, but fixes axis.
+    tax.set_xlim(xlim)
+    ax.set_xlim(xlim)
+
+    tax.set_xticks(BpmRps)
+    tax.set_xticklabels(sptypes, fontsize='x-small')
+
+    tax.xaxis.set_ticks_position('top')
+    tax.tick_params(axis='x', which='minor', top=False)
+    tax.get_yaxis().set_tick_params(which='both', direction='in')
+
+    # fix legend zorder
+    if corehalosplit:
+        ax.legend(loc='upper left', handletextpad=0.05)
+        # leg = ax.legend(loc=loc, handletextpad=0.1, fontsize='x-small',
+        #                 framealpha=1.0)
+
+
+
     outstr = ''
     if gaiaeso:
         outstr += '_gaiaeso'
@@ -1975,7 +2007,37 @@ def plot_rotation_X_lithium(outdir, cmapname, gaiaeso=0, galahdr3=0):
     ax.set_ylabel('Rotation Period [days]')
     ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]')
 
+    ax.set_xlim([0.2, 2.4])
+
     format_ax(ax)
+
+    #
+    # twiny for the SpTypes
+    #
+    tax = ax.twiny()
+    tax.set_xlabel('Spectral Type')
+
+    xlim = ax.get_xlim()
+    sptypes, BpmRps = get_SpType_BpmRp_correspondence(
+        ['F0V','F5V','G0V','K0V','K3V','K5V','K7V','M0V','M1V','M2V']
+    )
+    print(sptypes)
+    print(BpmRps)
+
+    xvals = np.linspace(min(xlim), max(xlim), 100)
+    tax.plot(xvals, np.ones_like(xvals), c='k', lw=0) # hidden, but fixes axis.
+    tax.set_xlim(xlim)
+    ax.set_xlim(xlim)
+
+    tax.set_xticks(BpmRps)
+    tax.set_xticklabels(sptypes, fontsize='x-small')
+
+    tax.xaxis.set_ticks_position('top')
+    tax.tick_params(axis='x', which='minor', top=False)
+    tax.get_yaxis().set_tick_params(which='both', direction='in')
+
+
+
     outstr = '_' + cmapname
     if gaiaeso:
         outstr += '_gaiaeso'

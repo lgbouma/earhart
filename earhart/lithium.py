@@ -16,9 +16,13 @@ from astropy.coordinates import SkyCoord
 
 from earhart.paths import DATADIR, RESULTSDIR
 
-def _get_lithium_EW_df(gaiaeso, galahdr3, EW_CUTOFF_mA=-99):
+def _get_lithium_EW_df(gaiaeso, galahdr3, EW_CUTOFF_mA=-99,
+                       use_my_GaiaESO_EWs=1):
     # gaiaeso and galahdr3: booleans for whether to retrieve
 
+    #
+    # Randich+18 measurements from the Gaia-ESO spectra
+    #
     datapath = os.path.join(DATADIR, 'lithium',
                             'randich_fullfaintkinematic_xmatch_20210310.csv')
     if not os.path.exists(datapath):
@@ -35,7 +39,7 @@ def _get_lithium_EW_df(gaiaeso, galahdr3, EW_CUTOFF_mA=-99):
     from earhart.lithium import get_GalahDR3_li_EWs
     galah_df = get_GalahDR3_li_EWs()
     # the gaussian fit, numerically integrated
-    galah_li_col = 'Fitted_Li_EW_mA'
+    my_li_col = 'Fitted_Li_EW_mA'
 
     s_gaiaeso_df = gaiaeso_df[[gaiaeso_li_col, gaiaeso_li_errcol, 'source_id']]
     s_gaiaeso_df = s_gaiaeso_df.rename({gaiaeso_li_col: 'Li_EW_mA',
@@ -43,13 +47,31 @@ def _get_lithium_EW_df(gaiaeso, galahdr3, EW_CUTOFF_mA=-99):
     s_gaiaeso_df['Li_EW_mA_merr'] = s_gaiaeso_df['Li_EW_mA_perr']
     #s_gaiaeso_df['Li_provenance'] = 'Randich+18'
 
-    s_galah_df = galah_df[[galah_li_col, galah_li_col+"_perr",
-                           galah_li_col+"_merr", 'source_id']]
-    s_galah_df = s_galah_df.rename({galah_li_col: 'Li_EW_mA',
-                                    galah_li_col+"_perr": 'Li_EW_mA_perr',
-                                    galah_li_col+"_merr": 'Li_EW_mA_merr'
+    s_galah_df = galah_df[[my_li_col, my_li_col+"_perr",
+                           my_li_col+"_merr", 'source_id']]
+    s_galah_df = s_galah_df.rename({my_li_col: 'Li_EW_mA',
+                                    my_li_col+"_perr": 'Li_EW_mA_perr',
+                                    my_li_col+"_merr": 'Li_EW_mA_merr'
                                    }, axis='columns')
     #s_galah_df['Li_provenance'] = 'GALAHDR3+ThisWork'
+
+    #
+    # My measuremnts from the Gaia-ESO spectra
+    #
+    mydatapath = os.path.join(DATADIR, 'lithium',
+                              'gaiaesodr4_fullfaintkinematic_xmatch_20210421.csv')
+    my_gaiaeso_df = pd.read_csv(mydatapath)
+    my_gaiaeso_df = my_gaiaeso_df.rename({my_li_col: 'Li_EW_mA',
+                                          my_li_col+"_perr": 'Li_EW_mA_perr',
+                                          my_li_col+"_merr": 'Li_EW_mA_merr'
+                                         }, axis='columns')
+
+    smy_gaiaeso_df = my_gaiaeso_df[[
+        'Li_EW_mA', 'Li_EW_mA_perr', 'source_id', 'Li_EW_mA_merr'
+    ]]
+
+    if use_my_GaiaESO_EWs:
+        s_gaiaeso_df = smy_gaiaeso_df
 
     if gaiaeso and galahdr3:
         df = pd.concat((s_gaiaeso_df, s_galah_df))

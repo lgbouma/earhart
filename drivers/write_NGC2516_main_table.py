@@ -123,7 +123,7 @@ namedesc_dict = {
 'nfaint': "Number of stars with $\Delta T > 2.5$ in TESS aperture.",
 'spdmperiod': "Stellingwerf PDM best period.",
 'spdmval': "Stellingwerf PDM periodogram value for best period.",
-'ref_epoch': "Reference epoch for RA/dec.",
+'ref_epoch': "Reference epoch for right ascension and declination.",
 'ra': "Gaia DR2 right ascension.",
 'dec': "Gaia DR2 declination.",
 'parallax': "Gaia DR2 parallax.",
@@ -143,7 +143,7 @@ namedesc_dict = {
 'in_SetA': "In Set $\mathcal{A}$ (LSP>0.08, P<15d, nequal==0, nclose>=1).",
 'in_SetB': "In Set $\mathcal{B}$ (Set $\mathcal{A}$ and periods match).",
 'is_phot_bin': "True if $>0.3$ mag above cluster isochrone.",
-'is_astrm_bin': "True if RUWE > 1.2."
+'is_astrm_bin': "True if Gaia EDR3 RUWE > 1.2."
 }
 
 keys = list(namedesc_dict.keys())

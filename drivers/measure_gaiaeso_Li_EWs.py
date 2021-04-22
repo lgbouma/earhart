@@ -58,8 +58,6 @@ for _, r in df.iterrows():
         print(f'found {csv_outpath}')
         pass
 
-assert 0
-
 #
 # compare with Gaia ESO
 #
@@ -94,8 +92,13 @@ print(f'Got {len(mdf)} calibration stars')
 
 plt.close('all')
 f,ax = plt.subplots(figsize=(4,4))
-ax.scatter(mdf.EWLi, mdf.Fitted_Li_EW_mA)
+ax.scatter(mdf.EWLi, mdf.Fitted_Li_EW_mA, c='k', s=2, zorder=1)
+sel = (mdf.Teff < 4400)
+sdf = mdf[sel]
+ax.scatter(sdf.EWLi, sdf.Fitted_Li_EW_mA, c='r', s=2, label='Teff<4400K',
+           zorder=2)
 ax.plot(np.arange(-50,250,1), np.arange(-50,250,1), 'k--')
+ax.legend()
 ax.set_xlabel('Randich+18 EW Li from Gaia-ESO [mA]')
 ax.set_ylabel('My EW Li from GAIAESODR4 [mA]')
 outpath = '../results/lithium/validate_my_GAIAESODR4_EWs_vs_Randich18.png'
@@ -105,4 +108,7 @@ plt.close('all')
 
 print(42*'-')
 print('Check the following to ensure you understand differences...')
-print(mdf.sort_values(by='Fitted_Li_EW_mA')[['Fitted_Li_EW_mA','EWLi','source_id','Teff']])
+smdf = mdf.sort_values(by='Fitted_Li_EW_mA')[['Fitted_Li_EW_mA','EWLi','source_id','Teff']]
+print(smdf.head(n=20))
+
+import IPython; IPython.embed()
