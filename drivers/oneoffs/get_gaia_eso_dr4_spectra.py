@@ -12,6 +12,7 @@ Then crossmatch against the "fullfaint" CG18+KC19+M21 NGC 2516 source list and
 get all matching spectra.
 """
 
+import os
 from astropy.io import fits
 from astropy.table import Table
 import pandas as pd, numpy as np
@@ -42,7 +43,25 @@ if not os.path.exists(outpath):
 else:
     mdf = pd.read_csv(outpath)
 
+# "access_url" is close but not quite correct, because downloading it gives an XML file
+# containing metadata that we don't care about.
+#
+# the relevant URLs look like:
+# https://dataportal.eso.org/dataPortal/file/ADP.2020-12-07T15:35:14.938
+#
+# and can be w-got
 
-import IPython; IPython.embed()
+assert len(np.unique(mdf.dp_id)) == len(mdf)
 
+lines = []
+for ix, r in mdf.iterrows():
+    pre = "https://dataportal.eso.org/dataPortal/file/"
+    url = pre + str(r['dp_id'])
+    line = f'wget {url} \n'
+    lines.append(line)
 
+getterpath = os.path.join(DATADIR, 'gaiaeso_dr4_spectra',
+                          'get_the_gaiaeso_dr4_spectra.sh')
+with open(getterpath, 'w') as f:
+    f.writelines(lines)
+print(f'Made {getterpath}')
