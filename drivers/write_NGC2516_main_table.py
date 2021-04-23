@@ -16,7 +16,7 @@ from earhart.helpers import (
 )
 from earhart.lithium import _get_lithium_EW_df
 
-include_lithium = False #FIXME: need this to be true!
+include_lithium = True
 N_members = 3298
 
 # made by cluster_rotation.get_auto_rotation_periods
@@ -94,6 +94,32 @@ assert len(mdf) == len(df)
 
 is_astrometric_binary = (mdf.ruwe > 1.2)
 df['is_astrometric_binary'] = is_astrometric_binary
+df['ruwe'] = mdf.ruwe
+df['source_id_edr3'] = mdf.source_id_edr3
+
+if include_lithium:
+
+    # get lithium data, first gaia-eso / R+18. rename columns to ensure that
+    # sources with both GaiaESO and GALAH spectra get their EWs reported.
+    ldf0 = _get_lithium_EW_df(1, 0)
+    newcoldict = {}
+    for c in ldf0.columns:
+        if "Li" in c:
+            newcoldict[c] =c+"_GaiaESO"
+    ldf0 = ldf0.rename(newcoldict, axis='columns')
+    mdf = df.merge(ldf0, how='left', on='source_id')
+
+    ldf1 = _get_lithium_EW_df(0, 1)
+    newcoldict = {}
+    for c in ldf1.columns:
+        if "Li" in c:
+            newcoldict[c] =c+"_GALAH"
+    ldf1 = ldf1.rename(newcoldict, axis='columns')
+    outdf = mdf.merge(ldf1, how='left', on='source_id')
+
+    assert len(outdf) == N_members
+
+    df = outdf
 
 
 df = df.drop(['in_match234_alias'], axis=1)
@@ -107,6 +133,19 @@ df = df.rename(columns={
 
 df = df.sort_values(by=['in_SetB'], ascending=False)
 
+orderedcols = [
+'source_id', 'source_id_edr3', 'in_SetA', 'in_SetB', 'n_cdips_sector',
+'period', 'lspval', 'spdmperiod', 'spdmval', 'nequal', 'nclose', 'nfaint',
+'ra', 'dec', 'ref_epoch', 'parallax', 'parallax_error', 'pmra', 'pmdec',
+'phot_g_mean_mag', 'phot_bp_mean_mag', 'phot_rp_mean_mag', 'radial_velocity',
+'radial_velocity_error', 'subcluster', 'in_CG18', 'in_KC19', 'in_M21',
+'(Bp-Rp)_0', 'is_phot_bin', 'is_astrm_bin', 'ruwe', 'Li_EW_mA_GaiaESO',
+'Li_EW_mA_perr_GaiaESO', 'Li_EW_mA_merr_GaiaESO', 'Li_EW_mA_GALAH',
+'Li_EW_mA_perr_GALAH', 'Li_EW_mA_merr_GALAH'
+]
+
+df = df[orderedcols]
+
 # by default, release all columns. it's machine-readable...
 outpath = os.path.join(RESULTSDIR, 'tables', 'NGC_2516_Prot_cleaned.csv')
 
@@ -115,17 +154,20 @@ print(f'Wrote {outpath}')
 
 namedesc_dict = {
 'source_id': "Gaia DR2 source identifier.",
+'source_id_edr3': "Gaia EDR3 source identifier.",
+'in_SetA': "In Set $\mathcal{A}$ (LSP>0.08, P<15d, nequal==0, nclose>=1).",
+'in_SetB': "In Set $\mathcal{B}$ (Set $\mathcal{A}$ and periods match).",
 'n_cdips_sector': "Number of TESS sectors with CDIPS light curves.",
 'period': "Lomb-Scargle best period.",
 'lspval': "Lomb-Scargle periodogram value for best period.",
+'spdmperiod': "Stellingwerf PDM best period.",
+'spdmval': "Stellingwerf PDM periodogram value for best period.",
 'nequal': "Number of stars brighter than the target in TESS aperture.",
 'nclose': "Number of stars with $\Delta T > 1.25$ in TESS aperture.",
 'nfaint': "Number of stars with $\Delta T > 2.5$ in TESS aperture.",
-'spdmperiod': "Stellingwerf PDM best period.",
-'spdmval': "Stellingwerf PDM periodogram value for best period.",
-'ref_epoch': "Reference epoch for right ascension and declination.",
 'ra': "Gaia DR2 right ascension.",
 'dec': "Gaia DR2 declination.",
+'ref_epoch': "Reference epoch for right ascension and declination.",
 'parallax': "Gaia DR2 parallax.",
 'parallax_error': "Gaia DR2 parallax uncertainty.",
 'pmra': r"Gaia DR2 proper motion $\mu_\alpha \cos \delta$.",
@@ -140,10 +182,15 @@ namedesc_dict = {
 'in_KC19': "Star in \\citet{kounkel_untangling_2019}.",
 'in_M21': "Star in \\citet{meingast_2021}.",
 '(Bp-Rp)_0': "Gaia Bp-Rp color, minus $E$($G_\mathrm{BP}$-$G_\mathrm{RP}$)=0.1343",
-'in_SetA': "In Set $\mathcal{A}$ (LSP>0.08, P<15d, nequal==0, nclose>=1).",
-'in_SetB': "In Set $\mathcal{B}$ (Set $\mathcal{A}$ and periods match).",
 'is_phot_bin': "True if $>0.3$ mag above cluster isochrone.",
-'is_astrm_bin': "True if Gaia EDR3 RUWE > 1.2."
+'is_astrm_bin': "True if Gaia EDR3 RUWE > 1.2.",
+'ruwe': "Gaia EDR3 RUWE.",
+'Li_EW_mA_GaiaESO': "Gaia-ESO Li doublet equivalent width [m\\AA]",
+'Li_EW_mA_perr_GaiaESO': "Gaia-ESO Li doublet EW 84$^{\\mathrm{th}}$-50$^{\\mathrm{th}}$ percentile [m\\AA]",
+'Li_EW_mA_merr_GaiaESO': "Gaia-ESO Li doublet EW 50$^{\\mathrm{th}}$-16$^{\\mathrm{th}}$ percentile [m\\AA]",
+'Li_EW_mA_GALAH': "GALAH Li doublet equivalent width [m\\AA]",
+'Li_EW_mA_perr_GALAH': "GALAH Li doublet EW 84$^{\\mathrm{th}}$-50$^{\\mathrm{th}}$ percentile [m\\AA]",
+'Li_EW_mA_merr_GALAH': "GALAH Li doublet EW 50$^{\\mathrm{th}}$-16$^{\\mathrm{th}}$ percentile [m\\AA]"
 }
 
 keys = list(namedesc_dict.keys())
@@ -166,33 +213,3 @@ print(f'Wrote {outpath}')
 
 
 
-if include_lithium:
-    #
-    # TODO TODO: THE RANDICH+18 GAIA-ESO MERGE HAS NON-UNIQUE SOURCE_IDS. 
-    # A FIXME IS TO DEBUG THIS
-    #
-
-    # get lithium data, first gaia-eso / R+18. rename columns to ensure that
-    # sources with both GaiaESO and GALAH spectra get their EWs reported.
-    ldf0 = _get_lithium_EW_df(1, 0)
-    newcoldict = {}
-    for c in ldf0.columns:
-        if "Li" in c:
-            newcoldict[c] =c+"_GaiaESO"
-    ldf = ldf0.rename(newcoldict, axis='columns')
-    mdf = df.merge(ldf0, how='left', on='source_id')
-
-    ldf1 = _get_lithium_EW_df(0, 1)
-    newcoldict = {}
-    for c in ldf1.columns:
-        if "Li" in c:
-            newcoldict[c] =c+"_GALAH"
-    outdf = mdf.merge(ldf1, how='left', on='source_id')
-
-    assert len(outdf) == N_members
-
-    # by default, release all columns. it's machine-readable...
-    outpath = os.path.join(RESULTSDIR, 'tables', 'NGC_2516_Prot_cleaned.csv')
-
-    outdf.to_csv(outpath, index=False)
-    print(f'Wrote {outpath}')

@@ -3755,22 +3755,25 @@ def plot_lumfunction_vs_position(outdir):
     # bins = np.arange(0, 500+delta_pc, delta_pc)
     # xvals = bins[:-1] + delta_pc/2
 
-    bins = get_bin_sizes(nparr(full_df.delta_r_pc), N_bins=6)
+    bins = get_bin_sizes(nparr(full_df.delta_r_pc), N_bins=3)
     xvals = bins[:-1] + np.diff(bins)/2
 
     n_in_bin, _ = np.histogram(nparr(full_df.delta_r_pc), bins=bins)
     print(f'Bins are {bins}')
     print(f'gives N stars in each bin: {n_in_bin}')
 
+    from earhart.priors import AVG_AG, AVG_EBpmRp
+    # wait... what about the reddening????
     get_MG = (
         lambda _df: np.array(
             _df['phot_g_mean_mag'] + 5*np.log10(_df['parallax']/1e3) + 5
+            + AVG_AG
         )
     )
 
 
-    delta = 1.5
-    MG_bins = np.arange(-3.0, 10+delta, delta)
+    delta = 1
+    MG_bins = np.arange(-3.0, 13+delta, delta)
     colors = mpl.cm.viridis(np.linspace(0,1,len(bins)))
 
     for i in range(len(bins)-1):
@@ -3788,25 +3791,61 @@ def plot_lumfunction_vs_position(outdir):
 
         MG_arr = get_MG(sdf)
 
-        l = "$\Delta r_{\mathrm{3D}}$:" + f'{bin_start:.1f} - {bin_end:.1f} pc'
-        ax.hist(MG_arr, bins=MG_bins, cumulative=False,
-                color=colors[i], fill=False,  histtype='step',
-                linewidth=0.5, label=l)
+        if i!= 1:
+            ax.hist(MG_arr, bins=MG_bins, cumulative=False,
+                    color=colors[i], fill=False,  histtype='step',
+                    linewidth=2, alpha=0.8)
 
-    ax.set_yscale('log')
+            l = "$\Delta r_{\mathrm{3D}}$:" + f'{bin_start:.1f} - {bin_end:.1f} pc'
+            bbox = dict(facecolor='white', alpha=1, pad=0, edgecolor='white')
+            ax.text(0.04, 0.96-i*0.04, l, va='top', ha='left',
+                    transform=ax.transAxes, color=colors[i], bbox=bbox,
+                    fontsize='small')
+
+            print(f'{l}: {np.nanmean(MG_arr)}')
+
 
     # Shrink current axis by 20%
-    box = ax.get_position()
-    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+    # box = ax.get_position()
+    # ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 
-    # Put a legend to the right of the current axis
-    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),
-              handletextpad=0.1, fontsize='small')
+    # # Put a legend to the right of the current axis
+    # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),
+    #           handletextpad=0.1, fontsize='small')
 
-    ax.set_xlabel('Absolute $\mathrm{M}_{G}$ [mag]')
+    ax.set_xlabel('Absolute $(\mathrm{M}_{G})_0$ [mag]')
     ax.set_ylabel('Number in bin')
 
     format_ax(ax)
+
+    # twin axis
+    tax = ax.twiny()
+    tax.set_xlabel('Mass [$M_\odot\!$]')
+
+    xlim = ax.get_xlim()
+    sptypes, AbsGs, Msuns = get_SpType_BpmRp_correspondence(
+        ['B9V', 'A4V','F5V','G1V','K2V','K6V','M0.5V','M2.5V','M4V'],
+        return_absG=1
+    )
+    print(sptypes)
+    print(AbsGs)
+    print(Msuns)
+
+    xvals = np.linspace(min(xlim), max(xlim), 100)
+    tax.plot(xvals, np.ones_like(xvals), c='k', lw=0) # hidden, but fixes axis.
+    tax.set_xlim(xlim)
+    ax.set_xlim(xlim)
+
+    tax.set_xticks(AbsGs)
+    tax.set_xticklabels(Msuns, fontsize='xx-small')
+
+    tax.xaxis.set_ticks_position('top')
+    tax.tick_params(axis='x', which='minor', top=False)
+    tax.get_yaxis().set_tick_params(which='both', direction='in')
+
+    #ax.set_yscale('log')
+
+
 
     outpath = os.path.join(outdir, f'lumfunction_vs_position.png')
     savefig(f, outpath)

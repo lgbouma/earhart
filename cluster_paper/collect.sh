@@ -32,6 +32,8 @@ cp ../results/vtangential_projection/skymap_tangential_velocity_pmra_cosdec.pdf 
 
 cp ../results/rotation_X_positions/rotation_X_positions_approach2_defaultcleaning.pdf f13.pdf
 
+cp ../results/lumfunction_vs_position/lumfunction_vs_position.pdf f15.pdf
+
 # supplementary
 cp ../results/rotation_X_RUWE/rotation_vs_BpmRp_X_RUWE_viridis_linear.pdf f6.pdf
 
