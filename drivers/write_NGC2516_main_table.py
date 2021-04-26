@@ -221,11 +221,11 @@ namedesc_dict = {
 'is_astrm_bin': "True if Gaia EDR3 RUWE > 1.2.",
 'ruwe': "Gaia EDR3 RUWE.",
 'Li_EW_mA_GaiaESO': "Gaia-ESO Li doublet equivalent width, including the Fe blend [m\\AA].",
-'Li_EW_mA_perr_GaiaESO': "Gaia-ESO Li doublet EW upper uncertainty interval [m\\AA].",
-'Li_EW_mA_merr_GaiaESO': "Gaia-ESO Li doublet EW lower uncertainty interval [m\\AA].",
+'Li_EW_mA_perr_GaiaESO': "Gaia-ESO Li doublet EW upper uncertainty [m\\AA].",
+'Li_EW_mA_merr_GaiaESO': "Gaia-ESO Li doublet EW lower uncertainty [m\\AA].",
 'Li_EW_mA_GALAH': "GALAH Li doublet equivalent width, including the Fe blend [m\\AA].",
-'Li_EW_mA_perr_GALAH': "GALAH Li doublet EW upper uncertainty interval [m\\AA].",
-'Li_EW_mA_merr_GALAH': "GALAH Li doublet EW lower uncertainty interval [m\\AA]."
+'Li_EW_mA_perr_GALAH': "GALAH Li doublet EW upper uncertainty [m\\AA].",
+'Li_EW_mA_merr_GALAH': "GALAH Li doublet EW lower uncertainty [m\\AA]."
 }
 
 keys = list(namedesc_dict.keys())

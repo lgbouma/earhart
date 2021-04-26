@@ -219,18 +219,19 @@ def plot_full_kinematics(outdir, basedata='bright', show1937=1,
             yv = params[i+1]
             print(i,j,xv,yv)
 
+            alpha = 0.9
             axs[i,j].scatter(
-                nbhd_df[xv], nbhd_df[yv], c='gray', alpha=0.9, zorder=2, s=5,
+                nbhd_df[xv], nbhd_df[yv], c='gray', alpha=0.7*alpha, zorder=2, s=5,
                 rasterized=True, linewidths=0, label='Field', marker='.'
             )
             axs[i,j].scatter(
-                halo_df[xv], halo_df[yv], c='lightskyblue', alpha=1,
+                halo_df[xv], halo_df[yv], c='lightskyblue', alpha=alpha,
                 zorder=3, s=12, rasterized=True, label='Halo',
                 linewidths=0.1, marker='.', edgecolors='k'
             )
             axs[i,j].scatter(
-                core_df[xv], core_df[yv], c='k', alpha=0.9, zorder=4, s=5,
-                rasterized=True, label='Core', marker='.'
+                core_df[xv], core_df[yv], c='k', alpha=alpha, zorder=4, s=5,
+                rasterized=True, label='Core', marker='.', linewidths=0
             )
             if show1937:
                 axs[i,j].plot(
@@ -3342,17 +3343,26 @@ def plot_vtangential_projection(outdir, basedata='fullfaint'):
     set_style()
     plt.close('all')
     fig, axs = plt.subplots(ncols=3, figsize=(8,3))
-    axs[0].scatter(s_halo_df.x_pc, s_halo_df.y_pc, s=1, c='k', rasterized=True)
+    s = 0.8
+    axs[0].scatter(s_halo_df.x_pc, s_halo_df.y_pc, s=s, c='k', rasterized=True)
     delta_x = 0.1
-    axs[0].arrow(0.75, 0.07, delta_x, 0,
+    axs[0].arrow(0.73, 0.07, delta_x, 0,
                  length_includes_head=True, head_width=1e-2,
                  head_length=1e-2,
                  transform=axs[0].transAxes)
-    axs[0].text(0.75+delta_x/2, 0.08, 'Galactic\ncenter', va='bottom',
-                ha='center', transform=axs[0].transAxes)
+    axs[0].text(0.73+delta_x/2, 0.085, 'Galactic center', va='bottom',
+                ha='center', transform=axs[0].transAxes, fontsize='xx-small')
 
-    factor=3
-    x0,y0 = -8150, -220
+    axs[0].arrow(0.07, 0.73, 0, delta_x,
+                 length_includes_head=True, head_width=1e-2,
+                 head_length=1e-2,
+                 transform=axs[0].transAxes)
+    axs[0].text(0.085, 0.73+delta_x/2, 'Galactic rotation', va='center',
+                ha='left', transform=axs[0].transAxes, fontsize='xx-small', rotation=90)
+
+
+    factor=2
+    x0,y0 = -7980, -220
     axs[0].quiver(
         x0, y0, factor*vdiff_median.d_x.value,
         factor*vdiff_median.d_y.value, angles='xy',
@@ -3368,7 +3378,7 @@ def plot_vtangential_projection(outdir, basedata='fullfaint'):
     # )
     axs[0].update({'xlabel': 'X [pc]', 'ylabel': 'Y [pc]'})
 
-    axs[1].scatter(s_halo_df.x_pc, s_halo_df.z_pc, s=1, c='k', rasterized=True)
+    axs[1].scatter(s_halo_df.x_pc, s_halo_df.z_pc, s=s, c='k', rasterized=True)
     x0,y0 = -8160, -50
     axs[1].quiver(
         x0, y0, factor*vdiff_median.d_x.value,
@@ -3378,7 +3388,7 @@ def plot_vtangential_projection(outdir, basedata='fullfaint'):
     )
     axs[1].update({'xlabel': 'X [pc]', 'ylabel': 'Z [pc]'})
 
-    axs[2].scatter(s_halo_df.y_pc, s_halo_df.z_pc, s=1, c='k', rasterized=True)
+    axs[2].scatter(s_halo_df.y_pc, s_halo_df.z_pc, s=s, c='k', rasterized=True)
     x0,y0 = -600, -50
     axs[2].quiver(
         x0, y0, factor*vdiff_median.d_y.value,
@@ -3388,12 +3398,12 @@ def plot_vtangential_projection(outdir, basedata='fullfaint'):
     )
 
     delta_x = 0.1
-    axs[2].arrow(0.75, 0.07, delta_x, 0,
+    axs[2].arrow(0.73, 0.07, delta_x, 0,
                  length_includes_head=True, head_width=1e-2,
                  head_length=1e-2,
                  transform=axs[2].transAxes)
-    axs[2].text(0.75+delta_x/2, 0.08, 'Galactic\nrotation', va='bottom',
-                ha='center', transform=axs[2].transAxes)
+    axs[2].text(0.73+delta_x/2, 0.085, 'Galactic rotation', va='bottom',
+                ha='center', transform=axs[2].transAxes, fontsize='xx-small')
 
     axs[2].update({'xlabel': 'Y [pc]', 'ylabel': 'Z [pc]'})
 
@@ -3407,18 +3417,24 @@ def plot_vtangential_projection(outdir, basedata='fullfaint'):
     orbits_future = backintegrate(c_median, dt=-dt, n_steps=n_steps)
 
     xlim, ylim = axs[0].get_xlim(), axs[0].get_ylim()
-    axs[0].plot(orbits_past.x.to(u.pc), orbits_past.y.to(u.pc), c='gray', zorder=2, lw=1)
-    axs[0].plot(orbits_future.x.to(u.pc), orbits_future.y.to(u.pc), c='gray', zorder=2, lw=1)
+    axs[0].plot(orbits_past.x.to(u.pc), orbits_past.y.to(u.pc), c='gray',
+                zorder=2, lw=1, ls='-')
+    axs[0].plot(orbits_future.x.to(u.pc), orbits_future.y.to(u.pc), c='gray',
+                zorder=2, lw=1, ls=':')
     axs[0].update({'xlim': xlim, 'ylim': ylim})
 
     xlim, ylim = axs[1].get_xlim(), axs[1].get_ylim()
-    axs[1].plot(orbits_past.x.to(u.pc), orbits_past.z.to(u.pc), c='gray', zorder=2, lw=1)
-    axs[1].plot(orbits_future.x.to(u.pc), orbits_future.z.to(u.pc), c='gray', zorder=2, lw=1)
+    axs[1].plot(orbits_past.x.to(u.pc), orbits_past.z.to(u.pc), c='gray',
+                zorder=2, lw=1, ls='-')
+    axs[1].plot(orbits_future.x.to(u.pc), orbits_future.z.to(u.pc), c='gray',
+                zorder=2, lw=1, ls=':')
     axs[1].update({'xlim': xlim, 'ylim': ylim})
 
     xlim, ylim = axs[2].get_xlim(), axs[2].get_ylim()
-    axs[2].plot(orbits_past.y.to(u.pc), orbits_past.z.to(u.pc), c='gray', zorder=2, lw=1)
-    axs[2].plot(orbits_future.y.to(u.pc), orbits_future.z.to(u.pc), c='gray', zorder=2, lw=1)
+    axs[2].plot(orbits_past.y.to(u.pc), orbits_past.z.to(u.pc), c='gray',
+                zorder=2, lw=1, ls='-')
+    axs[2].plot(orbits_future.y.to(u.pc), orbits_future.z.to(u.pc), c='gray',
+                zorder=2, lw=1, ls=':')
     axs[2].update({'xlim': xlim, 'ylim': ylim})
 
     outpath = os.path.join(outdir, f'XYZ_with_orbit.png')
