@@ -3798,7 +3798,7 @@ def plot_lumfunction_vs_position(outdir):
 
             l = "$\Delta r_{\mathrm{3D}}$:" + f'{bin_start:.1f} - {bin_end:.1f} pc'
             bbox = dict(facecolor='white', alpha=1, pad=0, edgecolor='white')
-            ax.text(0.04, 0.96-i*0.04, l, va='top', ha='left',
+            ax.text(0.04, 0.95-i*0.035, l, va='top', ha='left',
                     transform=ax.transAxes, color=colors[i], bbox=bbox,
                     fontsize='small')
 

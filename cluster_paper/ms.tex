@@ -110,9 +110,9 @@
 \end{abstract}
 
 \keywords{
-	stellar ages (1581),
   stellar associations (1582),
   open clusters (1160),
+	stellar ages (1581),
   stellar kinematics (1608),
   stellar rotation (1629)
 }
@@ -899,50 +899,48 @@ has recently been surveyed by \citet{bouvier_lithium-rotation_2020}.
 For \cn, two spectroscopic datasets seemed important:
 Gaia-ESO \citep{gilmore_gaiaeso_2012} and GALAH
 \citep{silva_galah_2015}.  At the time of analysis, Gaia-ESO DR4 and
-GALAH DR3 were the most relevant, respectively \citep[{\it
-e.g.},][]{randich_gaiaeso_2018,buder_galah_2020}.  The target
-selection and results from each survey were as follows.
+GALAH DR3 were the most relevant
+\citep{randich_gaiaeso_2018,buder_galah_2020}.  The target selection
+and results from each survey were as follows.
 
 The Gaia-ESO collaboration chose candidate \cn\ members to observe
 with GIRAFFE and UVES based on previously reported literature members
 and publicly available photometry.  Since the existence of the \cn\
 halo was not known at the time of target selection, very few halo
-stars are in the sample.  For \cn, \citet{randich_gaiaeso_2018}
-reported stellar parameters (including lithium equivalent widths and
-metallicities) for 796 stars that they considered possible \cn\
-members.  Cross-matching these against our kinematic list of
-\nkinematic\ candidate members by position and imposing a 0$\farcs$5
-maximum separation limit yielded 459 kinematic members with available
-spectra, 417 in the core and 42 in the halo of \cn.  The lop-sided
-ratio is due to the Gaia-ESO selection function.  An inspection of the
-effective temperature {\it vs{.}} lithium equivalent width based on
-their Table~2 showed the surprising feature that stars with $T_{\rm
-eff}\lesssim 4000\,{\rm K}$ tend to have non-zero equivalent widths,
-despite the expectation that their lithium should be fully depleted.
-Whether these measurements were significant was not clear, and so we
-opted to download the spectra from the ESO archive to re-measure
-equivalent widths.
+stars are in the sample.  Based on the data,
+\citet{randich_gaiaeso_2018} determined stellar parameters (including
+lithium equivalent widths and metallicities) for 796 stars that they
+considered possible \cn\ members.  Cross-matching these against our
+kinematic list of \nkinematic\ candidate members by position and
+imposing a 0$\farcs$5 maximum separation limit yielded 459 kinematic
+members with available spectra, 417 in the core and 42 in the halo of
+\cn.  The lop-sided ratio is due to the Gaia-ESO selection function.
+An inspection of the effective temperature {\it vs{.}} lithium
+equivalent width based on Table~2 of \citet{randich_gaiaeso_2018}
+showed the surprising feature that stars with $T_{\rm eff}\lesssim
+4000\,{\rm K}$ tend to have non-zero equivalent widths, despite the
+expectation that their lithium should be fully depleted.  Whether
+these measurements were significant was not clear, and so we opted to
+download the spectra from the ESO archive to re-measure equivalent
+widths.
 
 The GALAH DR3 target selection is discussed in depth by
 \citet{buder_galah_2020}.  The relevant aspects for our analysis are
 that the ``main'' survey targeted $12<V<14$ stars at
-$\delta<+10^\circ$, provided the stars were at least ten degrees from
-the galactic plane.  The survey is spatially
-inhomogeneous.\footnote{See the footprint at
-\url{https://www.galah-survey.org/news/announcing-galah-dr3}} Special
-targeting for stars in the TESS southern continuous viewing zone, and
-for known open cluster members was also performed.  We identified the
-candidate \cn\ members for which spectra had been obtained by
-searching the \texttt{GALAH\_DR3\_main\_allstar\_v1} catalog, after
-excluding stars with the stellar parameter bit flags 1, 2, 3.  This
-excludes spectra with unreliable broadening, low S/N, and unreliable
-wavelength solutions (see Table~6 of \citealt{buder_galah_2020}).
-Since our main focus is measuring equivalent widths for the
-Li\,6708\,\AA\ doublet, these were the most relevant bit flags.  Of
-our \nkinematic\ candidate \cn\ members, 107 had spectra in GALAH DR3.
-51 were in the ``core''; 56 were in the ``halo''.  78 had ``finite''
-lithium, i.e., no lithium flag set.
-We downloaded\footnote{Via \url{datacentral.org.au/services/download},
+$\delta<+10^\circ$ in select fields, provided the stars were at least
+ten degrees from the galactic plane.  Special targeting for stars in
+the TESS southern continuous viewing zone, and for known open cluster
+members was also performed.  We identified the candidate \cn\ members
+for which spectra had been obtained by searching the
+\texttt{GALAH\_DR3\_main\_allstar\_v1} catalog, after excluding stars
+with the stellar parameter bit flags 1, 2, 3.  This excludes spectra
+with unreliable broadening, low S/N, and unreliable wavelength
+solutions (see Table~6 of \citealt{buder_galah_2020}).
+% Since our main focus is measuring equivalent widths for the
+% Li\,6708\,\AA\ doublet, these were the most relevant bit flags.
+Of our \nkinematic\ candidate \cn\ members, 107 had spectra in GALAH
+DR3.  51 were in the core, and 56 were in the ``halo''.  We
+downloaded\footnote{Via \url{datacentral.org.au/services/download},
 using the \texttt{sobject\_id} identifiers.} the GALAH DR3 spectra for
 all 107 entries.  
 
@@ -952,16 +950,17 @@ all 107 entries.
 %
 
 We measured the lithium equivalent widths using the \texttt{specutils}
-package \citep{specutils_v1pt1}.  We did this by first focusing in on
-a 15\AA\ window centered on the 6707.835\AA\ lithium doublet.  We then
+package \citep{specutils_v1pt1}.  We did this by first shifting the
+spectra to the stellar rest frames, and then focused in on a 15\AA\
+window centered on the 6707.835\AA\ lithium doublet.  We then
 continuum normalized the spectra using a third-degree Chebyshev
 series, while excluding any regions that showed absorption lines ({\it
-e.g.}, Fe\,\textsc{I} is present at 6703.58\,\AA and 6705.10\,\AA).
+e.g.}, Fe\,\textsc{I} is present at 6703.58\,\AA\ and 6705.10\,\AA).
 We proceeding by fitting a Gaussian to the continuum normalized
 spectra, considering only a $\pm 1\,$\AA\ window centered on the Li
 doublet.  The equivalent widths were then evaluated by numerically
 integrating the fitted model over the same window.  Our approach
-therefore includes the Fe\,6707.44 blend in the reported Li equivalent
+therefore includes the Fe\,6707.44\AA\ blend in the reported Li equivalent
 widths---which leads to systematic overestimates of $\approx$10 to
 15\,m\AA\ \citep[{\it e.g.},][]{bouvier_pleiades_lirot_2018}.
 Finally, to derive uncertainties on the EWs, we repeated the procedure
@@ -969,10 +968,11 @@ twenty times, but added noise to the spectra, drawn from a normal
 distribution with a scale set by the standard deviation of the
 continuum.  The reported uncertainties are then drawn from the
 $84^{\rm th}$ and $16^{\rm th}$ percentiles of the resulting EW
-distribution.  We verified the overall scale of our results by
-comparing our measurements with those of \citet{randich_gaiaeso_2018}.
-Most stars with $T_{\rm eff} > 4500\,{\rm K}$ followed a 1-1 relation.
-For cooler stars, our EW measurements are systematically lower, as
+distribution, and are included in Table~\ref{tab:maintable}.  We
+verified the overall scale of our results by comparing our
+measurements with those of \citet{randich_gaiaeso_2018}.  Most stars
+with $T_{\rm eff} > 4500\,{\rm K}$ followed a 1-1 relation.  For
+cooler stars, our EW measurements are systematically lower, as
 expected given the depletion timescales for stars at these ages
 \citep[{\it e.g.},][]{soderblom_ages_2014}.  We visually verified from
 the spectra that, for the most part, we prefer our measurements.
@@ -1085,18 +1085,20 @@ the mean tail star is expected to be less massive than the mean core
 star \citep[{\it e.g.},][]{chumak_tails_2006}.
 Figure~\ref{fig:massfunction} shows the histogram of $A_G$-corrected
 absolute magnitudes, with the corresponding
-\citet{pecaut_mamajek_2013} mass estimates.  The stars closest
-to the core do
-indeed seem to have a greater proportion of the $\gtrsim$0.8$M_\odot$
-stars, while the tail stars have a greater proportion of
-$\lesssim$0.4$M_\odot$ stars.  The mean star in the inner separation bin has
-$({\rm M}_G)_0=7.08$ ($\approx$0.69$M_\odot$), while in the outer bin
-the mean star has $({\rm M}_G)_0=7.61$ ($\approx$0.63$M_\odot$).
-While the difference does appear significant given the number of
-stars involved, the theoretical implications are not entirely clear,
-since the ``molecular filament'' explanation might be able to
-accommodate mass differences between the core and tail through density
-gradients across the initial filament.
+\citet{pecaut_mamajek_2013} mass estimates.  The stars closest to the
+cluster center do seem to have a greater proportion of $\gtrsim$0.8$M_\odot$
+stars, while the outermost stars have a greater proportion of
+$\lesssim$0.4$M_\odot$ stars.  The mean star in the inner separation
+bin has $({\rm M}_G)_0=7.08$ ($\approx$0.69$M_\odot$), while in the
+outer bin the mean star has $({\rm M}_G)_0=7.61$
+($\approx$0.63$M_\odot$).  While the difference does appear
+significant given the number of stars involved, the theoretical
+implications are not entirely clear, since the ``molecular filament''
+explanation might be able to accommodate mass differences between the
+core and tail through density gradients across the initial filament.
+Observational incompleteness at the low-mass end seems unlikely to
+alter the result though, since the innermost and outermost are likely
+subject to similar selection effects.
 
 One possible approach for distinguishing the two explanations could be
 to observationally establish an age-size correlation.  If the
@@ -1115,16 +1117,14 @@ structures resembling \cn.
 		\includegraphics[width=0.7\textwidth]{f15.pdf}
 	\end{center}
 	\vspace{-0.7cm}
-	\caption{ {\bf Absolute magnitudes (and masses) for the inner and
-			outermost stars in \cn.}
-		The \nkinematic\ candidate \cn\ members were split into three groups
-		according to their distance from the cluster center.
-		The inner and outermost groups, each containing 1,099 stars, are shown to
-		provide the clearest picture with respect to expectations for mass
-		segregation.
-		The mean halo star does have lower mass, consistent with expectations
-		for tidal tails.
-		\label{fig:massfunction}
+  \caption{ {\bf Absolute magnitudes and masses for the inner and
+  outermost stars in \cn.} The \nkinematic\ candidate \cn\ members
+  were split into three groups according to their distance from the
+  cluster center.  The inner and outermost groups, each containing
+  1,099 stars, are shown in 1\,mag bins.  The mean star in the
+  innermost sample has a 10\% lower mass than the mean star in the
+  outermost sample, consistent with expectations for tidal tails.
+  \label{fig:massfunction}
 	}
 \end{figure*}
 
@@ -1437,8 +1437,8 @@ the structure of \cn.
     \citealt{meingast_2021}), these contamination fractions are not as
     bad as one might fear.
    %
-   \item {\it The average star in the halo has lower mass (by $\approx$10\%)
-   than the average star in the core.}
+   \item {\it The average star in the outskirts has lower mass (by $\approx$10\%)
+   than the average star in the cluster center.}
    This is shown in Figure~\ref{fig:massfunction}, and discussed in
    Section~\ref{subsec:origin}.
    While the mass function is consistent with expectations for a
@@ -1465,7 +1465,7 @@ the structure of \cn.
    %
 \end{itemize}
 
-The existence of the halo itself is physically plausible.  A
+The existence of the halo itself is not particularly surprising.  A
 star with a 1\kms\ velocity difference from the cluster average will
 move away from the center at a rate of 1\,pc\,Myr$^{-1}$.  For a
 $\sim$100\,Myr cluster, a halo with characteristic size $\sim$100\,pc
@@ -1475,9 +1475,19 @@ open clusters are of order kilometers per second.
 On the other hand, our ability to reliably identify members of these
 halos is rather surprising.  These stars have remained hidden in the
 background of the Galaxy throughout centuries of modern astronomy.
-The consequences that these halo stars will have in expanding our
-understanding of planetary and stellar origins are only just beginning
-to be understood.
+Their discovery likely represents a major step toward understanding
+open cluster dispersal.
+Combined with wide-field photometric surveys, the stars themselves
+will enable advances in understanding stellar
+angular momentum evolution.
+Combined with wide-field spectroscopic
+surveys \citep[{\it e.g.},][]{kollmeier_2017}, the halos could also lead to
+advances in understanding the chemical evolution of low-mass stars.
+Finally, the halo stars also provide an expanded sample of
+age-dated stars to search for planets \citep[{\it
+e.g.},][]{newton_2021}, which could help expand our understanding of
+planetary evolution.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

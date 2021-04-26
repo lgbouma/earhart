@@ -9,6 +9,7 @@ populates results.tables with the table containing:
     * Lithium information.
 """
 import os
+from numpy import array as nparr
 import numpy as np, pandas as pd
 from earhart.paths import DATADIR, RESULTSDIR
 from earhart.helpers import (
@@ -133,6 +134,39 @@ df = df.rename(columns={
 
 df = df.sort_values(by=['in_SetB'], ascending=False)
 
+#
+# clean up the uncertainties on Li EWs
+# minimum 10mA uncertainty everywhere, 20mA for BpmRp0>1.8
+#
+sel = (
+    (~pd.isnull(df.Li_EW_mA_GaiaESO))
+    |
+    (~pd.isnull(df.Li_EW_mA_GALAH))
+)
+df.loc[sel,'Li_EW_mA_perr_GaiaESO'] = np.maximum(nparr(df[sel]['Li_EW_mA_perr_GaiaESO']),5)
+df.loc[sel,'Li_EW_mA_merr_GaiaESO'] = np.maximum(nparr(df[sel]['Li_EW_mA_merr_GaiaESO']),5)
+df.loc[sel,'Li_EW_mA_perr_GALAH'] = np.maximum(nparr(df[sel]['Li_EW_mA_perr_GALAH']),5)
+df.loc[sel,'Li_EW_mA_merr_GALAH'] = np.maximum(nparr(df[sel]['Li_EW_mA_merr_GALAH']),5)
+
+sel = (
+    ((~pd.isnull(df.Li_EW_mA_GaiaESO))
+    |
+    (~pd.isnull(df.Li_EW_mA_GALAH))
+    ) &
+    (df["(Bp-Rp)_0"] > 1.8)
+)
+df.loc[sel,'Li_EW_mA_perr_GaiaESO'] = np.maximum(nparr(df[sel]['Li_EW_mA_perr_GaiaESO']),20)
+df.loc[sel,'Li_EW_mA_merr_GaiaESO'] = np.maximum(nparr(df[sel]['Li_EW_mA_merr_GaiaESO']),20)
+df.loc[sel,'Li_EW_mA_perr_GALAH'] = np.maximum(nparr(df[sel]['Li_EW_mA_perr_GALAH']),20)
+df.loc[sel,'Li_EW_mA_merr_GALAH'] = np.maximum(nparr(df[sel]['Li_EW_mA_merr_GALAH']),20)
+
+#
+# column formatting. nullable integer is Int32Dtype.
+#
+df['nequal'] = df['nequal'].astype(pd.Int32Dtype())
+df['nclose'] = df['nclose'].astype(pd.Int32Dtype())
+df['nfaint'] = df['nfaint'].astype(pd.Int32Dtype())
+
 orderedcols = [
 'source_id', 'source_id_edr3', 'in_SetA', 'in_SetB', 'n_cdips_sector',
 'period', 'lspval', 'spdmperiod', 'spdmval', 'nequal', 'nclose', 'nfaint',
@@ -146,56 +180,57 @@ orderedcols = [
 
 df = df[orderedcols]
 
-# by default, release all columns. it's machine-readable...
 outpath = os.path.join(RESULTSDIR, 'tables', 'NGC_2516_Prot_cleaned.csv')
-
 df.to_csv(outpath, index=False)
 print(f'Wrote {outpath}')
 
+#
+# make the header table for the paper
+#
 namedesc_dict = {
 'source_id': "Gaia DR2 source identifier.",
 'source_id_edr3': "Gaia EDR3 source identifier.",
 'in_SetA': "In Set $\mathcal{A}$ (LSP>0.08, P<15d, nequal==0, nclose>=1).",
 'in_SetB': "In Set $\mathcal{B}$ (Set $\mathcal{A}$ and periods match).",
 'n_cdips_sector': "Number of TESS sectors with CDIPS light curves.",
-'period': "Lomb-Scargle best period.",
+'period': "Lomb-Scargle best period [days].",
 'lspval': "Lomb-Scargle periodogram value for best period.",
-'spdmperiod': "Stellingwerf PDM best period.",
+'spdmperiod': "Stellingwerf PDM best period [days].",
 'spdmval': "Stellingwerf PDM periodogram value for best period.",
 'nequal': "Number of stars brighter than the target in TESS aperture.",
 'nclose': "Number of stars with $\Delta T > 1.25$ in TESS aperture.",
 'nfaint': "Number of stars with $\Delta T > 2.5$ in TESS aperture.",
-'ra': "Gaia DR2 right ascension.",
-'dec': "Gaia DR2 declination.",
+'ra': "Gaia DR2 right ascension [deg].",
+'dec': "Gaia DR2 declination [deg].",
 'ref_epoch': "Reference epoch for right ascension and declination.",
-'parallax': "Gaia DR2 parallax.",
-'parallax_error': "Gaia DR2 parallax uncertainty.",
-'pmra': r"Gaia DR2 proper motion $\mu_\alpha \cos \delta$.",
-'pmdec': "Gaia DR2 proper motion $\mu_\delta$.",
+'parallax': "Gaia DR2 parallax [mas].",
+'parallax_error': "Gaia DR2 parallax uncertainty [mas].",
+'pmra': r"Gaia DR2 proper motion $\mu_\alpha \cos \delta$ [mas$\,$yr${^-1}$].",
+'pmdec': "Gaia DR2 proper motion $\mu_\delta$ [mas$\,$yr${^-1}$].",
 'phot_g_mean_mag': "Gaia DR2 $G$ magnitude.",
 'phot_bp_mean_mag': "Gaia DR2 $G_\mathrm{BP}$ magnitude.",
 'phot_rp_mean_mag': "Gaia DR2 $G_\mathrm{RP}$ magnitude.",
-'radial_velocity': "Gaia DR2 heliocentric radial velocity.",
-'radial_velocity_error': "Gaia DR2 radial velocity uncertainty.",
+'radial_velocity': "Gaia DR2 heliocentric radial velocity [km$\,$s${^-1}$].",
+'radial_velocity_error': "Gaia DR2 radial velocity uncertainty [km$\,$s${^-1}$].",
 'subcluster': "Is star in core (CG18) or halo (KC19+M21)?",
 'in_CG18': "Star in \\citet{cantatgaudin_gaia_2018}.",
 'in_KC19': "Star in \\citet{kounkel_untangling_2019}.",
 'in_M21': "Star in \\citet{meingast_2021}.",
-'(Bp-Rp)_0': "Gaia Bp-Rp color, minus $E$($G_\mathrm{BP}$-$G_\mathrm{RP}$)=0.1343",
+'(Bp-Rp)_0': "Gaia $G_\mathrm{BP}$-$G_\mathrm{RP}$ color, minus $E$($G_\mathrm{BP}$-$G_\mathrm{RP}$)=0.1343",
 'is_phot_bin': "True if $>0.3$ mag above cluster isochrone.",
 'is_astrm_bin': "True if Gaia EDR3 RUWE > 1.2.",
 'ruwe': "Gaia EDR3 RUWE.",
-'Li_EW_mA_GaiaESO': "Gaia-ESO Li doublet equivalent width [m\\AA]",
-'Li_EW_mA_perr_GaiaESO': "Gaia-ESO Li doublet EW 84$^{\\mathrm{th}}$-50$^{\\mathrm{th}}$ percentile [m\\AA]",
-'Li_EW_mA_merr_GaiaESO': "Gaia-ESO Li doublet EW 50$^{\\mathrm{th}}$-16$^{\\mathrm{th}}$ percentile [m\\AA]",
-'Li_EW_mA_GALAH': "GALAH Li doublet equivalent width [m\\AA]",
-'Li_EW_mA_perr_GALAH': "GALAH Li doublet EW 84$^{\\mathrm{th}}$-50$^{\\mathrm{th}}$ percentile [m\\AA]",
-'Li_EW_mA_merr_GALAH': "GALAH Li doublet EW 50$^{\\mathrm{th}}$-16$^{\\mathrm{th}}$ percentile [m\\AA]"
+'Li_EW_mA_GaiaESO': "Gaia-ESO Li doublet equivalent width, including the Fe blend [m\\AA].",
+'Li_EW_mA_perr_GaiaESO': "Gaia-ESO Li doublet EW upper uncertainty interval [m\\AA].",
+'Li_EW_mA_merr_GaiaESO': "Gaia-ESO Li doublet EW lower uncertainty interval [m\\AA].",
+'Li_EW_mA_GALAH': "GALAH Li doublet equivalent width, including the Fe blend [m\\AA].",
+'Li_EW_mA_perr_GALAH': "GALAH Li doublet EW upper uncertainty interval [m\\AA].",
+'Li_EW_mA_merr_GALAH': "GALAH Li doublet EW lower uncertainty interval [m\\AA]."
 }
 
 keys = list(namedesc_dict.keys())
 keys = ["\\texttt{"+k.replace("_", "\_")+"}" for k in keys]
-vals = df.head(n=1).T.values.flatten()
+vals = df[~pd.isnull(df.Li_EW_mA_GaiaESO)].head(n=1).T.values.flatten()
 descrs = list(namedesc_dict.values())
 
 df_totex = pd.DataFrame({
