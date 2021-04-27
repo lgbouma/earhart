@@ -23,6 +23,7 @@ Contents:
         plot_randich_lithium (deprecated)
     Other:
         plot_lumfunction_vs_position
+        plot_litcomp_ngc2516
         plot_gaia_rv_scatter_vs_brightness
         plot_ruwe_vs_apparentmag
         plot_edr3_blending_vs_apparentmag
@@ -3171,7 +3172,7 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
 
         axs[0].set_xlabel('$\Delta r_{\mathrm{3D}}$ [pc]')
         # axs[0].set_ylabel('Fraction in bin with P$_\mathrm{rot}$')
-        fig.text(-0.02,0.5, 'Fraction in bin with measured P$_\mathrm{rot}$', va='center',
+        fig.text(-0.02,0.5, 'Fraction with measured P$_\mathrm{rot}$', va='center',
                  rotation=90)
 
         # axs[0].set_xlim([-10, 410])
@@ -3830,7 +3831,7 @@ def plot_lumfunction_vs_position(outdir):
     #           handletextpad=0.1, fontsize='small')
 
     ax.set_xlabel('Absolute $(\mathrm{M}_{G})_0$ [mag]')
-    ax.set_ylabel('Number in bin')
+    ax.set_ylabel('Count')
 
     format_ax(ax)
 
@@ -3942,4 +3943,278 @@ def plot_lightcurves_rotators(outdir, cleaning='periodogram_match', color=0):
     if color:
         outstr += '_color'
     outpath = os.path.join(outdir, f'lightcurves_rotators{outstr}.png')
+    savefig(fig, outpath)
+
+
+def plot_litcomp_ngc2516(outdir):
+
+    f20path = os.path.join(DATADIR, 'rotation',
+                           'Fritzewski_2020_table4_555_Prot_GKM.fits')
+    hl = fits.open(f20path)
+    d = hl[1].data
+    df_lit = Table(d).to_pandas()
+    b21path = os.path.join(RESULTSDIR, 'tables',
+                           'NGC_2516_Prot_cleaned.csv')
+    df = pd.read_csv(b21path)
+
+    df_b21 = df[df.in_SetA]
+    df_f20 = df_lit[~pd.isnull(df_lit.Prot) &
+                    ( (df_lit.Class == 1) | (df_lit.Class == 2))]
+    df_i07 = df_lit[~pd.isnull(df_lit.ProtI07)]
+
+    plt.close('all')
+    set_style()
+    fig = plt.figure(figsize=(6,5.5), constrained_layout=True)
+    axd = fig.subplot_mosaic(
+        """
+        ABC
+        DEF
+        GGG
+        """,
+        gridspec_kw={
+            "height_ratios": [1, 1, 1.75]
+        }
+    )
+    # A: hist vs BpmRp0
+    # B: RA vs DEC
+    # C: period vs period comparison
+    # DEF same, for "in set B" instead of "in set A"
+    # G: Prot vs BpmRp0 concatenated
+
+    #
+    # A: hist vs BpmRp0
+    #
+    ax = axd["A"]
+    N_colors = 3
+    #colors = mpl.cm.viridis(np.linspace(0,1,N_colors))
+    colors = ['C0','C1','C2']
+    deltatxt = 0.15
+
+    BpmRp0_bins = np.arange(0, 3.75, 0.25)
+
+    dfs = [df_b21, df_f20, df_i07]
+    labels = ['Set$\,$$\mathcal{A}$','F20','I07']
+    xlabels = ['(Bp-Rp)_0','BP-RP0','BP-RP0']
+
+    for i, df in enumerate(dfs):
+
+            ax.hist(df[xlabels[i]], bins=BpmRp0_bins, cumulative=False,
+                    color=colors[i], fill=False,  histtype='step', linewidth=2,
+                    alpha=0.8)
+            l = labels[i]
+            bbox = dict(facecolor='white', alpha=1, pad=0, edgecolor='white')
+            ax.text(0.96, 0.95-i*deltatxt, l, va='top', ha='right',
+                    transform=ax.transAxes, color=colors[i], bbox=bbox,
+                    fontsize='small')
+
+    ax.set_xlabel('$G_{\mathrm{BP}}-G_{\mathrm{RP}}$ [mag]')
+    ax.set_ylabel('Count')
+    format_ax(ax)
+
+    #
+    # B: RA vs DEC.
+    #
+    ax = axd["B"]
+    xlabels = ['ra', 'RA_ICRS', 'RA_ICRS']
+    ylabels = ['dec', 'DE_ICRS', 'DE_ICRS']
+
+    for i, df in enumerate(dfs):
+
+            ax.scatter(df[xlabels[i]], df[ylabels[i]], color=colors[i],
+                       s=0.2, alpha=0.9)
+            l = labels[i]
+            bbox = dict(facecolor='white', alpha=1, pad=0, edgecolor='white')
+            ax.text(0.96, 0.95-i*deltatxt, l, va='top', ha='right',
+                    transform=ax.transAxes, color=colors[i], bbox=bbox,
+                    fontsize='small')
+
+    xlim = ax.get_xlim()
+    ax.set_xlim([xlim[0], 131])
+    ax.set_xlabel(r'$\alpha$ [deg]')
+    ax.set_ylabel('$\delta$ [deg]')
+    format_ax(ax)
+
+
+    #
+    # C: period vs period comparison
+    #
+
+    ax = axd["C"]
+
+    mdf0 = df_b21.merge(df_f20, how='inner', left_on='source_id',
+                        right_on='GaiaDR2')
+    ax.scatter(mdf0["period"], mdf0["Prot"], c='C1', s=1, label='F20', zorder=1)
+    ax.scatter(mdf0["period"], mdf0["ProtI07"], c='C2', s=1, label='I07',
+               zorder=2)
+
+    ax.plot(np.arange(0.1,30,0.1), np.arange(0.1,30,0.1), zorder=-1, lw=1, c='gray')
+    ax.plot(np.arange(0.1,30,0.1), 2*np.arange(0.1,30,0.1), zorder=-1, lw=1,
+            c='gray', ls='--')
+    ax.plot(np.arange(0.1,30,0.1), 0.5*np.arange(0.1,30,0.1), zorder=-1, lw=1,
+            c='gray', ls=':')
+
+    ax.set_xlabel(f'{labels[0]} '+'P$_\mathrm{rot}$ [days]')
+    ax.set_ylabel('Lit. P$_\mathrm{rot}$ [days]')
+
+    ax.set_xlim([0,15])
+    ax.set_ylim([0,15])
+
+    format_ax(ax)
+
+    #
+    # now repeat, with Set B!
+    #
+    df = pd.read_csv(b21path)
+    df_b21 = df[df.in_SetB]
+
+    ax = axd["D"]
+
+    dfs = [df_b21, df_f20, df_i07]
+    labels = ['Set$\,$$\mathcal{B}$','F20','I07']
+    xlabels = ['(Bp-Rp)_0','BP-RP0','BP-RP0']
+
+    for i, df in enumerate(dfs):
+
+            ax.hist(df[xlabels[i]], bins=BpmRp0_bins, cumulative=False,
+                    color=colors[i], fill=False,  histtype='step', linewidth=2,
+                    alpha=0.8)
+            l = labels[i]
+            bbox = dict(facecolor='white', alpha=1, pad=0, edgecolor='white')
+            ax.text(0.96, 0.95-i*deltatxt, l, va='top', ha='right',
+                    transform=ax.transAxes, color=colors[i], bbox=bbox,
+                    fontsize='small')
+
+    ax.set_xlabel('$G_{\mathrm{BP}}-G_{\mathrm{RP}}$ [mag]')
+    ax.set_ylabel('Count')
+    format_ax(ax)
+
+    #
+    # B: RA vs DEC.
+    #
+    ax = axd["E"]
+    xlabels = ['ra', 'RA_ICRS', 'RA_ICRS']
+    ylabels = ['dec', 'DE_ICRS', 'DE_ICRS']
+
+    for i, df in enumerate(dfs):
+
+            ax.scatter(df[xlabels[i]], df[ylabels[i]], color=colors[i],
+                       s=0.2, alpha=0.9)
+            l = labels[i]
+            bbox = dict(facecolor='white', alpha=1, pad=0, edgecolor='white')
+            ax.text(0.96, 0.95-i*deltatxt, l, va='top', ha='right',
+                    transform=ax.transAxes, color=colors[i], bbox=bbox,
+                    fontsize='small')
+
+    xlim = ax.get_xlim()
+    ax.set_xlim([xlim[0], 131])
+    ax.set_xlabel(r'$\alpha$ [deg]')
+    ax.set_ylabel('$\delta$ [deg]')
+    format_ax(ax)
+
+
+    #
+    # C: period vs period comparison
+    #
+
+    ax = axd["F"]
+
+    mdf0 = df_b21.merge(df_f20, how='inner', left_on='source_id',
+                        right_on='GaiaDR2')
+    ax.scatter(mdf0["period"], mdf0["Prot"], c='C1', s=1, label='F20', zorder=1)
+    ax.scatter(mdf0["period"], mdf0["ProtI07"], c='C2', s=1, label='I07',
+               zorder=2)
+
+    ax.plot(np.arange(0.1,30,0.1), np.arange(0.1,30,0.1), zorder=-1, lw=1, c='gray')
+    ax.plot(np.arange(0.1,30,0.1), 2*np.arange(0.1,30,0.1), zorder=-1, lw=1,
+            c='gray', ls='--')
+    ax.plot(np.arange(0.1,30,0.1), 0.5*np.arange(0.1,30,0.1), zorder=-1, lw=1,
+            c='gray', ls=':')
+
+    ax.set_xlabel(f'{labels[0]} '+'P$_\mathrm{rot}$ [days]')
+    ax.set_ylabel('Lit. P$_\mathrm{rot}$ [days]')
+
+    ax.set_xlim([0,15])
+    ax.set_ylim([0,15])
+
+    format_ax(ax)
+
+    #
+    # G: prot vs color, concatenated
+    #
+    ax = axd["G"]
+
+    df = pd.read_csv(b21path)
+    df_b21 = df[df.in_SetB]
+
+    df_f20 = df_lit[~pd.isnull(df_lit.Prot) &
+                    ( (df_lit.Class == 1) | (df_lit.Class == 2))]
+    df_i07 = df_lit[~pd.isnull(df_lit.ProtI07)]
+
+    # "periods" from literature are by default Fritzewski+20 when available. 
+    # if Irwin+07 is available and Fritzewski+20 are not, they are adopted.
+    df_lit['period'] = df_lit['Prot']
+    df_lit['provenance'] = 'F20'
+    sel = (
+        pd.isnull(df_lit.period)
+        &
+        ~pd.isnull(df_lit.ProtI07)
+    )
+    df_lit.loc[sel, 'period'] = df_lit.loc[sel, 'ProtI07']
+    df_lit.loc[sel, 'provenance'] = 'I07'
+
+    df_lit = df_lit.rename(columns={'BP-RP0':'(Bp-Rp)_0', 'GaiaDR2':'source_id'})
+
+    selcols = ['source_id','period','provenance','(Bp-Rp)_0']
+
+    df_b21['provenance'] = 'Set$\,$$\mathcal{B}$'
+
+    mdf = pd.concat((
+        df_b21[selcols],
+        df_lit[selcols]
+    )).reset_index()
+
+    # I07 and F20 on top
+    mdf = mdf.sort_values(by='provenance', ascending=True)
+    mdf = mdf.drop_duplicates(subset='source_id', keep='last')
+
+    ax.scatter(mdf['(Bp-Rp)_0'], mdf["period"], c='k', s=1, zorder=1)
+
+    ax.set_xlabel('$(G_{\mathrm{BP}}-G_{\mathrm{RP}})_0$ [mag]')
+    ax.set_ylabel('P$_\mathrm{rot}$ [days]')
+
+    ax.set_xlim((0.2, 3.1))
+    ax.set_yscale('log')
+
+    format_ax(ax)
+
+    #
+    # twiny for the SpTypes
+    #
+    tax = ax.twiny()
+    tax.set_xlabel('Spectral Type')
+
+    xlim = ax.get_xlim()
+    sptypes, BpmRps = get_SpType_BpmRp_correspondence(
+        ['F0V','F5V','G0V','K0V','K3V','K5V','K7V','M0V','M1.5V','M3V','M4V']
+    )
+    print(sptypes)
+    print(BpmRps)
+
+    xvals = np.linspace(min(xlim), max(xlim), 100)
+    tax.plot(xvals, np.ones_like(xvals), c='k', lw=0) # hidden, but fixes axis.
+    tax.set_xlim(xlim)
+    ax.set_xlim(xlim)
+
+    tax.set_xticks(BpmRps)
+    tax.set_xticklabels(sptypes, fontsize='x-small')
+
+    tax.xaxis.set_ticks_position('top')
+    tax.tick_params(axis='x', which='minor', top=False)
+    tax.get_yaxis().set_tick_params(which='both', direction='in')
+
+
+
+
+
+    outpath = os.path.join(outdir, f'litcomp_ngc2516.png')
     savefig(fig, outpath)

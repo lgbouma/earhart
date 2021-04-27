@@ -44,6 +44,7 @@ cp ../results/compstar_rotation/compstar_rotation_NGC_2516_vs_BpmRp_linear.pdf f
 cp ../results/venn/venn.pdf f10.pdf
 
 cp ../results/lightcurves_rotators/lightcurves_rotators_color.pdf f14.pdf
+cp ../results/litcomp_ngc2516/litcomp_ngc2516.pdf f16.pdf
 
 # cp ../results/calc_backintegration_ngc2516/core_halo_to_ngc2516_separation.pdf f7a.pdf
 # cp ../results/calc_backintegration_ngc2516/core_halo_to_ngc2516_separation_fix_rvs.pdf f7b.pdf
