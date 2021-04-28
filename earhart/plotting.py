@@ -1161,11 +1161,11 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     classes = ['pleiades', 'praesepe', f'{runid}']
     colors = ['gray', 'gray', 'k']
     zorders = [-2, -3, -1]
-    markers = ['s', '+', 'o']
+    markers = ['X', '+', 'o']
     lws = [0., 0.1, 0.1]
-    mews= [0.5, 0.5, 0.5]
+    mews= [0., 0.5, 0.5]
     _s = 3 if runid != 'VelaOB2' else 1.2
-    ss = [5, 6, 10]
+    ss = [15, 12, 10]
     labels = ['Pleaides', 'Praesepe', f'{runid}']
 
     # plot vals
@@ -1817,8 +1817,10 @@ def plot_lithium_EW_vs_color(outdir, gaiaeso=0, galahdr3=0,
         dets = (bouvier18_df.l_WLi != "<")
         ax.scatter(
             bouvier18_df[dets]['BpmRp0'], bouvier18_df[dets]['WLi'], c='gray', alpha=1,
-            zorder=-1, s=7, edgecolors='k', marker='s',
-            linewidths=0.2, label='Pleiades'
+            zorder=-1, s=15, edgecolors='k', marker='X',
+            linewidths=0, label='Pleiades'
+
+
         )
         # ax.scatter(
         #     bouvier18_df[~dets]['BpmRp0'], bouvier18_df[~dets]['WLi'], c='gray', alpha=0.8,
