@@ -144,31 +144,32 @@ Finding the stars that have dispersed from their clusters into the
 galactic field is a pressing topic for a few reasons.  One is to
 understand the spatial extent and duration of star formation events
 \citep[{\it e.g.},][]{wright_kinematics_2018}.  Another is to
-understand the Sun's birth environment \citep{adams_birth_2010}.  Did
-the Sun form in an open cluster, and if so, what type? Is there any
-hope at identifying the stars that formed near the Sun?  Open clusters
-and their dispersed remnants also provide a test case for ``chemical
-tagging'' \citep[{\it
-e.g.},][]{freeman_new_2002,hogg_chemical_2016,ness_dopplergangers_2018}.
-The converse holds too: one can use chemical tagging to test the
-viability of kinematic clustering methods.
+understand the Sun's birth environment \citep{adams_birth_2010}.  The
+plausibility of finding the stars that formed with the Sun, whether
+through chemical tagging
+\citep{freeman_new_2002,hogg_chemical_2016,ness_dopplergangers_2018},
+kinematic analyses, or both, can be tested by first using the
+remnants of open clusters that have only recently
+dissipated into the field.
 
 A separate project that benefits from the new discoveries of dispersed
-stellar populations is that of finding young transiting exoplanets.
+stellar populations is that of finding young transiting exoplanets
+\citep[{\it
+e.g.},][]{Mann_K2_33b_2016,ciardi_k2-136_2018,david_four_2019,livingston_k2-264_2019,bouma_cluster_2020,rizzuto_tess_2020,plavchan_planet_2020,newton_2021,tofflemire_2021,zhou_2021_tois}.
 Young transiting planets are hard to find because young stars are
-rare, and mostly reside in the crowded galactic plane \citep[see {\it
-e.g.},][]{Kharchenko_et_al_2013,piskunov_global_2018}.  If the
-dispersed halos of nearby star clusters could be reliably identified,
-this could expand the census of nearby young stars by up to a factor
-of $10$, based on the expected fraction of stars thought to be lost
-during gas dispersal.
+rare, and mostly reside in the crowded galactic plane
+\citep{Kharchenko_et_al_2013,piskunov_global_2018}.  If the dispersed
+halos of nearby star clusters could be reliably identified, this could
+expand the census of nearby young stars by up to a factor of $10$,
+based on the expected fraction of stars thought to be lost during gas
+dispersal.
 
 Although it has been possible to detect dispersed stellar associations
 for a long time, Gaia is now enabling major advances \citep[{\it
 e.g.},][]{de_zeeuw_hipparcos_1999,bergond_gravitational_2001,zuckerman_young_2004,oh_comoving_2017,cantatgaudin_gaia_2018,gagne_banyan_XII_2018,gagne_banyan_XIII_2018,kounkel_apogee2_2018,zari_3d_2018,kounkel_untangling_2019,furnkranz_2019}.
 The populations found by the most recent studies can be summarized as
 follows.  On one end are groups with no discernable cores ({\it
-e.g.}, Psc-Eri and $\mu$ Tau,
+e.g.}, Psc-Eri and $\mu$-Tau,
 \citealt{meingast_psceri_2019,curtis_tess_2019,gagne_mutau_2020}).  On
 the other are hierarchically structured associations with many over
 and under-densities  \citep[{\it e.g.} the Sco-Cen and Vela
@@ -234,8 +235,8 @@ measures the age of the cluster's halo and core using Gaia photometry
 (Section~\ref{subsec:hr}), TESS gyrochronology
 (Section~\ref{subsec:tess}), and lithium equivalent widths
 (Section~\ref{subsec:lithium}).  In Section~\ref{sec:discussion} we
-discuss the implications of our analysis for NGC\,2516 specifically
-and stellar spin-down more generally.  Section~\ref{sec:conclusion}
+discuss the implications of our analysis for open cluster dispersal,
+stellar spin-down, and the lithium-rotation correlation.  Section~\ref{sec:conclusion}
 gives our conclusions.
 
 
@@ -361,8 +362,8 @@ of the candidate cluster members is to consider their Cartesian
 coordinates (Figure~\ref{fig:XYZ}).  We computed these positions by
 transforming from $(\alpha, \delta, \pi)$ to galactic ($X,Y,Z$)
 assuming the \texttt{astropy v4.0} coordinate standard
-\citep{astropy_2018}.  The direction of galactic rotation is
-$+\hat{Y}$. The cluster orbit (gray line) was evaluted by taking the
+\citep{astropy_2018}.  The Galaxy rotates in the
+$+\hat{Y}$ direction. The cluster orbit (gray line) was evaluated by taking the
 median parameters for core members for which
 \citetalias{cantatgaudin_gaia_2018} reported membership probabilities
 exceeding 70\%.  We then integrated the orbit using \texttt{gala} and
@@ -736,7 +737,7 @@ possible explanations in Section~\ref{disc:rotn}.
   were not detected, are shown in orange.  Stars in the core are shown
   as black points.  In
   the {\it top right}, the 
-  ratio of detected to expected stars with rotation period detections is shown
+  ratio of detected to expected stars with rotation periods is shown
   versus 3D separation from
   the core and 2D tangential velocity difference.  Bin widths are
   chosen to enforce the same number of stars in the denominator
@@ -1105,6 +1106,7 @@ structures resembling \cn.
   The bottom panel is a concatenation of Set $\mathcal{B}$ with the
   results of \citet{Irwin_NGC2516_2007} (I07) and
   \citet{fritzewski_rotation_2020} (F20).
+  I07 and F20 almost exclusively analyzed stars in the core of \cn.
   \label{fig:litcomp}
 	}
 \end{figure*}
@@ -1626,7 +1628,7 @@ efforts to make the mission a continued success.
  	{\it Astrometry}:
  	Gaia \citep{gaia_collaboration_gaia_2018,gaia_collaboration_2020_edr3}.
  	{\it Imaging}:
-    Second Generation Digitized Sky Survey.%,
+    Second Generation Digitized Sky Survey. %,
     %SOAR~(HRCam; \citealt{tokovinin_ten_2018}).
  	%Keck:II~(NIRC2; \url{www2.keck.hawaii.edu/inst/nirc2}).
  	%Gemini:South~(Zorro; \citealt{scott_nessi_2018}.
