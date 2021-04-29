@@ -204,11 +204,12 @@ def plot_orthographic_references():
 
 def plot_carina():
 
-    clon, clat = 277, -15 # rough ngc 2516 location
+    clon, clat = 277, -15 # rough ngc 2516 location (not used if ra/dec)
     gap = 20 # size of field, deg
     factor = 0.8 # for scaling star sizes
     limiting_magnitude = 6.5
 
+    name = 'Carina'
     _, stars = get_hygdata()
     asterisms = get_asterisms()
     messiers = get_messier_data()
@@ -217,17 +218,29 @@ def plot_carina():
         encoding="latin-1"
     )
 
+    # if using RA/dec
+    valdf = const_names[const_names['name'] == name]
+    clon = 360/24*valdf['ra'].tolist()[0]
+    clat = valdf['dec'].tolist()[0]
+
+
     fig = plt.figure(figsize=(4, 4))
 
-    ax = fig.add_subplot(
-        projection=ccrs.PlateCarree(
-        )
-    )
     #ax = fig.add_subplot(
-    #    projection=ccrs.Orthographic(
-    #        central_longitude=clon, central_latitude=clat
+    #    projection=ccrs.PlateCarree(
     #    )
     #)
+    # ax = fig.add_subplot(
+    #     projection=ccrs.Orthographic(
+    #         central_longitude=clon, central_latitude=clat
+    #     )
+    # )
+    ax = fig.add_subplot(
+        projection=ccrs.AzimuthalEquidistant(
+            central_longitude=clon, central_latitude=clat
+        )
+    )
+
 
     ax.set_extent([clon-gap, clon+gap, clat+gap, clat-gap], ccrs.PlateCarree())
 
@@ -241,8 +254,10 @@ def plot_carina():
         ls,bs = radec_to_lb(ras, decs)
 
         for n in range(int(len(asterisms)/2)):
-            ax.plot(ls[n*2:(n+1)*2], bs[n*2:(n+1)*2],
+            ax.plot(ras[n*2:(n+1)*2], decs[n*2:(n+1)*2],
                     transform=ccrs.Geodetic(), color='k', lw=0.5)
+            #ax.plot(ls[n*2:(n+1)*2], bs[n*2:(n+1)*2],
+            #        transform=ccrs.Geodetic(), color='k', lw=0.5)
 
     # overplot messier objects!
     # for index, row in messiers.iterrows():
@@ -252,25 +267,26 @@ def plot_carina():
     magnitude = stars['mag']
     marker_size = (0.5 + limiting_magnitude - magnitude) ** 1.5
 
-    ls, bs = radec_to_lb(360/24*nparr(stars['ra']), nparr(stars['dec']))
+    ras, decs = 360/24*nparr(stars['ra']), nparr(stars['dec'])
+    ls, bs = radec_to_lb(ras, decs)
     stars['l'], stars['b'] = ls, bs
-    ax.scatter(ls, bs, transform=ccrs.PlateCarree(), s=marker_size,
+    ax.scatter(ras, decs, transform=ccrs.PlateCarree(), s=marker_size,
                alpha=0.5, lw=0, c='k')
 
     stars_names = stars[pd.notnull(stars['proper'])]
     stars_names = stars_names[
-        stars_names['b'].between(
+        stars_names['ra'].between(
             clat-factor*gap, clat+factor*gap
         )
     ]
     stars_names = stars_names[
-        stars_names['l'].between(
+        stars_names['dec'].between(
             (clon-factor*gap), (clon+factor*gap)
         )
     ]
 
     for index, row in stars_names.iterrows():
-        ax.text(row['l'], row['b'], row['proper'], ha='left',
+        ax.text(row['ra'], row['dec'], row['proper'], ha='left',
                 va='center', transform=ccrs.Geodetic(), fontsize=5)
 
     ax.set_xlim(ax.get_xlim()[::-1])
@@ -279,23 +295,23 @@ def plot_carina():
     # gridlines_with_labels(ax, {'color':'gray', 'linestyle':'--'})
 
     # method 2
-    #from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
+    from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 
-    #gl = ax.gridlines(crs=ccrs.PlateCarree(), linewidth=0.5,
-    #                  color='gray', alpha=0.5, linestyle='--',
-    #                  x_inline=False, y_inline=False, dms=True,
-    #                  draw_labels=True)
+    gl = ax.gridlines(crs=ccrs.PlateCarree(), linewidth=0.5,
+                      color='gray', alpha=0.5, linestyle='--',
+                      x_inline=False, y_inline=False, dms=True,
+                      draw_labels=True)
 
-    #gl.left_labels=True
-    #gl.bottom_labels=True
-    #gl.top_labels=False
-    #gl.right_labels=False
-    #xlocs = [240-360, 260-360, 280-360, 300-360, 320-360]
-    #gl.xlocator = mticker.FixedLocator(xlocs)
-    #gl.xformatter = LONGITUDE_FORMATTER
-    #ylocs = [-20,-15,-10,-5]
-    #gl.ylocator = mticker.FixedLocator(ylocs)
-    #gl.yformatter = LATITUDE_FORMATTER
+    gl.left_labels=True
+    gl.bottom_labels=True
+    gl.top_labels=False
+    gl.right_labels=False
+    # xlocs = [240-360, 260-360, 280-360, 300-360, 320-360]
+    # gl.xlocator = mticker.FixedLocator(xlocs)
+    # gl.xformatter = LONGITUDE_FORMATTER
+    # ylocs = [-20,-15,-10,-5]
+    # gl.ylocator = mticker.FixedLocator(ylocs)
+    # gl.yformatter = LATITUDE_FORMATTER
 
 
     # # method 3
@@ -319,15 +335,15 @@ def plot_carina():
     # # gl2.xlabel_style = {'size': 15, 'color': 'gray'}
     # # gl2.xlabel_style = {'color': 'red', 'weight': 'bold'}
 
-    # method 4 -- only on rectangular projections
-    xlocs = np.arange(240,340,20)
-    xticklocs = xlocs-360
-    ylocs = np.arange(-30,0,5)
-    ax.set_xticks(xticklocs)
-    ax.set_xticklabels(xlocs)
-    ax.set_yticks(ylocs)
-    ax.set_yticklabels(ylocs)
-    ax.grid(True, color='gray', linestyle='--', linewidth=0.5, zorder=-1)
+    # # method 4 -- only on rectangular projections
+    # xlocs = np.arange(240,340,20)
+    # xticklocs = xlocs-360
+    # ylocs = np.arange(-30,0,5)
+    # ax.set_xticks(xticklocs)
+    # ax.set_xticklabels(xlocs)
+    # ax.set_yticks(ylocs)
+    # ax.set_yticklabels(ylocs)
+    # ax.grid(True, color='gray', linestyle='--', linewidth=0.5, zorder=-1)
 
     # ax.text(-0.07, 0.55, 'latitude', va='bottom', ha='center',
     #                 rotation='vertical', rotation_mode='anchor',
@@ -345,12 +361,15 @@ def plot_carina():
 if __name__ == "__main__":
 
     do_references = 0
-    do_carina = 0
-    do_skyfield = 1
+    do_carina = 1
+    do_skyfield = 0
 
     # debugging
     if do_references:
         plot_orthographic_references()
+
+    if do_carina:
+        plot_carina()
 
     # for paper / talks
     if do_skyfield:
@@ -363,7 +382,3 @@ if __name__ == "__main__":
                       plot_halo=0)
         plot_skyfield(outdir, plot_starnames=0, plot_constnames=1, plot_core=0,
                       plot_halo=0)
-
-
-    if do_carina:
-        plot_carina()

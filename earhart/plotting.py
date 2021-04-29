@@ -22,6 +22,7 @@ Contents:
         plot_galah_dr3_lithium_abundance
         plot_randich_lithium (deprecated)
     Other:
+        plot_skyfield
         plot_lumfunction_vs_position
         plot_litcomp_ngc2516
         plot_gaia_rv_scatter_vs_brightness
@@ -4221,7 +4222,7 @@ def plot_litcomp_ngc2516(outdir):
 def plot_skyfield(outdir, plot_starnames=0, plot_constnames=1, plot_core=1,
                   plot_halo=1):
 
-    clon, clat = 277, -15 # rough ngc 2516 location
+    clon, clat = 277, -15 # rough ngc 2516 location in galactic coords
     gap = 20 # size of field, deg
     factor = 0.9 # for scaling star sizes
     yfactor = 0.88
