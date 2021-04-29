@@ -4214,9 +4214,164 @@ def plot_litcomp_ngc2516(outdir):
     tax.tick_params(axis='x', which='minor', top=False)
     tax.get_yaxis().set_tick_params(which='both', direction='in')
 
-
-
-
-
     outpath = os.path.join(outdir, f'litcomp_ngc2516.png')
+    savefig(fig, outpath)
+
+
+def plot_skyfield(outdir, plot_starnames=0, plot_constnames=1, plot_core=1,
+                  plot_halo=1):
+
+    clon, clat = 277, -15 # rough ngc 2516 location
+    gap = 20 # size of field, deg
+    factor = 0.9 # for scaling star sizes
+    yfactor = 0.88
+    limiting_magnitude = 6.5
+
+    # some very specific dependencies
+    from earhart.skyfield_helpers import (
+        get_hygdata, get_asterisms, get_constellation_boundaries,
+        get_messier_data, radec_to_lb, get_const_names
+    )
+    import cartopy.crs as ccrs
+
+    _, stars = get_hygdata()
+    asterisms = get_asterisms()
+    messiers = get_messier_data()
+    const_names = get_const_names()
+
+    # make the plot
+    set_style()
+
+    # use Rectangular projection because otherwise the xticklabels and
+    # yticklabels are literally broken in CartoPy.
+    fig = plt.figure(figsize=(4,3))
+
+    ax = fig.add_subplot(
+        projection=ccrs.PlateCarree(
+        )
+    )
+
+    ax.set_extent([clon-gap, clon+gap, clat+yfactor*gap, clat-yfactor*gap],
+                  ccrs.PlateCarree())
+
+    for index, row in asterisms.iterrows():
+        ras = [float(x)*360/24 for x in
+               row['ra'].replace('[', '').replace(']', '').split(',')]
+
+        decs = [float(x) for x in
+                row['dec'].replace('[', '').replace(']', '').split(',')]
+
+        ls,bs = radec_to_lb(ras, decs)
+
+        for n in range(int(len(asterisms)/2)):
+            # lines are geodetic, i.e., great-circle spanning.
+            ax.plot(ls[n*2:(n+1)*2], bs[n*2:(n+1)*2],
+                    transform=ccrs.Geodetic(), color='k', lw=0.5)
+
+    # plot stars
+    magnitude = stars['mag']
+    marker_size = (0.5 + limiting_magnitude - magnitude) ** 1.5
+
+    ls, bs = radec_to_lb(360/24*nparr(stars['ra']), nparr(stars['dec']))
+    stars['l'], stars['b'] = ls, bs
+    ax.scatter(ls, bs, transform=ccrs.PlateCarree(), s=marker_size,
+               alpha=0.5, lw=0, c='k')
+
+    bbox = dict(facecolor='white', alpha=0.9, pad=0, edgecolor='white')
+    if plot_starnames:
+        stars_names = stars[pd.notnull(stars['proper'])]
+        stars_names = stars_names[
+            stars_names['b'].between(
+                clat-yfactor*gap, clat+yfactor*gap
+            )
+        ]
+        stars_names = stars_names[
+            stars_names['l'].between(
+                (clon-factor*gap), (clon+factor*gap)
+            )
+        ]
+        for index, row in stars_names.iterrows():
+            ax.text(row['l'], row['b'], row['proper'], ha='left',
+                    va='center', transform=ccrs.Geodetic(), fontsize=5,
+                    bbox=bbox)
+
+    if plot_constnames:
+
+        ls, bs = radec_to_lb(
+            360/24*nparr(const_names['ra']), nparr(const_names['dec'])
+        )
+        const_names['l'], const_names['b'] = ls, bs
+        const_names = const_names[
+            const_names['b'].between(
+                clat-yfactor*gap, clat+yfactor*gap
+            )
+        ]
+        const_names = const_names[
+            const_names['l'].between(
+                (clon-factor*gap), (clon+factor*gap)
+            )
+        ]
+        for index, row in const_names.iterrows():
+            ax.text(row['l'], row['b'], row['name'], ha='center',
+                    va='center', transform=ccrs.Geodetic(), fontsize=5,
+                    bbox=bbox)
+
+    basedata = 'fullfaint'
+    nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
+    rot_df, lc_df = get_autorotation_dataframe(
+        runid='NGC_2516', returnbase=True, cleaning='defaultcleaning'
+    )
+
+    if plot_halo:
+        sel = rot_df.subcluster == 'halo'
+        ax.scatter(
+            rot_df.loc[sel, 'l'], rot_df.loc[sel, 'b'], c='lightskyblue',
+            alpha=0.9, zorder=3, s=10, rasterized=True, linewidths=0.3,
+            label='Halo', marker='.', edgecolors='k'
+        )
+    if plot_core:
+        sel = rot_df.subcluster == 'core'
+        ax.scatter(
+            rot_df.loc[sel, 'l'], rot_df.loc[sel, 'b'],
+            c='k', alpha=0.9, zorder=4, s=1, rasterized=True, label='Core',
+            marker='.', linewidths=0
+        )
+
+    # overplot messier objects!
+    # for index, row in messiers.iterrows():
+    #     ax.text(row['ra']*360/24, row['dec'], row['name_2'], color='C0',
+    #             ha='left', va='center', transform=ccrs.Geodetic())
+
+
+
+    ax.set_xlim(ax.get_xlim()[::-1])
+
+    # method 4 -- only on rectangular projections
+    xlocs = np.arange(250,310,10)
+    xticklocs = xlocs-360
+    ylocs = np.arange(-30,0+5,5)
+    ax.set_xticks(xticklocs)
+    ax.set_xticklabels(xlocs)
+    ax.set_yticks(ylocs)
+    ax.set_yticklabels(ylocs)
+    ax.grid(True, color='gray', linestyle='--', linewidth=0.5, zorder=-1)
+
+    ax.set_xlabel('Galactic longitude [deg]')
+    ax.set_ylabel('Galactic latitude [deg]')
+
+    format_ax(ax)
+
+    s = ''
+    if plot_starnames:
+        s+= '_starnames'
+    if plot_constnames:
+        s+= '_constnames'
+    if plot_core:
+        s+= '_core'
+    if plot_halo:
+        s+= '_halo'
+
+    outpath = os.path.join(RESULTSDIR, 'skyfield_ngc2516',
+                           f'skyfield_ngc2516{s}.png')
+
     savefig(fig, outpath)
