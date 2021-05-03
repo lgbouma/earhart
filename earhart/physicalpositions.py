@@ -2,7 +2,7 @@
 Tools for working in XYZ, UVW, and Δμ_δ, Δμ_α' [km/s] coordinates.
 
 Contents:
-    append_physicalpositions: (α,δ,π)->(X,Y,Z).
+    append_physicalpositions: (α,δ,π,μ_α,μ_δ)->(X,Y,Z,v*_tang).
     given_gaia_df_get_icrs_arr: DataFrame -> SkyCoord conversion
     calc_dist: between two 3d cartesian points.
 """
@@ -21,27 +21,41 @@ if VERBOSE:
     print(Galactocentric())
 
 
-def append_physicalpositions(df, median_df):
+def append_physicalpositions(df, reference_df):
     """
-    Given a pandas dataframe with [ra, dec, parallax, pmra, pmdec], calculate
-    the XYZ coordinates, the "delta_pmra_km_s" and "delta_pmdec_km_s"
-    coordinates, the "delta_r_pc" (3d separation) and "delta_mu_km_s" (velocity
-    separation) coordinates, and append them to the dataframe.
+    Given a pandas dataframe `df` with [ra, dec, parallax, pmra, pmdec], and a
+    reference dataframe `reference_df` with [ra, dec, parallax, pmra, pmdec,
+    (dr2_)radial_velocity], calculate the XYZ coordinates, the
+    "delta_pmra_km_s" and "delta_pmdec_km_s" coordinates (tangential velocity
+    with respect to reference_df), the "delta_r_pc" (3d separation) and
+    "delta_mu_km_s" (2d tangential velocity separation) coordinates, and append
+    them to the dataframe.
 
     Returns:
-        DataFrame with ['x_pc', 'y_pc', 'z_pc', 'delta_r_pc',
-        'delta_mu_km_s', 'delta_pmra_km_s' ,'delta_pmdec_km_s']
-        appended.
+        new DataFrame with ['x_pc', 'y_pc', 'z_pc', 'delta_r_pc',
+        'delta_mu_km_s', 'delta_pmra_km_s' ,'delta_pmdec_km_s'] appended.
     """
+
+    cols1 = ["ra","dec","parallax","pmra","pmdec"]
+    assert np.sum(df.columns.str.match('|'.join(cols1))) >= 5
+
+    cols2 = ["ra","dec","parallax","pmra","pmdec"]
+    assert np.sum(reference_df.columns.str.match('|'.join(cols1))) >= 5
+
+    assert (
+        'radial_velocity' in reference_df.columns
+        or
+        'dr2_radial_velocity' in reference_df.columns
+    )
 
     # get XYZ in galactocentric
     get_galcen = lambda _c : _c.transform_to(coord.Galactocentric())
-    c_median = get_galcen(given_gaia_df_get_icrs_arr(median_df, zero_rv=1))
+    c_median = get_galcen(given_gaia_df_get_icrs_arr(reference_df, zero_rv=1))
     c_df = get_galcen(given_gaia_df_get_icrs_arr(df, zero_rv=1))
 
     # ditto, but in icrs. used in the comoving projection trick.
     # as in plotting.plot_vtangential_projection
-    icrs_c_median = given_gaia_df_get_icrs_arr(median_df, zero_rv=0)
+    icrs_c_median = given_gaia_df_get_icrs_arr(reference_df, zero_rv=0)
     icrs_c_df = given_gaia_df_get_icrs_arr(df, zero_allvelocities=1)
 
     # get 3D separation from cluster median
@@ -52,15 +66,15 @@ def append_physicalpositions(df, median_df):
     df['z_pc'] = c_df.z.to(u.pc).value
     df['delta_r_pc'] = sep_3d_position_pc
 
-    median_df['x_pc'] = c_median.x.to(u.pc).value
-    median_df['y_pc'] = c_median.y.to(u.pc).value
-    median_df['z_pc'] = c_median.z.to(u.pc).value
+    reference_df['x_pc'] = c_median.x.to(u.pc).value
+    reference_df['y_pc'] = c_median.y.to(u.pc).value
+    reference_df['z_pc'] = c_median.z.to(u.pc).value
 
     # get observed differences from cluster
     target_cols = ['ra', 'dec', 'parallax', 'pmra', 'pmdec', 'x_pc', 'y_pc', 'z_pc']
     for c in target_cols:
         new_key = 'delta_'+c
-        new_val = df[c] - nparr(median_df[c]) # careful, without nparr does it by iloc
+        new_val = df[c] - nparr(reference_df[c]) # careful, without nparr does it by iloc
         df[new_key] = new_val
 
         if c in ['pmra', 'pmdec']:
@@ -75,7 +89,7 @@ def append_physicalpositions(df, median_df):
             # v_AU/yr = mu_arcsec/yr * d_pc
             #
             d_pc = (nparr(1/(df.parallax*1e-3))*u.pc).value
-            c_AU_per_yr = ((( nparr(df[c]) - nparr(median_df[c]) )*1e-3) * d_pc)*(u.AU/u.yr)
+            c_AU_per_yr = ((( nparr(df[c]) - nparr(reference_df[c]) )*1e-3) * d_pc)*(u.AU/u.yr)
             c_km_per_sec = c_AU_per_yr.to(u.km/u.second)
 
             new_key = 'delta_'+c+'_km_s'
