@@ -3390,6 +3390,18 @@ def plot_vtangential_projection(outdir, basedata='fullfaint'):
         scale_units='xy', scale=1, color='C0',
         width=6e-3, linewidths=4, headwidth=8, zorder=9
     )
+
+    delta_x = 0.1
+    axs[1].arrow(0.73, 0.07, delta_x, 0,
+                 length_includes_head=True, head_width=1e-2,
+                 head_length=1e-2,
+                 transform=axs[1].transAxes)
+
+    bbox = dict(facecolor='white', alpha=1, pad=0, edgecolor='white')
+    axs[1].text(0.73+delta_x/2, 0.085, 'Galactic center', va='bottom',
+                ha='center', transform=axs[1].transAxes, fontsize='xx-small',
+                zorder=12, bbox=bbox)
+
     axs[1].update({'xlabel': 'X [pc]', 'ylabel': 'Z [pc]'})
 
     axs[2].scatter(s_halo_df.y_pc, s_halo_df.z_pc, s=s, c='k', rasterized=True)

@@ -361,8 +361,8 @@ def plot_carina():
 if __name__ == "__main__":
 
     do_references = 0
-    do_carina = 1
-    do_skyfield = 0
+    do_carina = 0
+    do_skyfield = 1
 
     # debugging
     if do_references:
