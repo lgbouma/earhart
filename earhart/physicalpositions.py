@@ -26,10 +26,10 @@ def append_physicalpositions(df, reference_df):
     Given a pandas dataframe `df` with [ra, dec, parallax, pmra, pmdec], and a
     reference dataframe `reference_df` with [ra, dec, parallax, pmra, pmdec,
     (dr2_)radial_velocity], calculate the XYZ coordinates, the
-    "delta_pmra_km_s" and "delta_pmdec_km_s" coordinates (tangential velocity
-    with respect to reference_df), the "delta_r_pc" (3d separation) and
-    "delta_mu_km_s" (2d tangential velocity separation) coordinates, and append
-    them to the dataframe.
+    "delta_pmra_prime_km_s" and "delta_pmdec_prime_km_s" coordinates
+    (tangential velocity with respect to reference_df), the "delta_r_pc" (3d
+    separation) and "delta_mu_km_s" (2d tangential velocity separation)
+    coordinates, and append them to the dataframe.
 
     Returns:
         new DataFrame with ['x_pc', 'y_pc', 'z_pc', 'delta_r_pc',
@@ -89,7 +89,10 @@ def append_physicalpositions(df, reference_df):
             # v_AU/yr = mu_arcsec/yr * d_pc
             #
             d_pc = (nparr(1/(df.parallax*1e-3))*u.pc).value
-            c_AU_per_yr = ((( nparr(df[c]) - nparr(reference_df[c]) )*1e-3) * d_pc)*(u.AU/u.yr)
+            c_AU_per_yr = (
+                ((( nparr(df[c]) - nparr(reference_df[c]) )*1e-3) * d_pc)
+                *(u.AU/u.yr)
+            )
             c_km_per_sec = c_AU_per_yr.to(u.km/u.second)
 
             new_key = 'delta_'+c+'_km_s'
@@ -105,9 +108,15 @@ def append_physicalpositions(df, reference_df):
             c_full = icrs_c_df.realize_frame(_)
 
             if c == 'pmra':
-                c_AU_per_yr = ((( nparr(df[c]) - nparr(c_full.pm_ra_cosdec) )*1e-3) * d_pc)*(u.AU/u.yr)
+                c_AU_per_yr = (
+                    ((( nparr(df[c]) - nparr(c_full.pm_ra_cosdec) )*1e-3) * d_pc)
+                    *(u.AU/u.yr)
+                )
             elif c == 'pmdec':
-                c_AU_per_yr = ((( nparr(df[c]) - nparr(c_full.pm_dec) )*1e-3) * d_pc)*(u.AU/u.yr)
+                c_AU_per_yr = (
+                    ((( nparr(df[c]) - nparr(c_full.pm_dec) )*1e-3) * d_pc)
+                    *(u.AU/u.yr)
+                )
 
             c_km_per_sec = c_AU_per_yr.to(u.km/u.second)
             new_key = 'delta_'+c+'_prime_km_s'
