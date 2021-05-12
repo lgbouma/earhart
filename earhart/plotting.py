@@ -1220,6 +1220,14 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
         ykey = 'Prot' if f'{runid}' not in _cls else 'period'
 
         if core_halo and f'{runid}' in _cls:
+
+            if 'subcluster' not in df.columns:
+                df['subcluster'] = ''
+                assert 'cluster' in df.columns
+                selcore = df.reference.str.contains('CantatGaudin')
+                df.loc[selcore, 'subcluster'] = 'core'
+                df.loc[~selcore, 'subcluster'] = 'halo'
+
             sel = (df.subcluster == 'core')
             ax.scatter(
                 xval[sel],
@@ -1288,7 +1296,10 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     if not xval_absmag:
         ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]',
                       fontsize='medium')
-        ax.set_xlim((0.2, 2.4))
+        if 'NGC_2516' in runid:
+            ax.set_xlim((0.2, 2.4))
+        else:
+            ax.set_xlim((0.2, 3.6))
     else:
         ax.set_xlabel('Absolute $\mathrm{M}_{G}$ [mag]', fontsize='medium')
         ax.set_xlim((1.5, 10))
@@ -1310,9 +1321,11 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     tax.set_xlabel('Spectral Type')
 
     xlim = ax.get_xlim()
-    sptypes, BpmRps = get_SpType_BpmRp_correspondence(
-        ['F0V','F5V','G0V','K0V','K3V','K5V','K7V','M0V','M1V','M2V']
-    )
+    if 'NGC_2516' in runid:
+        splist = ['F0V','F5V','G0V','K0V','K3V','K5V','K7V','M0V','M1V','M2V']
+    else:
+        splist = ['F0V','F5V','G0V','K0V','K3V','K6V','M0V','M1V','M3V','M4V']
+    sptypes, BpmRps = get_SpType_BpmRp_correspondence(splist)
     print(sptypes)
     print(BpmRps)
 

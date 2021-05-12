@@ -792,7 +792,8 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0,
     df = pd.read_csv(
         os.path.join(rotdir, f'{runid}_rotation_periods.csv')
     )
-    df = append_phot_binary_column(df)
+    if runid == 'NGC_2516':
+        df = append_phot_binary_column(df)
 
     if cleaning in ['defaultcleaning', 'periodogram_match', 'match234_alias']:
         # automatic selection criteria for viable rotation periods

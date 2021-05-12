@@ -23,7 +23,7 @@ for runid, _ in RUNID_EXTINCTION_DICT.items():
     if not os.path.exists(PLOTDIR):
         os.mkdir(PLOTDIR)
 
-    for talk_aspect in [0, 1]:
+    for talk_aspect in [1, 0]:
         for yscale in ['linear', 'log']:
             for cleaning in ['defaultcleaning', 'periodogram_match',
                              'nocleaning', 'match234_alias']:
@@ -33,8 +33,9 @@ for runid, _ in RUNID_EXTINCTION_DICT.items():
                         yscale=yscale, cleaning=cleaning, emph_binaries=0,
                         talk_aspect=talk_aspect
                     )
-                    ep.plot_auto_rotation(
-                        PLOTDIR, runid, E_BpmRp, core_halo=core_halo,
-                        yscale=yscale, cleaning=cleaning, emph_binaries=1,
-                        talk_aspect=talk_aspect
-                    )
+                    if runid == 'NGC_2516':
+                        ep.plot_auto_rotation(
+                            PLOTDIR, runid, E_BpmRp, core_halo=core_halo,
+                            yscale=yscale, cleaning=cleaning, emph_binaries=1,
+                            talk_aspect=talk_aspect
+                        )
