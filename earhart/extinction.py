@@ -4,6 +4,21 @@ Tools for working out the extinction.
 
 import numpy as np
 
+def AV_to_EBpmRp(A_V):
+    """
+    Convert A_V to E(Bp-Rp). NOTE: assumes A_V has been "corrected" for
+    distance, galactic latitude, etc. So if you pull A_V from a total
+    extinction in a LOS map (e.g., SF98) that doesn't do this correction,
+    you'll get wrong answers.
+    """
+    # E(B-V) = A_V/R_V
+    R_V = 3.1
+    E_BmV = A_V/R_V
+    # Stassun+2019 calibration
+    E_BpmRp = 1.31*E_BmV
+    return E_BpmRp
+
+
 def Bonifacio2000_EBmV_correction(EBmV):
     """
     Bonifacio+2000 note that Schlegel+98 overestimate the reddening values when
