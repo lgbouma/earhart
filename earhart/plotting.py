@@ -3929,7 +3929,9 @@ def plot_lightcurves_rotators(outdir, cleaning='periodogram_match', color=0,
     plt.close('all')
 
     if talk_aspect:
-        fig, ax = plt.subplots(figsize=(4,3))
+        # 16:9 keynote
+        factor = 0.8
+        fig, ax = plt.subplots(figsize=(factor*8,factor*4.5))
     else:
         factor = 0.5
         # 8.5 x 9 inches, since 8.5 x 11 is full page and we need caption space.
@@ -3957,14 +3959,21 @@ def plot_lightcurves_rotators(outdir, cleaning='periodogram_match', color=0,
         time = d['STIME']
         flux = d[fluxkey]
 
+
+        if talk_aspect:
+            t0 = 1320
+        else:
+            t0 = 0
+
         if not color:
-            ax.scatter(time-2457000, flux+dflux, c='black', alpha=0.9, zorder=2, s=0.1,
+            ax.scatter(time-2457000-t0, flux+dflux, c='black', alpha=0.9, zorder=2, s=0.1,
                        rasterized=True, linewidths=0)
         else:
-            ax.scatter(time-2457000, flux+dflux, color=colors[ix], alpha=0.9, zorder=2, s=0.1,
+            ax.scatter(time-2457000-t0, flux+dflux, color=colors[ix], alpha=0.9, zorder=2, s=0.1,
                        rasterized=True, linewidths=0)
 
-            if ix % 7 == 0:
+            modnumber = 7 if not talk_aspect else 5
+            if ix % modnumber == 0:
                 bbox = dict(facecolor='white', alpha=1, pad=0, edgecolor='white')
                 txt = '($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$='+f'{r["(Bp-Rp)0"]:.2f}'
                 ax.text(0.96, np.nanmedian(flux+dflux), txt, va='center',
@@ -3974,6 +3983,8 @@ def plot_lightcurves_rotators(outdir, cleaning='periodogram_match', color=0,
         ix += 1
 
     ax.set_xlabel('Time [BTJD]')
+    if talk_aspect:
+        ax.set_xlabel('Days from start')
     ax.set_ylabel('Relative flux')
 
     ylim = ax.get_ylim()
