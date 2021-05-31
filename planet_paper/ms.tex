@@ -216,6 +216,12 @@ been able to answer, and which remain open.
   \subsubsection{PFS}
   PFS template + RVs
 
+  \paragraph{Steve Shectman on resolution in 3x3 binning mode:}
+	I think what you've done is taken the resolution of the spectrograph with 1x2 binning, which is about 130,000, and divided by three.  The actual situation is as follows.  The scale at the detector is 158 microns per arcsecond, so the 0.3 arcsecond slit is 47 microns wide.  An unbinned pixel is 9 microns, which corresponds to 450 m/s, and the measured FWHM is about 5 unbinned pixels (45 microns or 2.25 km/s).  So then the resolution is 300,000/2.25 = ~133,000.
+
+	So the unbinned spectra are nicely sampled with about 5 pixels per FWHM, while the binned spectra are somewhat undersampled with about 1.7 pixels per FWHM.  There's a small loss in resolution caused by the discrete pixel size (it kind of adds 1 pixel in quadrature to the underlying FWHM), so maybe the effective FWHM when the spectra are binned 3x3 is more like 2 pixels instead of 1.7, corresponding to 6 pixels unbinned.  That would still be a resolution of about 110,000.  I don't actually have a rigorous measurement of the resolution with 3x3 binning, but I think 110,000 is a reasonable number to quote.
+
+
   %\input{TOI837_rv_table.tex}
 
 \section{Kinematics}
