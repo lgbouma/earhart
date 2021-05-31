@@ -548,7 +548,7 @@ def plot_edr3_blending_vs_apparentmag(outdir, basedata='fullfaint', num=None):
 
 def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
             basedata='fullfaint', highlight_companion=0, colorhalobyglat=0,
-            show1937=1, rasterized=False):
+            show1937=1, rasterized=False, talk_aspect=0):
     """
     basedata (str): any of ['bright', 'extinctioncorrected', 'fullfaint',
     'fullfaint_edr3'], where each defines a different set of neighborhood /
@@ -621,7 +621,11 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
 
     plt.close('all')
 
-    f, ax = plt.subplots(figsize=(1.5*2,1.5*3))
+    if talk_aspect:
+        f, ax = plt.subplots(figsize=(4,3))
+    else:
+        # 3 x 4.5
+        f, ax = plt.subplots(figsize=(1.5*2,1.5*3))
 
     get_yval = (
         lambda _df: np.array(
@@ -933,6 +937,8 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
         s = '_'+isochrone
     if colorhalobyglat:
         s = '_colorhalobyglat'
+    if talk_aspect:
+        s += '_talkaspect'
     if highlight_companion:
         c0s += '_highlight_companion'
     if show1937:
@@ -1140,7 +1146,7 @@ def plot_skypositions_x_rotn(outdir):
 
 def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
                        cleaning=None, emph_binaries=False,
-                       talk_aspect=0, xval_absmag=0):
+                       refcluster_only=False, talk_aspect=0, xval_absmag=0):
     """
     Plot rotation periods that satisfy the automated selection criteria
     (specified in helpers.get_autorotation_dataframe)
@@ -1219,38 +1225,42 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
 
         ykey = 'Prot' if f'{runid}' not in _cls else 'period'
 
-        if core_halo and f'{runid}' in _cls:
-
-            if 'subcluster' not in df.columns:
-                df['subcluster'] = ''
-                assert 'cluster' in df.columns
-                selcore = df.reference.str.contains('CantatGaudin')
-                df.loc[selcore, 'subcluster'] = 'core'
-                df.loc[~selcore, 'subcluster'] = 'halo'
-
-            sel = (df.subcluster == 'core')
-            ax.scatter(
-                xval[sel],
-                df[sel][ykey],
-                c='k', alpha=1, zorder=z, s=s, edgecolors='k',
-                marker=m, linewidths=_lw, label=f"{runid.replace('_',' ')} core"
-            )
-
-            sel = (df.subcluster == 'halo')
-            ax.scatter(
-                xval[sel],
-                df[sel][ykey],
-                c='lightskyblue', alpha=1, zorder=z, s=s, edgecolors='k',
-                marker=m, linewidths=_lw, label=f"{runid.replace('_',' ')} halo"
-            )
+        if refcluster_only and f'{runid}' in _cls:
+            pass
 
         else:
-            ax.scatter(
-                xval,
-                df[ykey],
-                c=_col, alpha=1, zorder=z, s=s, edgecolors='k',
-                marker=m, linewidths=_lw, label=f"{l.replace('_','')}"
-            )
+            if core_halo and f'{runid}' in _cls:
+
+                if 'subcluster' not in df.columns:
+                    df['subcluster'] = ''
+                    assert 'cluster' in df.columns
+                    selcore = df.reference.str.contains('CantatGaudin')
+                    df.loc[selcore, 'subcluster'] = 'core'
+                    df.loc[~selcore, 'subcluster'] = 'halo'
+
+                sel = (df.subcluster == 'core')
+                ax.scatter(
+                    xval[sel],
+                    df[sel][ykey],
+                    c='k', alpha=1, zorder=z, s=s, edgecolors='k',
+                    marker=m, linewidths=_lw, label=f"{runid.replace('_',' ')} core"
+                )
+
+                sel = (df.subcluster == 'halo')
+                ax.scatter(
+                    xval[sel],
+                    df[sel][ykey],
+                    c='lightskyblue', alpha=1, zorder=z, s=s, edgecolors='k',
+                    marker=m, linewidths=_lw, label=f"{runid.replace('_',' ')} halo"
+                )
+
+            else:
+                ax.scatter(
+                    xval,
+                    df[ykey],
+                    c=_col, alpha=1, zorder=z, s=s, edgecolors='k',
+                    marker=m, linewidths=_lw, label=f"{l.replace('_','')}"
+                )
 
         if emph_binaries and f'{runid}' in _cls:
 
@@ -3896,7 +3906,8 @@ def plot_lumfunction_vs_position(outdir):
     savefig(f, outpath)
 
 
-def plot_lightcurves_rotators(outdir, cleaning='periodogram_match', color=0):
+def plot_lightcurves_rotators(outdir, cleaning='periodogram_match', color=0,
+                              N_show=50, seed=123, talk_aspect=0):
 
     set_style()
 
@@ -3906,8 +3917,7 @@ def plot_lightcurves_rotators(outdir, cleaning='periodogram_match', color=0):
 
     from earhart.paths import ALLVARDATADIR
 
-    N_show = 50
-    np.random.seed(123)
+    np.random.seed(seed)
     sdf = df.sample(n=N_show, replace=False)
 
     BpmRp0 = sdf['phot_bp_mean_mag'] - sdf['phot_rp_mean_mag'] - AVG_EBpmRp
@@ -3917,9 +3927,13 @@ def plot_lightcurves_rotators(outdir, cleaning='periodogram_match', color=0):
 
 
     plt.close('all')
-    factor = 0.5
-    # 8.5 x 9 inches, since 8.5 x 11 is full page and we need caption space.
-    fig, ax = plt.subplots(figsize=(factor*8.5, factor*9))
+
+    if talk_aspect:
+        fig, ax = plt.subplots(figsize=(4,3))
+    else:
+        factor = 0.5
+        # 8.5 x 9 inches, since 8.5 x 11 is full page and we need caption space.
+        fig, ax = plt.subplots(figsize=(factor*8.5, factor*9))
 
     # plot the observed ticks. x coords are axes, y coords are data
     trans = transforms.blended_transform_factory(ax.transAxes, ax.transData)
@@ -3970,6 +3984,8 @@ def plot_lightcurves_rotators(outdir, cleaning='periodogram_match', color=0):
     outstr = ''
     if color:
         outstr += '_color'
+    if talk_aspect:
+        outstr += '_talkaspect'
     outpath = os.path.join(outdir, f'lightcurves_rotators{outstr}.png')
     savefig(fig, outpath)
 
