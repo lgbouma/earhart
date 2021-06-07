@@ -1620,6 +1620,97 @@ def plot_galah_dr3_lithium_abundance(outdir, corehalosplit=0):
     savefig(f, outpath)
 
 
+def plot_galah_dr3_other_abundance(outdir, corehalosplit=0):
+
+    from earhart.lithium import get_GalahDR3_lithium
+
+    g_tab = get_GalahDR3_lithium(defaultflags=1)
+    scols = ['source_id', 'sobject_id', 'star_id', 'teff', 'e_teff', 'fe_h',
+             'e_fe_h', 'flag_fe_h', 'Li_fe', 'e_Li_fe', 'nr_Li_fe',
+             'flag_Li_fe', 'ruwe']
+    g_dict = {k:np.array(g_tab[k]).byteswap().newbyteorder() for k in scols}
+    g_df = pd.DataFrame(g_dict)
+
+    basedata = 'fullfaint'
+    nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
+    comp_df = full_df
+    print(f'Comparing vs the {len(comp_df)} "fullfaint" kinematic NGC2516 rotators sample (core + halo)...')
+    assert type(comp_df.source_id.iloc[0]) == np.int64
+
+    mdf = comp_df.merge(g_df, on='source_id', how='inner')
+
+    # save it
+    outname = 'kinematic_X_galah_dr3'
+    if not os.path.exists(outdir):
+        os.mkdir(outdir)
+    outpath = os.path.join(outdir, f'{outname}.csv')
+    mdf.to_csv(outpath, index=False)
+    print(f'Made {outpath} with {len(mdf)} entries.')
+
+    smdf = mdf
+    smdf = mdf[~pd.isnull(mdf.fe_h)]
+
+    print(f'Number of comparison stars: {len(comp_df)}')
+    print(f'Number of comparison stars w/ Galah DR3 matches '
+          f'{len(mdf)}')
+    print(f'Number of comparison stars w/ Galah DR3 matches in core '
+          f'{len(mdf[mdf.subcluster == "core"])}')
+    print(f'Number of comparison stars w/ Galah DR3 matches in halo '
+          f'{len(mdf[mdf.subcluster == "halo"])}')
+
+    print(f'Number of comparison stars w/ Galah DR3 matches and finite lithium '
+          f'(detection or limit): {len(smdf)}')
+
+    ##########
+    # make tha plot 
+    ##########
+
+    set_style()
+
+    plt.close('all')
+
+    f, ax = plt.subplots(figsize=(4,3))
+
+    sel = (smdf.flag_fe_h== 0) & (smdf.subcluster == 'core')
+    ax.scatter(
+        smdf[sel]['phot_bp_mean_mag'] - smdf[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+        smdf[sel]['fe_h'], c='C0', alpha=1, zorder=2, s=10, rasterized=False,
+        linewidths=0, label='Core'
+    )
+    sel = (smdf.flag_fe_h== 0) & (smdf.subcluster == 'halo')
+    ax.scatter(
+        smdf[sel]['phot_bp_mean_mag'] - smdf[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+        smdf[sel]['fe_h'], c='C1', alpha=1, zorder=2, s=10, rasterized=False,
+        linewidths=0, label='Halo'
+    )
+
+    #sel = (smdf.flag_fe_h== 1) & (smdf.subcluster == 'core')
+    #ax.plot(
+    #    smdf[sel]['phot_bp_mean_mag'] - smdf[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+    #    smdf[sel]['fe_h'], c='C0', alpha=1,
+    #    zorder=3, label='Fe limit (core)', ms=10, mfc='white', marker='v', lw=0
+    #)
+    #sel = (smdf.flag_fe_h == 1) & (smdf.subcluster == 'halo')
+    #ax.plot(
+    #    smdf[sel]['phot_bp_mean_mag'] - smdf[sel]['phot_rp_mean_mag'] - AVG_EBpmRp,
+    #    smdf[sel]['fe_h'], c='C1', alpha=1,
+    #    zorder=3, label='Fe limit (halo)', ms=10, mfc='white', marker='v', lw=0
+    #)
+
+    ax.legend(loc='best', handletextpad=0.1, fontsize='x-small', framealpha=0.7)
+    ax.set_ylabel('[Fe/H]', fontsize='large')
+    ax.set_xlabel('($G_{\mathrm{BP}}-G_{\mathrm{RP}}$)$_0$ [mag]', fontsize='large')
+
+    ax.set_title('fullfaint kinematics, x GALAH DR3')
+
+    format_ax(ax)
+    outname = 'galah_dr3_fe_h_abundance'
+    if corehalosplit:
+        outname += '_corehalosplit'
+    outpath = os.path.join(outdir, f'{outname}.png')
+    savefig(f, outpath)
+
+
 def plot_randich_lithium(outdir, vs_rotators=1, corehalosplit=0):
     """
     Plot Li EW vs color for Randich+18's Gaia ESO lithium stars, crossmatched

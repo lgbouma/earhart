@@ -39,6 +39,9 @@ ep.plot_lithium_EW_vs_color(
 ep.plot_galah_dr3_lithium_abundance(PLOTDIR)
 ep.plot_galah_dr3_lithium_abundance(PLOTDIR, corehalosplit=1)
 
+ep.plot_galah_dr3_other_abundance(PLOTDIR.replace('lithium','otherabundance'), corehalosplit=1)
+
 # DEPRECATED
 # ep.plot_randich_lithium(PLOTDIR)
 # ep.plot_randich_lithium(PLOTDIR, corehalosplit=1)
+
