@@ -7,4 +7,5 @@ if not os.path.exists(PLOTDIR):
     os.mkdir(PLOTDIR)
 
 for yscale in ['linear', 'log']:
+    ep.plot_compstar_rotation(PLOTDIR, yscale=yscale, corehalosplit=1)
     ep.plot_compstar_rotation(PLOTDIR, yscale=yscale)

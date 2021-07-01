@@ -30,7 +30,7 @@ assert len(df) == N_members
 from earhart.priors import AVG_EBpmRp
 df['(Bp-Rp)_0'] = df.phot_bp_mean_mag - df.phot_rp_mean_mag - AVG_EBpmRp
 
-cleanings = ['defaultcleaning', 'periodogram_match', 'match234_alias']
+cleanings = ['defaultcleaning', 'defaultcleaning_cutProtColor', 'periodogram_match', 'match234_alias']
 
 # add the "in_{CLEANING}" columns
 for c in cleanings:
@@ -124,10 +124,11 @@ if include_lithium:
 
 
 df = df.drop(['in_match234_alias'], axis=1)
+df = df.drop(['in_periodogram_match'], axis=1)
 
 df = df.rename(columns={
     'in_defaultcleaning': 'in_SetA',
-    'in_periodogram_match': 'in_SetB',
+    'in_defaultcleaning_cutProtColor': 'in_SetB',
     'is_phot_binary': 'is_phot_bin',
     'is_astrometric_binary': 'is_astrm_bin'
 })
@@ -169,7 +170,7 @@ df['nfaint'] = df['nfaint'].astype(pd.Int32Dtype())
 
 orderedcols = [
 'source_id', 'source_id_edr3', 'in_SetA', 'in_SetB', 'n_cdips_sector',
-'period', 'lspval', 'spdmperiod', 'spdmval', 'nequal', 'nclose', 'nfaint',
+'period', 'lspval', 'nequal', 'nclose', 'nfaint',
 'ra', 'dec', 'ref_epoch', 'parallax', 'parallax_error', 'pmra', 'pmdec',
 'phot_g_mean_mag', 'phot_bp_mean_mag', 'phot_rp_mean_mag', 'radial_velocity',
 'radial_velocity_error', 'subcluster', 'in_CG18', 'in_KC19', 'in_M21',
@@ -180,58 +181,55 @@ orderedcols = [
 
 df = df[orderedcols]
 
-outpath = os.path.join(RESULTSDIR, 'tables', 'NGC_2516_Prot_cleaned.csv')
-df.to_csv(outpath, index=False)
-print(f'Wrote {outpath}')
-
 #
 # make the header table for the paper
 #
 namedesc_dict = {
-'source_id': "Gaia DR2 source identifier.",
-'source_id_edr3': "Gaia EDR3 source identifier.",
-'in_SetA': "In Set $\mathcal{A}$ (LSP>0.08, P<15d, nequal==0, nclose>=1).",
-'in_SetB': "In Set $\mathcal{B}$ (Set $\mathcal{A}$ and periods match).",
-'n_cdips_sector': "Number of TESS sectors with CDIPS light curves.",
-'period': "Lomb-Scargle best period [days].",
-'lspval': "Lomb-Scargle periodogram value for best period.",
-'spdmperiod': "Stellingwerf PDM best period [days].",
-'spdmval': "Stellingwerf PDM periodogram value for best period.",
-'nequal': "Number of stars brighter than the target in TESS aperture.",
-'nclose': "Number of stars with $\Delta T > 1.25$ in TESS aperture.",
-'nfaint': "Number of stars with $\Delta T > 2.5$ in TESS aperture.",
-'ra': "Gaia DR2 right ascension [deg].",
-'dec': "Gaia DR2 declination [deg].",
-'ref_epoch': "Reference epoch for right ascension and declination.",
-'parallax': "Gaia DR2 parallax [mas].",
-'parallax_error': "Gaia DR2 parallax uncertainty [mas].",
-'pmra': r"Gaia DR2 proper motion $\mu_\alpha \cos \delta$ [mas$\,$yr$^{-1}$].",
-'pmdec': "Gaia DR2 proper motion $\mu_\delta$ [mas$\,$yr$^{-1}$].",
-'phot_g_mean_mag': "Gaia DR2 $G$ magnitude.",
-'phot_bp_mean_mag': "Gaia DR2 $G_\mathrm{BP}$ magnitude.",
-'phot_rp_mean_mag': "Gaia DR2 $G_\mathrm{RP}$ magnitude.",
-'radial_velocity': "Gaia DR2 heliocentric radial velocity [km$\,$s$^{-1}$].",
-'radial_velocity_error': "Gaia DR2 radial velocity uncertainty [km$\,$s$^{-1}$].",
-'subcluster': "Is star in core (CG18) or halo (KC19+M21)?",
-'in_CG18': "Star in \\citet{cantatgaudin_gaia_2018}.",
-'in_KC19': "Star in \\citet{kounkel_untangling_2019}.",
-'in_M21': "Star in \\citet{meingast_2021}.",
-'(Bp-Rp)_0': "Gaia $G_\mathrm{BP}$-$G_\mathrm{RP}$ color, minus $E$($G_\mathrm{BP}$-$G_\mathrm{RP}$)=0.1343",
-'is_phot_bin': "True if $>0.3$ mag above cluster isochrone.",
-'is_astrm_bin': "True if Gaia EDR3 RUWE > 1.2.",
-'ruwe': "Gaia EDR3 RUWE.",
-'Li_EW_mA_GaiaESO': "Gaia-ESO Li doublet equivalent width, including the Fe blend [m\\AA].",
-'Li_EW_mA_perr_GaiaESO': "Gaia-ESO Li doublet EW upper uncertainty [m\\AA].",
-'Li_EW_mA_merr_GaiaESO': "Gaia-ESO Li doublet EW lower uncertainty [m\\AA].",
-'Li_EW_mA_GALAH': "GALAH Li doublet equivalent width, including the Fe blend [m\\AA].",
-'Li_EW_mA_perr_GALAH': "GALAH Li doublet EW upper uncertainty [m\\AA].",
-'Li_EW_mA_merr_GALAH': "GALAH Li doublet EW lower uncertainty [m\\AA]."
+'source_id': ["Gaia DR2 source identifier.", str],
+'source_id_edr3': ["Gaia EDR3 source identifier.", str],
+'in_SetA': ["In Set $\mathcal{A}$ (LSP$>$0.08, P$<$15d, nequal$==$0, nclose$\geq$1).", int],
+'in_SetB': ["In Set $\mathcal{B}$ (Set $\mathcal{A}$ and below $P_\mathrm{rot}-(G_\mathrm{BP}$-$G_\mathrm{RP})_0$ cut).", int],
+'n_cdips_sector': ["Number of TESS sectors with CDIPS light curves.", int],
+'period': ["Lomb-Scargle best period [days].", lambda x: np.round(x, 4)],
+'lspval': ["Lomb-Scargle periodogram value for best period.", lambda x: np.round(x, 4)],
+#'spdmperiod': "Stellingwerf PDM best period [days].",
+#'spdmval': "Stellingwerf PDM periodogram value for best period.",
+'nequal': ["Number of stars brighter than the target in TESS aperture.", None],
+'nclose': ["Number of stars with $\Delta T > 1.25$ in TESS aperture.", None],
+'nfaint': ["Number of stars with $\Delta T > 2.5$ in TESS aperture.", None],
+'ra': ["Gaia DR2 right ascension [deg].", lambda x: np.round(x, 10)],
+'dec': ["Gaia DR2 declination [deg].", lambda x: np.round(x, 10)],
+'ref_epoch': ["Reference epoch for right ascension and declination.", lambda x: np.round(x, 1)],
+'parallax': ["Gaia DR2 parallax [mas].", lambda x: np.round(x, 3)],
+'parallax_error': ["Gaia DR2 parallax uncertainty [mas].", lambda x: np.round(x, 3)],
+'pmra': [r"Gaia DR2 proper motion $\mu_\alpha \cos \delta$ [mas$\,$yr$^{-1}$].", lambda x: np.round(x, 3)],
+'pmdec': ["Gaia DR2 proper motion $\mu_\delta$ [mas$\,$yr$^{-1}$].", lambda x: np.round(x, 3)],
+'phot_g_mean_mag': ["Gaia DR2 $G$ magnitude.", lambda x: np.round(x, 3)],
+'phot_bp_mean_mag': ["Gaia DR2 $G_\mathrm{BP}$ magnitude.", lambda x: np.round(x, 3)],
+'phot_rp_mean_mag': ["Gaia DR2 $G_\mathrm{RP}$ magnitude.", lambda x: np.round(x, 3)],
+'radial_velocity': ["Gaia DR2 heliocentric radial velocity [km$\,$s$^{-1}$].", lambda x: np.round(x, 2)],
+'radial_velocity_error': ["Gaia DR2 radial velocity uncertainty [km$\,$s$^{-1}$].", lambda x: np.round(x, 2)],
+'subcluster': ["Is star in core (CG18) or halo (KC19+M21)?", str],
+'in_CG18': ["Star in \\citet{cantatgaudin_gaia_2018}.", int],
+'in_KC19': ["Star in \\citet{kounkel_untangling_2019}.", int],
+'in_M21': ["Star in \\citet{meingast_2021}.", int],
+'(Bp-Rp)_0': ["Gaia $G_\mathrm{BP}$-$G_\mathrm{RP}$ color, minus $E$($G_\mathrm{BP}$-$G_\mathrm{RP}$)=0.1343", lambda x: np.round(x, 3)],
+'is_phot_bin': ["True if $>0.3$ mag above cluster isochrone.", int],
+'is_astrm_bin': ["True if Gaia EDR3 RUWE > 1.2.", int],
+'ruwe': ["Gaia EDR3 RUWE.", lambda x: np.round(x, 3)],
+'Li_EW_mA_GaiaESO': ["Gaia-ESO Li doublet equivalent width, including the Fe blend [m\\AA].", lambda x: np.round(x, 1)],
+'Li_EW_mA_perr_GaiaESO': ["Gaia-ESO Li doublet EW upper uncertainty [m\\AA].", lambda x: np.round(x, 1)],
+'Li_EW_mA_merr_GaiaESO': ["Gaia-ESO Li doublet EW lower uncertainty [m\\AA].", lambda x: np.round(x, 1)],
+'Li_EW_mA_GALAH': ["GALAH Li doublet equivalent width, including the Fe blend [m\\AA].", lambda x: np.round(x, 1)],
+'Li_EW_mA_perr_GALAH': ["GALAH Li doublet EW upper uncertainty [m\\AA].", lambda x: np.round(x, 1)],
+'Li_EW_mA_merr_GALAH': ["GALAH Li doublet EW lower uncertainty [m\\AA].", lambda x: np.round(x, 1)]
 }
 
 keys = list(namedesc_dict.keys())
 keys = ["\\texttt{"+k.replace("_", "\_")+"}" for k in keys]
 vals = df[~pd.isnull(df.Li_EW_mA_GaiaESO)].head(n=1).T.values.flatten()
-descrs = list(namedesc_dict.values())
+descrs = [v[0] for v in namedesc_dict.values()]
+formatters = [v[1] for v in namedesc_dict.values()]
 
 df_totex = pd.DataFrame({
     'Parameter': keys,
@@ -241,10 +239,30 @@ df_totex = pd.DataFrame({
 
 outpath = os.path.join(RESULTSDIR, 'tables', 'NGC_2516_Prot_cleaned_header.tex')
 
-pd.set_option('display.max_colwidth',100)
+pd.set_option('display.max_colwidth',120)
 # escape=False fixes "textbackslash"
 df_totex.to_latex(outpath, index=False, escape=False)
 print(f'Wrote {outpath}')
 
+
+#
+# the CSV machine readable table.
+# first apply the formatterss
+#
+fdict = {}
+keys = list(namedesc_dict.keys())
+for k,f in zip(keys, formatters):
+    if f in [int, str]:
+        df[k] = df[k].astype(f)
+    elif f is None:
+        pass
+    elif type(f) == type(lambda x: x):
+        df[k] = f(df[k])
+    else:
+        raise NotImplementedError
+
+outpath = os.path.join(RESULTSDIR, 'tables', 'NGC_2516_Prot_cleaned.csv')
+df.to_csv(outpath, index=False)
+print(f'Wrote {outpath}')
 
 

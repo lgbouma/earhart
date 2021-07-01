@@ -13,6 +13,7 @@ get_gaia_basedata
     _get_median_ngc2516_core_params
 get_denis_xmatch
 append_phot_binary_column
+PleaidesQuadProtModel
 """
 import os, collections, pickle
 import numpy as np, pandas as pd
@@ -795,11 +796,14 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0,
     if runid == 'NGC_2516':
         df = append_phot_binary_column(df)
 
-    if cleaning in ['defaultcleaning', 'periodogram_match', 'match234_alias']:
+    if cleaning in ['defaultcleaning', 'periodogram_match',
+                    'match234_alias','harderlsp', 'defaultcleaning_cutProtColor']:
         # automatic selection criteria for viable rotation periods
         NEQUAL_CUTOFF = 0 # could also do 1
         NCLOSE_CUTOFF = 1
         LSP_CUTOFF = 0.08 # 0.08 standard
+        if cleaning == 'harderlsp':
+            LSP_CUTOFF = 0.15
         sel = (
             (df.period < 15)
             &
@@ -809,6 +813,16 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0,
             &
             (df.nclose <= NCLOSE_CUTOFF)
         )
+        if cleaning == 'defaultcleaning_cutProtColor':
+            from earhart.priors import AVG_EBpmRp
+            BpmRp0 = (
+                df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - AVG_EBpmRp
+            )
+            Prot_boundary = PleaidesQuadProtModel(BpmRp0)
+            sel &= (
+                df.period < Prot_boundary
+            )
+
     elif cleaning in ['nocleaning']:
         NEQUAL_CUTOFF = 99999
         NCLOSE_CUTOFF = 99999
@@ -819,10 +833,8 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0,
     else:
         raise ValueError(f'Got cleaning == {cleaning}, not recognized.')
 
-    if cleaning == 'defaultcleaning':
-        pass
-
-    elif cleaning == 'nocleaning':
+    if cleaning in ['defaultcleaning', 'nocleaning', 'harderlsp',
+                    'defaultcleaning_cutProtColor']:
         pass
 
     elif cleaning == 'periodogram_match':
@@ -955,3 +967,30 @@ def append_phot_binary_column(df, DIFFERENCE_CUTOFF=0.3):
     df['is_phot_binary'] = sel_photbin
 
     return df
+
+
+def PleaidesQuadProtModel(BpmRp0):
+    """
+    Pleiades Prot vs color from Curtis+20...
+    used as an exclusion criteria with some slack on the red and blue
+    ends.
+    """
+    x = BpmRp0
+    c0 = -8.467
+    c1 = 19.64
+    c2 = -5.438
+    Protmod = (
+        c0*x**0 + c1*x**1 + c2*x**2
+        + 2
+    )
+    sel = (x > 1.4)
+    Protmod[sel] = 12
+    sel = (x > 0.3) & (x < 0.5)
+    Protmod[sel] = 2
+
+    sel = (x < 0.3) | (x>2.4)
+    Protmod[sel] = np.nan
+
+    return Protmod
+
+

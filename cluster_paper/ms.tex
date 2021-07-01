@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %\documentclass[12pt,twocolumn,tighten]{aastex63}
-\documentclass[12pt,twocolumn,tighten,linenumbers]{aastex63}
+\documentclass[12pt,twocolumn,tighten,linenumbers,trackchanges]{aastex63}
 %\documentclass[12pt,twocolumn,tighten,trackchanges]{aastex63}
 \usepackage{amsmath,amstext,amssymb}
 \usepackage[T1]{fontenc}
@@ -40,7 +40,7 @@
 
 \newcommand{\nautorotdenominator}{1{,}641} % plot_autorotation.py, w/ runid=NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
 \newcommand{\nautorotnumerator}{987} % plot_autorotation.py, For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
-\newcommand{\nautorotnumeratormatching}{507} % plot_autorotation.py, LSP=SPDM period
+\newcommand{\nautorotnumeratormatching}{892} % plot_autorotation.py, Set A, with manual Prot-color cut
 \newcommand{\ncompstardenominator}{820} % plot_compstar_rotation.py
 \newcommand{\ncompstarnumerator}{312} % plot_compstar_rotation.py
 \newcommand{\ncompfrac}{38.0\%} % plot_compstar_rotation.py, based on plot_autorotation
@@ -209,15 +209,36 @@ MAST.\footnote{\url{https://archive.stsci.edu/hlsp/cdips}}
 As part of this project, we focus here on a single southern open
 cluster, and ask: is the cluster halo truly coeval with the core?  We
 chose \cn\ for this analysis because it is young (100-200\,Myr) and
-close enough ($d\approx400$\,pc) to facilitate photometric
-rotation measurements using TESS.  Its halo was reported by
+close enough ($d\approx400$\,pc) to facilitate \replaced{photometric
+rotation measurements}{measurements of stellar rotation periods} using TESS.  \added{\citet{healy_stellar_2020}
+in fact already used TESS rotation periods to study the stellar inclination
+distribution of stars in the core of NGC\,2516.}
+\replaced{Its halo}{The cluster's halo however} was reported by
 \citet{kounkel_untangling_2019} to span
-$\approx20\times10\times350$\,pc.  We want to know: is this halo real
-or is it just a collection of interlopers, foreground and background
-stars?  To what extent can we use Gaia alone to reliably identify
-age-dated needles in the haystack of field stars?  What are the
-implications, observationally and theoretically, if we can identify
-the dispersed halos of open clusters?
+$\approx20\times10\times350$\,pc\added{, which is a larger volume than
+has been considered in previous rotation analyses
+\citep[][]{Irwin_NGC2516_2007,fritzewski_rotation_2020,healy_stellar_2020}}.
+We want to know: is this halo real or is it just a collection of
+interlopers, foreground and background stars?  To what extent can we
+use Gaia alone to reliably identify age-dated needles in the haystack
+of field stars?  What are the implications, observationally and
+theoretically, if we can identify the dispersed halos of open
+clusters?
+
+\added{To assess whether the stars in the cluster's halo are the same
+ages as stars in the cluster's core, we use three different age-dating
+techniques: isochrones, gyrochrones, and lithium depletion
+\citep[see][for reviews]{soderblom_ages_2010,soderblom_ages_2014}.
+Gyrochronology has now been empirically calibrated for FGK stars with
+ages spanning $\approx$10\,Myr to $\approx$2.7\,Gyr \citep[{\it
+e.g.},][]{rebull_usco_2018,curtis_temporary_2019,curtis_rup147_2020}.
+Lithium equivalent widths can be used for relative age-dating of dwarf
+stars over similar age ranges, though for a narrower range of spectral
+types \citep{sestito_2005}.  One complication when deriving relative
+lithium ages of the K dwarfs comes from the correlation between
+lithium abundance and stellar rotation rate, which has recently been
+reviewed by \citet{bouvier_lithium-rotation_2020}, and is a subject
+that we explore in the latter portions of our analysis.  }
 
 A brief note on terminology.  Low-density stellar associations
 connected to a dense population (a ``core'') have been described as
@@ -244,10 +265,10 @@ gives our conclusions.
 \section{A Dispersed Halo and a Core?}
 \label{sec:gaia}
 
-\begin{figure*}[t]
+\begin{figure*}[tp]
 	\begin{center}
 		\leavevmode
-		\includegraphics[width=0.95\textwidth]{f1.pdf}
+		\includegraphics[width=\textwidth]{f1.pdf}
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ {\bf The dense and diffuse components of NGC\,2516 across
@@ -268,7 +289,7 @@ gives our conclusions.
 \begin{figure*}[t]
 	\begin{center}
 		\leavevmode
-		\includegraphics[width=0.99\textwidth]{f2.pdf}
+		\includegraphics[width=\textwidth]{f2.pdf}
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ {\bf Position and orbit of NGC\,2516 in the Galaxy.}
@@ -557,7 +578,7 @@ the statistical and systematic components from \cite{cummings_2018}.
 \subsection{Rotation from TESS}
 \label{subsec:tess}
 
-\begin{figure*}[t!]
+\begin{figure*}[tp!]
 	\begin{center}
 		\leavevmode
 		\subfloat{
@@ -573,7 +594,9 @@ the statistical and systematic components from \cite{cummings_2018}.
   \caption{ {\bf TESS rotations periods and dereddened Gaia colors
   across the core and halo of \cn.} Sets $\mathcal{A}$ ({\it top})
   and $\mathcal{B}$ ({\it bottom}) undergo successive stages of
-  automated cleaning (see Section~\ref{subsubsec:cluster}).  The Pleiades
+  automated cleaning \replaced{(see Section~\ref{subsubsec:cluster})}{; Set
+  $\mathcal{B}$ is the same as Set $\mathcal{A}$, after selecting stars
+  below the dashed line in the top panel (see Section~\ref{subsubsec:cluster})}.  The Pleiades
   \citep[125\,Myr;][]{rebull_rotation_2016a} and Praesepe
   \citep[650\,Myr;][]{douglas_poking_2017} are shown for reference.
   Stars in the core and the halo of NGC\,2516 overlap with the
@@ -584,36 +607,9 @@ the statistical and systematic components from \cite{cummings_2018}.
   \label{fig:rot}
 	}
 \end{figure*}
-\begin{figure*}[t!]
-	\begin{center}
-		\leavevmode
-		\subfloat{
-			\includegraphics[width=0.700\textwidth]{f5a.pdf}
-		}
-
-    \vspace{-0.5cm}
-		\subfloat{
-			\includegraphics[width=0.700\textwidth]{f5b.pdf}
-		}
-	\end{center}
-	\vspace{-0.7cm}
-  \caption{ {\bf Binarity indicators for rotators in \cn.} Sets
-  $\mathcal{A}$ ({\it top}) and $\mathcal{B}$ ({\it bottom}) are as in
-  Figure~\ref{fig:rot}.  Astrometric binaries ($\mathrm{RUWE}>1.2$;
-  11\% of stars) appear in red; photometric binaries ($>$0.3\,mag
-  above an empirical isochrone; 20\% of stars) are overplotted in
-  orange.  
-  Over $0.5<\bpmrpo<1.3$, Set $\mathcal{B}$ has 281 stars.
-  Dividing these stars into ``slow'' and ``fast'' sequences by eye,
-  the fraction of stars showing signs of binarity in the slow and fast
-  subsamples are 30\% (63/210) and 56\% (40/71) respectively.
-  \label{fig:binarity}
-	}
-\end{figure*}
 
 \subsubsection{Methodology}
 \label{subsubsec:cluster}
-
 
 We began our rotation analysis by considering all \nkinematic\
 candidate members of \cn.  For each source, we retrieved all available
@@ -638,26 +634,27 @@ each spacecraft orbit, and ran a sliding standard-deviation rejection
 window over the light curve, which removed any outlying points within
 $\pm3\times$MAD of the median in each window.
 
-We then measured the rotation period from the resulting light curve
-using the periodogram implementations in \texttt{astrobase}, namely
-the traditional Lomb-Scargle, and the Stellingwerf phase-dispersion
-minimization algorithm
-\citep{lomb_1976,stellingwerf_period_1978,scargle_studies_1982,stellingwerf_period_2011,bhatti_astrobase_2018}.
+We then measured the rotation period from the resulting light curve using
+the \added{Lomb-Scargle} periodogram implementation\deleted{s} in
+\texttt{astrobase}\replaced{, namely the traditional Lomb-Scargle, and
+the Stellingwerf phase-dispersion minimization algorithm
+\citep{lomb_1976,stellingwerf_period_1978,scargle_studies_1982,stellingwerf_period_2011,bhatti_astrobase_2018}}{\citep{lomb_1976,scargle_studies_1982,bhatti_astrobase_2018}}.
 We used the CDIPS aperture radius that, based on theoretical
-expectations, was expected to give the optimal balance between light
-from the target star and the sky background \citep{Sullivan_2015}.  This
-typically resulted in a circular aperture radius of either 1 or 1.5 pixels.
-We recorded the top five periodogram peaks from each method, and their
-corresponding powers.  Finally, as a check on crowding, we recorded
-the number of stars within the aperture with greater
-brightness than the target star, and with brightness within 1.25 and
-2.5 TESS magnitudes of the target star.
+expectations, was expected to give the optimal balance between light from
+the target star and the sky background \citep{Sullivan_2015}.  This
+typically resulted in a circular aperture radius of either 1 or 1.5
+pixels.  We recorded the top five periodogram peaks\deleted{ from each
+method}, and their corresponding powers.  Finally, as a check on
+crowding, we recorded the number of stars within the aperture with
+greater brightness than the target star, and with brightness within 1.25
+and 2.5 TESS magnitudes of the target star.
 
 The resulting rotation periods and periodogram powers are reported,
 regardless of detection significance, in Table~\ref{tab:maintable}.
 To clean these measurements, we designed 
 automated cleaning criteria, which yielded sets we denote
-$\mathcal{A}$ and $\mathcal{B}$.  For both sets, we considered light
+$\mathcal{A}$ and $\mathcal{B}$.  For \replaced{both sets}{Set
+$\mathcal{A}$}, we considered light
 curves for which the peak Lomb-Scargle periodogram period was below 15
 days, the normalized Lomb-Scargle power exceeded 0.08, and for which
 no companions with brightness exceeding one-tenth of the target star
@@ -668,54 +665,95 @@ to eliminate low-quality rotation periods while retaining high
 completeness.  For Set $\mathcal{A}$, this yielded \nautorotnumerator\
 light curves, out of \nautorotdenominator\ stars for which rotation
 periods might plausibly have been detected.  For Set $\mathcal{B}$, we
-additionally required that the Lomb-Scargle and Stellingwerf
-phase-dispersion methods yielded identical periods to within 10\%.
-This yielded \nautorotnumeratormatching\ light curves.  Boolean flags
-for each set are included in Table~\ref{tab:maintable}.
-A set of field stars was also analyzed for comparison.
-The results are discussed in Appendix~\ref{app:compstar}.
+additionally required that the Lomb-Scargle \replaced{and Stellingwerf
+phase-dispersion methods yielded identical periods to within 10\%}{period
+fell below the boundary drawn in Figure~\ref{fig:rot}, which was
+constructed the filter using the Pleiades polynomial from
+\citet{curtis_rup147_2020}, with hard cuts at the red and blue ends.}.
+This yielded \nautorotnumeratormatching\ light curves\added{in Set
+$\mathcal{B}$}. 
+Boolean flags for each set are included in Table~\ref{tab:maintable}.  A
+set of field stars was also analyzed for comparison.  The results are
+discussed in Appendix~\ref{app:compstar}.
+\added{The justification for the additional cut in Set $\mathcal{B}$ is
+that \cn\ is already known to have few if any stars above the slow
+sequence \citep{fritzewski_rotation_2020}.  Stars above the slow sequence
+are most likely therefore either not cluster members, or they are cluster
+members, but with unresolved binary companions contaminating the rotation
+period measurement \citep[{\it
+e.g.},][Section~5.1]{stauffer_rotation_2016}.  For the purpose of
+assessing which are rotationally consistent with being in the cluster,
+this is a viable filter; for the purpose of fully exploring whether any
+rotational outliers could be bonafide cluster members, Set $\mathcal{A}$
+would be the better cut.}
 
 \subsubsection{Rotation-Color Diagrams}
 
-Figure~\ref{fig:rot} shows the resulting rotation
-periods, with Set $\mathcal{A}$ shown on top and Set $\mathcal{B}$ on
-the bottom.  While Set $\mathcal{A}$ is more complete than Set
-$\mathcal{B}$, this completeness comes at the expense of greater
-contamination.  For instance, stars above the slow sequence (perhaps
-field contaminants) mostly disappear in Set $\mathcal{B}$.  The
-``void'' or ``gap'' underneath the slow sequence is also more
-pronounced in Set $\mathcal{B}$.  To facilitate a comparison against
-the Pleiades and Praesepe, we used the rotation periods and dereddened
-colors from Table~5 of \citet{curtis_rup147_2020}, which drew on data
-from \citet{rebull_rotation_2016a} and \citet{douglas_k2_2019}
-respectively.  The first order conclusion is that the Pleiades and
-\cn\ appear gyrochronologically coeval for colors spanning
-$0.5<\bpmrpo<1.2$.  The implications of this comparison for the age of
-\cn\ are discussed in Section~\ref{disc:absage}.
+\begin{figure*}[t!]
+	\begin{center}
+		\leavevmode
+    \includegraphics[width=0.700\textwidth]{f5.pdf}
+	\end{center}
+	\vspace{-0.7cm}
+  \caption{ {\bf Binarity indicators for rotators in \cn.} \replaced{Sets
+  $\mathcal{A}$ ({\it top}) and $\mathcal{B}$ ({\it bottom}) are}{Set
+  $\mathcal{B}$ is shown} as in
+  Figure~\ref{fig:rot}.  Astrometric binaries ($\mathrm{RUWE}>1.2$;
+  11\% of stars) appear in red; photometric binaries ($>$0.3\,mag
+  above an empirical isochrone; 20\% of stars) are overplotted in
+  orange.  
+  Over $0.5<\bpmrpo<1.3$, Set $\mathcal{B}$ has \replaced{281}{523} stars.
+  Dividing these stars into ``slow'' and ``fast'' sequences by eye,
+  the fraction of stars showing signs of binarity in the slow and fast
+  subsamples are \replaced{30\% (63/210)}{27\% (106/289)} and
+  \replaced{56\% (40/71)}{51\% (68/134)}, respectively.
+  \label{fig:binarity}
+	}
+\end{figure*}
 
-Figure~\ref{fig:binarity} shows the same data, with the
-points colored by indicators of binarity.  To assess astrometric
-binarity, we used the renormalized unit weight error (RUWE) from Gaia
-EDR3.  For plotting purposes, we labeled anything with RUWE exceeding
-1.2 as an astrometric binary (11\% of the overall cluster sample; see
-{\it e.g.}, \citealt{belokurov_unresolved_2020}).  To assess
-photometric binarity, we fitted a spline to Figure~\ref{fig:hr},
-fixing the nodes by hand.  We then labeled any points brighter than
-0.3\,mag above the cluster sequence as photometric binaries.  This
-included 20\% of the overall cluster sample.  Many of the resulting
-candidate binaries, though not all of them, appear below the slow
-rotation sequence.  In Set $\mathcal{B}$, over the color range where
-the slow and fast sequence are present ($0.5<\bpmrpo<1.3$), there are
-281 stars, of which 103 (37\%) show signs of binarity.  Dividing these
-281 stars into ``fast'' and ``slow'' sequences by eye,  the fraction
-of stars showing signs of binarity in the slow and fast subsamples are
-30\% (63/210) and 56\% (40/71), respectively.  We speculate on
-possible explanations in Section~\ref{disc:rotn}.
+Figure~\ref{fig:rot} shows the resulting rotation periods, with Set
+$\mathcal{A}$ shown on top and Set $\mathcal{B}$ on the bottom.  While
+Set $\mathcal{A}$ is more complete than Set $\mathcal{B}$, this
+completeness comes at the expense of greater contamination.  \deleted{For
+instance, stars above the slow sequence (perhaps field contaminants)
+mostly disappear in Set $\mathcal{B}$.  The ``void'' or ``gap''
+underneath the slow sequence is also more pronounced in Set
+$\mathcal{B}$.}  To facilitate a comparison against the Pleiades and
+Praesepe, we used the rotation periods and dereddened colors from Table~5
+of \citet{curtis_rup147_2020}, which drew on data from
+\citet{rebull_rotation_2016a} and \citet{douglas_k2_2019} respectively.
+The first order conclusion is that the Pleiades and \cn\ appear
+gyrochronologically coeval for colors spanning $0.5<\bpmrpo<1.2$.  The
+implications of this comparison for the age of \cn\ are discussed in
+Section~\ref{disc:absage}.
+
+\explain{Figure~\ref{fig:binarity} has been modified to account for the
+revised definition of Set B.}
+
+Figure~\ref{fig:binarity} shows the same data, with the points colored by
+indicators of binarity.  To assess astrometric binarity, we used the
+renormalized unit weight error (RUWE) from Gaia EDR3.  For plotting
+purposes, we labeled anything with RUWE exceeding 1.2 as an astrometric
+binary (11\% of the overall cluster sample; see {\it e.g.},
+\citealt{belokurov_unresolved_2020}).  To assess photometric binarity, we
+fitted a spline to Figure~\ref{fig:hr}, fixing the nodes by hand.  We
+then labeled any points brighter than 0.3\,mag above the cluster sequence
+as photometric binaries.  This included 20\% of the overall cluster
+sample.  Many of the resulting candidate binaries, though not all of
+them, appear below the slow rotation sequence.  In Set $\mathcal{B}$,
+over the color range where the slow and fast sequence are present
+($0.5<\bpmrpo<1.3$), there are \replaced{281}{523} stars, of which
+\replaced{103 (37\%)}{174 (33\%)} show signs of binarity.  Dividing these
+\replaced{281}{523} stars into ``fast'' and ``slow'' sequences by eye,
+the fraction of stars showing signs of binarity in the slow and fast
+subsamples are \replaced{30\% (63/210)}{27\% (106/289)} and \replaced{56\%
+(40/71)}{51\% (68/134)}, respectively.  We speculate on possible
+explanations in Section~\ref{disc:rotn}.
 
 
 \subsubsection{Comparing Kinematics and Rotation}
 
-\begin{figure*}[t]
+\begin{figure*}[tp]
 	\begin{center}
 		\subfloat{
 			\includegraphics[width=0.48\textwidth]{f6a.pdf}
@@ -733,7 +771,7 @@ possible explanations in Section~\ref{disc:rotn}.
   to $\approx$5\kms\ from the core in tangential velocity.} {\it Top
   left}: Cartesian positions (as in Figure~\ref{fig:XYZ}) and
   2D-tangential velocities for halo members.  Stars with detected
-  rotation periods in Set~$\mathcal{A}$ are shown in blue;  halo
+  rotation periods in \replaced{Set~$\mathcal{A}$}{Set~$\mathcal{B}$} are shown in blue;  halo
   members for which rotation periods should have been detectable, but
   were not detected, are shown in orange.  Stars in the core are shown
   as black points.  In
@@ -744,7 +782,7 @@ possible explanations in Section~\ref{disc:rotn}.
   chosen to enforce the same number of stars in the denominator
   ($N=54$) per bin.  The {\it bottom panels} show the innermost and
   outermost 100 stars with detected rotation periods in position and
-  velocity space.
+  velocity space\added{ (from Set~$\mathcal{A})$}.
   \label{fig:physical_x_rotn}
 	}
 \end{figure*}
@@ -766,30 +804,37 @@ denote $\Delta v^{*}$, per \citetalias{meingast_2021}.  We convert
 these proper motion differences to physical units by multiplying by
 the measured parallax.  
 
+\explain{This paragraph contained a typo: the sentence containg ``at
+least 25\,pc from the cluster core'' was meant to refer to the entire
+cluster. }
+
 The results are shown in the top two rows of
 Figure~\ref{fig:physical_x_rotn}.  In these figures, to ensure a fair
-comparison, we only show stars with $0.5<\bpmrpo<1.2$ for which our
-TESS pipeline succeeded in making light curves.  In other words, the
-stars in the base sample are those for which we could have plausibly
-detected a rotation period.  This color range is preferred because the
-the slow sequence becomes less defined for spectral types later than
-$\approx$K4V.  The bins in the histograms (top-right) were chosen to
-ensure that the same number of stars were in each bin.  Rotation
-periods are detected for 66\% of stars at least 25\,pc from the
-cluster core.  The average detection rate inside of 25\,pc, 73\%, is
-slightly higher.  Within $\approx$3.5\,pc, the period detection rate of
-61\% is relatively low, due to crowding and saturation in the TESS
-images.
+comparison, we only show stars with $0.5<\bpmrpo<1.2$ for which our TESS
+pipeline succeeded in making light curves.  In other words, the stars in
+the base sample are those for which we could have plausibly detected a
+rotation period.  This color range is preferred because the the slow
+sequence becomes less defined for spectral types later than $\approx$K4V.
+The bins in the histograms (top-right) were chosen to ensure that the
+same number of stars were in each bin.  Rotation periods
+\added{consistent with a gyrochronological age of 150\,Myr} are detected
+for \replaced{66\%}{68\%} of stars \replaced{at least 25\,pc from the
+cluster core}{reported to be in the cluster}.  The average detection rate
+inside of 25\,pc, \replaced{73\%}{72\%}, is slightly higher\added{ than
+outside of 25\,pc, where the detection rate is 63\%}. Within
+$\approx$3.5\,pc, the period detection rate of \replaced{61\%}{59\%} is
+relatively low, due to crowding and saturation in the TESS images.
 
 The lower panels of Figure~\ref{fig:physical_x_rotn} give a second
 view of how field star contamination affects the outskirts of the
 cluster.  Of the outermost 100 stars in position space with detected
-rotation periods, $\approx$8 appear as outliers above the slow
-sequence, compared to just a few for the innermost 100 stars.  For the
-outermost 100 stars in velocity space, $\approx$13 appear as outliers.
-After accounting for the stars that were expected to show rotation
-periods and did not, this suggests field contaminant rates of
-$\approx$50\% for the outermost cluster members in our target list.
+rotation periods\added{ in Set $\mathcal{A}$}, $\approx$8 appear as
+outliers above the slow sequence, compared to just a few for the
+innermost 100 stars.  For the outermost 100 stars in velocity space,
+$\approx$13 appear as outliers.  After accounting for the stars that were
+expected to show rotation periods and did not, this suggests field
+contaminant rates of $\approx$50\% for the outermost cluster members in
+our \added{initial} target list.
 
 Even with this level of contamination, our rotation period
 measurements show that the halo extends to separations of
@@ -858,9 +903,9 @@ separations.
 
 The final approach we took for assessing the youth of the
 halo population of \cn\ was an analysis of the Li\,\textsc{I}
-6708\,\AA\ doublet.  This type of age measurement has been reviewed by
+6708\,\AA\ doublet.  \deleted{This type of age measurement has been reviewed by
 \citet{soderblom_ages_2010}, and its connection to stellar rotation
-has been discussed by \citet{bouvier_lithium-rotation_2020}.
+has been discussed by \citet{bouvier_lithium-rotation_2020}.}
 For \cn, two spectroscopic datasets seemed important:
 Gaia-ESO \citep{gilmore_gaiaeso_2012} and GALAH
 \citep{silva_galah_2015}.  At the time of analysis, Gaia-ESO DR4 and
@@ -1105,14 +1150,19 @@ structures resembling \cn.
   \caption{ {\bf Comparison against previous analyses of stellar
   rotation in \cn.} 
   The bottom panel is a concatenation of Set $\mathcal{B}$ with the
-  results of \citet{Irwin_NGC2516_2007} (I07) and
-  \citet{fritzewski_rotation_2020} (F20).
-  I07 and F20 analyzed stars in the core of \cn.
+  results of \replaced{\citet{Irwin_NGC2516_2007} (I07) and
+  \citet{fritzewski_rotation_2020} (F20)}{\citet{Irwin_NGC2516_2007}
+  (I07), \citet{fritzewski_rotation_2020} (F20), and
+  \citet{healy_stellar_2020} (HM20)}.
+  \replaced{I07 and F20}{I07, F20, and HM20} analyzed stars in the
+  core of \cn.
   \label{fig:litcomp}
 	}
 \end{figure*}
 
 
+\explain{Figure~\ref{fig:litcomp} has been updated to include rotation
+periods from \citet{healy_stellar_2020}.}
 
 From their rotation period analysis of \cn,
 \citet{fritzewski_rotation_2020} demonstrated that between 100 and
@@ -1130,8 +1180,11 @@ depth by \citet{Irwin_NGC2516_2007} and
 \citet{fritzewski_rotation_2020}.  A comparison of our results is
 shown in Figure~\ref{fig:litcomp}.  The bottom panel of this plot
 includes, in order of precedence: rotation periods from our analysis,
-from ``Class 1 and 2'' \citet{fritzewski_rotation_2020} rotators, and
-from the rotators in \citet{Irwin_NGC2516_2007}.  The main
+from \replaced{``Class 1 and 2'' \citet{fritzewski_rotation_2020} rotators, and
+from the rotators in \citet{Irwin_NGC2516_2007}}{``Class 1 and
+2'' \citet{fritzewski_rotation_2020} sources, from
+Table 1 of \citet{healy_stellar_2020}, and
+from \citet{Irwin_NGC2516_2007}.}.  The main
 contribution of our study beyond these previous analyses is our
 sensitivity across both the core and halo of \cn, and a corresponding
 expansion in the number of stars that can be analyzed.  In the
@@ -1177,19 +1230,19 @@ period binaries, or alternatively pre-MS magnetic locking between the
 disk and star \citep[{\it
 e.g.},][]{koenigl_disk_1991,long_locking_2005}.
 
-The lower panels of Figure~\ref{fig:rot} show our attempt at
-identifying unresolved binaries in the \cn\ rotation sample.  Binaries
-resolved by Gaia were already excluded in our initial definitions of
-the samples.  In \cn\, we see that the fraction of stars showing signs
-of binarity in the slow and fast rotation subsamples are 30\% (63/210)
-and 56\% (40/71); the fast rotators show a preference for binarity.
-This correlation is in line with the earlier findings noted above.
-While many rapid rotators in \cn\ (34\%) have no evidence for being
-binaries, the cuts we used to select binaries (${\rm
-RUWE}>1.2$; photometric excess $>$0.3\,mag) leave open a
-significant fraction of parameter space.  A 0.3\,mag flux excess, for
-instance, corresponds to mass ratios $M_2/M_1 \gtrsim 0.700$, assuming
-the luminosity $L$ scales as $M^{3.5}$. 
+The lower panels of Figure~\ref{fig:rot} show our attempt at identifying
+unresolved binaries in the \cn\ rotation sample.  Binaries resolved by
+Gaia were already excluded in our initial definitions of the samples.  In
+\cn\, we see that the fraction of stars showing signs of binarity in the
+slow and fast rotation subsamples are \replaced{30\% (63/210) and 56\%
+(40/71)}{26\% (106/289) and 51\% (68/134)}; the fast rotators show a
+preference for binarity.  This correlation is in line with the earlier
+findings noted above.  While many rapid rotators in \cn\
+(\replaced{34\%}{66\%}) have no evidence for being binaries, the cuts we
+used to select binaries (${\rm RUWE}>1.2$; photometric excess
+$>$0.3\,mag) leave open a significant fraction of parameter space.  A
+0.3\,mag flux excess, for instance, corresponds to mass ratios $M_2/M_1
+\gtrsim 0.70$, assuming the luminosity $L$ scales as $M^{3.5}$. 
 
 Comparing the explanations of disk-locking against tidal
 synchronization, the population statistics seem to rule out 

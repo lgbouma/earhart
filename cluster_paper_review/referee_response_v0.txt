@@ -1,0 +1,276 @@
+Dear Dr. Sarajedini,
+
+We thank you for organizing the review of our paper, and also
+thank the referee for constructive criticism.  We have considered
+the referee's remarks carefully and revised our manuscript
+accordingly.
+
+Below, we have reproduced the relevant portions of the referee's
+report, alongside our responses. A list of changes is appended to
+the manuscript using the trackchanges AASTeX macros. Figures
+supporting X AND Y WORDS TODO FIX THESE have also been uploaded for inspection.
+
+Sincerely,
+
+Luke Bouma
+
+
+******************************************
+REFEREE COMMENT
+----------
+At this stage the referee is more inclined to believe that the authors have
+identified a set of young stars in that region of the sky than actual halo
+member stars of NGC 2516.
+
+RESPONSE
+----------
+> We agree that the stars with rotation periods similar to those of the
+> Pleiades, and showing Li EWs similar to those of the Pleiades, should indeed
+> be considered to have comparable ages to stars in Pleiades.
+>
+> Figures 4 and 7 show that the "halo" stars from KC19 and M21 overlap both
+> with the Pleiades, and with stars in the core of the cluster (those from
+> CG18).  They share the same gyrochronological and Li tracks, and therefore
+> share the same age to within measurement precision.  The stars in this "halo"
+> population are also mostly within 2 km/s of tangential velocity separation
+> from the main core population (see panel in top left of Figure 6).
+> Spatially, they lead and lag the core of the population, in a similar manner
+> to that seen for eight other open clusters by Meingast et al 2021 (Figure 2
+> of our manuscript; Figure 8 of Meingast et al 2021, Astronomy & Astrophysics,
+> Volume 645, id.A84).
+>
+> Despite these lines of evidence for the halo stars being associated with NGC
+> 2516 (same ages; same tangential velocities; spatial correlation with the
+> cluster center), for the sake of caution we analyzed rotation periods of
+> randomly draw field stars in this region of sky.  This exercise was described
+> in Appendix C, and the results are shown in Figure 13 of the manuscript.  The
+> randomly selected field stars (orange points) does not show any evidence for
+> an overdensity of Pleiades-age stars.  The candidate "halo" stars selected
+> kinematically by CG18, KC19, and M21 do (black points).  As a clarification
+> on Figure 13, we have attached "f13_corehalosplit.png" as a supplement in the
+> response, which shows the same data, but splitting NGC 2516 into halo and
+> core stars.  Stars in the halo (blue) have a very different rotation-color
+> distribution than randomly selected field stars (orange).
+>
+> In short, most of the halo stars i) have similar tangential velocites as core
+> stars, ii) are coeval with other halo stars, iii) have the same age as the
+> core stars, iv) are spatially correlated with the location of the core stars,
+> and iv) have a different rotation-color distribution from a randomly selected
+> sample of fields stars (with a large overdensity of rotators falling on the
+> same sequence as the core of NGC 2516).
+>
+> The suggestion that we "have identified a set of young stars in that region
+> of the sky [rather] than actual halo member stars of NGC 2516." is equivalent
+> to asserting that the clustering techniques used by KC19 and M21 yielded a
+> set of stars that is identical to the cluster core according to all age
+> measurements, and is spatially and kinematically correlated with the cluster
+> core, but are otherwise unrelated.  While the spatial and kinematic
+> correlations are tautological -- this is what clustering methods do if they
+> are working correctly -- the age measurements have no a priori reason to be
+> identical between the core and halo unless the two are in fact related.  
+
+
+> TODO: maybe empahsize the false positive fraction of 50% here.
+
+> Add an uncertainty on the false positive rate? Could it be higher than 50%?
+
+
+******************************************
+REFEREE COMMENT
+----------
+The authors begin by concatenating a very large collection of stars identified by
+CG18 (which they term the core members), and those of KC19 and M21, the last two
+having very relaxed criteria for association with NGC 2516.
+At this stage, as one can see from the distributions in Fig.1, the sample is
+completely bloated with field stars which now clearly have to be excised.
+The question is how?
+
+The authors justifiably look first to the HR diagram and understandably find
+that that is not very helpful in rejecting non-members because almost all stars in
+the extended sample lie close to the ridge line of the canonical cluster members.
+(Nevertheless, this is already a basis for rejecting stars below the main sequence
+and those significantly above it, including giants. The authors should consider
+this.) Incidentally, the Gaia photometry for the brightest stars is likely not good
+enough for fitting any isochrones of this age, so in this referee's estimation, the
+cluster turnoff is perhaps still the best one can do, keeping in mind the persistence
+of photometric problems for bright stars.
+
+RESPONSE
+----------
+> While the HR diagram is not very helpful in rejecting non-members, it does
+> indicate that the distribution of field stars in this region of
+> ra/dec/parallax is different from stars in both the core and halo of the
+> cluster.  In particular, the lack of a sub-giant branch or red giant branch
+> (e.g., at G_BP-G_RP =1.2, M_G =3.0) suggests that the core and halo have a
+> different age distribution than the field stars, and supports the suggestion
+> that for the most part, the halo population has a single age.
+>
+> For the ~five halo stars lying significantly above the main sequence, we
+> agree that these must be field interlopers.  This is noted at the end of
+> Section 3.1, Paragraph 2.  The ~four halo stars, and ~four core stars lying
+> well below the main sequence could be there due to poorly determined
+> parallaxes, or due to blending in the Gaia BP or RP spectra with unresolved
+> white dwarf companions.  We do not consider their presence below the MS to
+> support their exclusion from consideration as cluster members.
+
+
+******************************************
+REFEREE COMMENT
+----------
+The authors then go on to consider the rotation periods and lithium abundances
+of the extended sample, to compare them with previously-known distribution of
+similarly young stars.
+
+The conceptual problem here is that stars that deviate from the known/expected
+rotational distribution for NGC 2516 are again not excised from the sample.  As
+prior studies (e.g. Fritzewski+2020) have shown, there are no rotators above
+the slow sequence in NGC 2516. So such stars most certainly have to be excised
+from further consideration. (Some of these are even older than Praesepe, as the
+authors themselves show in Fig.4.) The authors should consider whether other
+regions of the color-period diagram merit similar treatment.
+
+RESPONSE
+----------
+
+> We agree that stars showing rotation periods above the slow sequence are most
+> likely not "genuine", in the sense that either i) they are not cluster
+> members, or ii) they are cluster members, but with unresolved binary
+> companions contaminating the rotation period measurement.  The latter
+> category has precedent in the literature (e.g., Stauffer+2016, AJ 152 115,
+> Section 5.1).
+>
+> Our point in proposing "Set A" and "Set B" is that the exact means by which
+> the samples are cleaned is not incredibly important to the central result that
+> the halo is the same age as the core, and therefore most likely related to
+> it.
+>
+> Set A comprises 987 stars.  947 of these have (Bp-Rp)_0>0.4, and so make some
+> degree of sense to assess gyrochronologically.  873 are below what by eye can
+> be identified as the "slow sequence boundary".  While there is subjectivity
+> in where this line is drawn, the big-picture result is that ~90% of the "Set
+> A" stars are be "genuine" in the sense of being "in or below the slow
+> sequence".  
+>
+> We attach two additional figures, "response_fig2.png" and
+> "response_fig3.png" illustrating the point.  Cleaning out these stars to make
+> a "perfectly contaminant free" list of "genuine cluster members" is not the
+> aim of this work.
+>
+> (We note also that simply because a star is in or below the slow sequence
+> does not guarantee that it is genuine).
+
+
+
+******************************************
+REFEREE COMMENT
+----------
+An additional concern is that the authors construct two samples A (where rotation
+periods from multiple types of measurements don't agree) and B (where rotation
+periods agree), but then go further with sample A (for instance Fig.6).
+Had the authors gone forward with the tightest-possible sample, and had then
+shown that this tight rotation-lithium sample still has a far greater extent on
+sky and in the canonical parallax, proper motion, RV etc. spaces, then readers would
+be far more willing to believe the authors' claims about a more extensive cluster.
+
+
+RESPONSE
+----------
+> "response_fig2.png" and "response_fig3.png" illustrate that, for the
+> rotation-color selected subsample of Set A suggested by the referee in the
+> previous comment, the halo is the size claimed.
+>
+> The suggestion to use "Set B" for this is the suggestion to apply a selection
+> function that throws away ~85% of stars.  (We suspect this is mostly because
+> the SPDM periods tend to be garbage).  The halo is already sparse, so
+> throwing away ~9 in 10 of its members will make it sparser.
+>
+> Regardless, doing this with Set B gives response_fig4.png.  The "slow
+> rotating" (and below) halo stars still span a large range of space, though
+> more like ~350 pc tip-to-tip rather than ~500 pc.
+>
+> Anyway, in Set A (N=937), 216 stars are at least 50 parsecs from the cluster
+> center, and 104 are at least 100 parsecs away (23% and 11%).  In Set B
+> (N=479), 94 stars are at least 50 parsecs from the cluster center, and 43 are
+> at least 100 parsecs away (20% and 9%).
+
+
+******************************************
+REFEREE COMMENT
+----------
+The referee notes that the prior work of Healy & McCullough 2020, who also used
+TESS data to measure a sizeable group of stars in NGC 2516 has been completely
+ignored. The authors should include a discussion of the H+M2020 work in relation
+to the results in this paper.
+
+RESPONSE
+----------
+> Healy & McCullough 2020 (HM20) was referenced in the second paragraph of
+> Section 4.1, in relation to their discussion of the contraction rate of the
+> core NGC 2516, and the corresponding rate at which stars are escaping the
+> core.  The form in which Healy & McCullough quantified the contraction rate
+> does not readily translate (to our knowledge) to an estimate of the rate at
+> which stars escape from the cluster's tidal radius, or an analogous surface.
+> So, the reference was rather brief.
+>
+> The main result of our paper -- that the halo is the same age as the core and
+> therefore most easily explained as being associated with NGC2516 -- does not
+> clearly translate to the main result of HM20 -- that the stellar spins in the
+> core of NGC 2516 are either isotropically oriented, or perhaps mildly
+> aligned.  Therefore we did not highlight HM20 prominently in our discussion.
+>
+> Nonetheless, to address the general idea behind this suggestion, we have i)
+> added a reference to HM20 in the introduction, when we discuss TESS and
+> NGC2516, and ii) included the HM20 rotation periods in Figure 10.  The
+> overall point of the figure has not changed.
+
+
+******************************************
+REFEREE COMMENT
+----------
+While on the subject, it should also be mentioned that the Introduction of the
+paper is only from the galactic structure perspective, and is lacking in
+introducing readers to the rotation-lithium perspective. Given that the latter
+constitute the bulk of the paper, doing that would clearly help the argument
+being laid out.
+
+RESPONSE
+----------
+> We have added a paragraph in the introduction giving some context to this
+> effect -- thank you for the suggestion.
+
+
+******************************************
+REFEREE COMMENT
+----------
+This referee came away with the general impression that the authors have likely
+identified a number of young stars in a vast halo around NGC 2516, but did not
+find the association with NGC 2516 itself to be particularly convincing.
+Perhaps they can think about how to make their arguments tighter, and the
+inclusion criterea stricter in the next iteration, to be able to better convince
+the community of the association with NGC 2516.
+
+RESPONSE
+----------
+> XXX of YYY stars for which we expected to detect rotation showed a detected
+> rotation signature...
+> In the comparison sample...
+
+
+
+******************************************
+DATA EDITOR'S COMMENT
+----------
+The .csv file attached with Table 1 has a large number of significant digits in
+most columns. In the revised manuscript, the authors should include a new
+version that has only the required precision. This document outlines the
+typical uncertainties for Gaia data:
+
+https://gea.esac.esa.int/archive/documentation/GDR2/
+
+Fewer significant digits will result in a smaller file that will be easier to
+read, manipulate, and transfer.
+
+RESPONSE
+----------
+> The CSV file has been updated with an appropriate number of significant
+> digits in each column; thank you for the suggestion.

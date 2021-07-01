@@ -1146,7 +1146,8 @@ def plot_skypositions_x_rotn(outdir):
 
 def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
                        cleaning=None, emph_binaries=False,
-                       refcluster_only=False, talk_aspect=0, xval_absmag=0):
+                       refcluster_only=False, talk_aspect=0, xval_absmag=0,
+                       showPleiadesQuad=0):
     """
     Plot rotation periods that satisfy the automated selection criteria
     (specified in helpers.get_autorotation_dataframe)
@@ -1172,7 +1173,7 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
     lws = [0., 0.1, 0.1]
     mews= [0., 0.5, 0.5]
     _s = 3 if runid != 'VelaOB2' else 1.2
-    ss = [15, 12, 10]
+    ss = [15, 12, 8]
     labels = ['Pleaides', 'Praesepe', f'{runid}']
 
     # plot vals
@@ -1259,7 +1260,7 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
                     xval,
                     df[ykey],
                     c=_col, alpha=1, zorder=z, s=s, edgecolors='k',
-                    marker=m, linewidths=_lw, label=f"{l.replace('_','')}"
+                    marker=m, linewidths=_lw, label=f"{l.replace('_',' ')}"
                 )
 
         if emph_binaries and f'{runid}' in _cls:
@@ -1300,6 +1301,17 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
                 c='red', alpha=1, zorder=9, s=s, edgecolors='k',
                 marker='o', linewidths=_lw, label="Astrometric binary"
             )
+
+    if showPleiadesQuad:
+        # 0.6 to 1.3 is actual ok range. from Curtis+2020
+        xmod = np.arange(0.3, 2.4+0.01, 0.01)
+        from earhart.helpers import PleaidesQuadProtModel
+        Protmod = PleaidesQuadProtModel(xmod)
+
+        ax.plot(
+            xmod, Protmod, zorder=9002, lw=0.5, c='k', ls='--'
+        )
+
 
     ax.set_ylabel('Rotation Period [days]', fontsize='medium')
 
@@ -1366,13 +1378,16 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
         outstr += '_talkaspect'
     if xval_absmag:
         outstr += '_xvalAbsG'
+    if showPleiadesQuad:
+        outstr += '_showPleiadesQuad'
     outstr += f'_{yscale}'
     outstr += f'_{cleaning}'
     outpath = os.path.join(outdir, f'{runid}_rotation{outstr}.png')
     savefig(f, outpath)
 
 
-def plot_compstar_rotation(outdir, E_BpmRp=AVG_EBpmRp, yscale=None):
+def plot_compstar_rotation(outdir, E_BpmRp=AVG_EBpmRp, yscale=None,
+                           corehalosplit=0):
     """
     Plot rotation periods that satisfy the automated selection criteria
     (specified in helpers.get_autorotation_dataframe)
@@ -1449,22 +1464,32 @@ def plot_compstar_rotation(outdir, E_BpmRp=AVG_EBpmRp, yscale=None):
             window0 = [BADPERIOD - BADPERIOD*eps, BADPERIOD + BADPERIOD*eps]
             BADPERIOD = 0.85088 # eccentric, so not exactly x2
             window1 = [0.848, 0.853]
-            sel = ~(
+            sel0 = ~(
                 ( (df.period > window0[0]) & (df.period < window0[1]) )
                 |
                 ( (df.period > window1[0]) & (df.period < window1[1]) )
             )
             print(f'Before adhoc window puring, N={len(df)} field rot')
-            print(f'After adhoc window puring, N={len(df[sel])} field rot')
-            xval = xval[sel]
-            yval = yval[sel]
+            print(f'After adhoc window puring, N={len(df[sel0])} field rot')
+            xval = xval[sel0]
+            yval = yval[sel0]
 
-        ax.scatter(
-            xval,
-            yval,
-            c=_col, alpha=0.9, zorder=z, s=8, edgecolors='k',
-            marker=m, linewidths=_lw, label=l
-        )
+        if not corehalosplit or corehalosplit and _cls != 'NGC_2516':
+            ax.scatter(
+                xval, yval, c=_col, alpha=0.9, zorder=z, s=8, edgecolors='k',
+                marker=m, linewidths=_lw, label=l
+            )
+        elif corehalosplit and _cls == 'NGC_2516':
+            sel = (df.subcluster == 'core')
+            ax.scatter(
+                xval[sel], yval[sel], c='k', alpha=0.9, zorder=z, s=8, edgecolors='k',
+                marker=m, linewidths=_lw, label='Core'
+            )
+            sel = (df.subcluster == 'halo')
+            ax.scatter(
+                xval[sel], yval[sel], c='lightskyblue', alpha=0.9, zorder=z, s=8,
+                edgecolors='k', marker=m, linewidths=_lw, label='Halo'
+            )
 
     ax.set_ylabel('Rotation Period [days]', fontsize='medium')
 
@@ -1510,9 +1535,10 @@ def plot_compstar_rotation(outdir, E_BpmRp=AVG_EBpmRp, yscale=None):
                     framealpha=1.0)
 
 
-
     outstr = '_vs_BpmRp'
     outstr += f'_{yscale}'
+    if corehalosplit:
+        outstr += '_corehalosplit'
     outpath = os.path.join(outdir, f'compstar_rotation_{runid}{outstr}.png')
     savefig(f, outpath)
 
@@ -3111,7 +3137,7 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
 
     nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
     rot_df, lc_df = get_autorotation_dataframe(
-        runid='NGC_2516', returnbase=True, cleaning='defaultcleaning'
+        runid='NGC_2516', returnbase=True, cleaning='defaultcleaning_cutProtColor'
     )
     med_df, _ = _get_median_ngc2516_core_params(core_df, basedata)
 
@@ -3306,10 +3332,14 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
         print(f'Bin width: {np.diff(bins)}')
         print(f'Rotators: {h_rot}')
         print(f'Comparison: {h_comp}')
-        # print(f'Rotators < {delta_pc}pc : {f[0]:.5f} +/- {sigma_f[0]:.5f}')
-        # print(f'Rotators > {delta_pc}pc : {_f:.5f} +/- {_sigma_f:.5f}')
-        # print(f'... where numerator and denom are {n}/{m}')
-
+        print(f'Fraction of NGC2516 stars (for which Prot was expected) w/ detected rotation: {len(rot_df)/len(comp_df)*100:.1f}%')
+        CUTOFF = 25
+        sel0 = (rot_df.delta_r_pc < CUTOFF)
+        sel1 = (comp_df.delta_r_pc < CUTOFF)
+        print(f'At <25pc, fraction of NGC2516 stars (for which Prot was expected) w/ detected rotation: {len(rot_df[sel0])/len(comp_df[sel1])*100:.1f}%')
+        sel0 = (rot_df.delta_r_pc > CUTOFF)
+        sel1 = (comp_df.delta_r_pc > CUTOFF)
+        print(f'At >25pc, fraction of NGC2516 stars (for which Prot was expected) w/ detected rotation: {len(rot_df[sel0])/len(comp_df[sel1])*100:.1f}%')
         print(42*'-')
 
         #
@@ -3833,13 +3863,13 @@ def plot_slowfast_photbinarity_comparison(outdir):
 
     # misnomer; these are actually the slow ones.
     inpath= os.path.join(RESULTSDIR, 'glue_fast_slow_rotator_viz_frac',
-                         'subsetB_fastrotators.csv')
+                         'fast_subset.csv')
     fdf = pd.read_csv(inpath)
 
-    assert len(df) == 281
+    assert len(df) == 523
 
     binary = (
-        (df.is_phot_binary) | (df.is_astrometric_binary)
+        (df.is_phot_bin.astype(bool)) | (df.is_astrm_bin.astype(bool))
     )
     print(f'{len(df)} stars in subset B with 0.5<BpmRp0<1.3')
     print(f'{len(df[binary])} of them with (phot binary)|(astrom binary)')
@@ -4094,6 +4124,11 @@ def plot_lightcurves_rotators(outdir, cleaning='periodogram_match', color=0,
 
 def plot_litcomp_ngc2516(outdir):
 
+    hm20path = os.path.join(
+        DATADIR, 'rotation', 'Healy_McCullough_2021_apjabbc03t1_mrt.txt'
+    )
+    df_hm20 = Table.read(hm20path, format='cds').to_pandas()
+
     f20path = os.path.join(DATADIR, 'rotation',
                            'Fritzewski_2020_table4_555_Prot_GKM.fits')
     hl = fits.open(f20path)
@@ -4107,6 +4142,15 @@ def plot_litcomp_ngc2516(outdir):
     df_f20 = df_lit[~pd.isnull(df_lit.Prot) &
                     ( (df_lit.Class == 1) | (df_lit.Class == 2))]
     df_i07 = df_lit[~pd.isnull(df_lit.ProtI07)]
+
+    print('f{len(df_hm20)} hm20 members total...')
+    wasknown = (
+        (df_hm20.Gaia.isin(df_f20.GaiaDR2)) |
+        (df_hm20.Gaia.isin(df_i07.GaiaDR2))
+    )
+    print('f{len(df_hm20[~wasknown])} hm20 members without F20 or I07 hits...')
+    df_hm20_new = df_hm20[~wasknown]
+    df_hm20_new['(Bp-Rp)_0'] = df_hm20_new['BP-RP'] - AVG_EBpmRp
 
     plt.close('all')
     set_style()
@@ -4133,14 +4177,14 @@ def plot_litcomp_ngc2516(outdir):
     ax = axd["A"]
     N_colors = 3
     #colors = mpl.cm.viridis(np.linspace(0,1,N_colors))
-    colors = ['C0','C1','C2']
+    colors = ['C0','C1','C2','C3']
     deltatxt = 0.15
 
     BpmRp0_bins = np.arange(0, 3.75, 0.25)
 
-    dfs = [df_b21, df_f20, df_i07]
-    labels = ['Set$\,$$\mathcal{A}$','F20','I07']
-    xlabels = ['(Bp-Rp)_0','BP-RP0','BP-RP0']
+    dfs = [df_b21, df_f20, df_i07, df_hm20_new]
+    labels = ['Set$\,$$\mathcal{A}$','F20','I07','HM20']
+    xlabels = ['(Bp-Rp)_0','BP-RP0','BP-RP0','(Bp-Rp)_0']
 
     for i, df in enumerate(dfs):
 
@@ -4153,6 +4197,7 @@ def plot_litcomp_ngc2516(outdir):
                     transform=ax.transAxes, color=colors[i], bbox=bbox,
                     fontsize='small')
 
+    ax.set_xlim([-0.2,4.2])
     ax.set_xlabel('$G_{\mathrm{BP}}-G_{\mathrm{RP}}$ [mag]')
     ax.set_ylabel('Count')
     format_ax(ax)
@@ -4161,13 +4206,14 @@ def plot_litcomp_ngc2516(outdir):
     # B: RA vs DEC.
     #
     ax = axd["B"]
-    xlabels = ['ra', 'RA_ICRS', 'RA_ICRS']
-    ylabels = ['dec', 'DE_ICRS', 'DE_ICRS']
+    xlabels = ['ra', 'RA_ICRS', 'RA_ICRS', 'RAdeg']
+    ylabels = ['dec', 'DE_ICRS', 'DE_ICRS', 'DEdeg']
+    ss = [1,1,1,1]
 
     for i, df in enumerate(dfs):
 
             ax.scatter(df[xlabels[i]], df[ylabels[i]], color=colors[i],
-                       s=0.2, alpha=0.9)
+                       s=ss[i], alpha=0.9, linewidths=0)
             l = labels[i]
             bbox = dict(facecolor='white', alpha=1, pad=0, edgecolor='white')
             ax.text(0.96, 0.95-i*deltatxt, l, va='top', ha='right',
@@ -4175,7 +4221,7 @@ def plot_litcomp_ngc2516(outdir):
                     fontsize='small')
 
     xlim = ax.get_xlim()
-    ax.set_xlim([xlim[0], 131])
+    ax.set_xlim([xlim[0], 140])
     ax.set_xlabel(r'$\alpha$ [deg]')
     ax.set_ylabel('$\delta$ [deg]')
     format_ax(ax)
@@ -4189,9 +4235,15 @@ def plot_litcomp_ngc2516(outdir):
 
     mdf0 = df_b21.merge(df_f20, how='inner', left_on='source_id',
                         right_on='GaiaDR2')
-    ax.scatter(mdf0["period"], mdf0["Prot"], c='C1', s=1, label='F20', zorder=1)
-    ax.scatter(mdf0["period"], mdf0["ProtI07"], c='C2', s=1, label='I07',
-               zorder=2)
+    mdf1 = df_b21.merge(df_hm20_new, how='inner', left_on='source_id',
+                        right_on='Gaia')
+
+    ax.scatter(mdf0["period"], mdf0["Prot"], c='C1', s=2, label='F20',
+               zorder=1, linewidths=0)
+    ax.scatter(mdf0["period"], mdf0["ProtI07"], c='C2', s=2, label='I07',
+               zorder=2, linewidths=0)
+    ax.scatter(mdf1["period"], mdf1["Per"], c='C3', s=2, label='HM20',
+               zorder=3, linewidths=0)
 
     ax.plot(np.arange(0.1,30,0.1), np.arange(0.1,30,0.1), zorder=-1, lw=1, c='gray')
     ax.plot(np.arange(0.1,30,0.1), 2*np.arange(0.1,30,0.1), zorder=-1, lw=1,
@@ -4215,9 +4267,9 @@ def plot_litcomp_ngc2516(outdir):
 
     ax = axd["D"]
 
-    dfs = [df_b21, df_f20, df_i07]
-    labels = ['Set$\,$$\mathcal{B}$','F20','I07']
-    xlabels = ['(Bp-Rp)_0','BP-RP0','BP-RP0']
+    dfs = [df_b21, df_f20, df_i07, df_hm20_new]
+    labels = ['Set$\,$$\mathcal{B}$','F20','I07','HM20']
+    xlabels = ['(Bp-Rp)_0','BP-RP0','BP-RP0','(Bp-Rp)_0']
 
     for i, df in enumerate(dfs):
 
@@ -4232,19 +4284,21 @@ def plot_litcomp_ngc2516(outdir):
 
     ax.set_xlabel('$G_{\mathrm{BP}}-G_{\mathrm{RP}}$ [mag]')
     ax.set_ylabel('Count')
+    ax.set_xlim([-0.2,4.2])
     format_ax(ax)
 
     #
     # B: RA vs DEC.
     #
     ax = axd["E"]
-    xlabels = ['ra', 'RA_ICRS', 'RA_ICRS']
-    ylabels = ['dec', 'DE_ICRS', 'DE_ICRS']
+    xlabels = ['ra', 'RA_ICRS', 'RA_ICRS', 'RAdeg']
+    ylabels = ['dec', 'DE_ICRS', 'DE_ICRS', 'DEdeg']
+    ss = [1,1,1,1]
 
     for i, df in enumerate(dfs):
 
             ax.scatter(df[xlabels[i]], df[ylabels[i]], color=colors[i],
-                       s=0.2, alpha=0.9)
+                       s=ss[i], alpha=0.9, linewidths=0)
             l = labels[i]
             bbox = dict(facecolor='white', alpha=1, pad=0, edgecolor='white')
             ax.text(0.96, 0.95-i*deltatxt, l, va='top', ha='right',
@@ -4252,7 +4306,7 @@ def plot_litcomp_ngc2516(outdir):
                     fontsize='small')
 
     xlim = ax.get_xlim()
-    ax.set_xlim([xlim[0], 131])
+    ax.set_xlim([xlim[0], 140])
     ax.set_xlabel(r'$\alpha$ [deg]')
     ax.set_ylabel('$\delta$ [deg]')
     format_ax(ax)
@@ -4266,9 +4320,15 @@ def plot_litcomp_ngc2516(outdir):
 
     mdf0 = df_b21.merge(df_f20, how='inner', left_on='source_id',
                         right_on='GaiaDR2')
-    ax.scatter(mdf0["period"], mdf0["Prot"], c='C1', s=1, label='F20', zorder=1)
-    ax.scatter(mdf0["period"], mdf0["ProtI07"], c='C2', s=1, label='I07',
-               zorder=2)
+    mdf1 = df_b21.merge(df_hm20_new, how='inner', left_on='source_id',
+                        right_on='Gaia')
+
+    ax.scatter(mdf0["period"], mdf0["Prot"], c='C1', s=2, label='F20',
+               zorder=1, linewidths=0)
+    ax.scatter(mdf0["period"], mdf0["ProtI07"], c='C2', s=2, label='I07',
+               zorder=2, linewidths=0)
+    ax.scatter(mdf1["period"], mdf1["Per"], c='C3', s=2, label='HM20',
+               zorder=3, linewidths=0)
 
     ax.plot(np.arange(0.1,30,0.1), np.arange(0.1,30,0.1), zorder=-1, lw=1, c='gray')
     ax.plot(np.arange(0.1,30,0.1), 2*np.arange(0.1,30,0.1), zorder=-1, lw=1,
@@ -4310,13 +4370,19 @@ def plot_litcomp_ngc2516(outdir):
 
     df_lit = df_lit.rename(columns={'BP-RP0':'(Bp-Rp)_0', 'GaiaDR2':'source_id'})
 
+    df_hm20_new = df_hm20_new.rename(
+        columns={'Gaia':'source_id', 'Per':'period'}
+    )
+    df_hm20_new['provenance'] = 'HM20'
+
     selcols = ['source_id','period','provenance','(Bp-Rp)_0']
 
     df_b21['provenance'] = 'Set$\,$$\mathcal{B}$'
 
     mdf = pd.concat((
         df_b21[selcols],
-        df_lit[selcols]
+        df_lit[selcols],
+        df_hm20_new[selcols]
     )).reset_index()
 
     # I07 and F20 on top

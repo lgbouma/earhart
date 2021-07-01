@@ -24,6 +24,25 @@ for runid, _ in RUNID_EXTINCTION_DICT.items():
     if not os.path.exists(PLOTDIR):
         os.mkdir(PLOTDIR)
 
+    c = 'defaultcleaning_cutProtColor'
+    ep.plot_auto_rotation(
+        PLOTDIR, runid, E_BpmRp, core_halo=1, yscale='linear', cleaning=c,
+        emph_binaries=0, talk_aspect=1, showPleiadesQuad=0
+    )
+    ep.plot_auto_rotation(
+        PLOTDIR, runid, E_BpmRp, core_halo=0, yscale='linear', cleaning=c,
+        emph_binaries=1, talk_aspect=1, showPleiadesQuad=0
+    )
+
+    for c in ['defaultcleaning', 'harderlsp', 'periodogram_match']:
+        for e in [0,1]:
+            ep.plot_auto_rotation(
+                PLOTDIR, runid, E_BpmRp, core_halo=1, yscale='linear', cleaning=c,
+                emph_binaries=e, talk_aspect=1, showPleiadesQuad=1
+            )
+
+    assert 0
+
     # pleiades and praesepe only
     ep.plot_auto_rotation(
         PLOTDIR, runid, E_BpmRp, core_halo=0,

@@ -6,10 +6,9 @@ cp ../results/vtangential_projection/XYZ_with_orbit.pdf f2.pdf
 cp ../results/hr/hr_Bp_m_Rp_fullfaint_edr3.pdf f3a.pdf
 cp ../results/hr/hr_parsec_Bp_m_Rp_parsec_fullfaint_edr3.pdf f3b.pdf
 
-cp ../results/rotation/NGC_2516/NGC_2516_rotation_vs_BpmRp_corehalosplit_talkaspect_linear_defaultcleaning.pdf f4a.pdf
-cp ../results/rotation/NGC_2516/NGC_2516_rotation_vs_BpmRp_corehalosplit_talkaspect_linear_periodogram_match.pdf f4b.pdf
-cp ../results/rotation/NGC_2516/NGC_2516_rotation_vs_BpmRp_emphbinaries_talkaspect_linear_defaultcleaning.pdf f5a.pdf
-cp ../results/rotation/NGC_2516/NGC_2516_rotation_vs_BpmRp_emphbinaries_talkaspect_linear_periodogram_match.pdf f5b.pdf
+cp ../results/rotation/NGC_2516/NGC_2516_rotation_vs_BpmRp_corehalosplit_talkaspect_showPleiadesQuad_linear_defaultcleaning.pdf f4a.pdf
+cp ../results/rotation/NGC_2516/NGC_2516_rotation_vs_BpmRp_corehalosplit_talkaspect_linear_defaultcleaning_cutProtColor.pdf f4b.pdf
+cp ../results/rotation/NGC_2516/NGC_2516_rotation_vs_BpmRp_emphbinaries_talkaspect_linear_defaultcleaning_cutProtColor.pdf f5.pdf
 
 cp ../results/physical_X_rotation/physical_X_rotation_fullfaint.pdf f6a.pdf
 cp ../results/physical_X_rotation/histogram_physical_X_rotation_fullfaint.pdf f6b.pdf
