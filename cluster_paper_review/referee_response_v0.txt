@@ -174,11 +174,10 @@ RESPONSE
 > separate reason as well: manual inspection revealed that many of
 > our Stellingwerf Phase Dispersion Minimization (SPDM) rotation
 > periods were less congruous with the data than the Lomb Scargle
-> periods (We wanted to know: what were half of them different? Our
-> suspicion is that the SPDM method is more suspectible to the gaps
-> int he TESS data).  We therefore have also opted to remove the
-> SPDM periods from Table 1, since their primary purpose was in the
-> definition of Set B.
+> periods (Our suspicion is that the SPDM method is more suspectible
+> to the gaps in the TESS data).  We therefore have also opted to
+> remove the SPDM periods from Table 1, since their primary purpose
+> was in the definition of Set B.
 
 
 ******************************************
@@ -198,13 +197,15 @@ about a more extensive cluster.
 RESPONSE
 ----------
 > The top two rows of Figure 6 now use the redefined Set B --
-> rotational outliers have been excised.
+> rotational outliers have been excised.  For the reasons discussed
+> above, the conclusions do not change.
 > 
 > An alternative visualization of Fig 6 in the canonical "parallax,
 > proper motion, RV etc." space has been added in the new Appendix
-> E.  We preferred the visualizations we adopted since this
+> E.  We preferred the visualizations we adopted since the latter
 > visualization approach gives the false impression of near-perfect
 > rotation period detection near the center of the cluster.
+> Nonetheless, we agree that it has pedagogical value.
 
 
 ******************************************

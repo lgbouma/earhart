@@ -1,52 +1,55 @@
-The authors posit that the open cluster NGC 2516 is far greater in extent than has been
-considered before, in particular also including a vastly larger halo than is currently
-considered, and use rotation period measurements from TESS data and archived Lithium
-spectroscopy to confirm that that is so.
-This referee finds that although the paper is generally well-written and well-argued,
-there are some major issues that need to be addressed before possible publication.
-At this stage the referee is more inclined to believe that the authors have identified a
-set of young stars in that region of the sky than actual halo member stars of NGC 2516.
+The authors posit that the open cluster NGC 2516 is far greater in extent than
+has been considered before, in particular also including a vastly larger halo
+than is currently considered, and use rotation period measurements from TESS
+data and archived Lithium spectroscopy to confirm that that is so.  This
+referee finds that although the paper is generally well-written and
+well-argued, there are some major issues that need to be addressed before
+possible publication.  At this stage the referee is more inclined to believe
+that the authors have identified a set of young stars in that region of the sky
+than actual halo member stars of NGC 2516.
 
-The authors begin by concatenating a very large collection of stars identified by
-CG18 (which they term the core members), and those of KC19 and M21, the last two
-having very relaxed criteria for association with NGC 2516.
-At this stage, as one can see from the distributions in Fig.1, the sample is
-completely bloated with field stars which now clearly have to be excised.
-The question is how?
+The authors begin by concatenating a very large collection of stars identified
+by CG18 (which they term the core members), and those of KC19 and M21, the last
+two having very relaxed criteria for association with NGC 2516.  At this stage,
+as one can see from the distributions in Fig.1, the sample is completely
+bloated with field stars which now clearly have to be excised.  The question is
+how?
 
 The authors justifiably look first to the HR diagram and understandably find
-that that is not very helpful in rejecting non-members because almost all stars in
-the extended sample lie close to the ridge line of the canonical cluster members.
-(Nevertheless, this is already a basis for rejecting stars below the main sequence
-and those significantly above it, including giants. The authors should consider
-this.) Incidentally, the Gaia photometry for the brightest stars is likely not good
-enough for fitting any isochrones of this age, so in this referee's estimation, the
-cluster turnoff is perhaps still the best one can do, keeping in mind the persistence
-of photometric problems for bright stars.
+that that is not very helpful in rejecting non-members because almost all stars
+in the extended sample lie close to the ridge line of the canonical cluster
+members.  (Nevertheless, this is already a basis for rejecting stars below the
+main sequence and those significantly above it, including giants. The authors
+should consider this.) Incidentally, the Gaia photometry for the brightest
+stars is likely not good enough for fitting any isochrones of this age, so in
+this referee's estimation, the cluster turnoff is perhaps still the best one
+can do, keeping in mind the persistence of photometric problems for bright
+stars.
 
 The authors then go on to consider the rotation periods and lithium abundances
 of the extended sample, to compare them with previously-known distribution of
-similarly young stars.
-The conceptual problem here is that stars that deviate from the known/expected
-rotational distribution for NGC 2516 are again not excised from the sample.
-As prior studies (e.g. Fritzewski+2020) have shown, there are no rotators above
-the slow sequence in NGC 2516. So such stars most certainly have to be excised
-from further consideration. (Some of these are even older than Praesepe, as the
-authors themselves show in Fig.4.) The authors should consider whether other
-regions of the color-period diagram merit similar treatment.
+similarly young stars.  The conceptual problem here is that stars that deviate
+from the known/expected rotational distribution for NGC 2516 are again not
+excised from the sample.  As prior studies (e.g. Fritzewski+2020) have shown,
+there are no rotators above the slow sequence in NGC 2516. So such stars most
+certainly have to be excised from further consideration. (Some of these are
+even older than Praesepe, as the authors themselves show in Fig.4.) The authors
+should consider whether other regions of the color-period diagram merit similar
+treatment.
 
-An additional concern is that the authors construct two samples A (where rotation
-periods from multiple types of measurements don't agree) and B (where rotation
-periods agree), but then go further with sample A (for instance Fig.6).
-Had the authors gone forward with the tightest-possible sample, and had then
-shown that this tight rotation-lithium sample still has a far greater extent on
-sky and in the canonical parallax, proper motion, RV etc. spaces, then readers would
-be far more willing to believe the authors' claims about a more extensive cluster.
+An additional concern is that the authors construct two samples A (where
+rotation periods from multiple types of measurements don't agree) and B (where
+rotation periods agree), but then go further with sample A (for instance
+Fig.6).  Had the authors gone forward with the tightest-possible sample, and
+had then shown that this tight rotation-lithium sample still has a far greater
+extent on sky and in the canonical parallax, proper motion, RV etc. spaces,
+then readers would be far more willing to believe the authors' claims about a
+more extensive cluster.
 
 The referee notes that the prior work of Healy & McCullough 2020, who also used
 TESS data to measure a sizeable group of stars in NGC 2516 has been completely
-ignored. The authors should include a discussion of the H+M2020 work in relation
-to the results in this paper.
+ignored. The authors should include a discussion of the H+M2020 work in
+relation to the results in this paper.
 
 While on the subject, it should also be mentioned that the Introduction of the
 paper is only from the galactic structure perspective, and is lacking in
@@ -58,13 +61,20 @@ This referee came away with the general impression that the authors have likely
 identified a number of young stars in a vast halo around NGC 2516, but did not
 find the association with NGC 2516 itself to be particularly convincing.
 Perhaps they can think about how to make their arguments tighter, and the
-inclusion criterea stricter in the next iteration, to be able to better convince
-the community of the association with NGC 2516.
+inclusion criterea stricter in the next iteration, to be able to better
+convince the community of the association with NGC 2516.
 
 Data Editor's review:
-One of our data editors has reviewed your manuscript and has the following suggestion(s) to help improve the data, software citation and/or overall content. Please treat this as you would a reviewer's comments and respond accordingly in your report to the science editor. Questions can be sent directly to the data editors at data-editors@aas.org.
+One of our data editors has reviewed your manuscript and has the following
+suggestion(s) to help improve the data, software citation and/or overall
+content. Please treat this as you would a reviewer's comments and respond
+accordingly in your report to the science editor. Questions can be sent
+directly to the data editors at data-editors@aas.org.
 
-The .csv file attached with Table 1 has a large number of significant digits in most columns. In the revised manuscript, the authors should include a new version that has only the required precision. This document outlines the typical uncertainties for Gaia data:
+The .csv file attached with Table 1 has a large number of significant digits in
+most columns. In the revised manuscript, the authors should include a new
+version that has only the required precision. This document outlines the
+typical uncertainties for Gaia data:
 
 https://gea.esac.esa.int/archive/documentation/GDR2/
 
