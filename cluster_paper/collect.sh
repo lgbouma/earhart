@@ -33,7 +33,7 @@ cp ../results/vtangential_projection/skymap_tangential_velocity_pmra_cosdec.pdf 
 # cp ../results/cluster_membership/full_kinematics_bright_galactic.pdf f1.pdf
 # cp ../results/hr/hr_colorhalobyglat_Bp_m_Rp_show1937_fullfaint_edr3.pdf f2c.pdf
 # cp ../results/skypositions/skypositions_x_rotn.pdf f4.pdf
-# cp ../results/full_kinematics_X_rotation/full_kinematics_X_rotation_fullfaint_galactic.pdf f4.pdf
+cp ../results/full_kinematics_X_rotation/full_kinematics_X_rotation_fullfaint_galactic.pdf f15.pdf
 # cp ../results/rotation_X_RUWE/rotation_vs_BpmRp_X_RUWE_viridis_linear.pdf f6.pdf
 # cp ../results/full_kinematics_X_rotation/full_kinematics_X_rotation_fullfaint_edr3_galactic.pdf f7.pdf
 # cp ../results/calc_backintegration_ngc2516/core_halo_to_ngc2516_separation.pdf f7a.pdf

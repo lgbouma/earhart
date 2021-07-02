@@ -1,8 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\documentclass[12pt,twocolumn,tighten]{aastex63}
+%\documentclass[12pt,twocolumn,tighten]{aastex63}
 %\documentclass[12pt,twocolumn,tighten,linenumbers,trackchanges]{aastex63}
-%\documentclass[12pt,twocolumn,tighten,trackchanges]{aastex63}
+\documentclass[12pt,twocolumn,tighten,linenumbers]{aastex63}
 \usepackage{amsmath,amstext,amssymb}
 \usepackage[T1]{fontenc}
 \usepackage{apjfonts}
@@ -815,21 +815,26 @@ least 25\,pc from the cluster core'' was meant to refer to the entire
 cluster. }
 
 The results are shown in the top two rows of
-Figure~\ref{fig:physical_x_rotn}.  In these figures, to ensure a fair
-comparison, we only show stars with $0.5<\bpmrpo<1.2$ for which our TESS
-pipeline succeeded in making light curves.  In other words, the stars in
-the base sample are those for which we would have expected to detect a
-rotation period.  This color range is preferred because the the slow
-sequence becomes less defined for spectral types later than $\approx$K4V.
-The bins in the histograms (top-right) were chosen to ensure that the
-same number of stars were in each bin.  Rotation periods
-\added{consistent with a gyrochronological age of 150\,Myr} are detected
-for \replaced{66\%}{68\% (471/692)} of stars \replaced{at least 25\,pc from the
-cluster core}{reported to be in the cluster}.  The average detection rate
-inside of 25\,pc, \replaced{73\%}{72\% (290/404)}, is slightly higher\added{ than
-outside of 25\,pc, where the detection rate is 63\% (181/288)}. Within
-$\approx$3.5\,pc, the period detection rate of \replaced{61\%}{59\% (26/44)} is
-\replaced{relatively}{anomalously} low, due to crowding and saturation in the TESS images.
+Figure~\ref{fig:physical_x_rotn}.  \added{Alternative visualizations
+in the canoncial space of observed positions, parallaxes, and proper
+motions are presented in Appendix~\ref{app:gaia6d_x_rotn}.}  In
+\added{all} these figures, to ensure a fair comparison, we only show
+stars with $0.5<\bpmrpo<1.2$ for which our TESS pipeline succeeded in
+making light curves.  In other words, the stars in the base sample are
+those for which we would have expected to detect a rotation period.
+This color range is preferred because the the slow sequence becomes
+less defined for spectral types later than $\approx$K4V.  The bins in
+the histograms (top-right) were chosen to ensure that the same number
+of stars were in each bin.  Rotation periods \added{consistent with a
+gyrochronological age of 150\,Myr} are detected for
+\replaced{66\%}{68\% (471/692)} of stars \replaced{at least 25\,pc
+from the cluster core}{reported to be in the cluster}.  The average
+detection rate inside of 25\,pc, \replaced{73\%}{72\% (290/404)}, is
+slightly higher\added{ than outside of 25\,pc, where the detection
+rate is 63\% (181/288)}. Within $\approx$3.5\,pc, the period detection
+rate of \replaced{61\%}{59\% (26/44)} is
+\replaced{relatively}{anomalously} low, due to crowding and saturation
+in the TESS images.
 
 The lower panels of Figure~\ref{fig:physical_x_rotn} give a second
 view of how field star contamination affects the outskirts of the
@@ -1463,6 +1468,8 @@ the structure of \cn.
     Figure~\ref{fig:physical_x_rotn} shows the overlap between
     kinematic and rotational cluster members used to make this
     assessment.
+   	\added{The majority of the halo members do however exist within
+   	tangential velocity separations of $\approx$2\kms.}
   %
   \item {\it The field star contamination rate increases at larger
     physical and velocity separations from the cluster core.} The
@@ -1835,10 +1842,10 @@ candidate cluster members.
 \section{Considerations for Removing Systematic Variability from TESS Light Curves}
 \label{app:detrending}
 
-\begin{figure}[b]
+\begin{figure}[btp]
 	\begin{center}
 		\leavevmode
-		\includegraphics[width=0.8\textwidth]{f12.pdf}
+		\includegraphics[width=\textwidth]{f12.pdf}
 	\end{center}
 	\vspace{-1cm}
   \caption{ {\bf \cn\ light curves sorted in order
@@ -2067,39 +2074,39 @@ equatorial tangential velocities.
 % Figure~\ref{fig:diffred}.
 
 
-% \section{Kinematics $\otimes$ Rotation}
-% \label{app:gaia6d_x_rotn}
-% 
-% \begin{figure*}[t]
-% 	\begin{center}
-% 		\leavevmode
-% 		\includegraphics[width=0.95\textwidth]{f4.pdf}
-% 	\end{center}
-% 	\vspace{-0.7cm}
-%   \caption{ {\bf Gaia-based components of NGC\,2516 in position and
-%   velocity space, cross-matched against the rotators.} The plotted
-%   stars are those with $0.5<\bpmrpo<1.2$ that meet the crowding
-%   restrictions described in Section~\ref{subsec:tess}: they should
-%   have been sufficiently bright and non-crowded to enable rotation
-%   period detection.  We caution that the appearance of fewer
-%   non-rotators being present toward the core is due the layering of
-%   the plot: quantitatively, stars toward the cluster center do not all
-%   show rotation periods in our analysis (see
-%   Figure~\ref{fig:hist_physical_x_rotn}).
-%   \label{fig:gaia6d_x_rotn}
-% 	}
-% \end{figure*}
-% 
-% Figure~\ref{fig:gaia6d_x_rotn} is an alternative visualization of the
-% data shown in Figure~\ref{fig:physical_x_rotn}.  The rotation periods
-% in this diagram correspond to ``Set $\mathcal{A}$'' as described in
-% Section~\ref{subsec:tess}.  Many stars in the outer region of the
-% cluster show rotation periods consistent with a young age.  One issue
-% with the visualization as displayed however is that it hides the
-% amount of non-rotators toward the cluster center: we did not detect
-% rotation periods for roughly one in four stars at the cluster
-% center (see Figures~\ref{fig:physical_x_rotn}
-% and~\ref{fig:hist_physical_x_rotn}).
+\section{Kinematics $\otimes$ Rotation}
+\label{app:gaia6d_x_rotn}
+
+\begin{figure*}[tp]
+	\begin{center}
+		\leavevmode
+		\includegraphics[width=0.95\textwidth]{f15.pdf}
+	\end{center}
+	\vspace{-0.7cm}
+  \caption{ {\bf Gaia-based components of NGC\,2516 in position and
+  velocity space, cross-matched against the rotators.} The plotted
+  cluster members are those with $0.5<\bpmrpo<1.2$ that meet the
+  crowding restrictions described in Section~\ref{subsec:tess}: they
+  should have been sufficiently bright and non-crowded to enable
+  rotation period detection. Stars in Set $\mathcal{B}$ are shown in blue; those which should have
+  had rotation periods detected but did not are in orange.
+  We caution that the appearance of fewer
+  non-rotators being present toward the core is due the layering of
+  the plot: quantitatively, stars toward the cluster center do not all
+  show rotation periods in our analysis (see
+  Figure~\ref{fig:physical_x_rotn}).
+  \label{fig:gaia6d_x_rotn}
+	}
+\end{figure*}
+
+\added{Figure~\ref{fig:gaia6d_x_rotn} is an alternative visualization
+of the data shown in Figure~\ref{fig:physical_x_rotn}.  The rotation
+periods in this diagram correspond to ``Set $\mathcal{B}$'' as
+described in Section~\ref{subsec:tess}.  One issue with the
+visualization as displayed however is that it hides the amount of
+non-rotators toward the cluster center: we did not detect rotation
+periods for roughly one in four stars at the cluster center (see
+upper-right panel in Figure~\ref{fig:physical_x_rotn}).  }
 % 
 % 
 % 

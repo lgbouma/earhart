@@ -783,6 +783,8 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0,
         'match234_alias': requires LS and SPDM periods to agree to within 10%
             (up to 1x,2x,3x,4x harmonic).
         'nocleaning': P<99d.
+        'defaultcleaning_cutProtColor': add Prot-color plane cut to
+            defaultcleaning.
     """
 
     assert isinstance(cleaning, str)

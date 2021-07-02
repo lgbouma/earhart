@@ -2758,7 +2758,10 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
 
     nbhd_df, core_df, halo_df, full_df, trgt_df = get_gaia_basedata(basedata)
 
-    rot_df, lc_df = get_autorotation_dataframe(runid='NGC_2516', returnbase=True)
+    rot_df, lc_df = get_autorotation_dataframe(
+        runid='NGC_2516', returnbase=True,
+        cleaning='defaultcleaning_cutProtColor'
+    )
 
     dfs = [nbhd_df, core_df, halo_df, trgt_df, rot_df]
     nbhd_df.source_id = nbhd_df.source_id.astype(np.int64)
@@ -2784,14 +2787,24 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
         xl, yl = r'$\alpha$ [deg]', r'$\delta$ [deg]'
 
     params = [xkey, ykey, 'parallax', 'pmra', 'pmdec', rvkey]
+    # # whether to limit axis by 5/95th percetile
+    # qlimd = {
+    #     xkey: 0, ykey: 0, 'parallax': 0, 'pmra': 0, 'pmdec': 0, rvkey: 0
+    # }
+    # # whether to limit axis by 99th percentile
+    # nnlimd = {
+    #     xkey:0, ykey:0, 'parallax':0, 'pmra':0, 'pmdec':0, rvkey:0
+    # }
+
     # whether to limit axis by 5/95th percetile
     qlimd = {
-        xkey: 0, ykey: 0, 'parallax': 0, 'pmra': 0, 'pmdec': 0, rvkey: 0
+        xkey: 0, ykey: 0, 'parallax': 0, 'pmra': 1, 'pmdec': 1, rvkey: 1
     }
     # whether to limit axis by 99th percentile
     nnlimd = {
-        xkey:0, ykey:0, 'parallax':0, 'pmra':0, 'pmdec':0, rvkey:0
+        xkey: 1, ykey: 1, 'parallax': 1, 'pmra': 0, 'pmdec': 0, rvkey: 0
     }
+
     ldict = {
         xkey: xl, ykey: yl,
         'parallax': r'$\pi$ [mas]', 'pmra': r"$\mu_{{\alpha'}}$ [mas/yr]",
@@ -2825,21 +2838,22 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
             yv = params[i+1]
             print(i,j,xv,yv)
 
-            # axs[i,j].scatter(
-            #     nbhd_df[sel_color(nbhd_df)][xv], nbhd_df[sel_color(nbhd_df)][yv],
-            #     c='gray', alpha=0.9, zorder=2, s=5, rasterized=True,
-            #     linewidths=0, label='Field', marker='.'
-            # )
+            axs[i,j].scatter(
+                #nbhd_df[sel_color(nbhd_df)][xv], nbhd_df[sel_color(nbhd_df)][yv],
+                nbhd_df[xv], nbhd_df[yv],
+                c='gray', alpha=0.9, zorder=2, s=5, rasterized=True,
+                linewidths=0, label='Field', marker='.'
+            )
 
             axs[i,j].scatter(
                 halo_df[sel_comp(halo_df)][xv], halo_df[sel_comp(halo_df)][yv],
-                c='orange', alpha=1, zorder=3, s=12, rasterized=True,
-                label='Halo', linewidths=0.1, marker='.', edgecolors='k'
+                c='orange', alpha=1, zorder=3, s=15, rasterized=True,
+                label='P$_\mathrm{rot}$ missing', linewidths=0.1, marker='.', edgecolors='k'
             )
             axs[i,j].scatter(
                 halo_df[sel_rotn(halo_df)][xv], halo_df[sel_rotn(halo_df)][yv],
-                c='lightskyblue', alpha=1, zorder=6, s=12, rasterized=True,
-                label='Halo + P$_\mathrm{rot}$', linewidths=0.1, marker='.',
+                c='lightskyblue', alpha=1, zorder=6, s=15, rasterized=True,
+                label='Set $\mathcal{B}$', linewidths=0.1, marker='.',
                 edgecolors='k'
             )
 
@@ -2866,12 +2880,12 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
                         np.nanpercentile(nbhd_df[yv], 95))
                 axs[i,j].set_ylim(ylim)
             if nnlimd[xv]:
-                xlim = (np.nanpercentile(halo_df[xv], 1),
-                        np.nanpercentile(halo_df[xv], 99))
+                xlim = (np.nanpercentile(nbhd_df[xv], 1),
+                        np.nanpercentile(nbhd_df[xv], 99.9))
                 axs[i,j].set_xlim(xlim)
             if nnlimd[yv]:
-                ylim = (np.nanpercentile(halo_df[yv], 1),
-                        np.nanpercentile(halo_df[yv], 99))
+                ylim = (np.nanpercentile(nbhd_df[yv], 1),
+                        np.nanpercentile(nbhd_df[yv], 99.9))
                 axs[i,j].set_ylim(ylim)
 
 
@@ -2913,9 +2927,9 @@ def plot_full_kinematics_X_rotation(outdir, basedata='bright', show1937=0,
     leg.legendHandles[0]._sizes = [1.5*25]
     leg.legendHandles[1]._sizes = [1.5*25]
     leg.legendHandles[2]._sizes = [1.5*20]
-    #leg.legendHandles[3]._sizes = [1.5*20]
+    leg.legendHandles[3]._sizes = [1.5*20]
     if show1937:
-        leg.legendHandles[3]._sizes = [1.5*20]
+        leg.legendHandles[4]._sizes = [1.5*20]
 
     for ax in axs.flatten():
         format_ax(ax)
