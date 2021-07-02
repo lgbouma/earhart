@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%\documentclass[12pt,twocolumn,tighten]{aastex63}
-\documentclass[12pt,twocolumn,tighten,linenumbers,trackchanges]{aastex63}
+\documentclass[12pt,twocolumn,tighten]{aastex63}
+%\documentclass[12pt,twocolumn,tighten,linenumbers,trackchanges]{aastex63}
 %\documentclass[12pt,twocolumn,tighten,trackchanges]{aastex63}
 \usepackage{amsmath,amstext,amssymb}
 \usepackage[T1]{fontenc}
@@ -41,12 +41,19 @@
 \newcommand{\nautorotdenominator}{1{,}641} % plot_autorotation.py, w/ runid=NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
 \newcommand{\nautorotnumerator}{987} % plot_autorotation.py, For nequal<=0, nclose<=1, LSP>0.08. See /doc/20210205_nequal_and_Prot_vs_color_cleanup.txt
 \newcommand{\nautorotnumeratormatching}{892} % plot_autorotation.py, Set A, with manual Prot-color cut
-\newcommand{\ncompstardenominator}{820} % plot_compstar_rotation.py
-\newcommand{\ncompstarnumerator}{312} % plot_compstar_rotation.py
-\newcommand{\ncompfrac}{38.0\%} % plot_compstar_rotation.py, based on plot_autorotation
-\newcommand{\nautovscompstardenominator}{705} % plot_autorotation.py, w/ runid=compstar_NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. 
-\newcommand{\nautovscompstarnumerator}{374} % plot_autorotation.py
-\newcommand{\nautofrac}{53.1\%} % plot_autorotation.py
+
+%\newcommand{\ncompstardenominator}{820} % plot_compstar_rotation.py
+%\newcommand{\ncompstarnumerator}{312} % plot_compstar_rotation.py
+
+\newcommand{\ncompstardenominator}{656} % plot_compstar_rotation.py BpmRp0 from 0.4 to 0.8
+%\newcommand{\ncompstarnumerator}{223} % plot_compstar_rotation.py, ditto, with Prot detected in field star sample
+\newcommand{\ncompstarnumerator}{107} % plot_compstar_rotation.py, ditto, with Prot meeting 'set B' criteria in field star sample
+\newcommand{\ncompfrac}{16.3\%} % plot_compstar_rotation.py, based on plot_autorotation for defaultcleaning_cutProtColor
+
+
+\newcommand{\nautovscompstardenominator}{327} % plot_autorotation.py, w/ runid=compstar_NGC_2516. For nequal<=0, nclose<=1, LSP>0.08. 
+\newcommand{\nautovscompstarnumerator}{164} % plot_autorotation.py
+\newcommand{\nautofrac}{50.1\%} % plot_autorotation.py
 
 \newcommand{\kms}{\,km\,s$^{-1}$}
 \newcommand{\ms}{\,m\,s$^{-1}$}
@@ -226,7 +233,7 @@ theoretically, if we can identify the dispersed halos of open
 clusters?
 
 \added{To assess whether the stars in the cluster's halo are the same
-ages as stars in the cluster's core, we use three different age-dating
+ages as stars in the cluster's core, we apply three different age-dating
 techniques: isochrones, gyrochrones, and lithium depletion
 \citep[see][for reviews]{soderblom_ages_2010,soderblom_ages_2014}.
 Gyrochronology has now been empirically calibrated for FGK stars with
@@ -265,10 +272,10 @@ gives our conclusions.
 \section{A Dispersed Halo and a Core?}
 \label{sec:gaia}
 
-\begin{figure*}[tp]
+\begin{figure*}[t]
 	\begin{center}
 		\leavevmode
-		\includegraphics[width=\textwidth]{f1.pdf}
+		\includegraphics[width=0.9\textwidth]{f1.pdf}
 	\end{center}
 	\vspace{-0.7cm}
   \caption{ {\bf The dense and diffuse components of NGC\,2516 across
@@ -292,17 +299,18 @@ gives our conclusions.
 		\includegraphics[width=\textwidth]{f2.pdf}
 	\end{center}
 	\vspace{-0.7cm}
-  \caption{ {\bf Position and orbit of NGC\,2516 in the Galaxy.}
-  Points are halo members with $\pi/\sigma_\pi>20$; the cluster is
-  most elongated viewed top-down ({\it left}). 
-  The Sun is at $\{X,Y,Z\} = \{ -8122, 0, +20.8\}\,{\rm pc}$.
-  Gray lines trace the past (solid) and future (dashed)
-  cluster orbit, and blue arrows denote the mean cluster
-  velocity after subtracting the local standard of rest: $\{v_{\rm X},
-  v_{\rm Y}, v_{\rm Z}\} = \{-22.2, -25.3, -4.6\}$\kms. 
-  \label{fig:XYZ}
+	\caption{ {\bf Position and orbit of NGC\,2516 in the Galaxy.}
+		Points are halo members with $\pi/\sigma_\pi>20$; the cluster is
+		most elongated viewed top-down ({\it left}). 
+		The Sun is at $\{X,Y,Z\} = \{ -8122, 0, +20.8\}\,{\rm pc}$.
+		Gray lines trace the past (solid) and future (dashed)
+		cluster orbit, and blue arrows denote the mean cluster
+		velocity after subtracting the local standard of rest: $\{v_{\rm X},
+		v_{\rm Y}, v_{\rm Z}\} = \{-22.2, -25.3, -4.6\}$\kms. 
+		\label{fig:XYZ}
 	}
 \end{figure*}
+
 
 We selected candidate \cn\ members based on those reported in the
 literature.  While some pre-Gaia analyses were available
@@ -317,7 +325,7 @@ to these studies in the following as
 respectively.  A useful visualization of these samples is
 available online.\footnote{
   \url{https://homepage.univie.ac.at/stefan.meingast/coronae.html},
-  made by \citet{meingast_2021}, last accessed \texttt{2021/04/05}.}
+  made by \citet{meingast_2021}, last accessed \texttt{2021/07/01}.}
 %While we considered performing our own clustering analysis on the
 %Gaia data, such an effort would in effect only replicate the work of
 %these investigators.  We opt to instead use their studies as a starting
@@ -591,7 +599,7 @@ the statistical and systematic components from \cite{cummings_2018}.
 		}
 	\end{center}
 	\vspace{-0.7cm}
-  \caption{ {\bf TESS rotations periods and dereddened Gaia colors
+  \caption{ {\bf TESS rotation periods and dereddened Gaia colors
   across the core and halo of \cn.} Sets $\mathcal{A}$ ({\it top})
   and $\mathcal{B}$ ({\it bottom}) undergo successive stages of
   automated cleaning \replaced{(see Section~\ref{subsubsec:cluster})}{; Set
@@ -607,6 +615,27 @@ the statistical and systematic components from \cite{cummings_2018}.
   \label{fig:rot}
 	}
 \end{figure*}
+\begin{figure}[t]
+	\begin{center}
+		\leavevmode
+		\includegraphics[width=0.480\textwidth]{f5.pdf}
+	\end{center}
+	\vspace{-0.7cm}
+	\caption{ {\bf Binarity indicators for rotators in \cn.} \replaced{Sets
+			$\mathcal{A}$ ({\it top}) and $\mathcal{B}$ ({\it bottom}) are}{Set
+			$\mathcal{B}$ is shown} as in
+		Figure~\ref{fig:rot}.  Astrometric binaries ($\mathrm{RUWE}>1.2$;
+		11\% of stars) appear in red; photometric binaries ($>$0.3\,mag
+		above an empirical isochrone; 20\% of stars) are overplotted in
+		orange.  
+		Over $0.5<\bpmrpo<1.3$, Set $\mathcal{B}$ has \replaced{281}{523} stars.
+		Dividing these stars into ``slow'' and ``fast'' sequences by eye,
+		the fraction of stars showing signs of binarity in the slow and fast
+		subsamples are \replaced{30\% (63/210)}{27\% (106/289)} and
+		\replaced{56\% (40/71)}{51\% (68/134)}, respectively.
+		\label{fig:binarity}
+	}
+\end{figure}
 
 \subsubsection{Methodology}
 \label{subsubsec:cluster}
@@ -638,7 +667,7 @@ We then measured the rotation period from the resulting light curve using
 the \added{Lomb-Scargle} periodogram implementation\deleted{s} in
 \texttt{astrobase}\replaced{, namely the traditional Lomb-Scargle, and
 the Stellingwerf phase-dispersion minimization algorithm
-\citep{lomb_1976,stellingwerf_period_1978,scargle_studies_1982,stellingwerf_period_2011,bhatti_astrobase_2018}}{\citep{lomb_1976,scargle_studies_1982,bhatti_astrobase_2018}}.
+\citep{lomb_1976,stellingwerf_period_1978,scargle_studies_1982,stellingwerf_period_2011,bhatti_astrobase_2018}}{ \citep{lomb_1976,scargle_studies_1982,bhatti_astrobase_2018}}.
 We used the CDIPS aperture radius that, based on theoretical
 expectations, was expected to give the optimal balance between light from
 the target star and the sky background \citep{Sullivan_2015}.  This
@@ -663,53 +692,30 @@ with $\Delta T < 1.25$, according to the Gaia DR2 source catalog).
 These limits were chosen after inspecting the light curves visually,
 to eliminate low-quality rotation periods while retaining high
 completeness.  For Set $\mathcal{A}$, this yielded \nautorotnumerator\
-light curves, out of \nautorotdenominator\ stars for which rotation
-periods might plausibly have been detected.  For Set $\mathcal{B}$, we
+\replaced{light curves}{stars}, out of \nautorotdenominator\ stars \replaced{for which rotation
+periods might plausibly have been detected}{that met the initial crowding requirements}.  For Set $\mathcal{B}$, we
 additionally required that the Lomb-Scargle \replaced{and Stellingwerf
 phase-dispersion methods yielded identical periods to within 10\%}{period
 fell below the boundary drawn in Figure~\ref{fig:rot}, which was
-constructed the filter using the Pleiades polynomial from
-\citet{curtis_rup147_2020}, with hard cuts at the red and blue ends.}.
-This yielded \nautorotnumeratormatching\ light curves\added{in Set
-$\mathcal{B}$}. 
+constructed using the Pleiades polynomial from
+\citet{curtis_rup147_2020}}.
+This yielded \nautorotnumeratormatching\ light curves. 
 Boolean flags for each set are included in Table~\ref{tab:maintable}.  A
 set of field stars was also analyzed for comparison.  The results are
 discussed in Appendix~\ref{app:compstar}.
-\added{The justification for the additional cut in Set $\mathcal{B}$ is
+\added{The rationale behind the additional cut in Set $\mathcal{B}$ is
 that \cn\ is already known to have few if any stars above the slow
 sequence \citep{fritzewski_rotation_2020}.  Stars above the slow sequence
-are most likely therefore either not cluster members, or they are cluster
+are therefore most likely either not cluster members, or they are cluster
 members, but with unresolved binary companions contaminating the rotation
 period measurement \citep[{\it
 e.g.},][Section~5.1]{stauffer_rotation_2016}.  For the purpose of
-assessing which are rotationally consistent with being in the cluster,
-this is a viable filter; for the purpose of fully exploring whether any
-rotational outliers could be bonafide cluster members, Set $\mathcal{A}$
+assessing which stars are rotationally consistent with being in the cluster,
+this is a viable filter; for the purpose of exploring whether any
+rotational outliers might be bonafide cluster members, Set $\mathcal{A}$
 would be the better cut.}
 
 \subsubsection{Rotation-Color Diagrams}
-
-\begin{figure*}[t!]
-	\begin{center}
-		\leavevmode
-    \includegraphics[width=0.700\textwidth]{f5.pdf}
-	\end{center}
-	\vspace{-0.7cm}
-  \caption{ {\bf Binarity indicators for rotators in \cn.} \replaced{Sets
-  $\mathcal{A}$ ({\it top}) and $\mathcal{B}$ ({\it bottom}) are}{Set
-  $\mathcal{B}$ is shown} as in
-  Figure~\ref{fig:rot}.  Astrometric binaries ($\mathrm{RUWE}>1.2$;
-  11\% of stars) appear in red; photometric binaries ($>$0.3\,mag
-  above an empirical isochrone; 20\% of stars) are overplotted in
-  orange.  
-  Over $0.5<\bpmrpo<1.3$, Set $\mathcal{B}$ has \replaced{281}{523} stars.
-  Dividing these stars into ``slow'' and ``fast'' sequences by eye,
-  the fraction of stars showing signs of binarity in the slow and fast
-  subsamples are \replaced{30\% (63/210)}{27\% (106/289)} and
-  \replaced{56\% (40/71)}{51\% (68/134)}, respectively.
-  \label{fig:binarity}
-	}
-\end{figure*}
 
 Figure~\ref{fig:rot} shows the resulting rotation periods, with Set
 $\mathcal{A}$ shown on top and Set $\mathcal{B}$ on the bottom.  While
@@ -776,7 +782,7 @@ explanations in Section~\ref{disc:rotn}.
   were not detected, are shown in orange.  Stars in the core are shown
   as black points.  In
   the {\it top right}, the 
-  ratio of detected to expected stars with rotation periods is shown
+  ratio of detected to expected stars with rotation periods \added{in Set $\mathcal{B}$} is shown
   versus 3D separation from
   the core and 2D tangential velocity difference.  Bin widths are
   chosen to enforce the same number of stars in the denominator
@@ -812,18 +818,18 @@ The results are shown in the top two rows of
 Figure~\ref{fig:physical_x_rotn}.  In these figures, to ensure a fair
 comparison, we only show stars with $0.5<\bpmrpo<1.2$ for which our TESS
 pipeline succeeded in making light curves.  In other words, the stars in
-the base sample are those for which we could have plausibly detected a
+the base sample are those for which we would have expected to detect a
 rotation period.  This color range is preferred because the the slow
 sequence becomes less defined for spectral types later than $\approx$K4V.
 The bins in the histograms (top-right) were chosen to ensure that the
 same number of stars were in each bin.  Rotation periods
 \added{consistent with a gyrochronological age of 150\,Myr} are detected
-for \replaced{66\%}{68\%} of stars \replaced{at least 25\,pc from the
+for \replaced{66\%}{68\% (471/692)} of stars \replaced{at least 25\,pc from the
 cluster core}{reported to be in the cluster}.  The average detection rate
-inside of 25\,pc, \replaced{73\%}{72\%}, is slightly higher\added{ than
-outside of 25\,pc, where the detection rate is 63\%}. Within
-$\approx$3.5\,pc, the period detection rate of \replaced{61\%}{59\%} is
-relatively low, due to crowding and saturation in the TESS images.
+inside of 25\,pc, \replaced{73\%}{72\% (290/404)}, is slightly higher\added{ than
+outside of 25\,pc, where the detection rate is 63\% (181/288)}. Within
+$\approx$3.5\,pc, the period detection rate of \replaced{61\%}{59\% (26/44)} is
+\replaced{relatively}{anomalously} low, due to crowding and saturation in the TESS images.
 
 The lower panels of Figure~\ref{fig:physical_x_rotn} give a second
 view of how field star contamination affects the outskirts of the
@@ -836,7 +842,7 @@ expected to show rotation periods and did not, this suggests field
 contaminant rates of $\approx$50\% for the outermost cluster members in
 our \added{initial} target list.
 
-Even with this level of contamination, our rotation period
+\replaced{Even with}{Despite} this level of contamination, the rotation period
 measurements show that the halo extends to separations of
 $\approx$250\,pc in physical space from the cluster core.  The most
 widely separated F2V-K2V stars with rotation periods (blue points in
@@ -863,7 +869,7 @@ separations.
 \begin{figure*}[t]
 	\begin{center}
 		\leavevmode
-			\includegraphics[width=0.9\textwidth]{f7.pdf}
+			\includegraphics[width=0.95\textwidth]{f7.pdf}
 	\end{center}
 	\vspace{-0.700cm}
   \caption{ {\bf Lithium in the core and halo of NGC\,2516.}
@@ -883,22 +889,6 @@ separations.
   consistent with a near-Pleiades age.
   \label{fig:lithiumcorehalo}
   }
-\end{figure*}
-\begin{figure*}[t]
-	\begin{center}
-		\leavevmode
-		\includegraphics[width=0.9\textwidth]{f8.pdf}
-	\end{center}
-	\vspace{-0.7cm}
-  \caption{ {\bf Lithium and rotation in NGC\,2516.} Points show all
-  candidate \cn\ members with TESS rotation periods and Gaia-ESO or
-  GALAH spectra, and are colored by equivalent width.  Points with
-  reported equivalent widths below 20\,m\AA\ are shown with gray
-  crosses.  The lithium-rotation correlation for the K-dwarfs has been
-  observed in other young clusters, and is discussed in
-  Section~\ref{discussion:lithium}.
-	\label{fig:lithiumrot}
-	}
 \end{figure*}
 
 The final approach we took for assessing the youth of the
@@ -1019,6 +1009,24 @@ few upper limits reported by \citet{bouvier_pleiades_lirot_2018}.  The
 field star distribution peaks at late F-type stars.  The majority of
 kinematically selected stars in the core and the halo show lithium
 equivalent widths substantially in excess of these field stars.
+
+\begin{figure*}[t]
+	\begin{center}
+		\leavevmode
+		\includegraphics[width=0.95\textwidth]{f8.pdf}
+	\end{center}
+	\vspace{-0.7cm}
+	\caption{ {\bf Lithium and rotation in NGC\,2516.} Points show all
+		candidate \cn\ members with TESS rotation periods\added{ (Set $\mathcal{A}$)} and Gaia-ESO or
+		GALAH spectra, and are colored by equivalent width.  Points with
+		reported equivalent widths below 20\,m\AA\ are shown with gray
+		crosses.  The lithium-rotation correlation for the K-dwarfs has been
+		observed in other young clusters, and is discussed in
+		Section~\ref{discussion:lithium}.
+		\label{fig:lithiumrot}
+	}
+\end{figure*}
+
 
 We can go one step further, and match our sample of kinematically
 selected stars with spectra against the TESS rotators.  The result is
@@ -1184,7 +1192,7 @@ from \replaced{``Class 1 and 2'' \citet{fritzewski_rotation_2020} rotators, and
 from the rotators in \citet{Irwin_NGC2516_2007}}{``Class 1 and
 2'' \citet{fritzewski_rotation_2020} sources, from
 Table 1 of \citet{healy_stellar_2020}, and
-from \citet{Irwin_NGC2516_2007}.}.  The main
+from \citet{Irwin_NGC2516_2007}}.  The main
 contribution of our study beyond these previous analyses is our
 sensitivity across both the core and halo of \cn, and a corresponding
 expansion in the number of stars that can be analyzed.  In the
@@ -1336,7 +1344,8 @@ Comparing the slow sequence of the Pleiades and \cn\ more closely, the
 top row of Figure~\ref{fig:rot} shows that the two sequences overlap
 from $0.5<\bpmrpo<1.2$.  At redder colors, $1.2<\bpmrpo<1.7$, the
 dispersion in rotation periods increases.  The maximum rotation
-periods seen in \cn\ across both Sets $\mathcal{A}$ and $\mathcal{B}$
+periods seen in \cn\ \deleted{across both Sets $\mathcal{A}$ and
+$\mathcal{B}$}
 extend up to $\approx$11 days, rather than the $\approx$8.5 day upper
 limit seen in the Pleiades.  This is consistent with \cn\ being
 slightly older than the Pleiades.
@@ -1462,10 +1471,7 @@ the structure of \cn.
     candidate members have detected rotation periods consistent with a
     gyrochronological age near that of the Pleiades. At physical
     separations of $\approx$200\,pc, this fraction decreases to
-    $\approx$50\%.  Given the number density ratios of cluster to
-    field stars at the widest separations ($\approx 10^{-3}$,
-    \citealt{meingast_2021}), these contamination fractions are not as
-    bad as one might fear.
+    $\approx$50\%.  \replaced{Given the number density ratios of cluster to field stars at the widest separations ($\approx 10^{-3}$, \citealt{meingast_2021}), these contamination fractions are not as bad as one might fear.}{While the latter contamination fraction may seem high, a comparison sample of field stars (Appendix~\ref{app:compstar}) has a detection rate three times lower, and a  distribution in the period-color plane inconsistent with that of a population with a single age.}
    %
    \item {\it The average star in the outskirts has lower mass (by $\approx$10\%)
    than the average star in the cluster center.}
@@ -1961,8 +1967,9 @@ each individual star is available at \url{https://lgbouma.com/notes}.
   displayed; fainter field stars were not analyzed.  Field
   stars (orange) show a different rotation period distribution than
   the kinematically selected \cn\ members (black).  The field and \cn\
-  stars are both subject to the same ``Set $\mathcal{A}$''
+  stars are both subject to the same \deleted{``Set $\mathcal{A}$''}
   period-measurement and cleaning procedures.
+  \added{The dashed line is as in Figure~\ref{fig:rot}}.
   \label{fig:compstar}
 	}
 \end{figure}
@@ -1982,22 +1989,29 @@ corresponds to an extinction-corrected color cutoff of $\bpmrpo
 sufficiently far down the slow sequence to enable a comparison against
 the cluster star sample.
 
+\explain{Numbers in this paragraph have been updated per the revised
+definition of Set $\mathcal{B}$. }
+
 We performed the same light curve stitching and period-search
 procedure discussed in the text on the field stars.
-Imposing the same requirements for crowding resulted in
-\ncompstardenominator\ stars for which rotation periods could have
-been detected.  Imposing the same Lomb Scargle power cutoff (${\rm
-LSP}>0.08$) and period upper limit ($P<15\,{\rm days}$) yielded
-\ncompstarnumerator\ period detections (\ncompfrac).  Within the same
-brightness cutoff, \nautovscompstarnumerator\ of
-\nautovscompstardenominator\ cluster stars yielded period detections
-(\nautofrac).  While the detection fractions are only mildly
-different (likely due to the brightness cutoff), the period--color
-distributions are very different
-(Figure~\ref{fig:compstar}).
-This confirms our expectation that our period measurement procedure is
-not biased in any way that could produce the features we observe in
-\cn.
+\replaced{Imposing}{Within $0.4<\bpmrpo<0.8$}, the same requirements
+for crowding resulted in \ncompstardenominator\ \added{field} stars
+for which rotation periods could have been detected.  Imposing the
+same Lomb Scargle power cutoff (${\rm LSP}>0.08$) and \replaced{period
+upper limit ($P<15\,{\rm days}$)}{color-period cutoff as that used to
+define Set $\mathcal{B}$} yielded \ncompstarnumerator\ period
+detections (\ncompfrac).  Within the same \replaced{brightness
+cutoff}{color range}, \nautovscompstarnumerator\ of
+\nautovscompstardenominator\ \replaced{cluster stars}{kinematically
+identified candidate cluster members} yielded period detections
+(\nautofrac).  \replaced{While the detection fractions are only mildly different
+(likely due to the brightness cutoff), the }{The }period--color distributions
+are \replaced{very}{also quite} different\added{: the candidate
+cluster members show an overdensity coincident with the expected
+gyrochronal age, while the field stars show a much broader rotation
+period distribution} (Figure~\ref{fig:compstar}).  This confirms our
+expectation that our period measurement procedure is not biased in any
+way that could produce the features we observe in \cn.
 
 
 \section{Projection Effects for Tangential Velocities}

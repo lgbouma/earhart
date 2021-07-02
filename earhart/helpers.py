@@ -897,10 +897,17 @@ def get_autorotation_dataframe(runid='NGC_2516', verbose=1, returnbase=0,
 
         if 'compstar' in runid:
             rp_sel = (df.phot_rp_mean_mag < 13)
-            print(f'Requiring Rp<13 as well for comparison gives...')
-            print(f'Starting with {len(df[ref_sel & rp_sel])} entries that meet NEQUAL and NCLOSE criteria...')
-            print(f'Got {len(df[sel & rp_sel])} entries with P<15d, LSP>{LSP_CUTOFF}, nequal<={NEQUAL_CUTOFF}, nclose<={NCLOSE_CUTOFF}')
-            frac = len(df[sel & rp_sel])/len(df[ref_sel & rp_sel])
+            from earhart.priors import AVG_EBpmRp
+            BpmRp0 = (
+                df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - AVG_EBpmRp
+            )
+            bpmrp_sel = (BpmRp0 < 0.8) & (BpmRp0 > 0.4)
+
+            print(f'Requiring 0.4<Bp-Rp0<0.8 as well for comparison gives...')
+
+            print(f'Starting with {len(df[ref_sel & bpmrp_sel])} entries that meet NEQUAL and NCLOSE criteria...')
+            print(f'Got {len(df[sel & bpmrp_sel])} entries with P<15d, LSP>{LSP_CUTOFF}, nequal<={NEQUAL_CUTOFF}, nclose<={NCLOSE_CUTOFF}')
+            frac = len(df[sel & bpmrp_sel])/len(df[ref_sel & bpmrp_sel])
             print(f'Fraction: {frac:.4f}')
             print(10*'.')
 

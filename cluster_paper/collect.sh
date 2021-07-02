@@ -25,7 +25,7 @@ cp ../results/litcomp_ngc2516/litcomp_ngc2516.pdf f10.pdf
 # appendix
 cp ../results/venn/venn.pdf f11.pdf
 cp ../results/lightcurves_rotators/lightcurves_rotators_color.pdf f12.pdf
-cp ../results/compstar_rotation/compstar_rotation_NGC_2516_vs_BpmRp_linear.pdf f13.pdf
+cp ../results/compstar_rotation/compstar_rotation_NGC_2516_vs_BpmRp_linear_showPleiadesQuad.pdf f13.pdf
 
 cp ../results/vtangential_projection/skymap_tangential_velocity_pmdec.pdf f14a.pdf
 cp ../results/vtangential_projection/skymap_tangential_velocity_pmra_cosdec.pdf f14b.pdf

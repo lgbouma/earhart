@@ -1387,7 +1387,8 @@ def plot_auto_rotation(outdir, runid, E_BpmRp, core_halo=0, yscale='linear',
 
 
 def plot_compstar_rotation(outdir, E_BpmRp=AVG_EBpmRp, yscale=None,
-                           corehalosplit=0):
+                           corehalosplit=0, showPleiadesQuad=0,
+                           cleaning='defaultcleaning'):
     """
     Plot rotation periods that satisfy the automated selection criteria
     (specified in helpers.get_autorotation_dataframe)
@@ -1432,7 +1433,7 @@ def plot_compstar_rotation(outdir, E_BpmRp=AVG_EBpmRp, yscale=None,
                 raise NotImplementedError
 
         else:
-            df = get_autorotation_dataframe(_cls, cleaning='defaultcleaning')
+            df = get_autorotation_dataframe(_cls, cleaning=cleaning)
             df = df[df.phot_rp_mean_mag < 13]
             print(42*'-')
             print(f'Applying E(Bp-Rp) = {E_BpmRp:.4f}')
@@ -1469,8 +1470,14 @@ def plot_compstar_rotation(outdir, E_BpmRp=AVG_EBpmRp, yscale=None,
                 |
                 ( (df.period > window1[0]) & (df.period < window1[1]) )
             )
-            print(f'Before adhoc window puring, N={len(df)} field rot')
-            print(f'After adhoc window puring, N={len(df[sel0])} field rot')
+
+            BpmRp0 = (
+                df['phot_bp_mean_mag'] - df['phot_rp_mean_mag'] - AVG_EBpmRp
+            )
+            bpmrp_sel = (BpmRp0 < 0.8) & (BpmRp0 > 0.4)
+
+            print(f'Before adhoc window puring, N={len(df[bpmrp_sel])} field rot')
+            print(f'After adhoc window puring, N={len(df[sel0 & bpmrp_sel])} field rot')
             xval = xval[sel0]
             yval = yval[sel0]
 
@@ -1490,6 +1497,16 @@ def plot_compstar_rotation(outdir, E_BpmRp=AVG_EBpmRp, yscale=None,
                 xval[sel], yval[sel], c='lightskyblue', alpha=0.9, zorder=z, s=8,
                 edgecolors='k', marker=m, linewidths=_lw, label='Halo'
             )
+
+    if showPleiadesQuad:
+        # 0.6 to 1.3 is actual ok range. from Curtis+2020
+        xmod = np.arange(0.3, 2.4+0.01, 0.01)
+        from earhart.helpers import PleaidesQuadProtModel
+        Protmod = PleaidesQuadProtModel(xmod)
+        ax.plot(
+            xmod, Protmod, zorder=9002, lw=0.5, c='k', ls='--'
+        )
+
 
     ax.set_ylabel('Rotation Period [days]', fontsize='medium')
 
@@ -1537,8 +1554,11 @@ def plot_compstar_rotation(outdir, E_BpmRp=AVG_EBpmRp, yscale=None,
 
     outstr = '_vs_BpmRp'
     outstr += f'_{yscale}'
+    outstr += f'_{cleaning}'
     if corehalosplit:
         outstr += '_corehalosplit'
+    if showPleiadesQuad:
+        outstr += '_showPleiadesQuad'
     outpath = os.path.join(outdir, f'compstar_rotation_{runid}{outstr}.png')
     savefig(f, outpath)
 
@@ -3333,13 +3353,16 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
         print(f'Rotators: {h_rot}')
         print(f'Comparison: {h_comp}')
         print(f'Fraction of NGC2516 stars (for which Prot was expected) w/ detected rotation: {len(rot_df)/len(comp_df)*100:.1f}%')
+        print(f'... numbers: {len(rot_df)}/{len(comp_df)}')
         CUTOFF = 25
         sel0 = (rot_df.delta_r_pc < CUTOFF)
         sel1 = (comp_df.delta_r_pc < CUTOFF)
         print(f'At <25pc, fraction of NGC2516 stars (for which Prot was expected) w/ detected rotation: {len(rot_df[sel0])/len(comp_df[sel1])*100:.1f}%')
+        print(f'... numbers: {len(rot_df[sel0])}/{len(comp_df[sel1])}')
         sel0 = (rot_df.delta_r_pc > CUTOFF)
         sel1 = (comp_df.delta_r_pc > CUTOFF)
         print(f'At >25pc, fraction of NGC2516 stars (for which Prot was expected) w/ detected rotation: {len(rot_df[sel0])/len(comp_df[sel1])*100:.1f}%')
+        print(f'... numbers: {len(rot_df[sel0])}/{len(comp_df[sel1])}')
         print(42*'-')
 
         #
@@ -4138,7 +4161,7 @@ def plot_litcomp_ngc2516(outdir):
                            'NGC_2516_Prot_cleaned.csv')
     df = pd.read_csv(b21path)
 
-    df_b21 = df[df.in_SetA]
+    df_b21 = df[df.in_SetA.astype(bool)]
     df_f20 = df_lit[~pd.isnull(df_lit.Prot) &
                     ( (df_lit.Class == 1) | (df_lit.Class == 2))]
     df_i07 = df_lit[~pd.isnull(df_lit.ProtI07)]
@@ -4263,7 +4286,7 @@ def plot_litcomp_ngc2516(outdir):
     # now repeat, with Set B!
     #
     df = pd.read_csv(b21path)
-    df_b21 = df[df.in_SetB]
+    df_b21 = df[df.in_SetB.astype(bool)]
 
     ax = axd["D"]
 
@@ -4350,7 +4373,7 @@ def plot_litcomp_ngc2516(outdir):
     ax = axd["G"]
 
     df = pd.read_csv(b21path)
-    df_b21 = df[df.in_SetB]
+    df_b21 = df[df.in_SetB.astype(bool)]
 
     df_f20 = df_lit[~pd.isnull(df_lit.Prot) &
                     ( (df_lit.Class == 1) | (df_lit.Class == 2))]
