@@ -174,9 +174,12 @@ RESPONSE
 > our Stellingwerf Phase Dispersion Minimization (SPDM) rotation
 > periods were less congruous with the data than the Lomb Scargle
 > periods. Our suspicion is that the SPDM method is more susceptible
-> to the gaps in the TESS data).  We therefore have also opted to
+> to the gaps in the TESS data.  We therefore have also opted to
 > remove the SPDM periods from Table 1, since their primary purpose
-> was in the definition of Set B.
+> was in the definition of Set B.  One validation of our adopted Lomb
+> Scargle periods is through the top-right panel of Figure 10, which
+> shows that almost all stars that overlap with previously reported
+> periods in the literature are consistent.
 
 
 ******************************************
