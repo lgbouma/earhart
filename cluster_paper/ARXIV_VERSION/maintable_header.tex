@@ -1,0 +1,110 @@
+%% \begin{deluxetable}{} command tell LaTeX how many columns
+%% there are and how to align them.
+%\startlongtable
+\begin{deluxetable*}{lll}
+    
+%% Keep a portrait orientation
+
+%% Over-ride the default font size
+%% Use Default (12pt)
+%\tabletypesize{\scriptsize}
+\tabletypesize{\small}
+
+%% Use \tablewidth{?pt} to over-ride the default table width.
+%% If you are unhappy with the default look at the end of the
+%% *.log file to see what the default was set at before adjusting
+%% this value.
+
+%% This is the title of the table.
+\tablecaption{Rotation periods and lithium equivalent widths for
+\nkinematic\ candidate NGC\,2516 members.}
+\label{tab:maintable}
+
+%% This command over-rides LaTeX's natural table count
+%% and replaces it with this number.  LaTeX will increment 
+%% all other tables after this table based on this number
+%\tablenum{3}
+
+%% The \tablehead gives provides the column headers.  It
+%% is currently set up so that the column labels are on the
+%% top line and the units surrounded by ()s are in the 
+%% bottom line.  You may add more header information by writing
+%% another line between these lines. For each column that requries
+%% extra information be sure to include a \colhead{text} command
+%% and remember to end any extra lines with \\ and include the 
+%% correct number of &s.
+\tablehead{
+  \colhead{Parameter} &
+  \colhead{Example Value} &
+  \colhead{Description}
+}
+
+%% All data must appear between the \startdata and \enddata commands
+%
+% paste from
+% /Users/luke/Dropbox/proj/earhart/results/tables/NGC_2516_Prot_cleaned_header.tex
+% via drivers/write_NGC2516_main_table.py
+\startdata
+               \texttt{source\_id} & 5290666991552265088 &                                                                                Gaia DR2 source identifier. \\
+         \texttt{source\_id\_edr3} & 5290666991552265088 &                                                                               Gaia EDR3 source identifier. \\
+                 \texttt{in\_SetA} &                True &                                    In Set $\mathcal{A}$ (LSP$>$0.08, P$<$15d, nequal$==$0, nclose$\geq$1). \\
+                 \texttt{in\_SetB} &                True & In Set $\mathcal{B}$ (Set $\mathcal{A}$ and below $P_\mathrm{rot}-(G_\mathrm{BP}$-$G_\mathrm{RP})_0$ cut). \\
+         \texttt{n\_cdips\_sector} &                   7 &                                                            Number of TESS sectors with CDIPS light curves. \\
+                   \texttt{period} &            7.733189 &                                                                           Lomb-Scargle best period [days]. \\
+                   \texttt{lspval} &            0.505373 &                                                            Lomb-Scargle periodogram value for best period. \\
+                   \texttt{nequal} &                   0 &                                                 Number of stars brighter than the target in TESS aperture. \\
+                   \texttt{nclose} &                   1 &                                                   Number of stars with $\Delta T > 1.25$ in TESS aperture. \\
+                   \texttt{nfaint} &                   1 &                                                    Number of stars with $\Delta T > 2.5$ in TESS aperture. \\
+                       \texttt{ra} &          119.494256 &                                                                            Gaia DR2 right ascension [deg]. \\
+                      \texttt{dec} &          -61.060819 &                                                                                Gaia DR2 declination [deg]. \\
+               \texttt{ref\_epoch} &              2015.5 &                                                       Reference epoch for right ascension and declination. \\
+                 \texttt{parallax} &            2.462602 &                                                                                   Gaia DR2 parallax [mas]. \\
+          \texttt{parallax\_error} &            0.017613 &                                                                       Gaia DR2 parallax uncertainty [mas]. \\
+                     \texttt{pmra} &           -5.366865 &                                        Gaia DR2 proper motion $\mu_\alpha \cos \delta$ [mas$\,$yr$^{-1}$]. \\
+                    \texttt{pmdec} &           10.959816 &                                                    Gaia DR2 proper motion $\mu_\delta$ [mas$\,$yr$^{-1}$]. \\
+       \texttt{phot\_g\_mean\_mag} &           14.592845 &                                                                                    Gaia DR2 $G$ magnitude. \\
+      \texttt{phot\_bp\_mean\_mag} &           15.189163 &                                                                        Gaia DR2 $G_\mathrm{BP}$ magnitude. \\
+      \texttt{phot\_rp\_mean\_mag} &           13.867151 &                                                                        Gaia DR2 $G_\mathrm{RP}$ magnitude. \\
+         \texttt{radial\_velocity} &                 NaN &                                                    Gaia DR2 heliocentric radial velocity [km$\,$s$^{-1}$]. \\
+  \texttt{radial\_velocity\_error} &                 NaN &                                                     Gaia DR2 radial velocity uncertainty [km$\,$s$^{-1}$]. \\
+               \texttt{subcluster} &                core &                                                                 Is star in core (CG18) or halo (KC19+M21)? \\
+                 \texttt{in\_CG18} &                True &                                                                    Star in \citet{cantatgaudin_gaia_2018}. \\
+                 \texttt{in\_KC19} &                True &                                                                   Star in \citet{kounkel_untangling_2019}. \\
+                  \texttt{in\_M21} &                True &                                                                             Star in \citet{meingast_2021}. \\
+               \texttt{(Bp-Rp)\_0} &            1.187693 &              Gaia $G_\mathrm{BP}$-$G_\mathrm{RP}$ color, minus $E$($G_\mathrm{BP}$-$G_\mathrm{RP}$)=0.1343 \\
+            \texttt{is\_phot\_bin} &               False &                                                                True if $>0.3$ mag above cluster isochrone. \\
+           \texttt{is\_astrm\_bin} &               False &                                                                              True if Gaia EDR3 RUWE > 1.2. \\
+                     \texttt{ruwe} &            0.954835 &                                                                                            Gaia EDR3 RUWE. \\
+      \texttt{Li\_EW\_mA\_GaiaESO} &             144.259 &                                       Gaia-ESO Li doublet equivalent width, including the Fe blend [m\AA]. \\
+\texttt{Li\_EW\_mA\_perr\_GaiaESO} &               6.301 &                                                           Gaia-ESO Li doublet EW upper uncertainty [m\AA]. \\
+\texttt{Li\_EW\_mA\_merr\_GaiaESO} &                 5.0 &                                                           Gaia-ESO Li doublet EW lower uncertainty [m\AA]. \\
+        \texttt{Li\_EW\_mA\_GALAH} &                 NaN &                                          GALAH Li doublet equivalent width, including the Fe blend [m\AA]. \\
+  \texttt{Li\_EW\_mA\_perr\_GALAH} &                 NaN &                                                              GALAH Li doublet EW upper uncertainty [m\AA]. \\
+  \texttt{Li\_EW\_mA\_merr\_GALAH} &                 NaN &                                                              GALAH Li doublet EW lower uncertainty [m\AA]. \\
+\enddata
+
+%% Include any \tablenotetext{key}{text}, \tablerefs{ref list},
+%% or \tablecomments{text} between the \enddata and 
+%% \end{deluxetable} commands
+
+%% General table comment marker
+\tablecomments{
+Table~\ref{tab:maintable} is published in its entirety in a
+machine-readable format.  One entry is shown for guidance regarding
+form and content.  This table is a concatenation of all candidate
+NGC\,2516 members reported by \citetalias{cantatgaudin_gaia_2018},
+\citetalias{kounkel_untangling_2019}, and \citetalias{meingast_2021}
+based on the Gaia DR2 data.  Different levels of purity and
+completeness can be achieved using different cuts on photometric
+periods, periodogram powers, and lithium eqiuvalent widths.  Sets
+$\mathcal{A}$ and $\mathcal{B}$ provide two possible levels of
+cleaning (see Section~\ref{subsubsec:cluster}).  When the
+target star is the only star present in the TESS aperture,
+\texttt{nequal}$=0$, \texttt{nclose}$=1$, and \texttt{nfaint}$=1$.
+The light curves are available at
+\url{https://archive.stsci.edu/hlsp/cdips}.
+Supplementary plots enabling analyses of individual stars
+are available at \url{https://lgbouma.com/notes}.
+}
+\vspace{-0.5cm}
+\end{deluxetable*}
