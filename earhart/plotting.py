@@ -899,6 +899,9 @@ def plot_hr(outdir, isochrone=None, color0='phot_bp_mean_mag',
     if basedata == 'fullfaint_edr3' and color0 == 'phot_bp_mean_mag':
         ax.set_xlim([-0.46, 3.54])
         ax.set_ylim([13.7, -4.8])
+    elif basedata == 'fullfaint_edr3' and color0 == 'phot_g_mean_mag':
+        ax.set_xlim([-0.5, 2.8])
+        ax.set_ylim([12.7, -4.8])
 
     format_ax(ax)
     ax.tick_params(axis='x', which='both', top=False)

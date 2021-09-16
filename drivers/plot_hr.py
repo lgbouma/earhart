@@ -7,6 +7,10 @@ isochrones = ['parsec', None, 'mist'] # could be None, mist, parsec.
 
 PLOTDIR = os.path.join(RESULTSDIR, 'hr')
 
+ep.plot_hr(PLOTDIR, isochrone=None, color0='phot_g_mean_mag',
+           highlight_companion=1, basedata='fullfaint_edr3', show1937=1,
+           talk_aspect=0)
+
 for talk_aspect in [1,0]:
     for basedata in basedatas:
         for isochrone in isochrones:
