@@ -4,6 +4,10 @@ Tools for working out the extinction.
 
 import numpy as np
 
+def EBmV_to_AV(EBmV):
+    R_V = 3.1
+    return 3.1*EBmV
+
 def AV_to_EBpmRp(A_V):
     """
     Convert A_V to E(Bp-Rp). NOTE: assumes A_V has been "corrected" for
