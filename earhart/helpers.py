@@ -1001,5 +1001,3 @@ def PleaidesQuadProtModel(BpmRp0):
     Protmod[sel] = np.nan
 
     return Protmod
-
-
