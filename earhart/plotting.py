@@ -204,7 +204,6 @@ def plot_full_kinematics(outdir, basedata='bright', show1937=1,
         'pmdec':  r'$\mu_{{\delta}}$ [mas/yr]', rvkey: 'RV [km/s]'
     }
 
-
     nparams = len(params)
     f, axs = plt.subplots(figsize=(6,6), nrows=nparams-1, ncols=nparams-1)
 

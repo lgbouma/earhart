@@ -42,6 +42,8 @@ def append_physicalpositions(df, reference_df):
     cols2 = ["ra","dec","parallax","pmra","pmdec"]
     assert np.sum(reference_df.columns.str.match('|'.join(cols1))) >= 5
 
+    assert len(df) > 0
+
     assert (
         'radial_velocity' in reference_df.columns
         or
