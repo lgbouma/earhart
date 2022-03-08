@@ -16,6 +16,8 @@ from astropy.coordinates import Galactocentric
 import astropy.coordinates as coord
 _ = coord.galactocentric_frame_defaults.set('v4.0')
 
+from astropy.coordinates import SkyCoord
+
 VERBOSE = 1
 if VERBOSE:
     print(Galactocentric())
@@ -186,4 +188,25 @@ def calc_dist(x0, y0, z0, x1, y1, z1):
     return d
 
 
+def calc_vl_vb_physical(ra, dec, pmra, pmdec, parallax):
 
+    from cdips.utils.gaiaqueries import parallax_to_distance_highsn
+
+    sc = SkyCoord(
+        ra*u.deg, dec*u.deg, pm_ra_cosdec=pmra*u.mas/u.yr,
+        pm_dec=pmdec*u.mas/u.yr
+    )
+    pm_l_cosb = sc.galactic.pm_l_cosb.to(u.mas/u.yr)
+    pm_b = sc.galactic.pm_b.to(u.mas/u.yr)
+
+    d_pc = parallax_to_distance_highsn(
+        parallax, gaia_datarelease='gaia_edr3'
+    )
+
+    pm_l_cosb_AU_per_yr = (pm_l_cosb.value*1e-3) * d_pc * (1*u.AU/u.yr)
+    v_l_cosb_km_per_sec = pm_l_cosb_AU_per_yr.to(u.km/u.second)
+
+    pm_b_AU_per_yr = (pm_b.value*1e-3) * d_pc * (1*u.AU/u.yr)
+    v_b_km_per_sec = pm_b_AU_per_yr.to(u.km/u.second)
+
+    return v_l_cosb_km_per_sec, v_b_km_per_sec
