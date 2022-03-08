@@ -35,6 +35,8 @@ def backintegrate(
     outpath=None
 ):
     """
+    Note: this is a thin wrapper to Gala's "integrate_orbit" method.
+
     Args:
         icrs (SkyCoord). Default is Draco. Note however that you can pass many
         ICRS coordinates to a coord.SkyCoord instance, via a construct like:
