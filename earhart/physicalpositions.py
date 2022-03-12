@@ -5,6 +5,7 @@ Contents:
     append_physicalpositions: (α,δ,π,μ_α,μ_δ)->(X,Y,Z,v*_tang).
     given_gaia_df_get_icrs_arr: DataFrame -> SkyCoord conversion
     calc_dist: between two 3d cartesian points.
+    calc_vl_vb_physical: on-sky galactic velocity conversion
 """
 
 import numpy as np
@@ -188,7 +189,16 @@ def calc_dist(x0, y0, z0, x1, y1, z1):
     return d
 
 
-def calc_vl_vb_physical(ra, dec, pmra, pmdec, parallax):
+def calc_vl_vb_physical(ra, dec, pmra, pmdec, parallax,
+                        gaia_datarelease='gaia_edr3'):
+    """
+    Given RA, DEC, pmRA, pmDEC, and parallax, calculate
+    (v_l_cosb_km_per_sec, v_b_km_per_sec)
+    the velocities along the galacitc directions in physical units of km/s.
+
+    The gaia data release kwarg is used for the zero-point offset when
+    calculating the distance.
+    """
 
     from cdips.utils.gaiaqueries import parallax_to_distance_highsn
 
@@ -200,7 +210,7 @@ def calc_vl_vb_physical(ra, dec, pmra, pmdec, parallax):
     pm_b = sc.galactic.pm_b.to(u.mas/u.yr)
 
     d_pc = parallax_to_distance_highsn(
-        parallax, gaia_datarelease='gaia_edr3'
+        parallax, gaia_datarelease=gaia_datarelease
     )
 
     pm_l_cosb_AU_per_yr = (pm_l_cosb.value*1e-3) * d_pc * (1*u.AU/u.yr)
