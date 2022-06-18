@@ -1,5 +1,11 @@
 """
 Tools for working out the extinction.
+
+EBmV_to_AV
+AV_to_EBpmRp
+Bonifacio2000_EBmV_correction
+get_dist_corr
+given_S98_EBmV_correct
 """
 
 import numpy as np
@@ -7,6 +13,10 @@ import numpy as np
 def EBmV_to_AV(EBmV):
     R_V = 3.1
     return 3.1*EBmV
+
+def EBmV_to_AG(EBmV):
+    # Stassun+2019 TIC8
+    return 2.72*EBmV
 
 def AV_to_EBpmRp(A_V):
     """

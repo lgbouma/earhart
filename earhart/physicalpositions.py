@@ -196,8 +196,8 @@ def calc_vl_vb_physical(ra, dec, pmra, pmdec, parallax,
     (v_l_cosb_km_per_sec, v_b_km_per_sec)
     the velocities along the galacitc directions in physical units of km/s.
 
-    The gaia data release kwarg is used for the zero-point offset when
-    calculating the distance.
+    gaia_datarelease must be in ['gaia_edr3', 'gaia_dr3', 'gaia_dr2', 'none'],
+    where "none" means the parallax offset correction is not applied.
     """
 
     from cdips.utils.gaiaqueries import parallax_to_distance_highsn
