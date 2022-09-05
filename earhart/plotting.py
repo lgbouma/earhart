@@ -1047,11 +1047,12 @@ def plot_rotation(outdir, BpmRp=0, include_ngc2516=0, ngc_core_halo=0):
 
     _x = TEFF
     if BpmRp:
-        print(42*'-')
-        print(f'Applying E(Bp-Rp) = {AVG_EBpmRp:.4f}')
-        print(42*'-')
         BpmRp_tic268 = 13.4400 - 12.4347
         _x = BpmRp_tic268 - AVG_EBpmRp
+        print(42*'-')
+        print(f'Applying E(Bp-Rp) = {AVG_EBpmRp:.4f}')
+        print(f'Yields (BP-RP)0 = {_x:.4f}')
+        print(42*'-')
     ax.plot(
         _x, P_ROT,
         alpha=1, mew=0.5, zorder=8, label='TOI 1937', markerfacecolor='yellow',
