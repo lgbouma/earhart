@@ -6,6 +6,7 @@ Contents:
     given_gaia_df_get_icrs_arr: DataFrame -> SkyCoord conversion
     calc_dist: between two 3d cartesian points.
     calc_vl_vb_physical: on-sky galactic velocity conversion
+    get_vl_lsr_corr: get vLSR correction given glon
 """
 
 import numpy as np
@@ -220,3 +221,74 @@ def calc_vl_vb_physical(ra, dec, pmra, pmdec, parallax,
     v_b_km_per_sec = pm_b_AU_per_yr.to(u.km/u.second)
 
     return v_l_cosb_km_per_sec, v_b_km_per_sec
+
+
+def get_vl_lsr_corr(lons, get_errs=False):
+    """
+    Given a vector of galactic longitudes, return the curve of
+    longitudinal v_LSR.  (Mean, +1sigma, -1sigma).
+
+    If get_errs is false still returns 3-tuple, but with nones.
+    """
+
+    from astropy.coordinates import (
+        Galactic, CartesianDifferential
+    )
+
+    # Schonrich+2010 solar velocity wrt local standard of rest
+    # (LSR) - note the systemic uncertainties are not included
+    U = 11.10 * u.km/u.s
+    U_hi = 0.69 * u.km/u.s
+    U_lo = 0.75 * u.km/u.s
+    V = 12.24 * u.km/u.s
+    V_hi = 0.47 * u.km/u.s
+    V_lo = 0.47 * u.km/u.s
+    W = 7.25 * u.km/u.s
+    W_hi = 0.37 * u.km/u.s
+    W_lo = 0.36 * u.km/u.s
+
+    _lat = 42   # doesn't matter
+    _dist = 300 # doesn't matter
+
+    lats = _lat*np.ones_like(lons)
+    dists_pc = _dist*np.ones_like(lons)
+
+    for _U, _V, _W, label in zip(
+        [U, U+U_hi, U-U_lo],
+        [V, V+V_hi, V-V_lo],
+        [W, W+W_hi, W-W_lo],
+        [0, 1, 2]
+    ):
+        print(42*'-')
+        print(label)
+
+        if not get_errs and label == 1:
+            v_l_cosb_kms_upper = None
+            continue
+        if not get_errs and label == 2:
+            v_l_cosb_kms_lower = None
+            continue
+
+        v_l_cosb_kms_list = []
+        for ix, (lon, lat, dist_pc) in enumerate(zip(lons, lats, dists_pc)):
+            #print(f'{ix}/{len(lons)}')
+            gal = Galactic(lon*u.deg, lat*u.deg, distance=dist_pc*u.pc)
+            vel_to_add = CartesianDifferential(_U, _V, _W)
+            newdata = gal.data.to_cartesian().with_differentials(vel_to_add)
+            newgal = gal.realize_frame(newdata)
+            pm_l_cosb_AU_per_yr = (newgal.pm_l_cosb.value*1e-3) * dist_pc * (1*u.AU/u.yr)
+            v_l_cosb_kms = pm_l_cosb_AU_per_yr.to(u.km/u.second)
+            v_l_cosb_kms_list.append(v_l_cosb_kms.value)
+
+        v_l_cosb_kms = -np.array(v_l_cosb_kms_list)
+
+        if label == 0:
+            v_l_cosb_kms_mid = v_l_cosb_kms*1.
+        elif label == 1:
+            v_l_cosb_kms_upper = v_l_cosb_kms*1.
+        elif label == 2:
+            v_l_cosb_kms_lower = v_l_cosb_kms*1.
+
+    return [v_l_cosb_kms_mid,
+            v_l_cosb_kms_upper,
+            v_l_cosb_kms_lower]
