@@ -3207,9 +3207,23 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
 
     # make it!
     plt.close('all')
-    set_style()
-    f, axs = plt.subplots(figsize=(3.5,3.5), nrows=2, ncols=2)
-    axs = axs.flatten()
+    set_style('clean')
+    #f, axs = plt.subplots(nrows=2, ncols=2)
+
+    factor = 0.8
+    f = plt.figure(figsize=(factor*4.4,factor*2.9))
+
+    axd = f.subplot_mosaic(
+        """
+        AB
+        AC
+        AD
+        """#,
+        #gridspec_kw={
+        #    "width_ratios": [1, 1, 1, 1]
+        #}
+    )
+    axs = [axd['A'], axd['B'], axd['C'], axd['D']]
 
     xytuples = [
         ('x_pc', 'y_pc'),
@@ -3237,6 +3251,12 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
 
         xv, yv = xyt[0], xyt[1]
 
+        x0, y0 = 0, 0
+        if xv == 'x_pc':
+            x0 = 8122
+        if yv == 'x_pc':
+            y0 = 8122
+
         # axs[i].scatter(
         #     nbhd_df[sel_color(nbhd_df)][xv], nbhd_df[sel_color(nbhd_df)][yv],
         #     c='gray', alpha=0.9, zorder=2, s=5, rasterized=True,
@@ -3244,32 +3264,48 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
         # )
 
         axs[i].scatter(
-            halo_df[sel_comp(halo_df)][xv], halo_df[sel_comp(halo_df)][yv],
+            halo_df[sel_comp(halo_df)][xv]+x0,
+            halo_df[sel_comp(halo_df)][yv]+y0,
             c='orange', alpha=1, zorder=3, s=16, rasterized=True,
             label='Halo', linewidths=0.1, marker='.', edgecolors='k'
         )
         axs[i].scatter(
-            halo_df[sel_rotn(halo_df)][xv], halo_df[sel_rotn(halo_df)][yv],
+            halo_df[sel_rotn(halo_df)][xv]+x0,
+            halo_df[sel_rotn(halo_df)][yv]+y0,
             c='lightskyblue', alpha=1, zorder=6, s=16, rasterized=True,
             label='Halo + P$_\mathrm{rot}$', linewidths=0.1, marker='.',
             edgecolors='k'
         )
 
         axs[i].scatter(
-            core_df[sel_comp(core_df)][xv], core_df[sel_comp(core_df)][yv],
+            core_df[sel_comp(core_df)][xv]+x0,
+            core_df[sel_comp(core_df)][yv]+y0,
             c='k', alpha=1, zorder=7, s=2, edgecolors='none',
             rasterized=True, label='Core', marker='.'
         )
 
+        # Only show ticks on the left and bottom spines
+        axs[i].yaxis.set_ticks_position('left')
+        axs[i].xaxis.set_ticks_position('bottom')
+
         if show1937:
             axs[i].plot(
-                trgt_df[xv], trgt_df[yv], alpha=1, mew=0.5,
+                trgt_df[xv]+x0, trgt_df[yv]+y0, alpha=1, mew=0.5,
                 zorder=8, label='TOI 1937', markerfacecolor='yellow',
                 markersize=7, marker='*', color='black', lw=0
             )
 
-        axs[i].set_xlabel(ldict[xv], fontsize='small')
-        axs[i].set_ylabel(ldict[yv], fontsize='small')
+        axs[i].set_xlabel(ldict[xv], labelpad=0.25, fontsize='small')
+        axs[i].set_ylabel(ldict[yv], labelpad=0.25, fontsize='small')
+
+        # We change the fontsize of minor ticks label 
+        axs[i].tick_params(axis='both', which='major', labelsize='small')
+
+        if yv == 'y_pc':
+            axs[i].set_ylim([-710,-190])
+        if xv == 'y_pc':
+            axs[i].set_xlim([-710,-190])
+
 
     # axs[2,2].legend(loc='best', handletextpad=0.1, fontsize='medium', framealpha=0.7)
     # leg = axs[2,2].legend(bbox_to_anchor=(0.8,0.8), loc="upper right",
@@ -3284,8 +3320,8 @@ def plot_physical_X_rotation(outdir, basedata=None, show1937=0,
     # if show1937:
     #     leg.legendHandles[4]._sizes = [20]
 
-    for ax in axs.flatten():
-        format_ax(ax)
+    #for ax in axs.flatten():
+    #    format_ax(ax)
 
     f.tight_layout(h_pad=0.2, w_pad=0.2)
 
