@@ -370,6 +370,9 @@ def calculate_XYZ_given_RADECPLX(ra, dec, plx):
 
 def calculate_XYZUVW_given_RADECPLXPMRV(ra, dec, plx, pm_ra, pm_dec, radial_velocity):
     """
+    NOTE: This function returns UVW values different from the Gagne+
+    convention, and I am not sure why.
+
     Given numpy arrays of right ascension, declination, parallax, proper
     motions, and radial velocities, calculate the corresponding galactic XYZ
     positions and UVW velocities. NOTE: this code converts from parallax to
@@ -398,6 +401,13 @@ def calculate_XYZUVW_given_RADECPLXPMRV(ra, dec, plx, pm_ra, pm_dec, radial_velo
         subtracts ou tthe circular velocity at the solar radius (assuming
         238km/s, astropy4.0 default).
     """
+    print(42*'-')
+    print(
+    "WARNING: calculate_XYZUVW_given_RADECPLXPMRV returns UVW values " +
+    "different from the Gagne+ convention, and I am not sure why."
+    )
+    print(42*'-')
+
 
     import numpy as np
     from numpy import array as nparr
