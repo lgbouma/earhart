@@ -8,6 +8,7 @@ Contents:
     calc_vl_vb_physical: on-sky galactic velocity conversion
     get_vl_lsr_corr: get vLSR correction given glon
     calculate_XYZ_given_RADECPLX: (α,δ,π)->(X,Y,Z).
+    calculate_XYZUVW_given_RADECPLXPMRV: (α,δ,π,μ_α,μ_δ,RV)->(X,Y,Z,U,V,W).
 """
 
 import numpy as np
@@ -336,3 +337,96 @@ def calculate_XYZ_given_RADECPLX(ra, dec, plx):
     z = c.z.to(u.pc).value
 
     return x,y,z
+
+
+def calculate_XYZUVW_given_RADECPLXPMRV(ra, dec, plx, pm_ra, pm_dec, radial_velocity):
+    """
+    Given numpy arrays of right ascension, declination, parallax, proper
+    motions, and radial velocities, calculate the corresponding galactic XYZ
+    positions and UVW velocities. NOTE: this code converts from parallax to
+    distance assuming parallax [arcsec] = 1/distance[pc]. This assumption is
+    incorrect in the regime of low signal-to-noise parallaxes (very faint
+    stars).
+
+    Args:
+        ra (np.ndarray): Right ascension in degrees.
+        dec (np.ndarray): Declination in degrees.
+        plx (np.ndarray): Parallax in milliarcseconds.
+        pm_ra (np.ndarray): Proper motion in right ascension (mas/yr).
+        pm_dec (np.ndarray): Proper motion in declination (mas/yr).
+        radial_velocity (np.ndarray): Radial velocity in km/s.
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        X, Y, Z positions in parsecs and U, V, W velocities in km/s.
+        In this coordinate system, the Sun is at {X, Y, Z} = {-8122, 0, +20.8} parsecs.
+        U is positive towards the Galactic center, V is positive in the
+        direction of Galactic rotation, and W is positive towards the north
+        Galactic pole.
+
+        The returned UVW system is set in a manner that subtracts out the Sun's
+        peculiar motion relative to the LSR (Schonrich+2010), and in a way that
+        subtracts ou tthe circular velocity at the solar radius (assuming
+        238km/s, astropy4.0 default).
+    """
+
+    import numpy as np
+    from numpy import array as nparr
+    import astropy.units as u
+    from astropy.coordinates import Galactocentric
+    import astropy.coordinates as coord
+
+    # Set the Galactocentric frame parameters to default v4.0 (appropriate for Gaia data)
+    _ = coord.galactocentric_frame_defaults.set('v4.0')
+
+    # Convert from parallax to distance assuming high S/N parallaxes.
+    distance = nparr(1 / (plx * 1e-3)) * u.pc
+
+    # Convert proper motions and radial velocity to astropy quantities
+    pm_ra_cosdec = nparr(pm_ra) * u.mas / u.yr
+    pm_dec = nparr(pm_dec) * u.mas / u.yr
+    rv = nparr(radial_velocity) * u.km / u.s
+
+    # Create a SkyCoord object with the provided data
+    _c = coord.SkyCoord(
+        ra=nparr(ra) * u.deg,
+        dec=nparr(dec) * u.deg,
+        distance=distance,
+        pm_ra_cosdec=pm_ra_cosdec,
+        pm_dec=pm_dec,
+        radial_velocity=rv,
+        frame='icrs'
+    )
+
+    # Transform to the Galactocentric frame
+    c = _c.transform_to(coord.Galactocentric())
+
+    # Extract galactic positions
+    x = c.x.to(u.pc).value
+    y = c.y.to(u.pc).value
+    z = c.z.to(u.pc).value
+
+    # Extract galactic velocities
+    vx = c.v_x.to(u.km / u.s).value
+    vy = c.v_y.to(u.km / u.s).value
+    vz = c.v_z.to(u.km / u.s).value
+
+    # Compute U, V, W velocities (U is towards the Galactic center)
+    U = -vx  # U positive towards Galactic center
+    V = vy   # V positive in direction of Galactic rotation
+    W = vz   # W positive towards North Galactic Pole
+
+    # Sun's peculiar motion relative to the LSR (Schönrich et al. 2010)
+    U_sun = 11.1   # km/s
+    V_sun = 12.24  # km/s
+    W_sun = 7.25   # km/s
+
+    # Circular velocity at the solar radius (Theta0)
+    Theta0 = 238  # km/s (value from Reid et al. 2014 or use Astropy default)
+
+    # Correct for the LSR motion
+    U_LSR = U - U_sun
+    V_LSR_corr = V - V_sun - Theta0
+    W_LSR = W - W_sun
+
+    return x, y, z, U_LSR, V_LSR_corr, W_LSR
