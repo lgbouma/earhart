@@ -421,7 +421,7 @@ def calculate_XYZUVW_given_RADECPLXPMRV(ra, dec, plx, pm_ra, pm_dec, radial_velo
     y = np.full_like(ra, np.nan, dtype=float)
     z = np.full_like(ra, np.nan, dtype=float)
     U_LSR = np.full_like(ra, np.nan, dtype=float)
-    V_GSR = np.full_like(ra, np.nan, dtype=float)
+    V_LSR = np.full_like(ra, np.nan, dtype=float)
     W_LSR = np.full_like(ra, np.nan, dtype=float)
 
     # Create a mask for valid parallaxes
@@ -466,21 +466,15 @@ def calculate_XYZUVW_given_RADECPLXPMRV(ra, dec, plx, pm_ra, pm_dec, radial_velo
         V = vy   # V positive in direction of Galactic rotation
         W = vz   # W positive towards North Galactic Pole
 
-        # Sun's peculiar motion relative to the LSR (Schönrich et al. 2010)
-        U_sun = 11.1   # km/s
-        V_sun = 12.24  # km/s
-        W_sun = 7.25   # km/s
-
-        # Circular velocity at the solar radius (Theta0)
-        Theta0 = 238  # km/s (value consistent with Astropy v4.0 defaults)
+        # Sun's peculiar motion relative to the LSR, plus the circular motion
+        # (~240km/s).  Uses astropy 4.0 defaults
+        U_sun = 12.9   # km/s
+        V_sun = 245.6  # km/s
+        W_sun = 7.78   # km/s
 
         # Correct for the Sun's peculiar motion
         U_LSR_valid = U - U_sun
         V_LSR_valid = V - V_sun
-
-        # Correct for the circular rotation (subtract Theta0 from V component)
-        V_GSR_valid = V_LSR_valid - Theta0
-
         W_LSR_valid = W - W_sun
 
         # Place the valid computed values into the output arrays
@@ -488,9 +482,9 @@ def calculate_XYZUVW_given_RADECPLXPMRV(ra, dec, plx, pm_ra, pm_dec, radial_velo
         y[valid] = y_valid
         z[valid] = z_valid
         U_LSR[valid] = U_LSR_valid
-        V_GSR[valid] = V_GSR_valid
+        V_LSR[valid] = V_LSR_valid
         W_LSR[valid] = W_LSR_valid
 
     # For entries where plx <= 0, outputs remain as NaN
 
-    return x, y, z, U_LSR, V_GSR, W_LSR
+    return x, y, z, U_LSR, V_LSR, W_LSR
