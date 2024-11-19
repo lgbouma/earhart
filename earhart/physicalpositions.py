@@ -7,6 +7,7 @@ Contents:
     calc_dist: between two 3d cartesian points.
     calc_vl_vb_physical: on-sky galactic velocity conversion
     get_vl_lsr_corr: get vLSR correction given glon
+    calculate_XYZ_given_RADECPLX: (α,δ,π)->(X,Y,Z).
 """
 
 import numpy as np
