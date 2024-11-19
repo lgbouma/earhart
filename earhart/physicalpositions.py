@@ -302,7 +302,7 @@ def calculate_XYZ_given_RADECPLX(ra, dec, plx):
     the corresponding galactic XYZ coordinates.  NOTE: this code converts from
     parallax to distance assuming parallax [arcsec] = 1/distance[pc].  This
     assumption is wrong in the regime of low signal-to-noise parallaxes (very
-    faint stars).
+    faint stars).  Negative distances become NaNs.
 
     Args:
         ra/dec/plx: np.ndarray of right ascension, declination, and parallax.
@@ -322,21 +322,50 @@ def calculate_XYZ_given_RADECPLX(ra, dec, plx):
     import astropy.coordinates as coord
     _ = coord.galactocentric_frame_defaults.set('v4.0')
 
-    distance = nparr(1/(plx*1e-3))*u.pc
+    # Convert inputs to numpy arrays
+    ra = nparr(ra)
+    dec = nparr(dec)
+    plx = nparr(plx)
 
-    _c = coord.SkyCoord(
-        ra=nparr(ra)*u.deg, dec=nparr(dec)*u.deg, distance=distance,
-        pm_ra_cosdec=None, pm_dec=None, radial_velocity=None
-    )
+    # Initialize output arrays with NaNs
+    x = np.full_like(ra, np.nan, dtype=float)
+    y = np.full_like(ra, np.nan, dtype=float)
+    z = np.full_like(ra, np.nan, dtype=float)
 
-    # get XYZ in galactocentric
-    c = _c.transform_to(coord.Galactocentric())
+    # Create a mask for valid parallaxes
+    valid = plx > 0
 
-    x = c.x.to(u.pc).value
-    y = c.y.to(u.pc).value
-    z = c.z.to(u.pc).value
+    if np.any(valid):
+        # Process only valid entries
+        # Convert from parallax to distance assuming high S/N parallaxes.
+        distance = (1 / (plx[valid] * 1e-3)) * u.pc
 
-    return x,y,z
+        # Create a SkyCoord object with the provided data
+        _c = coord.SkyCoord(
+            ra=ra[valid] * u.deg,
+            dec=dec[valid] * u.deg,
+            distance=distance,
+            pm_ra_cosdec=None,
+            pm_dec=None,
+            radial_velocity=None
+        )
+
+        # Transform to the Galactocentric frame
+        c = _c.transform_to(coord.Galactocentric())
+
+        # Extract galactic positions
+        x_valid = c.x.to(u.pc).value
+        y_valid = c.y.to(u.pc).value
+        z_valid = c.z.to(u.pc).value
+
+        # Place the valid computed values into the output arrays
+        x[valid] = x_valid
+        y[valid] = y_valid
+        z[valid] = z_valid
+
+    # For entries where plx <= 0, outputs remain as NaN
+
+    return x, y, z
 
 
 def calculate_XYZUVW_given_RADECPLXPMRV(ra, dec, plx, pm_ra, pm_dec, radial_velocity):
@@ -379,54 +408,89 @@ def calculate_XYZUVW_given_RADECPLXPMRV(ra, dec, plx, pm_ra, pm_dec, radial_velo
     # Set the Galactocentric frame parameters to default v4.0 (appropriate for Gaia data)
     _ = coord.galactocentric_frame_defaults.set('v4.0')
 
-    # Convert from parallax to distance assuming high S/N parallaxes.
-    distance = nparr(1 / (plx * 1e-3)) * u.pc
+    # Convert inputs to numpy arrays
+    ra = np.array(ra)
+    dec = np.array(dec)
+    plx = np.array(plx)
+    pm_ra = np.array(pm_ra)
+    pm_dec = np.array(pm_dec)
+    radial_velocity = np.array(radial_velocity)
 
-    # Convert proper motions and radial velocity to astropy quantities
-    pm_ra_cosdec = nparr(pm_ra) * u.mas / u.yr
-    pm_dec = nparr(pm_dec) * u.mas / u.yr
-    rv = nparr(radial_velocity) * u.km / u.s
+    # Initialize output arrays with NaNs
+    x = np.full_like(ra, np.nan, dtype=float)
+    y = np.full_like(ra, np.nan, dtype=float)
+    z = np.full_like(ra, np.nan, dtype=float)
+    U_LSR = np.full_like(ra, np.nan, dtype=float)
+    V_GSR = np.full_like(ra, np.nan, dtype=float)
+    W_LSR = np.full_like(ra, np.nan, dtype=float)
 
-    # Create a SkyCoord object with the provided data
-    _c = coord.SkyCoord(
-        ra=nparr(ra) * u.deg,
-        dec=nparr(dec) * u.deg,
-        distance=distance,
-        pm_ra_cosdec=pm_ra_cosdec,
-        pm_dec=pm_dec,
-        radial_velocity=rv,
-        frame='icrs'
-    )
+    # Create a mask for valid parallaxes
+    valid = plx > 0
 
-    # Transform to the Galactocentric frame
-    c = _c.transform_to(coord.Galactocentric())
+    if np.any(valid):
+        # Process only valid entries
+        # Convert from parallax to distance assuming high S/N parallaxes.
+        distance = (1 / (plx[valid] * 1e-3)) * u.pc
 
-    # Extract galactic positions
-    x = c.x.to(u.pc).value
-    y = c.y.to(u.pc).value
-    z = c.z.to(u.pc).value
+        # Convert proper motions and radial velocity to astropy quantities
+        pm_ra_cosdec = pm_ra[valid] * u.mas / u.yr
+        pm_dec_valid = pm_dec[valid] * u.mas / u.yr
+        rv = radial_velocity[valid] * u.km / u.s
 
-    # Extract galactic velocities
-    vx = c.v_x.to(u.km / u.s).value
-    vy = c.v_y.to(u.km / u.s).value
-    vz = c.v_z.to(u.km / u.s).value
+        # Create a SkyCoord object with the provided data
+        _c = coord.SkyCoord(
+            ra=ra[valid] * u.deg,
+            dec=dec[valid] * u.deg,
+            distance=distance,
+            pm_ra_cosdec=pm_ra_cosdec,
+            pm_dec=pm_dec_valid,
+            radial_velocity=rv,
+            frame='icrs'
+        )
 
-    # Compute U, V, W velocities (U is towards the Galactic center)
-    U = -vx  # U positive towards Galactic center
-    V = vy   # V positive in direction of Galactic rotation
-    W = vz   # W positive towards North Galactic Pole
+        # Transform to the Galactocentric frame
+        c = _c.transform_to(coord.Galactocentric())
 
-    # Sun's peculiar motion relative to the LSR (Schönrich et al. 2010)
-    U_sun = 11.1   # km/s
-    V_sun = 12.24  # km/s
-    W_sun = 7.25   # km/s
+        # Extract galactic positions
+        x_valid = c.x.to(u.pc).value
+        y_valid = c.y.to(u.pc).value
+        z_valid = c.z.to(u.pc).value
 
-    # Circular velocity at the solar radius (Theta0)
-    Theta0 = 238  # km/s (value from Reid et al. 2014 or use Astropy default)
+        # Extract galactic velocities
+        vx = c.v_x.to(u.km / u.s).value
+        vy = c.v_y.to(u.km / u.s).value
+        vz = c.v_z.to(u.km / u.s).value
 
-    # Correct for the LSR motion
-    U_LSR = U - U_sun
-    V_LSR_corr = V - V_sun - Theta0
-    W_LSR = W - W_sun
+        # Compute U, V, W velocities (U is towards the Galactic center)
+        U = -vx  # U positive towards Galactic center
+        V = vy   # V positive in direction of Galactic rotation
+        W = vz   # W positive towards North Galactic Pole
 
-    return x, y, z, U_LSR, V_LSR_corr, W_LSR
+        # Sun's peculiar motion relative to the LSR (Schönrich et al. 2010)
+        U_sun = 11.1   # km/s
+        V_sun = 12.24  # km/s
+        W_sun = 7.25   # km/s
+
+        # Circular velocity at the solar radius (Theta0)
+        Theta0 = 238  # km/s (value consistent with Astropy v4.0 defaults)
+
+        # Correct for the Sun's peculiar motion
+        U_LSR_valid = U - U_sun
+        V_LSR_valid = V - V_sun
+
+        # Correct for the circular rotation (subtract Theta0 from V component)
+        V_GSR_valid = V_LSR_valid - Theta0
+
+        W_LSR_valid = W - W_sun
+
+        # Place the valid computed values into the output arrays
+        x[valid] = x_valid
+        y[valid] = y_valid
+        z[valid] = z_valid
+        U_LSR[valid] = U_LSR_valid
+        V_GSR[valid] = V_GSR_valid
+        W_LSR[valid] = W_LSR_valid
+
+    # For entries where plx <= 0, outputs remain as NaN
+
+    return x, y, z, U_LSR, V_GSR, W_LSR
