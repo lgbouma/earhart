@@ -12,7 +12,13 @@ import numpy as np
 
 def EBmV_to_AV(EBmV):
     R_V = 3.1
-    return 3.1*EBmV
+    A_V = R_V * EBmV
+    return A_V
+
+def AV_to_EBmV(A_V):
+    R_V = 3.1
+    EBmV = A_V / R_V
+    return EBmV
 
 def EBmV_to_AG(EBmV):
     # Stassun+2019 TIC8
