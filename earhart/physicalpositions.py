@@ -11,6 +11,11 @@ Contents:
     calculate_XYZUVW_given_RADECPLXPMRV: (α,δ,π,μ_α,μ_δ,RV)->(X,Y,Z,U,V,W).
 """
 
+from __future__ import annotations
+
+from typing import Union
+ArrayLike = Union[float, int, np.ndarray]
+
 import numpy as np
 from numpy import array as nparr
 import astropy.units as u
@@ -21,6 +26,7 @@ import astropy.coordinates as coord
 _ = coord.galactocentric_frame_defaults.set('v4.0')
 
 from astropy.coordinates import SkyCoord
+
 
 VERBOSE = 1
 if VERBOSE:
@@ -498,3 +504,34 @@ def calculate_XYZUVW_given_RADECPLXPMRV(ra, dec, plx, pm_ra, pm_dec, radial_velo
     # For entries where plx <= 0, outputs remain as NaN
 
     return x, y, z, U_LSR, V_LSR, W_LSR
+
+
+def proper_motion_position_angle_deg(pmra: ArrayLike,
+                                     pmdec: ArrayLike) -> np.ndarray:
+    """Compute proper-motion position angle (PA) in the standard convention.
+
+    The PA is measured in degrees East of North (from +Dec toward +RA),
+    on the tangent plane. Inputs should be Gaia-style components:
+    pmra = mu_alpha* = (d(alpha)/dt) * cos(delta), and pmdec = mu_delta.
+
+    Returns an array of PA values in [0, 360). If both components are zero
+    for an element, that element is set to np.nan.
+
+    Args:
+        pmra: Proper motion in RA, mu_alpha* (mas/yr); scalar or array.
+        pmdec: Proper motion in Dec, mu_delta (mas/yr); scalar or array.
+
+    Returns:
+        Numpy array of position angles (deg) East of North, in [0, 360).
+    """
+    pmra_arr = np.asarray(pmra, dtype=float)
+    pmdec_arr = np.asarray(pmdec, dtype=float)
+
+    pa_deg = (np.degrees(np.arctan2(pmra_arr, pmdec_arr)) % 360.0)
+
+    zero_mask = (pmra_arr == 0.0) & (pmdec_arr == 0.0)
+    if np.any(zero_mask):
+        pa_deg = np.array(pa_deg, copy=True)
+        pa_deg[zero_mask] = np.nan
+
+    return pa_deg
